@@ -1,0 +1,3 @@
+[submodule "tools/qwalk"]
+	path = tools/qwalk
+	url = https://github.com/ashalkhakov/qwalk
