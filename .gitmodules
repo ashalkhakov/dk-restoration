@@ -9,3 +9,7 @@
 	path = tools/wal-tools
 	url = git@github.com:ashalkhakov/wal-tools.git
 	branch = palette-expansion
+[submodule "tools/bsp-sekai"]
+	path = tools/bsp-sekai
+	url = git@github.com:ashalkhakov/bsp-sekai.git
+	branch = daikatana-support
