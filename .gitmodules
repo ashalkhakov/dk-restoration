@@ -1,3 +1,7 @@
 [submodule "tools/qwalk"]
 	path = tools/qwalk
 	url = https://github.com/ashalkhakov/qwalk
+[submodule "tools/pakextract"]
+	path = tools/pakextract
+	url = git@github.com:ashalkhakov/pakextract.git
+	branch = cmake-build
