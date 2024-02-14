@@ -5,3 +5,7 @@
 	path = tools/pakextract
 	url = git@github.com:ashalkhakov/pakextract.git
 	branch = cmake-build
+[submodule "tools/wal-tools"]
+	path = tools/wal-tools
+	url = git@github.com:ashalkhakov/wal-tools.git
+	branch = palette-expansion
