@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    
+        // GDB Debugging:
+        {
+            "program": "${command:cmake.launchTargetPath}",
+            "name": "Launch (gdb)",
+            "request": "launch",
+            "args": [
+                // map conversion
+                "none",
+                "maps-dk/e1m1b.bsp",
+                "quake3", // rbsp
+                "maps/e1m1b.bsp"
+                
+                // model conversion
+                //"-force",
+                //"-i",
+                //"models/characters/hiro.dkm",
+                //"models/characters/hiro.md3"
+                //"models/interface/ib_button.dkm",
+                //"models/interface/ib_button.md3"
+                //"models/e1/a_shockwv.dkm",
+                //"models/e1/a_shockwv.md3"
+                //"models/e1/h_head.dkm"
+                //"/home/deck/Documents/proj/dk-restoration/basedk/models/cinematic/c_gusagi_e4m6.dkm",
+                //"/home/deck/Documents/proj/dk-restoration/basedk/models/cinematic/c_gusagi_e4m6.md3",
+
+                // wal conversion
+                //"textures/introcin/doj_cable2.wal",
+                //"-mip", "0",
+                //"-expand",
+                //"-o", "textures/introcin/doj_cable2.tga"
+            ],
+            "environment": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/dkres",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "openOnSessionStart",
+            "type": "cppdbg",
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

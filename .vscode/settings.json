@@ -1,0 +1,17 @@
+{
+    "cmake.sourceDirectory": "/home/deck/Documents/proj/dk-restoration",
+    "files.associations": {
+        "typeinfo": "c",
+        "cstddef": "c",
+        "string": "c",
+        "vector": "c",
+        "memory": "c",
+        "string_view": "c",
+        "system_error": "c",
+        "array": "c",
+        "deque": "c",
+        "unordered_map": "c",
+        "initializer_list": "c"
+    },
+    "dotnet.defaultSolution": "disable"
+}
