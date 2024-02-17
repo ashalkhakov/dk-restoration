@@ -102,6 +102,7 @@ if [ "$BUILD_MAPS" -gt 0 ]; then
     mkdir -p scripts
     mkdir -p maps
     ../build/tools/bsp-sekai/bspsekai none maps-dk/e1m1a.bsp quake3 maps/e1m1a.bsp
+    ../build/tools/bsp-sekai/bspsekai none maps-dk/e1m1b.bsp quake3 maps/e1m1b.bsp
     cd ..
 fi
 
