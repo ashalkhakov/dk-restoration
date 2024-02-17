@@ -1,6 +1,5 @@
 defaultSound "sounds/null.wav"
 addLoadingScreen menuback ( 0 0 0 ) 1.333333
 
-
 // fallback data for missing fonts, shaders, and sarge player model
 addGameDir baseq3
