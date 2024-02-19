@@ -13,3 +13,7 @@
 	path = tools/bsp-sekai
 	url = git@github.com:ashalkhakov/bsp-sekai.git
 	branch = daikatana-support
+[submodule "mint-dk"]
+	path = mint-dk
+	url = git@github.com:ashalkhakov/mint-arena.git
+	branch = cmake-build
