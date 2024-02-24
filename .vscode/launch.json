@@ -11,15 +11,31 @@
             "name": "Launch (gdb)",
             "request": "launch",
             "args": [
+                // spearmint
+                "+set", "fs_basepath", "/home/deck/Games/gog/quake-iii-arena",
+                "+set", "fs_homepath", "/home/deck/Games/gog/quake-iii-arena",
+                "+set", "fs_game", "dkres",
+                "+set", "com_renderer", "opengl2",
+                "+set", "fs_basegame", "baseq3",
+                "+set", "developer", "1",
+                "+set", "fs_copyfiles", "1",
+                "+set", "fs_pure", "0",
+                "+set", "sv_pure", "0",
+                "+set", "r_mode", "4",
+                "+set", "r_fullscreen", "0",
+                "+set", "vm_cgame", "0",
+                "+set", "vm_game", "0",
+                "+set", "vm_cgameHeapMegs", "64",
+
                 // map conversion
-                "none",
+                /*"none",
                 "maps-dk/e1m1b.bsp",
                 "quake3", // rbsp
                 "maps/e1m1b.bsp"
-                
+                */
                 // model conversion
-                //"-force",
-                //"-i",
+                /*"-force",
+                "-i",
                 //"models/characters/hiro.dkm",
                 //"models/characters/hiro.md3"
                 //"models/interface/ib_button.dkm",
@@ -29,12 +45,14 @@
                 //"models/e1/h_head.dkm"
                 //"/home/deck/Documents/proj/dk-restoration/basedk/models/cinematic/c_gusagi_e4m6.dkm",
                 //"/home/deck/Documents/proj/dk-restoration/basedk/models/cinematic/c_gusagi_e4m6.md3",
-
+                */
+                
                 // wal conversion
-                //"textures/introcin/doj_cable2.wal",
-                //"-mip", "0",
-                //"-expand",
-                //"-o", "textures/introcin/doj_cable2.tga"
+                /*
+                "textures/introcin/doj_cable2.wal",
+                "-mip", "0",
+                "-expand",
+                "-o", "textures/introcin/doj_cable2.tga"*/
             ],
             "environment": [],
             "stopAtEntry": false,

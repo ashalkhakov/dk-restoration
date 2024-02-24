@@ -7,6 +7,7 @@ BUILD_SKINS=0
 BUILD_MODELS=0
 BUILD_SOUNDS=0
 BUILD_MAPS=1
+BUILD_SCRIPTS=1
 INSTALL_FILES=1
 INSTALL_OUTDIR=/home/deck/Games/gog/quake-iii-arena
 
@@ -104,10 +105,18 @@ if [ "$BUILD_MAPS" -gt 0 ]; then
     ../build/tools/bsp-sekai/bspsekai none maps-dk/e1m1a.bsp quake3 maps/e1m1a.bsp
     #../build/tools/bsp-sekai/bspsekai none maps-dk/e1m1b.bsp quake3 maps/e1m1b.bsp
     cd ..
+
+    # copy tracemaps
+    cp -f maps/*_tracemap.tga dkres/maps
+fi
+
+# scripts
+if [ "$BUILD_SCRIPTS" -gt 0 ]; then
+    mkdir -p scripts
+    cp -f scripts/* dkres/scripts
 fi
 
 if [ "$INSTALL_FILES" -gt 0 ]; then
     cp -f mint/* dkres/
-    #cp -fR ./dkres "INSTALL_OUTDIR"
     rsync -a --delete ./dkres "$INSTALL_OUTDIR"
 fi

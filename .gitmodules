@@ -17,3 +17,7 @@
 	path = mint-dk
 	url = git@github.com:ashalkhakov/mint-arena.git
 	branch = cmake-build
+[submodule "spearmint"]
+	path = spearmint
+	url = git@github.com:ashalkhakov/spearmint.git
+	branch = daikatana-support
