@@ -11,7 +11,8 @@
         "array": "c",
         "deque": "c",
         "unordered_map": "c",
-        "initializer_list": "c"
+        "initializer_list": "c",
+        "cg_local.h": "c"
     },
     "dotnet.defaultSolution": "disable"
 }
