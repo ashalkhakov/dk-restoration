@@ -186,7 +186,11 @@ step_models() {
 	local converter
 	converter=$(tool qwalk/qwalk_converter)
 	(cd "$DKRES" && find models -type f -name '*.dkm' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c \
-		'rm -f "${1%.dkm}.md3"; "$0" -force -i "$1" "${1%.dkm}.md3" >/dev/null' "$converter")
+		'rm -f "${1%.dkm}.md3"; "$0" -force -i "$1" "${1%.dkm}.md3" >/dev/null </dev/null' "$converter")
+	# report the ones that didn't convert
+	(cd "$DKRES" && find models -type f -name '*.dkm' | while read -r f; do
+		[ -e "${f%.dkm}.md3" ] || echo "not converted: $f"
+	done)
 }
 
 # Daikatana's wavs are 4-bit IMA ADPCM, which Spearmint can't play
