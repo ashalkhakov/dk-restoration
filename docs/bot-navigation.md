@@ -11,7 +11,7 @@ Quake 3's AAS for its monsters, a map has an AAS world per creature size, each i
 | xxl | `maps/<map>_xxl.aas` | 128×128×160 | the biggest |
 
 The boxes and the movement settings are `tools/aas/<size>.cfg` (bspc configurations, Quake 3's defaults with
-ladders allowed, which Daikatana's maps have, and the characters' speeds: running 170, crouching 43, swimming 85 —
+ladders allowed, which Daikatana's maps have, and the characters' speeds: running 130, crouching 33, swimming 65 —
 the reachabilities, jumps above all, depend on them; rebuild the worlds when they change).
 
 ```

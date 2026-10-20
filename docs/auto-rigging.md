@@ -111,10 +111,10 @@ the pins are only numbers and names, so they're committed.
 - **Animation speed.** The IQM plays the animations at 20 frames a second, as Daikatana plays its characters'
   (`FRAMETIME_FPS20`: `client_init.cpp`, `bot.cpp`). They're paced like people: Hiro's run covers about 100 units a
   second and his walk 36 (he's 54 tall, so a unit is about 3.3 cm), while the player runs at 320 as in Daikatana and
-  Quake, whose feet slid too. So the characters run at 170 (`character_base`'s `run_speed`, about Doom 3's run in
-  these units) and walk at 35% of it, and the rigger measures each move animation's speed over the ground
+  Quake, whose feet slid too. So the characters run at 130 (`character_base`'s `run_speed`, near their own runs:
+  at 170 the legs raced) and walk at 35% of it, and the rigger measures each move animation's speed over the ground
   (`anim_speed`, from how far each sole reaches forward and back a cycle): the legs play that much faster or slower,
-  Hiro's run at 1.5×.
+  Hiro's run at 1.13×, Mikiko's and Superfly's at about 0.9×.
 - **Swimming.** `swim` is a breaststroke lying down: the hands sweep out and back (frames 0–8, the pull) and come
   forward again. The rigger writes where the swimming body's middle is (`swim_center`); the game puts it in the
   middle of the player's box, lies the body along the stroke and times the animation by pmove's stroke. Daikatana
