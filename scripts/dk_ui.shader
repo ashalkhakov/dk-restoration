@@ -154,3 +154,26 @@ ui/dk/plaque_quit
 		rgbGen entity
 	}
 }
+
+// Daikatana's loading bar, drawn over the levelshot while a map loads
+gfx/2d/loadingbar
+{
+	nopicmip
+	nomipmaps
+	{
+		map pics/loadbar.tga
+		blendFunc blend
+		rgbGen vertex
+	}
+}
+
+gfx/2d/loadingblock
+{
+	nopicmip
+	nomipmaps
+	{
+		map pics/loadblock.tga
+		blendFunc blend
+		rgbGen vertex
+	}
+}

@@ -112,6 +112,8 @@ if [ "$BUILD_SCRIPTS" -gt 0 ]; then
     cp -R effects/. dkres/effects/
     # menu art from Daikatana's fonts and pictures, then the menu scripts
     python3 tools/ui/dkui_assets.py dkres
+    # loading screens: Daikatana's tiles put together as Quake 3 levelshots
+    python3 tools/ui/dk_levelshots.py dkres
     mkdir -p dkres/ui
     cp -f ui/* dkres/ui/
     cp -f gameinfo.txt dkres/

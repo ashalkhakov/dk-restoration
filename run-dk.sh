@@ -28,7 +28,7 @@ MOD=$HOMEDIR/dkres
 mkdir -p $MOD/ui $MOD/scripts
 
 # converted game data
-for dir in textures env pics sounds models skins fonts music; do
+for dir in textures env pics sounds models skins fonts music levelshots; do
 	ln -sfn $ROOT/dkres/$dir $MOD/$dir
 done
 ln -sfn $ROOT/out/maps $MOD/maps
