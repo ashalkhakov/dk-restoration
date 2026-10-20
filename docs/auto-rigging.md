@@ -115,6 +115,10 @@ the pins are only numbers and names, so they're committed.
   these units) and walk at 35% of it, and the rigger measures each move animation's speed over the ground
   (`anim_speed`, from how far each sole reaches forward and back a cycle): the legs play that much faster or slower,
   Hiro's run at 1.5×.
+- **Swimming.** `swim` is a breaststroke lying down: the hands sweep out and back (frames 0–8, the pull) and come
+  forward again. The rigger writes where the swimming body's middle is (`swim_center`); the game puts it in the
+  middle of the player's box, lies the body along the stroke and times the animation by pmove's stroke. Daikatana
+  has nothing for wading or shallow water: wading walks.
 - **Ladders.** `ladderup` and `ladderdn` are the climbing (`LEGS_CLIMB`, `LEGS_CLIMBDOWN`). They climb in place; the
   rigger measures how far a cycle climbs (the body rises as fast as the holding hands and feet go down: Hiro 26,
   e1m1a's rungs are 12 apart) and how far ahead the hands hold, `ladder_climb` and `ladder_reach`. Daikatana has no

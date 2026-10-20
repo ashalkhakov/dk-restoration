@@ -1123,6 +1123,15 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			lines.append( "\t\"anim_speed %s\"\t\"%.0f\"" % ( a[0], speed ) )
 	lines.append( "" )
 
+	# swimming: the body lies along the stroke; the game puts its middle (the
+	# swim animation's vertexes' on average) at the player's
+	if "swim" in animAt:
+		a = animAt["swim"]
+		pts = [ body[verts[i][0]].frames[a[1] + k][verts[i][1]] for i in range( N ) for k in range( 0, a[2], 2 ) ]
+		lines.append( "\t\"swim_center\"\t\t\"%.1f %.1f %.1f\"\t// the swimming body's middle" % tuple(
+			sum( p[c] for p in pts ) / len( pts ) for c in range( 3 ) ) )
+		lines.append( "" )
+
 	# the ladder: how far a cycle of climbing climbs (the body rises as fast
 	# as the holding hands and feet go down it, which they do in place), and
 	# how far ahead the hands hold it

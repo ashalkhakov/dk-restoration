@@ -116,6 +116,8 @@ entityDef model_superfly {
 	"anim_speed walka"	"50"
 	"anim_speed walkb"	"50"
 
+	"swim_center"		"11.8 0.4 -22.4"	// the swimming body's middle
+
 	"ladder_climb"		"25.8"	// a cycle of ladderup climbs this (rungs half as far apart)
 	"ladder_reach"		"11.1"	// the hands this far ahead
 
