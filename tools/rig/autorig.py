@@ -427,17 +427,25 @@ def main( md3Path, outBase ):
 	# 2. split again by which bone carries each vertex best; parts that move
 	# together (chest and neck) are near ties, so nearness to the bone counts too
 	SPATIAL = 0.15
+	BAD_FIT = 4.0		# units off, on average, for a vertex to look further
 	for it in range( 4 ):
 		motion = fit_bones( sample )
 		changed = 0
+		def fit( i, b ):
+			err = SPATIAL * len( sample ) * seg_dist( rest[i], *segs[b] ) ** 2
+			for f in sample:
+				d = vsub( xform( motion[b][f], rest[i] ), frames[f][i] )
+				err += vdot( d, d )
+			return err
 		for i in range( N ):
 			best, bestErr = assign[i], None
-			for b in neighbours( assign[i] ):
-				err = SPATIAL * len( sample ) * seg_dist( rest[i], *segs[b] ) ** 2
-				for f in sample:
-					p = xform( motion[b][f], rest[i] )
-					d = vsub( p, frames[f][i] )
-					err += vdot( d, d )
+			candidates = neighbours( assign[i] )
+			# one its bone carries badly (a hip vertex the hanging hand took)
+			# may belong to any: every bone is tried
+			if fit( i, assign[i] ) > len( sample ) * BAD_FIT ** 2:
+				candidates = bones
+			for b in candidates:
+				err = fit( i, b )
 				if bestErr is None or err < bestErr:
 					best, bestErr = b, err
 			if best != assign[i]:
@@ -510,6 +518,7 @@ def main( md3Path, outBase ):
 	# the error of the skinned frames
 	total = maxErr = 0.0
 	count = 0
+	worst = []
 	for f in range( F ):
 		for i in range( N ):
 			b, o, w = weights[i]
@@ -517,9 +526,22 @@ def main( md3Path, outBase ):
 			if w < 1.0:
 				p = vadd( vscale( p, w ), vscale( xform( motion[o][f], rest[i] ), 1 - w ) )
 			e = vlen( vsub( p, frames[f][i] ) )
+			if e > 6 and os.environ.get( "RIG_WORST" ):
+				worst.append( ( e, f, i ) )
 			total += e
 			maxErr = max( maxErr, e )
 			count += 1
+	if worst:
+		names = [ ( a[0], a[1], a[1] + a[2] ) for a in m.animations() ]
+		byVert = {}
+		for e, f, i in worst:
+			byVert.setdefault( i, [] ).append( ( e, f ) )
+		for i in sorted( byVert, key = lambda i: -max( byVert[i] )[0] )[:12]:
+			e, f = max( byVert[i] )
+			anim = next( ( n for n, a, b in names if a <= f < b ), "?" )
+			b, o, w = weights[i]
+			print( "  vertex %d: %.1f off in %s (frame %d, %d frames over 6), %s/%s %.2f, rest %s" % ( i, e, anim, f, len( byVert[i] ),
+				joints[b]["name"], joints[o]["name"], w, tuple( round( c ) for c in rest[i] ) ) )
 	print( "  error: %.3f units on average, %.2f at most (the character is %.0f tall)" % ( total / count, maxErr,
 		max( v[2] for v in rest ) - zmin ) )
 
@@ -721,12 +743,33 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 
 	# the model def: animations and hitboxes fitted to each bone's vertexes
 	name = os.path.basename( outBase )
+
+	# the collision box, Doom 3's "mins"/"maxs": the body standing (its idle),
+	# legs, torso and head, not the arms (the hitboxes have those); square
+	# about the origin, as the box doesn't turn with the character. Crouched,
+	# its top in the crouched idle; the eyes a little under the top
+	animAt = { a[0]: a for a in anims }
+	def pose_extent( animNames ):
+		a = next( ( animAt[n] for n in animNames if n in animAt ), None )
+		frames = range( a[1], a[1] + a[2] ) if a else range( 1 )
+		pts = [ body[si].frames[f][vi] for f in frames for i, ( si, vi ) in enumerate( verts )
+				if joints[assign[i]]["zone"] in ( "legs", "torso", "head" ) ]
+		half = max( max( abs( p[0] ), abs( p[1] ) ) for p in pts )
+		return half, min( p[2] for p in pts ), max( p[2] for p in pts )
+	half, bottom, top = pose_extent( [ "amb", "aamb" ] )
+	_, _, crouchTop = pose_extent( [ "camb", "acamb" ] )
+	tall = top - bottom
+	eye = top - 0.09 * tall			# Doom 3's player: eyes 68 of 74
+	crouchEye = crouchTop - 0.09 * tall
 	lines = [ "// made by tools/rig/autorig.py from %s" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
 			  "\t\"inherit\"\t\t\t\"character_base\"\t// def/dk_characters.def",
 			  "\t\"mesh\"\t\t\t\t\"%s.iqm\"" % gamePath( outBase ),
-			  "\t\"mins\"\t\t\t\t\"%.0f %.0f %.0f\"" % ( bounds[0], bounds[1], bounds[2] ),
-			  "\t\"maxs\"\t\t\t\t\"%.0f %.0f %.0f\"" % ( bounds[3], bounds[4], bounds[5] ),
+			  "\t\"mins\"\t\t\t\t\"%.0f %.0f %.0f\"\t// standing, at the origin (pmove's)" % ( -half, -half, bottom ),
+			  "\t\"maxs\"\t\t\t\t\"%.0f %.0f %.0f\"" % ( half, half, top ),
+			  "\t\"crouch_height\"\t\t\"%.0f\"\t\t// maxs z crouched" % crouchTop,
+			  "\t\"eye_height\"\t\t\"%.0f\"" % eye,
+			  "\t\"crouch_eye_height\"\t\"%.0f\"" % crouchEye,
 			  "" ]
 	seen = set()
 	for a in anims:
@@ -736,8 +779,9 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		lines.append( "\t\"anim %s\"\t\t\"%s\"" % ( a[0], a[0] ) )
 	lines.append( "" )
 
-	# footsteps: where each ankle comes down, once a cycle: the first frame
-	# after its highest that it's in the bottom third of its swing
+	# footsteps: where each foot comes down, once a cycle: its sole (the
+	# lowest vertex of its bone) the first frame after its highest that it's
+	# in the bottom quarter of its swing
 	J = { joint["name"]: j for j, joint in enumerate( joints ) }
 	steps = {}
 	stepVolume = {}
@@ -750,11 +794,14 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		for foot in FOOTSTEP_JOINTS:
 			if foot not in J:
 				continue
-			z = [ world( J[foot], a[1] + i )[1][2] for i in range( a[2] ) ]
+			sole = [ verts[i] for i in range( N ) if assign[i] == J[foot] ]
+			if not sole:
+				continue
+			z = [ min( body[si].frames[a[1] + k][vi][2] for si, vi in sole ) for k in range( a[2] ) ]
 			lo, hi = min( z ), max( z )
 			if hi - lo < 1:
 				continue
-			low = lo + ( hi - lo ) / 3
+			low = lo + ( hi - lo ) / 4
 			top = z.index( hi )
 			for k in range( 1, a[2] + 1 ):
 				i = ( top + k ) % a[2]		# the anim loops

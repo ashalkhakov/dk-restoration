@@ -27,8 +27,9 @@ implements.
    - the hands, at the arms' outermost points (the right one at the gun hardpoint)
 2. **Segments.** Each vertex starts on the nearest bone. Each bone's rigid motion is then fitted to every frame (Horn's
    quaternion method), and each vertex moves to the neighbouring bone whose motion carries it best. A term for nearness
-   keeps parts that move together (chest and neck) from trading vertices at random. Repeat until stable, usually 3–4
-   rounds.
+   keeps parts that move together (chest and neck) from trading vertices at random. A vertex its bone carries badly
+   (over 4 units off on average) tries every bone: a hip vertex the hanging hand took at first can't reach the leg
+   through neighbours. Repeat until stable, usually 3–4 rounds.
 3. **Joints.** Each joint goes to the point that moves least between the parent's and the child's segments over the
    frames, by least squares.
 4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
@@ -47,16 +48,17 @@ implements.
 
 | Character | Vertexes | Frames | Animations | Average error | Worst vertex | Height |
 | --- | --- | --- | --- | --- | --- | --- |
-| Hiro | 726 | 1394 | 82 | 0.35 | 28 | 54 |
-| Mikiko | 637 | 1259 | 78 | 0.42 | 31 | 58 |
+| Hiro | 726 | 1394 | 82 | 0.29 | 11 | 54 |
+| Mikiko | 637 | 1259 | 78 | 0.37 | 16 | 58 |
+| Superfly | 709 | 1263 | 77 | 0.36 | 9 | 54 |
 
 The error is how far each skinned vertex lands from Daikatana's, over all frames. In game the rigged and original models
 look the same frame for frame (`cg_drawSkeleton 1` shows the joints, 2 without the mesh; `def/char_hiro_md3.def` plays
 the original to compare:
 `spawncharacter model_hiro run -4 30; spawncharacter model_hiro_md3 run -4 -30`).
 
-A few vertexes go far off (28–31 units) on a few frames. They're parts that move in ways no single limb does, such as
-hair, cloth, or the body during the death animations.
+A few vertexes go off (9–16 units) on a few frames: parts that move in ways no single limb does, such as hair, cloth,
+or the neck during the death animations. `RIG_WORST=1 ./dk rig` lists the worst, with the animation and the bones.
 
 ## Limits and what's next
 
@@ -76,16 +78,25 @@ hair, cloth, or the body during the death animations.
   `PLAYER_ANIMS` in `autorig.py`), so `model hiro` (the default) or `model mikiko` plays them as players, with hitboxes;
   `addbot Hiro` and `addbot Mikiko` (`scripts/dk.bot`) as bots. The weapon goes on `WEAPON_ATTACHER`, the gun
   hardpoint. Daikatana's hardpoints are points (its renderer's `R_GetModelHardpoint` gives a position), so the weapon
-  sits at the hand turned as the torso aims, not as the hand is. Daikatana has no held weapon models for players,
-  though: the `a_*` models are pickups lying flat around their middle, so they sit oddly in the hand. Its only held
-  ones are the soldiers' `hw_pistol` and `hw_shotgun` (grip at the origin, barrel along x) and the sword
-  `ws_daikatana`.
+  sits at the hand turned as the torso aims, not as the hand is. The held weapon is the `a_*` model's frame 4, as
+  Daikatana draws it (`cl_ents.cpp`): grip at the origin, along x (the weapon def's `model_world_frame`). The
+  weapon picks the player animations by its type, as Daikatana's `CLIENT_SelectAnimationPerWeaponType` does: the
+  weapon def's `player_anim_suffix` (`b` for the rifles and shoulder weapons) plays `atakb`, `runb`… where the
+  character has them, the glove's plain `atak` the punch.
+- **The player's box.** The rigger measures each character's collision box, Doom 3's `mins`/`maxs`: the idle pose's
+  legs, torso and head (the arms are the hitboxes' business), square about the origin as the box doesn't turn;
+  `crouch_height` from the crouched idle and `eye_height`/`crouch_eye_height` a little under the top. Pmove sizes a
+  player by the model the server gave it (`BG_PlayerBox`), so the client predicts the same box whatever it draws.
+  Hiro comes out 32 wide like Daikatana's player, Superfly 38. The bots' AAS is still the standard 30-wide world.
 - **Sounds and footsteps.** The rigger also writes each character's voice (Daikatana's, `sound/char_<name>.sndshd`
-  sound shaders named by the def's `snd_*` keys) and footstep frames: where each ankle comes down in the run
+  sound shaders named by the def's `snd_*` keys) and footstep frames: where each sole (the ankle bone's lowest vertex)
+  comes down in the run
   animations (full volume) and the walk ones (0.4; Daikatana and Quake 3 were silent walking). The defs inherit
   `character_base` (`def/dk_characters.def`), whose `snd_footstep_<type>` name Daikatana's footstep sounds per surface;
   the converted maps keep Daikatana's surface types (wood, metal, stone, ice…) as Doom 3's in their surface flags.
 - **Feet on the floor.** Doom 3's walk IK plants the feet on stairs and slopes (`character_base`'s `ik_*` keys, the
-  rig's Doom 3 joint names; the ankle stands in for the missing ball joint).
+  rig's Doom 3 joint names; the ankle stands in for the missing ball joint). Unlike Doom 3, a foot moves at most a
+  step (18), a foot over no floor stays as animated, a target out of reach is pulled in rather than folding the leg,
+  the knee bends only forward, and the bones turn without twisting about their length (`bg_ik.c`).
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

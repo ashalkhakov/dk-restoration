@@ -32,6 +32,7 @@ entityDef weapon_disruptor {
 	"def_projectile"		"projectile_disruptor"
 
 	"model_world"			"models/e1/a_tazer.md3"
+	"model_world_frame"		"4"				// held in the hand: Daikatana draws frame 4 (cl_ents.cpp)
 	"model_view"			"models/e1/w_tglove.md3"		// Daikatana's (w_disruptor is unused)
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
@@ -83,6 +84,7 @@ entityDef weapon_gashands {
 	"def_projectile"		"projectile_gashands"
 
 	"model_world"			"models/e1/a_gashand.md3"
+	"model_world_frame"		"-1"			// no held pose: the hands are the weapon
 	"model_view"			"models/e1/w_gashand.md3"
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
@@ -119,6 +121,7 @@ ION BLASTER (slot 2): bolts that bounce off walls
 */
 
 entityDef weapon_ionblaster {
+	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
 	"inv_weapon"			"weapon_ionblaster"
 	"inv_ammo"				"40"
@@ -133,6 +136,7 @@ entityDef weapon_ionblaster {
 	"def_projectile"		"projectile_ion"
 
 	"model_world"			"models/e1/a_ion.md3"
+	"model_world_frame"		"4"				// held in the hand: Daikatana draws frame 4 (cl_ents.cpp)
 	"model_view"			"models/e1/w_ionblaster.md3"
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
@@ -199,6 +203,7 @@ with alt fire (Daikatana's button), or by themselves after a minute
 */
 
 entityDef weapon_c4viz {
+	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
 	"inv_weapon"			"weapon_c4viz"
 	"inv_ammo"				"8"
@@ -215,6 +220,7 @@ entityDef weapon_c4viz {
 	"altFireRate"			"1.35"				// btnpsh, 27 frames
 
 	"model_world"			"models/e1/a_c4.md3"
+	"model_world_frame"		"4"				// held in the hand: Daikatana draws frame 4 (cl_ents.cpp)
 	"model_view"			"models/e1/w_c4.md3"
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
@@ -277,6 +283,7 @@ row, ten pellets each
 */
 
 entityDef weapon_shotcycler {
+	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
 	"inv_weapon"			"weapon_shotcycler"
 	"inv_ammo"				"30"
@@ -295,6 +302,7 @@ entityDef weapon_shotcycler {
 	"spread"				"5"
 
 	"model_world"			"models/e1/a_shot.md3"
+	"model_world_frame"		"4"				// held in the hand: Daikatana draws frame 4 (cl_ents.cpp)
 	"model_view"			"models/e1/w_shotcycler.md3"
 	"anim_fps"				"22"
 	"anim_raise"			"ready"
@@ -341,6 +349,7 @@ SIDEWINDER (slot 5): rockets
 */
 
 entityDef weapon_sidewinder {
+	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
 	"inv_weapon"			"weapon_sidewinder"
 	"inv_ammo"				"16"
@@ -355,6 +364,7 @@ entityDef weapon_sidewinder {
 	"def_projectile"		"projectile_sidewinder"
 
 	"model_world"			"models/e1/a_swindr.md3"
+	"model_world_frame"		"4"				// held in the hand: Daikatana draws frame 4 (cl_ents.cpp)
 	"model_view"			"models/e1/w_sidewinder.md3"
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
@@ -416,6 +426,7 @@ SHOCKWAVE (slot 6): a slow sphere that blasts all around it
 */
 
 entityDef weapon_shockwave {
+	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's shoulder weapon (client.cpp)
 	"spawnclass"			"item"
 	"inv_weapon"			"weapon_shockwave"
 	"inv_ammo"				"4"
@@ -430,6 +441,7 @@ entityDef weapon_shockwave {
 	"def_projectile"		"projectile_shockwave"
 
 	"model_world"			"models/e1/a_shokwv.md3"
+	"model_world_frame"		"4"				// held in the hand: Daikatana draws frame 4 (cl_ents.cpp)
 	"model_view"			"models/e1/w_shockwave.md3"
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
