@@ -104,6 +104,31 @@ def solve3( a, b ):
 		x.append( det( m ) / d )
 	return tuple( x )
 
+def eigen3( a ):
+	"""A symmetric 3x3's eigenvalues and unit eigenvectors (Jacobi)."""
+	m = [ row[:] for row in a ]
+	v = [ [ 1.0 if r == c else 0.0 for c in range( 3 ) ] for r in range( 3 ) ]
+	for sweep in range( 50 ):
+		off = sum( m[r][c] ** 2 for r in range( 3 ) for c in range( 3 ) if r != c )
+		if off < 1e-18:
+			break
+		for p in range( 3 ):
+			for q in range( p + 1, 3 ):
+				if abs( m[p][q] ) < 1e-12:
+					continue
+				th = 0.5 * math.atan2( 2 * m[p][q], m[q][q] - m[p][p] )
+				c, s = math.cos( th ), math.sin( th )
+				for k in range( 3 ):
+					mkp, mkq = m[k][p], m[k][q]
+					m[k][p], m[k][q] = c * mkp - s * mkq, s * mkp + c * mkq
+				for k in range( 3 ):
+					mpk, mqk = m[p][k], m[q][k]
+					m[p][k], m[q][k] = c * mpk - s * mqk, s * mpk + c * mqk
+				for k in range( 3 ):
+					vkp, vkq = v[k][p], v[k][q]
+					v[k][p], v[k][q] = c * vkp - s * vkq, s * vkp + c * vkq
+	return [ m[i][i] for i in range( 3 ) ], [ ( v[0][i], v[1][i], v[2][i] ) for i in range( 3 ) ]
+
 def rigid_fit( src, dst, weights = None ):
 	"""The rotation and translation that best take the points src to dst
 	(Horn's quaternion method): x' = R x + t."""
@@ -245,7 +270,7 @@ LOOPING = re.compile( r"^(a|b|c|o)?(amb|walk|run|ws|swim|ladderup|ladderdn|looka
 
 # ------------------------------------------------------------------------
 
-def place_template( rest, gunHand = None ):
+def place_template( rest, tris, gunHand = None ):
 	"""The template's joints in the mesh, measured from it: Daikatana's
 	characters aren't built like Doom 3's (bigger heads, shorter legs), so only
 	the names and the hierarchy are Doom 3's. Where the neck narrows to the
@@ -272,11 +297,26 @@ def place_template( rest, gunHand = None ):
 		k -= 1
 	zNeck = zmin + ( k + 1 ) / steps * H
 	zShoulder = zNeck - 0.05 * H
-	# the crotch: the lowest height with mesh between the legs
+	# the crotch: going down, where a gap first opens between the legs, no
+	# triangle cut there crossing the middle (going up from the feet stops
+	# early where knees or thighs touch; vertexes alone miss the big
+	# triangles a low-poly trunk spans the middle with)
+	def crosses_middle( z ):
+		for t in tris:
+			pts = []
+			for a, b in ( ( t[0], t[1] ), ( t[1], t[2] ), ( t[2], t[0] ) ):
+				pa, pb = rest[a], rest[b]
+				if ( pa[2] - z ) * ( pb[2] - z ) < 0:
+					u = ( z - pa[2] ) / ( pb[2] - pa[2] )
+					pts.append( pa[1] + u * ( pb[1] - pa[1] ) )
+			if len( pts ) == 2 and ( pts[0] - y0 ) * ( pts[1] - y0 ) <= 0:
+				return True
+		return False
 	zCrotch = zmin + 0.45 * H
-	for k in range( int( 0.25 * steps ), int( 0.65 * steps ) ):
-		if any( abs( v[1] - y0 ) < 0.06 * H for v in slab( k / steps, ( k + 1 ) / steps ) ):
-			zCrotch = zmin + k / steps * H
+	fine = 100
+	for k in range( int( 0.6 * fine ), int( 0.25 * fine ), -1 ):
+		if not crosses_middle( zmin + k / fine * H ):
+			zCrotch = zmin + ( k + 1 ) / fine * H
 			break
 	shoulderY = 0.7 * width( slab( ( zShoulder - zmin ) / H - 0.05, ( zShoulder - zmin ) / H + 0.02 ) )
 
@@ -365,7 +405,12 @@ def main( md3Path, outBase ):
 	for hp in hps:
 		if HARDPOINTS[hp.name][1] == "Rhand":
 			gunHand = vscale( vadd( vadd( hp.frames[0][0], hp.frames[0][1] ), hp.frames[0][2] ), 1.0 / 3 )
-	joints, scale = place_template( rest, gunHand )
+	base, tris = {}, []
+	for k, ( si, vi ) in enumerate( verts ):
+		base.setdefault( si, k )
+	for si, sf in enumerate( body ):
+		tris += [ ( base[si] + a, base[si] + b, base[si] + c ) for a, b, c in sf.triangles ]
+	joints, scale = place_template( rest, tris, gunHand )
 	J = { j["name"]: i for i, j in enumerate( joints ) }
 	for j in joints:
 		j["parentIndex"] = J[j["parent"]] if j["parent"] else -1
@@ -427,6 +472,7 @@ def main( md3Path, outBase ):
 	# 2. split again by which bone carries each vertex best; parts that move
 	# together (chest and neck) are near ties, so nearness to the bone counts too
 	SPATIAL = 0.15
+	JOINT_MOVE = 0.1	# of the height: how far a joint goes from the template's place
 	BAD_FIT = 4.0		# units off, on average, for a vertex to look further
 	for it in range( 4 ):
 		motion = fit_bones( sample )
@@ -460,14 +506,14 @@ def main( md3Path, outBase ):
 		plot_segments( rest, assign, joints, os.environ["RIG_DEBUG"] )
 
 	# 3. joints where parent and child agree
+	H = max( v[2] for v in rest ) - min( v[2] for v in rest )
 	for b in bones:
 		p = joints[b]["parentIndex"]
 		if p < 0 or p not in motion:
 			continue
 		p0 = joints[b]["pos"]
-		lam = 0.05 * len( sample )
-		a = [ [ lam if r == c else 0.0 for c in range( 3 ) ] for r in range( 3 ) ]
-		rhs = [ lam * p0[k] for k in range( 3 ) ]
+		a = [ [ 0.0 ] * 3 for r in range( 3 ) ]
+		rhs = [ 0.0 ] * 3
 		for f in sample:
 			rp, tp = motion[p][f]
 			rc, tc = motion[b][f]
@@ -477,9 +523,25 @@ def main( md3Path, outBase ):
 				for c in range( 3 ):
 					a[r][c] += sum( d[k][r] * d[k][c] for k in range( 3 ) )
 				rhs[r] += sum( d[k][r] * e[k] for k in range( 3 ) )
-		x = solve3( a, rhs )
-		if x:
-			joints[b]["pos"] = x
+		# a hinge (the knee, the elbow) agrees all along its axis: along a
+		# direction the motion hardly pins down the template's place stays,
+		# else the joint slides off sideways; and it never goes far from it
+		vals, vecs = eigen3( a )
+		top = max( vals )
+		r0 = vsub( rhs, mvec( a, p0 ) )
+		x = p0
+		for val, vec in zip( vals, vecs ):
+			if val > 0.05 * top:
+				x = vadd( x, vscale( vec, vdot( vec, r0 ) / val ) )
+		# a leg's joints stay at the template's heights (from the crotch and
+		# the floor): along the bone the motion pins them least, and a knee
+		# slid down to the ankle bends the leg in the wrong place
+		if joints[b]["zone"] == "legs":
+			x = ( x[0], x[1], p0[2] )
+		move = vsub( x, p0 )
+		if vlen( move ) > JOINT_MOVE * H:
+			x = vadd( p0, vscale( move, JOINT_MOVE * H / vlen( move ) ) )
+		joints[b]["pos"] = x
 	# Body sits on the hips, the root at the floor under it
 	joints[J["Body"]]["pos"] = joints[J["Hips"]]["pos"]
 	zmin = min( v[2] for v in rest )
@@ -492,7 +554,9 @@ def main( md3Path, outBase ):
 		b = assign[i]
 		best = ( b, b, 1.0, None )
 		for o in neighbours( b ):
-			if o == b:
+			# one leg's vertex never follows the other: the walk IK moves
+			# them apart, which the animations never do
+			if o == b or joints[o]["name"][1:] == joints[b]["name"][1:] and joints[b]["zone"] == "legs":
 				continue
 			num = den = 0.0
 			err1 = 0.0

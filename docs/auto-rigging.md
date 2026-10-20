@@ -22,7 +22,9 @@ implements.
    animations made for Doom 3 skeletons line up. Where the joints go is measured from the mesh, because Daikatana's
    characters aren't built like Doom 3's:
    - the neck, where the body narrows into the head
-   - the crotch, where mesh first appears between the legs
+   - the crotch, going down, where a gap first opens between the legs: no triangle crosses the middle there
+     (going up from the feet stops where the knees touch, and a low-poly trunk's big triangles span the middle
+     without a vertex there)
    - the shoulders, from the body's width there
    - the hands, at the arms' outermost points (the right one at the gun hardpoint)
 2. **Segments.** Each vertex starts on the nearest bone. Each bone's rigid motion is then fitted to every frame (Horn's
@@ -31,9 +33,11 @@ implements.
    (over 4 units off on average) tries every bone: a hip vertex the hanging hand took at first can't reach the leg
    through neighbours. Repeat until stable, usually 3–4 rounds.
 3. **Joints.** Each joint goes to the point that moves least between the parent's and the child's segments over the
-   frames, by least squares.
+   frames, by least squares, but only along the directions the motion pins down. A hinge (knee, elbow) agrees all
+   along its axis, and there the template's place stays. A joint moves at most a tenth of the height, and the legs'
+   joints keep the template's heights (the knee halfway from crotch to floor): the walk IK bends the leg at them.
 4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
-   vertex).
+   vertex), never one leg with the other: the walk IK moves them apart.
 5. **Rest orientations.** Each joint rests along its bone (x toward the child), so hitboxes fitted in its space hug the
    limb.
 6. **Hardpoints.** Daikatana's `hp_gun` and `ctf_flag` triangles become rigid attachment joints, `WEAPON_ATTACHER` and
@@ -48,16 +52,16 @@ implements.
 
 | Character | Vertexes | Frames | Animations | Average error | Worst vertex | Height |
 | --- | --- | --- | --- | --- | --- | --- |
-| Hiro | 726 | 1394 | 82 | 0.29 | 11 | 54 |
-| Mikiko | 637 | 1259 | 78 | 0.37 | 16 | 58 |
-| Superfly | 709 | 1263 | 77 | 0.36 | 9 | 54 |
+| Hiro | 726 | 1394 | 82 | 0.29 | 6 | 54 |
+| Mikiko | 637 | 1259 | 78 | 0.27 | 15 | 58 |
+| Superfly | 709 | 1263 | 77 | 0.31 | 7 | 54 |
 
 The error is how far each skinned vertex lands from Daikatana's, over all frames. In game the rigged and original models
 look the same frame for frame (`cg_drawSkeleton 1` shows the joints, 2 without the mesh; `def/char_hiro_md3.def` plays
 the original to compare:
 `spawncharacter model_hiro run -4 30; spawncharacter model_hiro_md3 run -4 -30`).
 
-A few vertexes go off (9–16 units) on a few frames: parts that move in ways no single limb does, such as hair, cloth,
+A few vertexes go off (6–15 units) on a few frames: parts that move in ways no single limb does, such as hair, cloth,
 or the neck during the death animations. `RIG_WORST=1 ./dk rig` lists the worst, with the animation and the bones.
 
 ## Limits and what's next
