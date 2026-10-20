@@ -150,8 +150,9 @@
 		DK_SLIDER( 20, 226, 208, "Mouse Speed", "sensitivity", 5, 1, 30 )
 
 		DK_BIND( 20, 50, "Attack", "+attack" )
-		DK_BIND( 20, 68, "Next Weapon", "weapnext" )
-		DK_BIND( 20, 86, "Prev Weapon", "weapprev" )
+		DK_BIND( 20, 68, "Alt Attack", "+altattack" )
+		DK_BIND( 20, 86, "Next Weapon", "weapnext" )
+		DK_BIND( 20, 104, "Prev Weapon", "weapprev" )
 	}
 
 	// Keyboard: Daikatana's command list, in two columns

@@ -22,16 +22,17 @@ DISRUPTOR GLOVE (slot 1): an electric punch
 
 entityDef weapon_disruptor {
 	"weapon_slot"			"1"
+	"bot_rating"			"100"				// Weapons.csv
 	"inv_name"				"Disruptor Glove"
 	"melee"					"1"
-	"fireRate"				"0.7"				// shoota, 14 frames
+	"fireRate"				"0.6"				// shoota, 12 frames
 	"ammoRequired"			"0"
 	"raiseTime"				"0.25"
 	"lowerTime"				"0.2"
 	"def_projectile"		"projectile_disruptor"
 
 	"model_world"			"models/e1/a_tazer.md3"
-	"model_view"			"models/e1/w_disruptor.md3"
+	"model_view"			"models/e1/w_tglove.md3"		// Daikatana's (w_disruptor is unused)
 	"anim_fps"				"20"
 	"anim_raise"			"ready"
 	"anim_lower"			"away"
@@ -61,6 +62,57 @@ entityDef damage_disruptor {
 /*
 ===============================================================================
 
+ULTIMATE GAS HANDS (slot 1): the glove powered up; a punch takes anyone out
+and throws them. In Daikatana's single player it runs out after two minutes,
+in deathmatch it lasts until death (as here).
+
+===============================================================================
+*/
+
+entityDef weapon_gashands {
+	"spawnclass"			"item"
+	"inv_weapon"			"weapon_gashands"
+	"inv_name"				"Ultimate Gas Hands"
+	"model"					"models/e1/a_gashand.md3"
+
+	"weapon_slot"			"1"
+	"bot_rating"			"700"				// a one-hit kill up close
+	"melee"					"1"
+	"fireRate"				"0.8"				// shootb, 16 frames
+	"ammoRequired"			"0"
+	"def_projectile"		"projectile_gashands"
+
+	"model_world"			"models/e1/a_gashand.md3"
+	"model_view"			"models/e1/w_gashand.md3"
+	"anim_fps"				"20"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"amba 10"
+	"anim_fire"				"shootb"
+	"snd_fire"				"sounds/e1/we_dgloveshoota.wav"
+	"snd_raise"				"sounds/e1/we_gasstart.wav"
+	"snd_hum"				"sounds/e1/we_gasloopa.wav"
+	"fx_muzzle"				"dk/muzzle_smoke"
+
+	"obituary"				"was gassed by"
+}
+
+entityDef projectile_gashands {
+	"hitscan"				"1"
+	"range"					"100"
+	"def_damage"			"damage_gashands"
+	"fx_impact"				"dk/disruptor_hit"
+	"fx_impact_flesh"		"dk/disruptor_hit"
+	"snd_impact"			"sounds/e1/we_gasclang.wav sounds/e1/we_gasclanga.wav sounds/e1/we_gasclangc.wav"
+}
+
+entityDef damage_gashands {
+	"damage"				"1000"				// Weapons.csv
+}
+
+/*
+===============================================================================
+
 ION BLASTER (slot 2): bolts that bounce off walls
 
 ===============================================================================
@@ -74,6 +126,7 @@ entityDef weapon_ionblaster {
 	"model"					"models/e1/a_ion.md3"
 
 	"weapon_slot"			"2"
+	"bot_rating"			"200"				// Weapons.csv
 	"fireRate"				"0.4"				// shoota, 8 frames
 	"ammoRequired"			"1"
 	"maxAmmo"				"100"
@@ -128,7 +181,8 @@ entityDef ammo_ionpack {
 /*
 ===============================================================================
 
-C4 VIZATERGO (slot 3): thrown charges that go off after a while
+C4 VIZATERGO (slot 3): thrown charges that stick where they land, set off
+with alt fire (Daikatana's button), or by themselves after a minute
 
 ===============================================================================
 */
@@ -141,10 +195,13 @@ entityDef weapon_c4viz {
 	"model"					"models/e1/a_c4.md3"
 
 	"weapon_slot"			"3"
+	"bot_rating"			"0"				// bots can't set it off yet
 	"fireRate"				"1.25"				// shoota, 25 frames
 	"ammoRequired"			"1"
 	"maxAmmo"				"20"
 	"def_projectile"		"projectile_c4"
+	"altfire"				"detonate"
+	"altFireRate"			"1.35"				// btnpsh, 27 frames
 
 	"model_world"			"models/e1/a_c4.md3"
 	"model_view"			"models/e1/w_c4.md3"
@@ -153,7 +210,9 @@ entityDef weapon_c4viz {
 	"anim_lower"			"away"
 	"anim_idle"				"ambb 10"
 	"anim_fire"				"shoota"
+	"anim_altfire"			"btnpsh"
 	"snd_fire"				"sounds/e1/we_c4shoota.wav"
+	"snd_altfire"			"sounds/e1/we_c4beepa.wav sounds/e1/we_c4beepb.wav"
 	"snd_raise"				"sounds/e1/we_c4ready.wav"
 
 	"obituary"				"was made a mess of by"
@@ -163,10 +222,10 @@ entityDef projectile_c4 {
 	"model"					"models/e1/we_c4prj.md3"
 	"velocity"				"800 0 100"
 	"gravity"				"1"
-	"bounce"				"0.4"
+	"stick"					"1"
 	"detonate_on_world"		"0"
-	"detonate_on_actor"		"1"
-	"fuse"					"2.5"
+	"detonate_on_actor"		"0"
+	"fuse"					"60"
 	"detonate_on_fuse"		"1"
 	"mins"					"-4 -4 -4"
 	"maxs"					"4 4 4"
@@ -199,7 +258,8 @@ entityDef ammo_c4 {
 /*
 ===============================================================================
 
-SHOTCYCLER-6 (slot 4): six barrels, ten pellets a shot
+SHOTCYCLER-6 (slot 4): a pull of the trigger fires all six barrels in a
+row, ten pellets each
 
 ===============================================================================
 */
@@ -212,7 +272,10 @@ entityDef weapon_shotcycler {
 	"model"					"models/e1/a_shot.md3"
 
 	"weapon_slot"			"4"
-	"fireRate"				"0.225"				// a barrel every 5 frames at 0.045
+	"bot_rating"			"400"				// Weapons.csv
+	"burstCount"			"6"					// shots at frames 0, 5, ... 25
+	"burstRate"				"0.225"				// 5 frames at 0.045
+	"fireRate"				"1.89"				// the cycle ends at frame 42
 	"ammoRequired"			"1"
 	"maxAmmo"				"100"
 	"def_projectile"		"projectile_shotcycler"
@@ -273,6 +336,7 @@ entityDef weapon_sidewinder {
 	"model"					"models/e1/a_swindr.md3"
 
 	"weapon_slot"			"5"
+	"bot_rating"			"500"				// Weapons.csv
 	"fireRate"				"1.25"				// shoot, 25 frames
 	"ammoRequired"			"1"
 	"maxAmmo"				"50"
@@ -347,6 +411,7 @@ entityDef weapon_shockwave {
 	"model"					"models/e1/a_shokwv.md3"
 
 	"weapon_slot"			"6"
+	"bot_rating"			"600"				// Weapons.csv
 	"fireRate"				"2.75"				// shoota, 55 frames
 	"ammoRequired"			"1"
 	"maxAmmo"				"10"

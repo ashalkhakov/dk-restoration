@@ -4,7 +4,7 @@
 Particle
 {
 	count		1
-	life		120 160
+	life		180 240
 	rgb
 	{
 		start	0.45 1 0.55
@@ -17,8 +17,8 @@ Particle
 	}
 	size
 	{
-		start	5 6
-		end		1
+		start	9 11
+		end		2
 		flags	linear
 	}
 	rotation	0 360
