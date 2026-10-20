@@ -1,0 +1,27 @@
+// Shockwave sphere in flight: blue sparkles trailing it.
+
+Particle
+{
+	count		1 2
+	life		250 400
+	origin		0 -6 -6 0 6 6
+	velocity	0 -20 -20 10 20 20
+	rgb
+	{
+		start	0.5 0.7 1
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	3 5
+		end		1
+		flags	linear
+	}
+	rotation	0 360
+	shaders [ dkfx/sparkle1 dkfx/sparkle2 ]
+}

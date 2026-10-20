@@ -1,0 +1,53 @@
+// Sidewinder rocket in flight (Daikatana TEF_PROJ sidewinder: smoke in the
+// air): grey smoke left behind, and the exhaust's glow.
+
+Particle
+{
+	count		1
+	life		700 1100
+	velocity	0 -6 -6 10 6 6
+	gravity		8 16
+	rgb
+	{
+		start	0.45 0.45 0.45 0.55 0.55 0.55
+	}
+	alpha
+	{
+		start	0.55
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	2 3
+		end		8 12
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-30 30
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}
+
+Particle
+{
+	count		1
+	life		80 120
+	rgb
+	{
+		start	1 0.7 0.3
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	4 5
+		end		1
+		flags	linear
+	}
+	shaders [ dkfx/fire ]
+}

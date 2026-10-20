@@ -1,0 +1,44 @@
+// The disruptor glove landing a punch: a crackle of blue sparks.
+
+Tail
+{
+	count		8 12
+	life		150 300
+	velocity	30 -90 -90 120 90 90
+	rgb
+	{
+		start	0.6 0.7 1
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.6 1
+	}
+	length
+	{
+		start	4 8
+		end		1
+		flags	linear
+	}
+	shaders [ dkfx/beamspark ]
+}
+
+Light
+{
+	life		150
+	rgb
+	{
+		start	0.5 0.6 1
+	}
+	size
+	{
+		start	120
+		end		0
+		flags	linear
+	}
+}

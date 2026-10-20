@@ -1,0 +1,30 @@
+// A puff of smoke at a gun's muzzle.
+
+Particle
+{
+	count		2 3
+	life		500 800
+	origin		4 -2 -2 8 2 2
+	velocity	10 -4 -4 30 4 4
+	gravity		10 20
+	rgb
+	{
+		start	0.3 0.3 0.3
+	}
+	alpha
+	{
+		start	0.5
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	2 3
+		end		6 9
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-30 30
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}

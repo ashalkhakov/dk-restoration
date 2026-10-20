@@ -1,0 +1,405 @@
+// Daikatana's episode 1 weapons and ammo, as mint-arena entity defs (Doom 3
+// style; see mint-arena's DEFS.md for the keys).
+//
+// Numbers are from Daikatana's Weapons.csv and dlls/weapons/*.cpp. Its
+// weapons fire when their shooting animation allows (20 frames a second),
+// so "fireRate" is that animation's length. Pickups are the a_*.md3 models,
+// ammo the wa_*.md3 ones; the first person models are the w_*.md3 ones,
+// whose frames are named by animation.
+
+// what players start with
+entityDef player {
+	"weapon"				"weapon_disruptor"
+}
+
+/*
+===============================================================================
+
+DISRUPTOR GLOVE (slot 1): an electric punch
+
+===============================================================================
+*/
+
+entityDef weapon_disruptor {
+	"weapon_slot"			"1"
+	"inv_name"				"Disruptor Glove"
+	"melee"					"1"
+	"fireRate"				"0.7"				// shoota, 14 frames
+	"ammoRequired"			"0"
+	"raiseTime"				"0.25"
+	"lowerTime"				"0.2"
+	"def_projectile"		"projectile_disruptor"
+
+	"model_world"			"models/e1/a_tazer.md3"
+	"model_view"			"models/e1/w_disruptor.md3"
+	"anim_fps"				"20"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"amba 10"
+	"anim_fire"				"shoota"
+	"snd_fire"				"sounds/e1/we_dgloveshoota.wav"
+	"snd_raise"				"sounds/e1/we_dgloveready.wav"
+	"flashColor"			"0.6 0.6 1"
+	"flashRadius"			"0"
+
+	"obituary"				"was humiliated by"
+}
+
+entityDef projectile_disruptor {
+	"hitscan"				"1"
+	"range"					"80"
+	"def_damage"			"damage_disruptor"
+	"fx_impact"				"dk/disruptor_hit"
+	"fx_impact_flesh"		"dk/disruptor_hit"
+	"snd_impact"			"sounds/e1/we_dglovehita.wav sounds/e1/we_dglovehitc.wav"
+}
+
+entityDef damage_disruptor {
+	"damage"				"60"
+}
+
+/*
+===============================================================================
+
+ION BLASTER (slot 2): bolts that bounce off walls
+
+===============================================================================
+*/
+
+entityDef weapon_ionblaster {
+	"spawnclass"			"item"
+	"inv_weapon"			"weapon_ionblaster"
+	"inv_ammo"				"40"
+	"inv_name"				"Ion Blaster"
+	"model"					"models/e1/a_ion.md3"
+
+	"weapon_slot"			"2"
+	"fireRate"				"0.4"				// shoota, 8 frames
+	"ammoRequired"			"1"
+	"maxAmmo"				"100"
+	"def_projectile"		"projectile_ion"
+
+	"model_world"			"models/e1/a_ion.md3"
+	"model_view"			"models/e1/w_ionblaster.md3"
+	"anim_fps"				"20"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"amba 10"
+	"anim_fire"				"shoota"
+	"snd_fire"				"sounds/e1/we_ionshootb.wav"
+	"snd_raise"				"sounds/e1/we_ionready.wav"
+	"flashColor"			"0.3 1 0.4"
+	"flashRadius"			"200"
+
+	"obituary"				"was ionized by"
+}
+
+entityDef projectile_ion {
+	"velocity"				"1800 0 0"
+	"bounce"				"1"
+	"max_bounces"			"3"
+	"detonate_on_world"		"0"
+	"fuse"					"4"
+	"detonate_on_fuse"		"1"
+	"def_damage"			"damage_ion"
+
+	"light_color"			"0.3 1 0.4"
+	"light_radius"			"120"
+	"fx_fly"				"dk/ion_fly"
+	"fx_fly_interval"		"0.02"
+	"fx_detonate"			"dk/ion_impact"
+	"snd_fly"				"sounds/e1/we_ionflyby.wav"
+	"snd_explode"			"sounds/e1/we_ionexplodea.wav sounds/e1/we_ionexplodeb.wav sounds/e1/we_ionexplodec.wav"
+}
+
+entityDef damage_ion {
+	"damage"				"30"
+}
+
+entityDef ammo_ionpack {
+	"spawnclass"			"item"
+	"ammo_type"				"weapon_ionblaster"
+	"inv_ammo"				"40"
+	"inv_name"				"Ion Pack"
+	"model"					"models/e1/wa_ion.md3"
+	"snd_acquire"			"sounds/global/i_ionammo.wav"
+}
+
+/*
+===============================================================================
+
+C4 VIZATERGO (slot 3): thrown charges that go off after a while
+
+===============================================================================
+*/
+
+entityDef weapon_c4viz {
+	"spawnclass"			"item"
+	"inv_weapon"			"weapon_c4viz"
+	"inv_ammo"				"8"
+	"inv_name"				"C4 Vizatergo"
+	"model"					"models/e1/a_c4.md3"
+
+	"weapon_slot"			"3"
+	"fireRate"				"1.25"				// shoota, 25 frames
+	"ammoRequired"			"1"
+	"maxAmmo"				"20"
+	"def_projectile"		"projectile_c4"
+
+	"model_world"			"models/e1/a_c4.md3"
+	"model_view"			"models/e1/w_c4.md3"
+	"anim_fps"				"20"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"ambb 10"
+	"anim_fire"				"shoota"
+	"snd_fire"				"sounds/e1/we_c4shoota.wav"
+	"snd_raise"				"sounds/e1/we_c4ready.wav"
+
+	"obituary"				"was made a mess of by"
+}
+
+entityDef projectile_c4 {
+	"model"					"models/e1/we_c4prj.md3"
+	"velocity"				"800 0 100"
+	"gravity"				"1"
+	"bounce"				"0.4"
+	"detonate_on_world"		"0"
+	"detonate_on_actor"		"1"
+	"fuse"					"2.5"
+	"detonate_on_fuse"		"1"
+	"mins"					"-4 -4 -4"
+	"maxs"					"4 4 4"
+	"def_damage"			"damage_c4"
+	"def_splash_damage"		"damage_c4_splash"
+
+	"fx_detonate"			"dk/explosion"
+	"snd_explode"			"sounds/e1/we_c4cona.wav sounds/e1/we_c4conb.wav"
+	"mtr_detonate"			"gfx/damage/burn_med_mrk"
+	"decal_size"			"96"
+}
+
+entityDef damage_c4 {
+	"damage"				"75"
+}
+
+entityDef damage_c4_splash {
+	"damage"				"75"
+	"radius"				"200"
+}
+
+entityDef ammo_c4 {
+	"spawnclass"			"item"
+	"ammo_type"				"weapon_c4viz"
+	"inv_ammo"				"4"
+	"inv_name"				"C4 Charges"
+	"model"					"models/e1/wa_c4.md3"
+}
+
+/*
+===============================================================================
+
+SHOTCYCLER-6 (slot 4): six barrels, ten pellets a shot
+
+===============================================================================
+*/
+
+entityDef weapon_shotcycler {
+	"spawnclass"			"item"
+	"inv_weapon"			"weapon_shotcycler"
+	"inv_ammo"				"30"
+	"inv_name"				"Shotcycler-6"
+	"model"					"models/e1/a_shot.md3"
+
+	"weapon_slot"			"4"
+	"fireRate"				"0.225"				// a barrel every 5 frames at 0.045
+	"ammoRequired"			"1"
+	"maxAmmo"				"100"
+	"def_projectile"		"projectile_shotcycler"
+	"numProjectiles"		"10"
+	"spread"				"5"
+
+	"model_world"			"models/e1/a_shot.md3"
+	"model_view"			"models/e1/w_shotcycler.md3"
+	"anim_fps"				"22"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"ambc 10"
+	"anim_fire"				"shoot"
+	"snd_fire"				"sounds/e1/we_shotcyclershoota.wav sounds/e1/we_shotcyclershootb.wav"
+	"snd_raise"				"sounds/e1/we_shotcyclerready.wav"
+	"flashColor"			"1 0.8 0.4"
+	"flashRadius"			"200"
+	"fx_muzzle"				"dk/muzzle_smoke"
+
+	"obituary"				"was double-barrelled by"
+}
+
+entityDef projectile_shotcycler {
+	"hitscan"				"1"
+	"range"					"1000"
+	"def_damage"			"damage_shotcycler"
+	"fx_impact"				"dk/bullet_hit"
+	"mtr_detonate"			"gfx/damage/bullet_mrk"
+	"decal_size"			"8"
+}
+
+entityDef damage_shotcycler {
+	"damage"				"6"					// a tenth of 55 a pellet
+}
+
+entityDef ammo_shells {
+	"spawnclass"			"item"
+	"ammo_type"				"weapon_shotcycler"
+	"inv_ammo"				"20"
+	"inv_name"				"Shells"
+	"model"					"models/e1/wa_shot6.md3"
+	"snd_acquire"			"sounds/global/i_scyclerammo.wav"
+}
+
+/*
+===============================================================================
+
+SIDEWINDER (slot 5): rockets
+
+===============================================================================
+*/
+
+entityDef weapon_sidewinder {
+	"spawnclass"			"item"
+	"inv_weapon"			"weapon_sidewinder"
+	"inv_ammo"				"16"
+	"inv_name"				"Sidewinder"
+	"model"					"models/e1/a_swindr.md3"
+
+	"weapon_slot"			"5"
+	"fireRate"				"1.25"				// shoot, 25 frames
+	"ammoRequired"			"1"
+	"maxAmmo"				"50"
+	"def_projectile"		"projectile_sidewinder"
+
+	"model_world"			"models/e1/a_swindr.md3"
+	"model_view"			"models/e1/w_sidewinder.md3"
+	"anim_fps"				"20"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"amba 10"
+	"anim_fire"				"shoot"
+	"snd_fire"				"sounds/e1/we_sidewindershoota.wav"
+	"snd_raise"				"sounds/e1/we_sidewinderready.wav"
+	"flashColor"			"1 0.75 0.3"
+	"flashRadius"			"250"
+
+	"obituary"				"rode"
+	"obituary2"				"'s rocket"
+}
+
+entityDef projectile_sidewinder {
+	"model"					"models/e1/we_swrocket.md3"
+	"velocity"				"675 0 0"
+	"fuse"					"6"
+	"mins"					"-2 -2 -2"
+	"maxs"					"2 2 2"
+	"def_damage"			"damage_sidewinder"
+	"def_splash_damage"		"damage_sidewinder_splash"
+
+	"light_color"			"1 0.7 0.3"
+	"light_radius"			"150"
+	"fx_fly"				"dk/rocket_trail"
+	"fx_detonate"			"dk/explosion"
+	"snd_fly"				"sounds/e1/we_sidewinderfly.wav"
+	"snd_explode"			"sounds/e1/we_sidewinderexp.wav"
+	"mtr_detonate"			"gfx/damage/burn_med_mrk"
+	"decal_size"			"64"
+}
+
+entityDef damage_sidewinder {
+	"damage"				"70"
+}
+
+entityDef damage_sidewinder_splash {
+	"damage"				"70"
+	"radius"				"128"
+}
+
+entityDef ammo_rockets {
+	"spawnclass"			"item"
+	"ammo_type"				"weapon_sidewinder"
+	"inv_ammo"				"8"
+	"inv_name"				"Rockets"
+	"model"					"models/e1/wa_swindr.md3"
+	"snd_acquire"			"sounds/global/i_swinderammo.wav"
+}
+
+/*
+===============================================================================
+
+SHOCKWAVE (slot 6): a slow sphere that blasts all around it
+
+===============================================================================
+*/
+
+entityDef weapon_shockwave {
+	"spawnclass"			"item"
+	"inv_weapon"			"weapon_shockwave"
+	"inv_ammo"				"4"
+	"inv_name"				"Shockwave"
+	"model"					"models/e1/a_shokwv.md3"
+
+	"weapon_slot"			"6"
+	"fireRate"				"2.75"				// shoota, 55 frames
+	"ammoRequired"			"1"
+	"maxAmmo"				"10"
+	"def_projectile"		"projectile_shockwave"
+
+	"model_world"			"models/e1/a_shokwv.md3"
+	"model_view"			"models/e1/w_shockwave.md3"
+	"anim_fps"				"20"
+	"anim_raise"			"ready"
+	"anim_lower"			"away"
+	"anim_idle"				"amba 10"
+	"anim_fire"				"shoota"
+	"snd_fire"				"sounds/e1/we_shockwaveshoota.wav"
+	"snd_raise"				"sounds/e1/we_shockwaveready.wav"
+	"flashColor"			"0.4 0.6 1"
+	"flashRadius"			"300"
+
+	"obituary"				"was shaken up by"
+}
+
+entityDef projectile_shockwave {
+	"model"					"models/e1/we_3dshock.md3"
+	"velocity"				"700 0 0"
+	"fuse"					"3"
+	"detonate_on_fuse"		"1"
+	"mins"					"-6 -6 -6"
+	"maxs"					"6 6 6"
+	"def_damage"			"damage_shockwave"
+	"def_splash_damage"		"damage_shockwave_splash"
+
+	"light_color"			"0.4 0.6 1"
+	"light_radius"			"250"
+	"fx_fly"				"dk/shockwave_fly"
+	"fx_detonate"			"dk/shockwave_explode"
+	"snd_explode"			"sounds/e1/we_shockwaveexp.wav"
+	"mtr_detonate"			"gfx/damage/burn_med_mrk"
+	"decal_size"			"128"
+}
+
+entityDef damage_shockwave {
+	"damage"				"150"
+}
+
+entityDef damage_shockwave_splash {
+	"damage"				"150"
+	"radius"				"256"
+}
+
+entityDef ammo_shocksphere {
+	"spawnclass"			"item"
+	"ammo_type"				"weapon_shockwave"
+	"inv_ammo"				"2"
+	"inv_name"				"Shock Spheres"
+	"model"					"models/e1/wa_shokwv.md3"
+	"snd_acquire"			"sounds/global/i_swaveammo.wav"
+}

@@ -1,0 +1,72 @@
+// Ion blaster bolt going off: green sparks bursting off the surface and a
+// green flash.
+
+Tail
+{
+	count		10 14
+	life		250 450
+	velocity	40 -120 -120 160 120 120
+	gravity		-250
+	rgb
+	{
+		start	0.4 1 0.5
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.8 1.2
+	}
+	length
+	{
+		start	5 9
+		end		1
+		flags	linear
+	}
+	shaders [ dkfx/beamspark ]
+	flags		usePhysics
+	bounce		0.3
+}
+
+Particle
+{
+	count		1
+	life		200
+	rgb
+	{
+		start	0.5 1 0.6
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	16
+		end		4
+		flags	linear
+	}
+	rotation	0 360
+	shaders [ dkfx/sparkle1 ]
+}
+
+Light
+{
+	life		200
+	rgb
+	{
+		start	0.3 1 0.4
+	}
+	size
+	{
+		start	200
+		end		0
+		flags	linear
+	}
+}

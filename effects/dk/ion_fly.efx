@@ -1,0 +1,54 @@
+// Ion blaster bolt in flight (Daikatana TEF_PROJ ion: green beam sparks): a
+// bright core left along the path every 20 msec, and a few sparks shed.
+
+Particle
+{
+	count		1
+	life		120 160
+	rgb
+	{
+		start	0.45 1 0.55
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	5 6
+		end		1
+		flags	linear
+	}
+	rotation	0 360
+	shaders [ dkfx/sparkle1 dkfx/sparkle2 ]
+}
+
+Tail
+{
+	count		0 1
+	life		150 300
+	velocity	20 -40 -40 60 40 40
+	rgb
+	{
+		start	0.3 1 0.4
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.6 1
+	}
+	length
+	{
+		start	3 6
+		end		1
+		flags	linear
+	}
+	shaders [ dkfx/beamspark ]
+}
