@@ -105,6 +105,9 @@ entityDef model_hiro {
 	"frame walkb 0"	"footstep Rankle_r 0.4"
 	"frame walkb 10"	"footstep Lankle_r 0.4"
 
+	"ladder_climb"		"33.2"	// a cycle of ladderup climbs this (rungs half as far apart)
+	"ladder_reach"		"9.8"	// the hands this far ahead
+
 	"snd_pain"	"hiro_pain"
 	"snd_pain_heavy"	"hiro_pain_heavy"
 	"snd_death"	"hiro_death"
@@ -158,4 +161,6 @@ entityDef model_hiro {
 	"player_anim LEGS_JUMP"	"jump"
 	"player_anim LEGS_JUMPB"	"jump"
 	"player_anim LEGS_SWIM"	"swim"
+	"player_anim LEGS_CLIMB"	"ladderup"
+	"player_anim LEGS_CLIMBDOWN"	"ladderdn"
 }

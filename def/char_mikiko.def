@@ -104,6 +104,9 @@ entityDef model_mikiko {
 	"frame walka 11"	"footstep Lankle_r 0.4"
 	"frame walkb 11"	"footstep Lankle_r 0.4"
 
+	"ladder_climb"		"28.0"	// a cycle of ladderup climbs this (rungs half as far apart)
+	"ladder_reach"		"9.5"	// the hands this far ahead
+
 	"snd_pain"	"mikiko_pain"
 	"snd_pain_heavy"	"mikiko_pain_heavy"
 	"snd_death"	"mikiko_death"
@@ -157,4 +160,6 @@ entityDef model_mikiko {
 	"player_anim LEGS_JUMP"	"ajump"
 	"player_anim LEGS_JUMPB"	"ajump"
 	"player_anim LEGS_SWIM"	"swim"
+	"player_anim LEGS_CLIMB"	"ladderup"
+	"player_anim LEGS_CLIMBDOWN"	"ladderdn"
 }

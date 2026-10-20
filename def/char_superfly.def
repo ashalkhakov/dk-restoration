@@ -103,6 +103,9 @@ entityDef model_superfly {
 	"frame walkb 10"	"footstep Lankle_r 0.4"
 	"frame walkb 19"	"footstep Rankle_r 0.4"
 
+	"ladder_climb"		"25.8"	// a cycle of ladderup climbs this (rungs half as far apart)
+	"ladder_reach"		"11.1"	// the hands this far ahead
+
 	"snd_pain"	"superfly_pain"
 	"snd_pain_heavy"	"superfly_pain_heavy"
 	"snd_death"	"superfly_death"
@@ -156,4 +159,6 @@ entityDef model_superfly {
 	"player_anim LEGS_JUMP"	"jump"
 	"player_anim LEGS_JUMPB"	"jump"
 	"player_anim LEGS_SWIM"	"swim"
+	"player_anim LEGS_CLIMB"	"ladderup"
+	"player_anim LEGS_CLIMBDOWN"	"ladderdn"
 }

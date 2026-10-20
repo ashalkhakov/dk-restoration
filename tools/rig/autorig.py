@@ -217,6 +217,7 @@ PLAYER_ANIMS = [
 	( "LEGS_JUMP", [ "jump", "ajump" ] ), ( "LEGS_JUMPB", [ "jump", "ajump" ] ),
 	# landing has none: the legs go on with what they play (bg_model.c)
 	( "LEGS_SWIM", [ "swim" ] ),
+	( "LEGS_CLIMB", [ "ladderup" ] ), ( "LEGS_CLIMBDOWN", [ "ladderdn" ] ),
 ]
 
 # hardpoint surfaces -> attachment joints (Doom 3 names its weapon ones so)
@@ -361,6 +362,9 @@ def place_template( rest, tris, headVerts, gunHand = None ):
 	print( "  neck %.1f, shoulders %.1f (%.1f wide), crotch %.1f, feet %.1f" % ( zNeck, zShoulder, 2 * shoulderY, zCrotch, zmin ) )
 	return joints, hairIdx
 
+# Daikatana plays its characters' animations at 20 frames a second
+# (FRAMETIME_FPS20: client_init.cpp, bot.cpp, Sidekick.cpp)
+ANIM_FPS = 20.0
 SEAM = 0.3			# vertexes this near are one place
 HAIR_BONES = 3		# at most
 
@@ -990,7 +994,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	ofs_tris = place( b"".join( struct.pack( "<3I", *t ) for t in tris ) )
 	ofs_joints = place( b"".join( struct.pack( "<Ii3f4f3f", jointText[j], joints[j]["parentIndex"], *restLocal[j][0], *restLocal[j][1], 1, 1, 1 ) for j in range( nj ) ) )
 	ofs_poses = place( b"".join( struct.pack( "<iI10f10f", joints[j]["parentIndex"], 0x3ff, *chans[j][1], *chans[j][2] ) for j in range( nj ) ) )
-	ofs_anims = place( b"".join( struct.pack( "<IIIfI", animText[k], a[1], a[2], 10.0, 1 if LOOPING.match( a[0] ) else 0 ) for k, a in enumerate( anims ) ) )
+	ofs_anims = place( b"".join( struct.pack( "<IIIfI", animText[k], a[1], a[2], ANIM_FPS, 1 if LOOPING.match( a[0] ) else 0 ) for k, a in enumerate( anims ) ) )
 	ofs_frames = place( bytes( framedata ) )
 	xs = [ p[0] for p in positions ]; ys = [ p[1] for p in positions ]; zs = [ p[2] for p in positions ]
 	bounds = ( min( xs ) - 8, min( ys ) - 8, min( zs ) - 4, max( xs ) + 8, max( ys ) + 8, max( zs ) + 4 )
@@ -1094,6 +1098,25 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			volume = "" if stepVolume[anim] == 1.0 else " %g" % stepVolume[anim]
 			lines.append( "\t\"frame %s %d\"\t\"footstep %s%s\"" % ( anim, i, steps[anim][i][0], volume ) )
 	lines.append( "" )
+	# the ladder: how far a cycle of climbing climbs (the body rises as fast
+	# as the holding hands and feet go down it, which they do in place), and
+	# how far ahead the hands hold it
+	if "ladderup" in animAt:
+		a = animAt["ladderup"]
+		limbs = [ [ i for i in range( N ) if assign[i] == J[l] ] for l in ( "Lhand", "Rhand", "Lankle_r", "Rankle_r" ) ]
+		def limb_z( vs, f ):
+			return sum( body[verts[i][0]].frames[f][verts[i][1]][2] for i in vs ) / len( vs )
+		rise = 0.0
+		for k in range( a[2] ):
+			f0, f1 = a[1] + k, a[1] + ( k + 1 ) % a[2]
+			down = [ limb_z( vs, f0 ) - limb_z( vs, f1 ) for vs in limbs if vs ]
+			holding = [ d for d in down if d > 0 ]
+			rise += sum( holding ) / len( holding ) if holding else 0.0
+		hands = [ i for vs in limbs[:2] for i in vs ]
+		reach = sum( body[verts[i][0]].frames[a[1] + k][verts[i][1]][0] for i in hands for k in range( a[2] ) ) / ( len( hands ) * a[2] )
+		lines.append( "\t\"ladder_climb\"\t\t\"%.1f\"\t// a cycle of ladderup climbs this (rungs half as far apart)" % rise )
+		lines.append( "\t\"ladder_reach\"\t\t\"%.1f\"\t// the hands this far ahead" % reach )
+		lines.append( "" )
 	soundKeys, soundShaders = character_sounds( name )
 	lines += soundKeys
 	lines.append( "" )

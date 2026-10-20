@@ -108,6 +108,14 @@ the pins are only numbers and names, so they're committed.
   weapon picks the player animations by its type, as Daikatana's `CLIENT_SelectAnimationPerWeaponType` does: the
   weapon def's `player_anim_suffix` (`b` for the rifles and shoulder weapons) plays `atakb`, `runb`… where the
   character has them, the glove's plain `atak` the punch.
+- **Animation speed.** The IQM plays the animations at 20 frames a second, as Daikatana plays its characters'
+  (`FRAMETIME_FPS20`: `client_init.cpp`, `bot.cpp`). They're paced like people: Hiro's run covers about 100 units a
+  second and his walk 36 (he's 54 tall, so a unit is about 3.3 cm), while the player runs at 320 as in Daikatana and
+  Quake, whose feet slid too.
+- **Ladders.** `ladderup` and `ladderdn` are the climbing (`LEGS_CLIMB`, `LEGS_CLIMBDOWN`). They climb in place; the
+  rigger measures how far a cycle climbs (the body rises as fast as the holding hands and feet go down: Hiro 26,
+  e1m1a's rungs are 12 apart) and how far ahead the hands hold, `ladder_climb` and `ladder_reach`. Daikatana has no
+  animations for taking hold of a ladder or letting go.
 - **The player's box.** The rigger measures each character's collision box, Doom 3's `mins`/`maxs`: the idle pose's
   legs, torso and head (the arms are the hitboxes' business), square about the origin as the box doesn't turn;
   `crouch_height` from the crouched idle and `eye_height`/`crouch_eye_height` a little under the top. Pmove sizes a
