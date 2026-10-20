@@ -85,5 +85,7 @@ hair, cloth, or the body during the death animations.
   animations (full volume) and the walk ones (0.4; Daikatana and Quake 3 were silent walking). The defs inherit
   `character_base` (`def/dk_characters.def`), whose `snd_footstep_<type>` name Daikatana's footstep sounds per surface;
   the converted maps keep Daikatana's surface types (wood, metal, stone, ice…) as Doom 3's in their surface flags.
+- **Feet on the floor.** Doom 3's walk IK plants the feet on stairs and slopes (`character_base`'s `ik_*` keys, the
+  rig's Doom 3 joint names; the ankle stands in for the missing ball joint).
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

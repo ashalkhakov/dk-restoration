@@ -6,6 +6,21 @@
 // "snd_footstep": sound shaders (sound/dk_characters.sndshd). Daikatana's
 // glass steps were silent; here they're the plain ones.
 entityDef character_base {
+	// Doom 3's walk IK (bg_ik.c, Doom 3's player keys): the feet planted on the
+	// floor under them; the rig's joints are Doom 3's. No ball joint: the ankle
+	// stands for the foot
+	"ik_numLegs"			"2"
+	"ik_waist"				"Body"
+	"ik_hip1"				"Lupleg"
+	"ik_knee1"				"Lloleg"
+	"ik_ankle1"				"Lankle_r"
+	"ik_foot1"				"Lankle_r"
+	"ik_hip2"				"Rupleg"
+	"ik_knee2"				"Rloleg"
+	"ik_ankle2"				"Rankle_r"
+	"ik_foot2"				"Rankle_r"
+	"ik_footSize"			"4"
+
 	"snd_footstep"				"dk_footstep"
 	"snd_footstep_metal"			"dk_footstep_metal"
 	"snd_footstep_stone"			"dk_footstep_stone"
