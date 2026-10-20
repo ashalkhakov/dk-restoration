@@ -361,6 +361,7 @@ def place_template( rest, tris, headVerts, gunHand = None ):
 	print( "  neck %.1f, shoulders %.1f (%.1f wide), crotch %.1f, feet %.1f" % ( zNeck, zShoulder, 2 * shoulderY, zCrotch, zmin ) )
 	return joints, hairIdx
 
+SEAM = 0.3			# vertexes this near are one place
 HAIR_BONES = 3		# at most
 
 def hair_chain( rest, headVerts, head ):
@@ -472,6 +473,9 @@ def main( md3Path, outBase ):
 	for si, sf in enumerate( body ):
 		tris += [ ( base[si] + a, base[si] + b, base[si] + c ) for a, b, c in sf.triangles ]
 	headVerts = [ i for i, ( si, vi ) in enumerate( verts ) if "head" in body[si].name.lower() ]
+	def tri_name( t ):
+		a, b, c = tris[t]
+		return "%s:%d-%d-%d" % ( body[verts[a][0]].name, verts[a][1], verts[b][1], verts[c][1] )
 	joints, hairIdx = place_template( rest, tris, headVerts, gunHand )
 	J = { j["name"]: i for i, j in enumerate( joints ) }
 	pins = load_pins( os.path.basename( outBase ), body, verts, J )
@@ -690,17 +694,50 @@ def main( md3Path, outBase ):
 			best = pins[i] if len( pins[i] ) == 3 else ( pins[i][0], pins[i][0], 1.0 )
 		weights.append( best[:3] )
 
+	# the seams: vertexes of different surfaces in one place (Hiro's head on
+	# his neck) skin alike, or a pose the animations never had (the head
+	# pitched to aim) opens a hole between them. A group takes whichever of
+	# its members' weights carries all of them best
+	def skin_err( i, wt ):
+		b, o, w = wt
+		err = 0.0
+		for f in sample:
+			p = xform( motion[b][f], rest[i] )
+			if w < 1.0:
+				p = vadd( vscale( p, w ), vscale( xform( motion[o][f], rest[i] ), 1 - w ) )
+			d = vsub( p, frames[f][i] )
+			err += vdot( d, d )
+		return err
+	welded = 0
+	seen = set()
+	for i in range( N ):
+		if i in seen:
+			continue
+		group = [ k for k in range( N ) if vlen( vsub( rest[k], rest[i] ) ) < SEAM ]
+		seen.update( group )
+		if len( set( verts[k][0] for k in group ) ) < 2 or len( set( weights[k] for k in group ) ) < 2:
+			continue
+		best = min( set( weights[k] for k in group ), key = lambda wt: sum( skin_err( k, wt ) for k in group ) )
+		for k in group:
+			weights[k] = best
+		welded += 1
+	if welded:
+		print( "  %d seams welded" % welded )
+
 	# the error of the skinned frames
 	total = maxErr = 0.0
 	count = 0
 	worst = []
 	vertErr = [ [ 0.0, 0.0 ] for i in range( N ) ]
+	flips = {}		# triangle -> frames it faces the other way from Daikatana's
 	for f in range( F ):
+		skinned = [ None ] * N
 		for i in range( N ):
 			b, o, w = weights[i]
 			p = xform( motion[b][f], rest[i] )
 			if w < 1.0:
 				p = vadd( vscale( p, w ), vscale( xform( motion[o][f], rest[i] ), 1 - w ) )
+			skinned[i] = p
 			e = vlen( vsub( p, frames[f][i] ) )
 			if e > 6 and os.environ.get( "RIG_WORST" ):
 				worst.append( ( e, f, i ) )
@@ -709,6 +746,15 @@ def main( md3Path, outBase ):
 			vertErr[i][0] += e / F
 			vertErr[i][1] = max( vertErr[i][1], e )
 			count += 1
+		# a triangle turned over shows its back, and is culled: a hole
+		for t, ( a, b, c ) in enumerate( tris ):
+			n0 = vcross( vsub( frames[f][b], frames[f][a] ), vsub( frames[f][c], frames[f][a] ) )
+			n1 = vcross( vsub( skinned[b], skinned[a] ), vsub( skinned[c], skinned[a] ) )
+			if vdot( n0, n1 ) < 0 and vlen( n0 ) > 0.01:
+				flips[t] = flips.get( t, 0 ) + 1
+	if flips:
+		print( "  %d triangles turn over in some frames, the most: %s" % ( len( flips ), ", ".join(
+			"%s %d/%d" % ( tri_name( t ), n, F ) for t, n in sorted( flips.items(), key = lambda x: -x[1] )[:int( os.environ.get( "RIG_FLIPS", 6 ) )] ) ) )
 	if worst:
 		names = [ ( a[0], a[1], a[1] + a[2] ) for a in m.animations() ]
 		byVert = {}

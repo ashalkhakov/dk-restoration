@@ -40,7 +40,10 @@ implements.
    joints keep the template's heights (the knee halfway from crotch to floor): the walk IK bends the leg at them.
 4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
    vertex), never one leg with the other (the walk IK moves them apart), and along a leg only near the joint between
-   the two bones.
+   the two bones. Seams are welded: vertices of different surfaces in one place (Hiro's head on his neck) take
+   the same weights, whichever carries the group best, or a pose the animations never had (the head pitched to aim)
+   opens a hole between the surfaces. The rigger also reports the triangles that turn over (culled, so a hole) in
+   some frames against Daikatana's; `RIG_FLIPS=<n>` lists more of them.
 5. **Rest orientations.** Each joint rests along its bone (x toward the child), so hitboxes fitted in its space hug the
    limb.
 6. **Hair.** A ponytail gets its own little spine: the head surface's vertices behind the back of the skull are hair,
