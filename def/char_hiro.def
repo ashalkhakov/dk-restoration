@@ -156,6 +156,8 @@ entityDef model_hiro {
 	"damage_scale arms"	"0.75"
 	"damage_scale legs"	"0.75"
 
+	"ragdoll"			"char_hiro"	// af/char_hiro.af, Doom 3's articulated figure
+
 	"player_anim BOTH_DEATH1"	"die"
 	"player_anim BOTH_DEAD1"	"die hold"
 	"player_anim BOTH_DEATH2"	"diea"

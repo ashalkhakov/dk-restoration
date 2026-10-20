@@ -154,6 +154,8 @@ entityDef model_superfly {
 	"damage_scale arms"	"0.75"
 	"damage_scale legs"	"0.75"
 
+	"ragdoll"			"char_superfly"	// af/char_superfly.af, Doom 3's articulated figure
+
 	"player_anim BOTH_DEATH1"	"die"
 	"player_anim BOTH_DEAD1"	"die hold"
 	"player_anim BOTH_DEATH2"	"diea"

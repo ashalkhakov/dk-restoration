@@ -842,6 +842,168 @@ def gamePath( path ):
 			return path[i + ( len( top ) if top == "dkres/" else 0 ):]
 	return path
 
+# ------------------------------------------------------------------------
+# the ragdoll: a Doom 3 articulated figure (af/char_<name>.af, the game's
+# bg_afdecl.c), made in the bind pose (the rest above): boxes for the waist,
+# the chest and the head, bones for the limbs, as Doom 3's human figures;
+# universal joints with cone limits for the waist, the neck, the shoulders and
+# the hips, hinges for the elbows and the knees
+
+def rodrigues( v, axis, angle ):
+	"""v turned by angle (radians) about axis, right handed"""
+	c, s = math.cos( angle ), math.sin( angle )
+	return vadd( vadd( vscale( v, c ), vscale( vcross( axis, v ), s ) ), vscale( axis, vdot( axis, v ) * ( 1 - c ) ) )
+
+def d3_orthogonal_basis( v ):
+	"""idVec3::OrthogonalBasis: left, up"""
+	x, y, z = v
+	if abs( z ) > 0.7:
+		l = y * y + z * z
+		s = 1.0 / math.sqrt( l )
+		up = ( 0.0, z * s, -y * s )
+		left = ( l * s, -x * up[2], x * up[1] )
+	else:
+		l = x * x + y * y
+		s = 1.0 / math.sqrt( l )
+		left = ( -y * s, x * s, 0.0 )
+		up = ( -z * left[1], z * left[0], l * s )
+	return left, up
+
+def d3_rotation_angle( axis, frm, to ):
+	"""the angle a for which Doom 3's frm * idRotation( axis, a ) points as to
+	(its rotations turn vectors the other way round: by -a, right handed)"""
+	a = math.atan2( vdot( axis, vcross( frm, to ) ), vdot( frm, to ) )
+	return -math.degrees( a )
+
+def ragdoll_af( name, joints, rest, assign ):
+	J = { joint["name"]: j for j, joint in enumerate( joints ) }
+	if any( n not in J for n in ( "Hips", "Waist", "Chest", "Loneck", "Head", "Luparm", "Lloarm", "Lhand",
+								  "Ruparm", "Rloarm", "Rhand", "Lupleg", "Lloleg", "Lankle_r", "Rupleg", "Rloleg", "Rankle_r" ) ):
+		return None
+	P = lambda n: joints[J[n]]["pos"]
+	def pts( names ):
+		return [ rest[i] for i in range( len( rest ) ) if joints[assign[i]]["name"] in names ]
+	def box( names, shrink = 0.85 ):
+		ps = pts( names )
+		lo = [ min( p[k] for p in ps ) for k in range( 3 ) ]
+		hi = [ max( p[k] for p in ps ) for k in range( 3 ) ]
+		c = [ 0.5 * ( lo[k] + hi[k] ) for k in range( 3 ) ]
+		h = [ max( 1.0, 0.5 * ( hi[k] - lo[k] ) * shrink ) for k in range( 3 ) ]
+		return c, h
+	def width( names, a, b ):
+		d = vsub( b, a )
+		L = vlen( d )
+		ds = []
+		for p in pts( names ):
+			t = max( 0.0, min( 1.0, vdot( vsub( p, a ), d ) / ( L * L ) ) )
+			ds.append( vlen( vsub( p, vadd( a, vscale( d, t ) ) ) ) )
+		ds.sort()
+		return max( 2.0, 2 * 0.9 * ds[int( 0.7 * ( len( ds ) - 1 ) )] ) if ds else 3.0
+	def vec( v ):
+		return "( %.2f, %.2f, %.2f )" % tuple( v )
+	def end_of( names, a, b ):
+		"""where the limb's vertexes reach past b along a->b"""
+		d = vnorm( vsub( b, a ) )
+		ps = pts( names )
+		reach = max( [ vdot( vsub( p, b ), d ) for p in ps ] + [ 1.0 ] )
+		return vadd( b, vscale( d, 0.8 * reach ) )
+
+	lines = [ "// made by tools/rig/autorig.py: %s's ragdoll, Doom 3's articulated figure" % name,
+			  "// (made in the model's bind pose; joint() and bone*() name the IQM's joints)",
+			  "articulatedFigure char_%s {" % name,
+			  "	settings {",
+			  "		model \"model_%s\"" % name,
+			  "		friction 0.01, 0.01, 0.8, 0.5",
+			  "		suspendSpeed 20, 30, 40, 60",
+			  "		noMoveTime 1",
+			  "		noMoveTranslation 10",
+			  "		noMoveRotation 10",
+			  "		minMoveTime -1",
+			  "		maxMoveTime -1",
+			  "		totalMass -1",
+			  "		contents corpse",
+			  "		clipMask solid, corpse",
+			  "		selfCollision 1",
+			  "	}", "" ]
+	def body_box( bname, joint, names, mod = "orientation" ):
+		c, h = box( names )
+		lines.extend( [ "	body \"%s\" {" % bname,
+						"		joint \"%s\"" % joint,
+						"		mod %s" % mod,
+						"		model box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )" % ( -h[0], -h[1], -h[2], h[0], h[1], h[2] ),
+						"		origin %s" % vec( c ),
+						"		density 0.2",
+						"		friction 0.01, 0.01, 0.8",
+						"		contents corpse",
+						"		clipMask solid, corpse",
+						"		selfCollision 1",
+						"	}", "" ] )
+	def body_bone( bname, joint, names, a, b ):
+		w = width( names[:1], a, b )		# the limb's own vertexes, not a hand's or a foot's
+		lines.extend( [ "	body \"%s\" {" % bname,
+						"		joint \"%s\"" % joint,
+						"		mod orientation",
+						"		model bone( %s, %s, %.2f )" % ( vec( a ), vec( b ), w ),
+						"		origin %s" % vec( vscale( vadd( a, b ), 0.5 ) ),
+						"		density 0.2",
+						"		friction 0.01, 0.01, 0.8",
+						"		contents corpse",
+						"		clipMask solid, corpse",
+						"		selfCollision 1",
+						"	}", "" ] )
+
+	body_box( "waist", "origin", ( "Hips", "Body" ) )
+	body_box( "chest", "Waist", ( "Waist", "Chest" ) )
+	body_box( "head", "Loneck", ( "Loneck", "Head" ) )
+	for s in "LR":
+		hand = end_of( ( s + "hand", ), P( s + "loarm" ), P( s + "hand" ) )
+		ps = pts( ( s + "ankle_r", ) )
+		foot = ( P( s + "ankle_r" )[0], P( s + "ankle_r" )[1], min( p[2] for p in ps ) + 2 ) if ps else P( s + "ankle_r" )
+		body_bone( s + "uparm", s + "uparm", ( s + "uparm", ), P( s + "uparm" ), P( s + "loarm" ) )
+		body_bone( s + "loarm", s + "loarm", ( s + "loarm", s + "hand" ), P( s + "loarm" ), hand )
+		body_bone( s + "upleg", s + "upleg", ( s + "upleg", ), P( s + "upleg" ), P( s + "loleg" ) )
+		body_bone( s + "loleg", s + "loleg", ( s + "loleg", s + "ankle_r" ), P( s + "loleg" ), foot )
+
+	def universal( cname, body1, body2, anchor, shaft, cone, angle, friction = 0.2 ):
+		lines.extend( [ "	universalJoint \"%s\" {" % cname,
+						"		body1 \"%s\"" % body1,
+						"		body2 \"%s\"" % body2,
+						"		anchor joint( \"%s\" )" % anchor,
+						"		shafts %s, %s" % ( vec( shaft ), vec( vscale( shaft, -1 ) ) ),
+						"		friction %.2f" % friction,
+						"		coneLimit %s, %.0f" % ( vec( vnorm( cone ) ), angle ),
+						"	}", "" ] )
+	def hinge( cname, body1, body2, anchor, axis, straight, forward, bend, friction = 0.2 ):
+		"""body1 turns about axis from straight to bend degrees towards forward"""
+		axis = vnorm( axis )
+		flat = lambda v: vnorm( vsub( v, vscale( axis, vdot( v, axis ) ) ) )
+		straight = flat( straight )
+		sign = 1.0 if vdot( rodrigues( straight, axis, 0.1 ), forward ) > vdot( straight, forward ) else -1.0
+		bisector = rodrigues( straight, axis, sign * math.radians( bend * 0.5 ) )
+		left, up = d3_orthogonal_basis( axis )
+		a0 = d3_rotation_angle( axis, left, bisector )
+		a2 = d3_rotation_angle( axis, left, straight )
+		lines.extend( [ "	hinge \"%s\" {" % cname,
+						"		body1 \"%s\"" % body1,
+						"		body2 \"%s\"" % body2,
+						"		anchor joint( \"%s\" )" % anchor,
+						"		axis %s" % vec( axis ),
+						"		friction %.2f" % friction,
+						"		limit %.1f, %.1f, %.1f" % ( a0, bend + 10, a2 ),
+						"	}", "" ] )
+
+	universal( "waistChest", "chest", "waist", "Waist", ( 0, 0, 1 ), ( 0, 0, 1 ), 60 )
+	universal( "chestHead", "head", "chest", "Loneck", ( 0, 0, 1 ), ( 0, 0, 1 ), 80 )
+	for s, side in ( ( "L", 1.0 ), ( "R", -1.0 ) ):
+		arm = vnorm( vsub( P( s + "loarm" ), P( s + "uparm" ) ) )
+		universal( s + "shoulder", s + "uparm", "chest", s + "uparm", arm, ( 0.0, 0.4 * side, -1.0 ), 170 )
+		hinge( s + "elbow", s + "loarm", s + "uparm", s + "loarm", ( 0, 1, 0 ), arm, ( 1, 0, 0 ), 140 )
+		leg = vnorm( vsub( P( s + "loleg" ), P( s + "upleg" ) ) )
+		universal( s + "hip", s + "upleg", "waist", s + "upleg", leg, ( 0.5, 0.15 * side, -0.85 ), 120 )
+		hinge( s + "knee", s + "loleg", s + "upleg", s + "loleg", ( 0, 1, 0 ), leg, ( -1, 0, 0 ), 130 )
+	lines += [ "}", "" ]
+	return "\n".join( lines )
+
 def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase ):
 	N, F = len( verts ), m.numFrames
 	nj = len( joints )
@@ -1170,6 +1332,12 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		hi = [ max( p[k] for p in pts ) for k in range( 3 ) ]
 		lines.append( "\t\"hitbox %s\"\t\"%.1f %.1f %.1f %.1f %.1f %.1f %s\"" % ( joint["name"], *lo, *hi, joint["zone"] ) )
 	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale arms\"\t\"0.75\"", "\t\"damage_scale legs\"\t\"0.75\"" ]
+	af = ragdoll_af( name, joints, rest, assign )
+	if af:
+		os.makedirs( "af", exist_ok = True )
+		with open( os.path.join( "af", "char_%s.af" % name ), "w" ) as fp:
+			fp.write( af )
+		lines += [ "", "\t\"ragdoll\"\t\t\t\"char_%s\"\t// af/char_%s.af, Doom 3's articulated figure" % ( name, name ) ]
 	# as a player model: Quake 3's animations (pmove's) to Daikatana's, the
 	# first of each list the character has
 	lines.append( "" )

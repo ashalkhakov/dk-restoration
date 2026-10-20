@@ -342,6 +342,7 @@ assemble() {
 	put "$ROOT/effects" "$mod/effects"
 	put "$ROOT/characters" "$mod/characters"
 	put "$ROOT/def" "$mod/def"
+	put "$ROOT/af" "$mod/af"
 	put "$ROOT/sound" "$mod/sound"
 	put "$ROOT/gameinfo.txt" "$mod/gameinfo.txt"
 

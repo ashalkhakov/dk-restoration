@@ -140,5 +140,17 @@ the pins are only numbers and names, so they're committed.
   the knee bends only forward, and the bones turn without twisting about their length (`bg_ik.c`). The rigger sets each character's
   `ik_minWaistAnkleDist` (Doom 3's) to 85% of its standing waist-to-ankle height: on a slope the box stands on its
   uphill edge, and a waist dropping all the way to the feet below folds the other leg into a squat.
+- **Ragdolls.** A dead player goes limp, with Doom 3's articulated figures (`idPhysics_AF`, ported to C in mint-arena's
+  `bg_af.c`, its LCP solver in `bg_lcp.c`). The rigger writes each character's figure in Doom 3's `.af` syntax,
+  `af/char_<name>.af`, and the model def names it (`ragdoll`). The figure is made in the IQM's bind pose. It has boxes
+  for the waist, the chest and the head, and bones for the upper arms, the forearms with the hands, the thighs and
+  the shins with the feet. Each limb is sized from its own vertexes. The waist, the neck, the shoulders and the hips
+  are universal joints with cone limits; the elbows and the knees are hinges that bend one way. As in Doom 3's
+  multiplayer, each client simulates the dead players itself (`cg_ragdoll.c`). The ragdoll starts from the pose
+  and velocity the player had, collides with the world and the movers, and is passed to the corpse the body queue
+  leaves behind. `cg_ragdoll 0` turns it off. `cg_drawRagdolls 1` draws the bodies, the joints and the contacts.
+  `damage <amount>` (a cheat) hurts you without gibbing you, to test it. Not done yet: the bodies don't collide
+  with each other (self collision), shots don't push ragdolls, and the server doesn't run figures. Server-side
+  figures wait for the networking that can send their bodies; they will serve the SP monsters.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.
