@@ -75,7 +75,10 @@ hair, cloth, or the body during the death animations.
 - **Players.** The model defs map Quake 3's player animations (pmove's) to Daikatana's (`player_anim`, from
   `PLAYER_ANIMS` in `autorig.py`), so `model hiro` (the default) or `model mikiko` plays them as players, with hitboxes;
   `addbot Hiro` and `addbot Mikiko` (`scripts/dk.bot`) as bots. The weapon goes on `WEAPON_ATTACHER`, the gun
-  hardpoint, oriented as the hand is in the first frame (`aamb001`); Daikatana's own convention for it isn't known
-  here, so a weapon may sit turned or too big.
+  hardpoint. Daikatana's hardpoints are points (its renderer's `R_GetModelHardpoint` gives a position), so the weapon
+  sits at the hand turned as the torso aims, not as the hand is. Daikatana has no held weapon models for players,
+  though: the `a_*` models are pickups lying flat around their middle, so they sit oddly in the hand. Its only held
+  ones are the soldiers' `hw_pistol` and `hw_shotgun` (grip at the origin, barrel along x) and the sword
+  `ws_daikatana`.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.
