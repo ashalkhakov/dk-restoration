@@ -1,0 +1,37 @@
+// Skeletal test characters (mint-arena bg_model.c; see DEFS.md). The
+// test character is tools/iqm/make_testchar.py's: twelve joints, a box per
+// bone, "idle" and "walk". Spawn one with "spawncharacter model_testchar"
+// (devmap), "cg_drawHitboxes 1" draws its hitboxes, "g_debugHitboxes 1"
+// says what shots hit.
+
+entityDef model_testchar {
+	"mesh"				"characters/test/testchar.iqm"
+	"mins"				"-16 -16 -24"
+	"maxs"				"16 16 48"
+
+	"anim idle"			"idle"
+	"anim walk"			"walk"
+
+	// boxes in their joint's space: mins, maxs, zone
+	"hitbox Head"		"-4.5 -4 0 4.5 4 10 head"
+	"hitbox Neck"		"-1.5 -1.5 -1 1.5 1.5 2 head"
+	"hitbox Spine"		"-4.5 -7.5 0 4.5 7.5 19 torso"
+	"hitbox Hips"		"-4 -6 -2 4 6 6 torso"
+	"hitbox L_UpperArm"	"-2 -2 -11 2 2 0 arms"
+	"hitbox L_ForeArm"	"-2 -2 -12 2 2 0 arms"
+	"hitbox R_UpperArm"	"-2 -2 -11 2 2 0 arms"
+	"hitbox R_ForeArm"	"-2 -2 -12 2 2 0 arms"
+	"hitbox L_Thigh"	"-3 -3 -13 3 3 0 legs"
+	"hitbox L_Calf"		"-3 -3 -15 4 3 0 legs"
+	"hitbox R_Thigh"	"-3 -3 -13 3 3 0 legs"
+	"hitbox R_Calf"		"-3 -3 -15 4 3 0 legs"
+
+	"damage_scale head"		"2"
+	"damage_scale torso"	"1"
+	"damage_scale arms"		"0.75"
+	"damage_scale legs"		"0.75"
+
+	// footsteps
+	"frame walk 0"		"sound sounds/global/p_stp1.wav"
+	"frame walk 6"		"sound sounds/global/p_stp2.wav"
+}

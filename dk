@@ -272,6 +272,7 @@ assemble() {
 	done
 	put "$OUT/maps" "$mod/maps"
 	put "$ROOT/effects" "$mod/effects"
+	put "$ROOT/characters" "$mod/characters"
 	put "$ROOT/def" "$mod/def"
 	put "$ROOT/gameinfo.txt" "$mod/gameinfo.txt"
 
