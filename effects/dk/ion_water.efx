@@ -1,0 +1,77 @@
+// Ion blaster bolt going off in water (Daikatana's Proj_Ion_Die with the
+// water model): two we_ionexp shells swelling from nothing to twice their
+// size in a fifth of a second, and green sparkles.
+
+Emitter
+{
+	life		200
+	rgb
+	{
+		start	1 1 1
+	}
+	size
+	{
+		start	0.05
+		end		2
+		flags	linear
+	}
+	models [ models/e1/we_ionexp.md3 ]
+	flags		useModel
+}
+
+Emitter
+{
+	life		200
+	angle		0 0 0 360 360 360
+	rgb
+	{
+		start	1 1 1
+	}
+	size
+	{
+		start	0.05
+		end		2
+		flags	linear
+	}
+	models [ models/e1/we_ionexp.md3 ]
+	flags		useModel
+}
+
+Particle
+{
+	count		25
+	life		700 1100
+	velocity	-450 -450 -450 450 450 450
+	spawnFlags	absoluteVel
+	rgb
+	{
+		start	0.3 1 0.3
+	}
+	alpha
+	{
+		start	0.75
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	3 6
+	}
+	rotation	0 360
+	shaders [ dkfx/sparkle1 ]
+}
+
+Light
+{
+	life		250
+	rgb
+	{
+		start	0.3 1 0.4
+	}
+	size
+	{
+		start	200
+		end		0
+		flags	linear
+	}
+}

@@ -1,56 +1,47 @@
-// Ion blaster bolt going off: green sparks bursting off the surface and a
-// green flash.
+// Ion blaster bolt going off (Daikatana's Proj_Ion_Die): the we_ionexpl
+// sprite dissipating over its five frames and 25 green sparkles flung all
+// around.
 
-Tail
+Particle
 {
-	count		10 14
-	life		250 450
-	velocity	40 -120 -120 160 120 120
-	gravity		-250
+	life		500
 	rgb
 	{
-		start	0.4 1 0.5
+		start	1 1 1
 	}
 	alpha
 	{
 		start	1
-		end		0
+		end		0.1
 		flags	linear
 	}
 	size
 	{
-		start	0.8 1.2
+		start	4 8
 	}
-	length
-	{
-		start	5 9
-		end		1
-		flags	linear
-	}
-	shaders [ dkfx/beamspark ]
-	flags		usePhysics
-	bounce		0.3
+	shaders [ dkfx/ionexpl ]
+	flags		setShaderTime
 }
 
 Particle
 {
-	count		1
-	life		200
+	count		25
+	life		700 1100
+	velocity	-450 -450 -450 450 450 450
+	spawnFlags	absoluteVel
 	rgb
 	{
-		start	0.5 1 0.6
+		start	0.3 1 0.3
 	}
 	alpha
 	{
-		start	1
+		start	0.75
 		end		0
 		flags	linear
 	}
 	size
 	{
-		start	16
-		end		4
-		flags	linear
+		start	2 4
 	}
 	rotation	0 360
 	shaders [ dkfx/sparkle1 ]
@@ -58,7 +49,7 @@ Particle
 
 Light
 {
-	life		200
+	life		250
 	rgb
 	{
 		start	0.3 1 0.4

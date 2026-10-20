@@ -342,3 +342,79 @@ Blocking is geometric where it can be:
   them, but they could stay simple traces.
 - **Third-person bodies:** player hit zones as a few boxes per body part, or swept against the animated model like Ghoul2?
   The boxes fit the collision model and are cheap.
+
+## 8. Decisions (2026-10-20)
+
+- **The system: Jedi Academy's, with Doom 3's collision.**
+  - Moves and combos are picked from movement, as in Jedi Academy.
+  - Blocking is on alt-attack (a guard), not automatic.
+  - Hits are exact blade sweeps against Doom 3's collision model, not dice and facing cones.
+- **The feel: Tenchu 1.** You move when you swing; nobody swings a sword standing still.
+  - Every move carries the body. Each move def gets a root motion curve: velocity along forward/right/up over the move's
+    frames (a lunge, a stepping cut, a spin with a sidestep).
+  - Pmove applies the curve to the player's velocity, predicted and blended with what the player steers.
+  - The swing's arc then comes from where the body really goes, not just from the arm.
+  - Chains keep the momentum: the next move starts from the current velocity.
+- **Experience:** later.
+- **Other melee weapons:** they share the move system. The glove, the gas hands, the hammer (charge as a held move) and
+  the silverclaw are move sets, just as the daikatana is.
+- **Hitboxes:** shooting needs them too, so players and most enemies need skeletal models. The model system comes first.
+
+### The model system
+
+**Format.** Spearmint already loads IQM (Inter-Quake Model):
+- skeletal, with joints and per-vertex blend weights
+- open, with Blender exporters
+- drawn by both renderers (`tr_model_iqm.c`)
+- the server registers `R_LerpTag` for game modules (`server/sv_ref.c`), so the game can ask where a joint is on any frame,
+  including blended torso and legs frames
+
+So the format exists. What's missing is a Doom 3-style **model decl** (one def per character) on top of it, giving:
+- the mesh and the animations: named frame ranges, or separate IQM animation files
+- frame commands: sounds and effects on frames, and for weapons the blade-on/off windows
+- per-joint hitboxes (below)
+- for weapons, the blade's base and tip joints
+
+Daikatana's characters are vertex-animated (dkm) with no skeleton. As you said, they get reworked as skeletal models, for
+players first and enemies after.
+
+### Hitboxes: boxes on joints or the animated mesh?
+
+**Hitboxes on joints** (Half-Life's `mdl`, Doom 3's articulated-figure bodies):
+- A few convex shapes per character (head, torso, pelvis, upper and lower arms and legs), each a trace model riding a joint.
+- **Sweeping:** a swept blade or a bullet is tested with the collision model's exact rotation and translation sweeps
+  against each box, posed on the joint.
+- **Cost:** about a dozen convex tests per candidate, cheap enough for the server every frame.
+- **Lag compensation:** rewinding means storing joint transforms, a few matrices per player per frame.
+- **Damage zones:** come free (the box is the zone).
+- **Weakness:** misses the exact silhouette, a sleeve or a sword hilt. It's never more than a few units off, and the boxes
+  are authored per model, so they can be tightened.
+
+**The animated mesh** (Jedi Academy's Ghoul2):
+- Each hit refined against the skinned triangles at that frame.
+- **Accuracy:** exact.
+- **Cost:** the server has to skin every candidate's mesh, and Jedi Academy pays for that with a large per-player CPU
+  cost.
+- **Sweeping:** a sweep against a deforming mesh isn't exact either. Jedi Academy samples it.
+- **Lag compensation:** rewinding means re-skinning.
+
+**Recommendation: hitboxes on joints for gameplay** — damage, blocking, bullets — swept exactly with the collision model,
+with rewound joint transforms for lag compensation. The animated mesh is used only on the client, for cosmetics:
+- precise blood and slash decals on the skin, at the point a hitbox hit
+- later, cutting a limb if we want that
+
+This keeps the server cheap and deterministic, and puts the precision where the eye looks.
+
+### Revised order of work
+
+1. **Model decls on IQM.**
+   - Animations and frame commands, joint queries in the game, hitboxes on joints.
+   - A first skeletal player model, plus a test model to build the pipeline with.
+   - Bullets and projectiles hit the hitboxes, with zone damage.
+2. **The move system.**
+   - Move defs with root motion and blade windows, predicted in pmove.
+   - Chains from movement, guard on alt-attack.
+   - The glove and the daikatana as the first move sets.
+3. **Exact blade sweeps** against the world and hitboxes, rewound. Clashes and guard reactions, hit-stop.
+4. **Locks, reactions, polish** (pain per zone, articulated-figure impulses on kills).
+5. **Experience**, later.

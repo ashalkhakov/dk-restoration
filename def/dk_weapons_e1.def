@@ -149,24 +149,35 @@ entityDef weapon_ionblaster {
 
 entityDef projectile_ion {
 	"velocity"				"1800 0 0"
-	"bounce"				"1"
-	"max_bounces"			"3"
+	"bounce"				"1.25"				// Daikatana speeds it up a bounce
+	"max_bounces"			"3"					// it goes off on the third wall
 	"detonate_on_world"		"0"
+	"detonate_on_water"		"1"
 	"fuse"					"4"
 	"detonate_on_fuse"		"1"
 	"def_damage"			"damage_ion"
+	"def_water_damage"		"damage_ion_water"
 
-	"light_color"			"0.3 1 0.4"
-	"light_radius"			"120"
+	"light_color"			"0 1 0"
+	"light_radius"			"150"
 	"fx_fly"				"dk/ion_fly"
 	"fx_fly_interval"		"0.02"
+	"fx_bounce"				"dk/ion_bounce"
+	"snd_bounce"			"sounds/global/e_electronsprka.wav sounds/global/e_electronsprke.wav sounds/global/e_electronsprkg.wav sounds/global/e_electronsprkh.wav"
 	"fx_detonate"			"dk/ion_impact"
+	"snd_explode"			"sounds/e1/we_ionhit.wav"
+	"snd_explode_flesh"		"sounds/e1/we_ionexplodea.wav sounds/e1/we_ionexplodeb.wav sounds/e1/we_ionexplodec.wav"
+	"fx_detonate_water"		"dk/ion_water"
 	"snd_fly"				"sounds/e1/we_ionflyby.wav"
-	"snd_explode"			"sounds/e1/we_ionexplodea.wav sounds/e1/we_ionexplodeb.wav sounds/e1/we_ionexplodec.wav"
 }
 
 entityDef damage_ion {
 	"damage"				"30"
+}
+
+entityDef damage_ion_water {
+	"damage"				"30"				// all around it, in the water
+	"radius"				"64"
 }
 
 entityDef ammo_ionpack {
@@ -233,7 +244,8 @@ entityDef projectile_c4 {
 	"def_splash_damage"		"damage_c4_splash"
 
 	"fx_detonate"			"dk/explosion"
-	"snd_explode"			"sounds/e1/we_c4cona.wav sounds/e1/we_c4conb.wav"
+	"snd_explode"			"sounds/global/e_explode1.wav"	// Daikatana's poly explosion's
+	"snd_bounce"			"sounds/e1/we_c4metala.wav"		// sticking
 	"mtr_detonate"			"gfx/damage/burn_med_mrk"
 	"decal_size"			"96"
 }

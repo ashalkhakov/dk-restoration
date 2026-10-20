@@ -1,0 +1,62 @@
+// Ion blaster bolt glancing off a wall (Daikatana's Proj_Ion_Special): the
+// we_ioexp burst standing out of the surface for two frames, and ten green
+// spark streaks off it.
+
+Emitter
+{
+	life		200
+	angle		90 0 0
+	rgb
+	{
+		start	1 1 1
+	}
+	size
+	{
+		start	0.75 1.25
+	}
+	models [ models/global/we_ioexp.md3 ]
+	flags		useModel
+}
+
+Tail
+{
+	count		10
+	life		500 900
+	velocity	110 -210 -210 250 210 210
+	rgb
+	{
+		start	0.3 1 0.4
+	}
+	alpha
+	{
+		start	0.75
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.7 1.1
+	}
+	length
+	{
+		start	5 9
+		end		1
+		flags	linear
+	}
+	shaders [ dkfx/beamspark ]
+}
+
+Light
+{
+	life		150
+	rgb
+	{
+		start	0.3 1 0.4
+	}
+	size
+	{
+		start	150
+		end		0
+		flags	linear
+	}
+}
