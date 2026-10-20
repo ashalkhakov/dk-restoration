@@ -20,6 +20,7 @@
 #define DK_SND_HOVER		"sounds/menus/button_003.wav"
 #define DK_SND_PRESS		"sounds/menus/button_006.wav"
 #define DK_SND_ROTATE		"sounds/menus/600ms rotate ascend_001.wav"
+#define DK_SND_ROTATE_BACK	"sounds/menus/600ms rotate descend_001.wav"
 
 // close every panel, before one opens
 #define DK_CLOSE_PANELS		close dk_multiplayer ; close dk_join ; close dk_host ; close dk_sound ; \
@@ -40,6 +41,8 @@
 		plaque_origin 35 -3.3 Z \
 		plaque_angles 0 210 0 \
 		plaque_scale 1.09 \
+		plaque_selectSound DK_SND_ROTATE \
+		plaque_deselectSound DK_SND_ROTATE_BACK \
 		visible 1 \
 		action { ACTIONS } \
 	}

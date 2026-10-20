@@ -27,7 +27,7 @@
 		fullScreen MENU_TRUE
 		rect 0 0 640 480
 		focusColor DK_BRIGHT
-		onOpen { playlooped "music/menu_01.mp3" ; open dk_multiplayer ; plaqueSelect plaque_multi }
+		onOpen { play "sounds/menus/enter menu_001.wav" ; playlooped "music/menu_01.mp3" ; open dk_multiplayer ; plaqueSelect plaque_multi }
 		onEsc { }
 
 		DK_PIC( 0, 0, 640, 480, "ui/assets/dk/background" )

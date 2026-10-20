@@ -81,19 +81,13 @@ fi
 
 # ffmpeg -i sounds/global/e_lightningl.wav -codec:a pcm_u8 -f wav sound.wav
 
-# sounds
+# sounds: Daikatana's wavs are 4-bit IMA ADPCM, which Spearmint can't play;
+# make them 16-bit PCM in place
 if [ "$BUILD_SOUNDS" -gt 0 ]; then
-    cd dkres
-    while IFS= read -r -d '' file; do
-        # single filename is in $file
-        if ffprobe -i $file -show_entries stream=bits_per_sample -select_streams a -of compact=p=0:nk=1 -v 0 | grep -q '4'; then
-            echo $file
-            mv $file "${file}.orig"
-            ffmpeg -i "${file}.orig" -codec:a pcm_u8 -f wav -y "${file}" 2> /dev/null
-            # TODO: remove the .orig file
-        fi
-    done < <(find sounds -type f -name '*.wav' -print0)
-    cd ..
+    find dkres/sounds -type f -name '*.wav' -print0 | xargs -0 -P 8 -n 1 sh -c '
+        if ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$1" | grep -q adpcm; then
+            ffmpeg -v error -i "$1" -codec:a pcm_s16le -f wav -y "$1.pcm" && mv -f "$1.pcm" "$1"
+        fi' sh
 fi
 
 # maps
