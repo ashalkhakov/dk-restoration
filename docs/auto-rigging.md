@@ -33,9 +33,11 @@ implements.
    frames, by least squares.
 4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
    vertex).
-5. **Hardpoints.** Daikatana's `hp_gun` and `ctf_flag` triangles become rigid attachment joints, `WEAPON_ATTACHER` and
+5. **Rest orientations.** Each joint rests along its bone (x toward the child), so hitboxes fitted in its space hug the
+   limb.
+6. **Hardpoints.** Daikatana's `hp_gun` and `ctf_flag` triangles become rigid attachment joints, `WEAPON_ATTACHER` and
    `FLAG_ATTACHER`, as Doom 3 has `*_ATTACHER` joints.
-6. **Output.**
+7. **Output.**
    - An IQM: the first frame as the rest pose, every frame as a pose, and the frame names (`run01`…) giving the
      animations (`amb`, `walk`, `run`, `atak`, `die`…), the idle and moving ones looping.
    - A model def with a hitbox per bone: the box around the bone's vertices in the joint's space, zoned
@@ -49,7 +51,8 @@ implements.
 | Mikiko | 637 | 1259 | 78 | 0.42 | 31 | 58 |
 
 The error is how far each skinned vertex lands from Daikatana's, over all frames. In game the rigged and original models
-look the same frame for frame (`def/char_hiro_md3.def` plays the original to compare:
+look the same frame for frame (`cg_drawSkeleton 1` shows the joints, 2 without the mesh; `def/char_hiro_md3.def` plays
+the original to compare:
 `spawncharacter model_hiro run -4 30; spawncharacter model_hiro_md3 run -4 -30`).
 
 A few vertexes go far off (28–31 units) on a few frames. They're parts that move in ways no single limb does, such as
@@ -59,9 +62,10 @@ hair, cloth, or the body during the death animations.
 
 - **More bones.** Hands and feet are one bone each, and there are no fingers, toes, hair or cloth. More bones, or a
   joint placed automatically wherever the error stays high, would bring down the worst vertexes.
-- **Doom 3's rest orientations.** The joints share Doom 3's names and hierarchy, but they rest unrotated, whereas Doom 3's
-  joints rest along their bones. Retargeting Doom 3 animations needs the orientations too, which is a fixed rotation a
-  joint, worked out once.
+- **Rest orientations.** The joints rest along their bones, as Half-Life's and Doom 3's do: x down the bone, z as near up as
+  it can be. So the hitboxes, fitted in each joint's space, hug the limbs, and they are oriented boxes that turn with the
+  joints. Retargeting Doom 3 animations still needs its exact axis convention per joint, a fixed rotation a joint, worked
+  out once.
 - **Animation blending.** Doom 3 plays several animations at once on channels (legs, torso, head, eyes), cross-fades
   them and syncs them (`idAnimator`/`idAnimBlend`, GPL). Following it means:
   - porting that blending to the cgame and game (for hitboxes)

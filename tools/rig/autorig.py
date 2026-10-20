@@ -487,11 +487,36 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	N, F = len( verts ), m.numFrames
 	nj = len( joints )
 
+	# rest orientations along the bones, as Half-Life's and Doom 3's rest:
+	# x down the bone (to the child, or on from the parent at an end), z as
+	# near up as it can be; so hitboxes fitted in the joint's space hug the limb
+	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j and joints[k]["zone"] ] for j in range( nj ) }
+	restRot = []
+	for j in range( nj ):
+		p = joints[j]["pos"]
+		if not joints[j]["zone"]:
+			restRot.append( IDENT )
+			continue
+		if kids[j]:
+			c = vscale( ( sum( joints[k]["pos"][0] for k in kids[j] ), sum( joints[k]["pos"][1] for k in kids[j] ),
+						  sum( joints[k]["pos"][2] for k in kids[j] ) ), 1.0 / len( kids[j] ) )
+			d = vsub( c, p )
+		else:
+			d = vsub( p, joints[joints[j]["parentIndex"]]["pos"] )
+		x = vnorm( d )
+		if vlen( x ) < 0.5:
+			restRot.append( IDENT )
+			continue
+		up = ( 0.0, 0.0, 1.0 ) if abs( x[2] ) < 0.9 else ( 1.0, 0.0, 0.0 )
+		z = vnorm( vsub( up, vscale( x, vdot( up, x ) ) ) )
+		y = vcross( z, x )
+		restRot.append( [ [ x[0], y[0], z[0] ], [ x[1], y[1], z[1] ], [ x[2], y[2], z[2] ] ] )
+
 	# joint world transforms a frame: the bone's motion, about the joint
 	def world( j, f ):
 		r, t = motion[j][f]
 		p = joints[j]["pos"]
-		return r, xform( ( r, t ), p )		# rotation, the joint's place
+		return mmul( r, restRot[j] ), xform( ( r, t ), p )		# rotation, the joint's place
 	locals_ = []	# [frame][joint] = ( translate, quat )
 	for f in range( F ):
 		row = []
@@ -508,12 +533,16 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			row.append( ( lt, mat_to_quat( lr ) ) )
 		locals_.append( row )
 
-	# rest: joints at their places, unrotated
+	# rest: joints at their places, on their bones, relative to their parents
 	restLocal = []
 	for j in range( nj ):
 		pi = joints[j]["parentIndex"]
 		p = joints[j]["pos"]
-		restLocal.append( p if pi < 0 else vsub( p, joints[pi]["pos"] ) )
+		if pi < 0:
+			restLocal.append( ( p, mat_to_quat( restRot[j] ) ) )
+			continue
+		prt = mtrans( restRot[pi] )
+		restLocal.append( ( mvec( prt, vsub( p, joints[pi]["pos"] ) ), mat_to_quat( mmul( prt, restRot[j] ) ) ) )
 
 	# mesh: one IQM mesh a surface, vertexes in the order above
 	positions, normals, texcoords, blendIdx, blendWt, tangents, tris, meshes = [], [], [], [], [], [], [], []
@@ -605,7 +634,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		place( data )
 	sections.append( ( ofs_va, vaheaders ) )
 	ofs_tris = place( b"".join( struct.pack( "<3I", *t ) for t in tris ) )
-	ofs_joints = place( b"".join( struct.pack( "<Ii3f4f3f", jointText[j], joints[j]["parentIndex"], *restLocal[j], 0, 0, 0, 1, 1, 1, 1 ) for j in range( nj ) ) )
+	ofs_joints = place( b"".join( struct.pack( "<Ii3f4f3f", jointText[j], joints[j]["parentIndex"], *restLocal[j][0], *restLocal[j][1], 1, 1, 1 ) for j in range( nj ) ) )
 	ofs_poses = place( b"".join( struct.pack( "<iI10f10f", joints[j]["parentIndex"], 0x3ff, *chans[j][1], *chans[j][2] ) for j in range( nj ) ) )
 	ofs_anims = place( b"".join( struct.pack( "<IIIfI", animText[k], a[1], a[2], 10.0, 1 if LOOPING.match( a[0] ) else 0 ) for k, a in enumerate( anims ) ) )
 	ofs_frames = place( bytes( framedata ) )
@@ -649,7 +678,9 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	for j, joint in enumerate( joints ):
 		if not joint["zone"]:
 			continue
-		pts = [ vsub( rest[i], joint["pos"] ) for i in range( N ) if assign[i] == j ]
+		# the bone's vertexes in its joint's (rotated) space
+		rt = mtrans( restRot[j] )
+		pts = [ mvec( rt, vsub( rest[i], joint["pos"] ) ) for i in range( N ) if assign[i] == j ]
 		if len( pts ) < 4:
 			continue
 		lo = [ min( p[k] for p in pts ) for k in range( 3 ) ]
