@@ -66,10 +66,11 @@ hair, cloth, or the body during the death animations.
   it can be. So the hitboxes, fitted in each joint's space, hug the limbs, and they are oriented boxes that turn with the
   joints. Retargeting Doom 3 animations still needs its exact axis convention per joint, a fixed rotation a joint, worked
   out once.
-- **Animation blending.** Doom 3 plays several animations at once on channels (legs, torso, head, eyes), cross-fades
-  them and syncs them (`idAnimator`/`idAnimBlend`, GPL). Following it means:
-  - porting that blending to the cgame and game (for hitboxes)
-  - an engine call to draw an IQM from joint matrices the cgame computes; Spearmint's IQM drawing only lerps two frames
-    today
+- **Animation blending.** Done, after Doom 3's `idAnimator`/`idAnimBlend`: animations play on channels (legs, torso
+  from `Waist`, head from `Head`), each over the ones before it, and cross-fade over `blend_time`. The game and the cgame
+  blend the same joints the same way (so hitboxes follow what's drawn), and the renderer skins the IQM from the joint
+  matrices the cgame hands it (`trap_R_BlendSkeleton`, `trap_R_AddSkeletonToScene`). Try
+  `spawncharacter model_hiro walk; characteranim all torso atak`. Eyes and syncing a channel's timing to another's are
+  still Doom 3's alone.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.
