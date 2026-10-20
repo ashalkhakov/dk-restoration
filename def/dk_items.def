@@ -1,0 +1,131 @@
+// Daikatana's pickups, as mint-arena entity defs (Doom 3 style).
+//
+// Each one inherits the Quake 3 item that plays its role in deathmatch and
+// gives it Daikatana's name and look. The converter keeps the classnames;
+// where the model changes with the episode (armor), the map's "model" key
+// gives the episode's. Physics: items are rigid bodies colliding as hulls of
+// their models; "mass", "density", "bouncyness", "friction", "nophysics".
+
+// health
+
+entityDef item_health_25 {
+	"inherit"		"item_health"
+	"inv_name"		"Health"
+}
+
+entityDef item_health_50 {
+	"inherit"		"item_health_large"
+	"inv_name"		"Health"
+}
+
+entityDef item_goldensoul {
+	"inherit"		"item_health_mega"
+	"inv_name"		"Golden Soul"
+	"model2"		""
+}
+
+// armor: the model is the episode's
+
+entityDef item_plasteel_armor {
+	"inherit"		"item_armor_combat"
+	"inv_name"		"Plasteel Armor"
+}
+
+entityDef item_chromatic_armor {
+	"inherit"		"item_armor_body"
+	"inv_name"		"Chromatic Armor"
+}
+
+entityDef item_silver_armor {
+	"inherit"		"item_armor_combat"
+	"inv_name"		"Silver Armor"
+}
+
+entityDef item_chainmail_armor {
+	"inherit"		"item_armor_combat"
+	"inv_name"		"Chainmail Armor"
+}
+
+entityDef item_kevlar_armor {
+	"inherit"		"item_armor_combat"
+	"inv_name"		"Kevlar Armor"
+}
+
+entityDef item_gold_armor {
+	"inherit"		"item_armor_body"
+	"inv_name"		"Gold Armor"
+}
+
+entityDef item_black_adamant_armor {
+	"inherit"		"item_armor_body"
+	"inv_name"		"Black Adamant Armor"
+}
+
+entityDef item_ebonite_armor {
+	"inherit"		"item_armor_body"
+	"inv_name"		"Ebonite Armor"
+}
+
+// artifacts: Daikatana's permanent boosts are timed powerups for now
+
+entityDef item_wraithorb {
+	"inherit"		"item_invis"
+	"inv_name"		"Wraith Orb"
+	"model2"		""
+}
+
+entityDef item_power_boost {
+	"inherit"		"item_quad"
+	"inv_name"		"Power Boost"
+	"model"			"models/global/a_pwrb.md3"
+	"model2"		""
+}
+
+entityDef item_attack_boost {
+	"inherit"		"item_haste"
+	"inv_name"		"Attack Boost"
+	"model"			"models/global/a_atkb.md3"
+	"model2"		""
+}
+
+entityDef item_speed_boost {
+	"inherit"		"item_haste"
+	"inv_name"		"Speed Boost"
+	"model"			"models/global/a_spdb.md3"
+	"model2"		""
+}
+
+entityDef item_acro_boost {
+	"inherit"		"item_haste"
+	"inv_name"		"Acro Boost"
+	"model"			"models/global/a_acrb.md3"
+	"model2"		""
+}
+
+entityDef item_vita_boost {
+	"inherit"		"item_regen"
+	"inv_name"		"Vita Boost"
+	"model"			"models/global/a_vtlb.md3"
+	"model2"		""
+}
+
+entityDef item_megashield {
+	"inherit"		"item_enviro"
+	"inv_name"		"Mega Shield"
+	"model"			"models/global/a_mshield.md3"
+	"model2"		""
+}
+
+entityDef item_invincibility {
+	"inherit"		"item_enviro"
+	"inv_name"		"Invincibility"
+	"model"			"models/global/a_invincibility.md3"
+	"model2"		""
+}
+
+entityDef item_antidote {
+	"inherit"		"holdable_medkit"
+	"inv_name"		"Antidote"
+	"model"			"models/global/a_antidote.md3"
+	"model2"		""
+}
