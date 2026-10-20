@@ -9,6 +9,8 @@
 #define HUD_NUMBERS_LOW		"fonts/dk/mainnumsred" 20	// red digits
 #define HUD_LABELS			"fonts/dk/statbar_font" 20
 #define HUD_SCALE			.4167						// 20 pixel fonts at their own size
+#define CENTER_FONT			"fonts/dk/scr_cent" 32		// centre prints and the scoreboard
+#define CENTER_SCALE		.6667
 
 // a picture of the bar
 #define HUD_PIC( X, Y, W, H, SHADER ) \
@@ -41,6 +43,40 @@
 		ownerdraw OWNERDRAW \
 		ownerdrawflag FLAGS \
 		font FONT \
+		textscale HUD_SCALE \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+// a window of the weapon selector (draw_weapon_info): the window, its
+// highlight when WEAPON is the one selected, the weapon turning in it and,
+// in the box under it, its ammo. Y is the window's top, MODEL_Y and
+// AMMO_Y 8 and 50 below it: the weapon's middle 28 below, as Daikatana's.
+#define WEAPON_SLOT( WEAPON, Y, MODEL_Y, AMMO_Y ) \
+	HUD_PIC( 552, Y, 128, 128, "pics/statusbar/weapn_win" ) \
+	itemDef { \
+		rect 552 Y 128 128 \
+		ownerdraw CG_WEAPON_SELECTED \
+		special WEAPON \
+		background "pics/statusbar/selec_weapn" \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		rect 560 MODEL_Y 72 40 \
+		ownerdraw CG_WEAPON_ICON \
+		special WEAPON \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		rect 592 AMMO_Y 40 16 \
+		ownerdraw CG_WEAPON_AMMO \
+		special WEAPON \
+		font HUD_LABELS \
 		textscale HUD_SCALE \
 		forecolor 1 1 1 1 \
 		decoration \
@@ -89,5 +125,42 @@
 		HUD_VALUE( 362, CG_PLAYER_AMMO_VALUE, HUD_NUMBERS, CG_SHOW_AMMOOK )
 		HUD_VALUE( 362, CG_PLAYER_AMMO_VALUE, HUD_NUMBERS_LOW, CG_SHOW_AMMOLOW )
 		HUD_VALUE( 452, CG_PLAYER_SCORE, HUD_NUMBERS, 0 )
+	}
+
+	// the weapon selector: six windows down the right, the weapons of keys
+	// 1 to 6, shown for cg_weaponSelectTime after a change of weapon
+	menuDef {
+		name "weaponselect_menu"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 0 0 640 480
+		screenPlacement PLACE_RIGHT PLACE_TOP
+
+		WEAPON_SLOT( 1, 16, 24, 66 )
+		WEAPON_SLOT( 2, 77, 85, 127 )
+		WEAPON_SLOT( 3, 138, 146, 188 )
+		WEAPON_SLOT( 4, 199, 207, 249 )
+		WEAPON_SLOT( 5, 260, 268, 310 )
+		WEAPON_SLOT( 6, 321, 329, 371 )
+	}
+
+	// centre prints (SCR_DrawCenterString): the centre font, a line at a
+	// time centred from the top of the screen
+	menuDef {
+		name "centerprint_menu"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 0 0 640 480
+		screenPlacement PLACE_CENTER PLACE_TOP
+
+		itemDef {
+			rect 0 10 640 300
+			ownerdraw CG_CENTERPRINT
+			font CENTER_FONT
+			textscale CENTER_SCALE
+			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
 	}
 }

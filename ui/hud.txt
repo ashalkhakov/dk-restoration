@@ -1,4 +1,6 @@
-// the in-game HUD: Daikatana's status bar
+// the in-game HUD: Daikatana's status bar, weapon selector and centre
+// prints, and its scoreboard
 {
 	loadMenu { "ui/dk_hud.menu" }
+	loadMenu { "ui/dk_score.menu" }
 }

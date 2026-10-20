@@ -13,7 +13,8 @@
 #   ./dk convert [map...]      convert maps, all the playable ones by default
 #   ./dk run [args...]         play, e.g. ./dk run +devmap e2dm1
 #   ./dk shots <map> [tag]     screenshots from the spawn points (HUD=1 ./dk
-#                              shots... to have the HUD and weapon in them)
+#                              shots... to have the HUD, the weapon selector
+#                              and the weapon in them, and the scoreboard)
 #   ./dk test [map...]         load each map, check the log, take a screenshot
 #   ./dk install [dir]         copy the mod into a Quake 3 folder
 #
@@ -342,6 +343,13 @@ cmd_shots() {
 	done <<EOF
 $(python3 "$ROOT/tools/dk_spawns.py" "$OUT/maps/$map.bsp" 4)
 EOF
+	# with the HUD, the weapon selector up in each, a centre print in the
+	# first, and the scoreboard last
+	if [ "${HUD:-0}" != 0 ]; then
+		shots=$(printf '%s' "$shots" | sed 's/|wait 60|/|weapon 1|wait 60|/g')
+		shots="|centerecho You fragged Mikiko\\1st place with 1$shots"
+		shots="$shots|+scores|wait 30|screenshotJPEG ${map}_scores|wait 10|-scores"
+	fi
 	local IFS='|'
 	# shellcheck disable=SC2086
 	play_script "shots_$map" "$map" "wait 200" ${shots#|}

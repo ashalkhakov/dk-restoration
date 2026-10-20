@@ -1,0 +1,165 @@
+#include "ui/menudef.h"
+
+// Daikatana's scoreboard (dk_scoreboard.cpp, sb_DrawMulti), at its places
+// on a 640x480 screen: the time top left, then a table in the centre font,
+// a faint band of colour behind it. Deathmatch has one table, Name, Kills,
+// Ping and Time; team games a table a team side by side, Name, Score and
+// Ping, under each team's name and score, as Daikatana's CTF board.
+//
+// Text is drawn at its top as Daikatana does: the centre font's baseline
+// is 26 below the top of a 32 pixel line.
+
+#define SB_FONT				"fonts/dk/scr_cent" 32
+#define SB_SCALE			.6667
+#define SB_ROW				30			// a row: Daikatana's 24 pixel lines * 1.25
+
+// text at X, Y, its top
+#define SB_TEXT( X, Y, TEXT ) \
+	itemDef { \
+		rect X Y 200 32 \
+		text TEXT \
+		font SB_FONT \
+		textscale SB_SCALE \
+		textaligny 26 \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+// a band of colour, nearly clear
+#define SB_BAND( X, Y, W, H, COLOR ) \
+	itemDef { \
+		rect X Y W H \
+		style WINDOW_STYLE_FILLED \
+		backcolor COLOR \
+		decoration \
+		visible 1 \
+	}
+
+// the time since the level started, top left
+#define SB_TIME \
+	itemDef { \
+		rect 0 0 120 26 \
+		text "Time" \
+		ownerdraw CG_LEVEL_TIME \
+		font SB_FONT \
+		textscale SB_SCALE \
+		textaligny 26 \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+// a list of players, rows SB_ROW apart; the first row's top is 5 below Y,
+// its text 5 in from X. The feeder's columns are 0 flag or bot icon,
+// 1 team task, 2 ready, 3 name, 4 score, 5 time, 6 ping; a negative
+// maxChars leaves a column out.
+#define SB_LIST( X, Y, W, H, FEEDER, COLUMNS ) \
+	itemDef { \
+		rect X Y W H \
+		type ITEM_TYPE_LISTBOX \
+		style WINDOW_STYLE_EMPTY \
+		feeder FEEDER \
+		elementtype LISTBOX_TEXT \
+		elementwidth W \
+		elementheight SB_ROW \
+		font SB_FONT \
+		textscale SB_SCALE \
+		forecolor 1 1 1 1 \
+		outlinecolor 0 0 0 0 \
+		noscrollbar \
+		notselectable \
+		columns COLUMNS \
+		decoration \
+		visible 1 \
+	}
+
+{
+	// deathmatch: name at 70, kills at 320, ping at 420, time at 520,
+	// the band over the headings and again over the whole table
+	menuDef {
+		name "score_menu"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 0 0 640 480
+		screenPlacement PLACE_CENTER PLACE_TOP
+
+		SB_TIME
+
+		SB_BAND( 67, 108, 556, 27, 0 1 0 .075 )
+		SB_BAND( 67, 108, 556, 362, 0 1 0 .075 )
+
+		SB_TEXT( 70, 108, "Name" )
+		SB_TEXT( 320, 108, "Kills" )
+		SB_TEXT( 420, 108, "Ping" )
+		SB_TEXT( 520, 108, "Time" )
+
+		// rows from 144
+		SB_LIST( 65, 139, 560, 322, FEEDER_SCOREBOARD, 7	0 0 -1		0 0 -1		0 0 -1		0 240 20		250 60 5		450 60 5		350 60 5 )
+	}
+
+	// team games: the red team on the left, the blue on the right, each
+	// under a band of its colour
+	menuDef {
+		name "teamscore_menu"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 0 0 640 480
+		screenPlacement PLACE_CENTER PLACE_TOP
+
+		SB_TIME
+
+		SB_BAND( 16, 40, 296, 430, 1 0 0 .075 )
+		SB_BAND( 16, 76, 296, 27, 1 0 0 .075 )
+		SB_BAND( 316, 40, 296, 430, 0 0 1 .075 )
+		SB_BAND( 316, 76, 296, 27, 0 0 1 .075 )
+
+		// the team's name and score, their tops at 40
+		itemDef {
+			rect 120 34 120 32
+			ownerdraw CG_RED_NAME
+			font SB_FONT
+			textscale SB_SCALE
+			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
+		itemDef {
+			rect 220 34 60 32
+			ownerdraw CG_RED_SCORE
+			font SB_FONT
+			textscale SB_SCALE
+			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
+		itemDef {
+			rect 420 34 120 32
+			ownerdraw CG_BLUE_NAME
+			font SB_FONT
+			textscale SB_SCALE
+			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
+		itemDef {
+			rect 520 34 60 32
+			ownerdraw CG_BLUE_SCORE
+			font SB_FONT
+			textscale SB_SCALE
+			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
+
+		SB_TEXT( 20, 76, "Name" )
+		SB_TEXT( 190, 76, "Score" )
+		SB_TEXT( 260, 76, "Ping" )
+		SB_TEXT( 320, 76, "Name" )
+		SB_TEXT( 490, 76, "Score" )
+		SB_TEXT( 560, 76, "Ping" )
+
+		SB_LIST( 15, 107, 296, 354, FEEDER_REDTEAM_LIST, 7	0 0 -1		0 0 -1		0 0 -1		0 160 14		170 60 5		0 0 -1		240 60 4 )
+		SB_LIST( 315, 107, 296, 354, FEEDER_BLUETEAM_LIST, 7	0 0 -1		0 0 -1		0 0 -1		0 160 14		170 60 5		0 0 -1		240 60 4 )
+	}
+}
