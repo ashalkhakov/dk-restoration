@@ -303,6 +303,9 @@ cmd_convert() {
 		printf 'convert %-8s ' "$map"
 		if (cd "$DKRES" && "$converter" none "maps/$map.bsp" quake3 "$OUT/maps/$map.bsp") >"$OUT/$map.log" 2>&1; then
 			grep -h 'WARNING' "$OUT/$map.log" | head -3 || true
+			# the rungs of ladders drawn by an alpha tested texture
+			python3 "$ROOT/tools/maps/ladder_rungs.py" "$OUT/maps/$map.bsp" "$DKRES/scripts" "$DKRES" \
+				"$OUT/maps/$map.ladders" >>"$OUT/$map.log" 2>&1 || true
 			echo ok
 		else
 			echo "FAILED, see out/$map.log"
