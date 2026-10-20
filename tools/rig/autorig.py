@@ -270,7 +270,7 @@ LOOPING = re.compile( r"^(a|b|c|o)?(amb|walk|run|ws|swim|ladderup|ladderdn|looka
 
 # ------------------------------------------------------------------------
 
-def place_template( rest, tris, gunHand = None ):
+def place_template( rest, tris, headVerts, gunHand = None ):
 	"""The template's joints in the mesh, measured from it: Daikatana's
 	characters aren't built like Doom 3's (bigger heads, shorter legs), so only
 	the names and the hierarchy are Doom 3's. Where the neck narrows to the
@@ -356,8 +356,47 @@ def place_template( rest, tris, gunHand = None ):
 	joints = []
 	for name, parent, p, zone in D3_TEMPLATE:
 		joints.append( { "name": name, "parent": parent, "zone": zone, "pos": pos[name] } )
+	chain, hairIdx = hair_chain( rest, headVerts, pos["Head"] )
+	joints += chain
 	print( "  neck %.1f, shoulders %.1f (%.1f wide), crotch %.1f, feet %.1f" % ( zNeck, zShoulder, 2 * shoulderY, zCrotch, zmin ) )
-	return joints, 1.0
+	return joints, hairIdx
+
+HAIR_BONES = 3		# at most
+
+def hair_chain( rest, headVerts, head ):
+	"""A ponytail's own little spine: the head surface's vertexes that hang
+	behind the back of the skull are hair; bones run
+	down its middle from where it leaves the head (Ponytail1, parented to the
+	head) to its tip. Nothing when there's no such hair."""
+	skull = sorted( rest[i][0] for i in headVerts if rest[i][2] > head[2] )
+	if not skull:
+		return [], set()
+	# the back of the skull (the model faces x), from most of the head: hair
+	# may hang from the crown (Mikiko's) or below the head (Hiro's)
+	back = skull[len( skull ) // 6]
+	hairIdx = set( i for i in headVerts if rest[i][0] < back - 1.5 )
+	hair = [ rest[i] for i in hairIdx ]
+	numBones = min( HAIR_BONES, len( hair ) // 6 )		# a bone needs vertexes to fit
+	if numBones < 1:
+		return [], set()
+	top = max( v[2] for v in hair )
+	rootVs = [ v for v in hair if v[2] > top - 1.0 ]
+	root = vscale( ( sum( v[0] for v in rootVs ), sum( v[1] for v in rootVs ), sum( v[2] for v in rootVs ) ), 1.0 / len( rootVs ) )
+	reach = max( vlen( vsub( v, root ) ) for v in hair )
+	height = max( v[2] for v in rest ) - min( v[2] for v in rest )
+	if reach < height / 8:
+		return [], set()		# a bun or a bump, not a tail
+	chain, parent = [], "Head"
+	for k in range( numBones ):
+		lo, hi = reach * k / numBones, reach * ( k + 0.5 ) / numBones
+		band = [ v for v in hair if lo <= vlen( vsub( v, root ) ) <= hi ] if k else [ root ]
+		p = vscale( ( sum( v[0] for v in band ), sum( v[1] for v in band ), sum( v[2] for v in band ) ), 1.0 / len( band ) ) \
+			if band else vadd( root, vscale( vsub( chain[-1]["pos"], root ), 1.5 ) )
+		name = "Ponytail%d" % ( k + 1 )
+		chain.append( { "name": name, "parent": parent, "zone": "hair", "pos": p } )
+		parent = name
+	print( "  hair: %d vertexes, %.1f long, %d bones" % ( len( hair ), reach, numBones ) )
+	return chain, hairIdx
 
 def seg_dist( p, a, b ):
 	ab = vsub( b, a )
@@ -388,6 +427,28 @@ def plot_segments( rest, assign, joints, path ):
 	out.append( "</svg>" )
 	open( path, "w" ).write( "\n".join( out ) )
 
+def load_pins( name, body, verts, J ):
+	"""Vertexes pinned to bones by hand, tools/rig/skin/<name>.txt: lines of
+	"<surface>:<index> <bone> [<blend bone> <weight>]" (the skin table's
+	columns), # comments. Daikatana's data stays out: only numbers and names."""
+	path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), "skin", name + ".txt" )
+	pins = {}
+	if not os.path.exists( path ):
+		return pins
+	index = { ( body[si].name, vi ): i for i, ( si, vi ) in enumerate( verts ) }
+	for n, line in enumerate( open( path ), 1 ):
+		w = line.split( "#" )[0].split()
+		if not w:
+			continue
+		surf, _, vi = w[0].rpartition( ":" )
+		i = index.get( ( surf, int( vi ) ) ) if surf else None
+		if i is None or w[1] not in J or ( len( w ) >= 4 and w[2] not in J ):
+			print( "  %s:%d: no vertex %s or bone %s" % ( path, n, w[0], " ".join( w[1:3] ) ) )
+			continue
+		pins[i] = ( J[w[1]], J[w[2]], float( w[3] ) ) if len( w ) >= 4 else ( J[w[1]], )
+	print( "  %d vertexes pinned (%s)" % ( len( pins ), os.path.relpath( path ) ) )
+	return pins
+
 def main( md3Path, outBase ):
 	m = MD3( md3Path )
 	# the body: every surface but the hardpoints
@@ -410,8 +471,10 @@ def main( md3Path, outBase ):
 		base.setdefault( si, k )
 	for si, sf in enumerate( body ):
 		tris += [ ( base[si] + a, base[si] + b, base[si] + c ) for a, b, c in sf.triangles ]
-	joints, scale = place_template( rest, tris, gunHand )
+	headVerts = [ i for i, ( si, vi ) in enumerate( verts ) if "head" in body[si].name.lower() ]
+	joints, hairIdx = place_template( rest, tris, headVerts, gunHand )
 	J = { j["name"]: i for i, j in enumerate( joints ) }
+	pins = load_pins( os.path.basename( outBase ), body, verts, J )
 	for j in joints:
 		j["parentIndex"] = J[j["parent"]] if j["parent"] else -1
 	children = { i: [ k for k, j in enumerate( joints ) if j["parentIndex"] == i ] for i in range( len( joints ) ) }
@@ -431,9 +494,22 @@ def main( md3Path, outBase ):
 			b = vadd( a, vscale( vsub( a, p ), 0.6 ) )
 		return a, b
 	segs = { i: bone_segment( i ) for i in bones }
+
+	# the hair's bones carry only the hair, and the hair only them, the head
+	# or the neck
+	hairBones = set( b for b in bones if joints[b]["zone"] == "hair" )
+	def allowed( i, b ):
+		if not hairBones:
+			return True
+		if i in hairIdx:
+			return b in hairBones or joints[b]["name"] in ( "Head", "Loneck" )
+		return b not in hairBones
+	def allowed_bones( i, among ):
+		return [ b for b in among if allowed( i, b ) ] or [ assign[i] ]
+
 	assign = []
-	for v in rest:
-		assign.append( min( bones, key = lambda i: seg_dist( v, *segs[i] ) ) )
+	for i, v in enumerate( rest ):
+		assign.append( min( [ b for b in bones if allowed( i, b ) ], key = lambda b: seg_dist( v, *segs[b] ) ) )
 
 	# frames to fit with (all of them takes long and adds little)
 	sample = list( range( 0, F, 3 ) )
@@ -490,6 +566,7 @@ def main( md3Path, outBase ):
 			# may belong to any: every bone is tried
 			if fit( i, assign[i] ) > len( sample ) * BAD_FIT ** 2:
 				candidates = bones
+			candidates = allowed_bones( i, candidates )
 			for b in candidates:
 				err = fit( i, b )
 				if bestErr is None or err < bestErr:
@@ -501,6 +578,23 @@ def main( md3Path, outBase ):
 		if changed < N * 0.002:
 			break
 
+	# a leg's vertexes by where they are along it: the animations hardly bend
+	# the knees, so the motion can't tell a thigh from its shin, but the walk
+	# IK bends them, and a thigh skinned to the shin stretches
+	legChains = [ [ J[s_ + n] for n in ( "upleg", "loleg", "ankle_r" ) ] for s_ in ( "L", "R" ) ]
+	for chain in legChains:
+		for i in range( N ):
+			if assign[i] in chain:
+				assign[i] = min( chain, key = lambda c: seg_dist( rest[i], *segs[c] ) )
+	# and what no leg bone carries (a hand hanging against the thigh) goes
+	# to the bone that does
+	motion = fit_bones( sample )
+	for i in range( N ):
+		if any( assign[i] in chain for chain in legChains ) and fit( i, assign[i] ) > len( sample ) * BAD_FIT ** 2:
+			assign[i] = min( allowed_bones( i, bones ), key = lambda b: fit( i, b ) )
+	# and what's pinned by hand
+	for i, pin in pins.items():
+		assign[i] = pin[0]
 	motion = fit_bones( range( F ) )
 	if os.environ.get( "RIG_DEBUG" ):
 		plot_segments( rest, assign, joints, os.environ["RIG_DEBUG"] )
@@ -533,10 +627,17 @@ def main( md3Path, outBase ):
 		for val, vec in zip( vals, vecs ):
 			if val > 0.05 * top:
 				x = vadd( x, vscale( vec, vdot( vec, r0 ) / val ) )
-		# a leg's joints stay at the template's heights (from the crotch and
-		# the floor): along the bone the motion pins them least, and a knee
-		# slid down to the ankle bends the leg in the wrong place
-		if joints[b]["zone"] == "legs":
+		# the hips (balls) the motion pins well, and the IK turns the thighs
+		# about them: a wrong pivot stretches the skin at the pelvis. A knee
+		# it may slide down the shin: kept in the leg's middle, else the
+		# template's height (halfway); an ankle at the template's height
+		name = joints[b]["name"]
+		if name.endswith( "loleg" ):
+			hipZ = joints[joints[b]["parentIndex"]]["pos"][2]
+			ankleZ = joints[children[b][0]]["pos"][2] if children[b] else p0[2]
+			if not ( ankleZ + 0.3 * ( hipZ - ankleZ ) <= x[2] <= ankleZ + 0.7 * ( hipZ - ankleZ ) ):
+				x = ( x[0], x[1], p0[2] )
+		elif name.endswith( "ankle_r" ):
 			x = ( x[0], x[1], p0[2] )
 		move = vsub( x, p0 )
 		if vlen( move ) > JOINT_MOVE * H:
@@ -553,11 +654,19 @@ def main( md3Path, outBase ):
 	for i in range( N ):
 		b = assign[i]
 		best = ( b, b, 1.0, None )
-		for o in neighbours( b ):
+		for o in allowed_bones( i, neighbours( b ) ):
 			# one leg's vertex never follows the other: the walk IK moves
 			# them apart, which the animations never do
 			if o == b or joints[o]["name"][1:] == joints[b]["name"][1:] and joints[b]["zone"] == "legs":
 				continue
+			# along a leg, blending only near the joint between the two
+			# bones: a thigh half on its shin stretches when the IK bends
+			chain = next( ( c for c in legChains if b in c and o in c ), None )
+			if chain:
+				shared = joints[o]["pos"] if joints[o]["parentIndex"] == b else joints[b]["pos"]
+				length = vlen( vsub( *segs[b] ) )
+				if vlen( vsub( rest[i], shared ) ) > 0.25 * length:
+					continue
 			num = den = 0.0
 			err1 = 0.0
 			for f in sample:
@@ -577,12 +686,15 @@ def main( md3Path, outBase ):
 				err += vdot( d, d )
 			if best[3] is None or err < best[3]:
 				best = ( b, o, w, err )
+		if i in pins:
+			best = pins[i] if len( pins[i] ) == 3 else ( pins[i][0], pins[i][0], 1.0 )
 		weights.append( best[:3] )
 
 	# the error of the skinned frames
 	total = maxErr = 0.0
 	count = 0
 	worst = []
+	vertErr = [ [ 0.0, 0.0 ] for i in range( N ) ]
 	for f in range( F ):
 		for i in range( N ):
 			b, o, w = weights[i]
@@ -594,6 +706,8 @@ def main( md3Path, outBase ):
 				worst.append( ( e, f, i ) )
 			total += e
 			maxErr = max( maxErr, e )
+			vertErr[i][0] += e / F
+			vertErr[i][1] = max( vertErr[i][1], e )
 			count += 1
 	if worst:
 		names = [ ( a[0], a[1], a[1] + a[2] ) for a in m.animations() ]
@@ -608,6 +722,17 @@ def main( md3Path, outBase ):
 				joints[b]["name"], joints[o]["name"], w, tuple( round( c ) for c in rest[i] ) ) )
 	print( "  error: %.3f units on average, %.2f at most (the character is %.0f tall)" % ( total / count, maxErr,
 		max( v[2] for v in rest ) - zmin ) )
+
+	# the skin table: every vertex's bones, and how well they carry it
+	with open( outBase + "_skin.txt", "w" ) as fp:
+		fp.write( "# %s's skin (tools/rig/autorig.py): a vertex a line; pin one in tools/rig/skin/%s.txt\n"
+				  % ( os.path.basename( outBase ), os.path.basename( outBase ) ) )
+		fp.write( "# vertex  surface:index  bone  blend  weight  mean_error  max_error  rest_x rest_y rest_z  pinned\n" )
+		for i, ( si, vi ) in enumerate( verts ):
+			b, o, w = weights[i]
+			fp.write( "%4d  %s:%d  %s  %s  %.2f  %.2f  %.2f  %.1f %.1f %.1f%s\n" % ( i, body[si].name, vi, joints[b]["name"],
+				joints[o]["name"] if w < 1.0 else "-", w, vertErr[i][0], vertErr[i][1], *rest[i], "  pinned" if i in pins else "" ) )
+	print( "  wrote %s_skin.txt" % outBase )
 
 	# 5. hardpoints as attachment joints
 	for s in hps:
@@ -635,7 +760,8 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	# rest orientations along the bones, as Half-Life's and Doom 3's rest:
 	# x down the bone (to the child, or on from the parent at an end), z as
 	# near up as it can be; so hitboxes fitted in the joint's space hug the limb
-	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j and joints[k]["zone"] ] for j in range( nj ) }
+	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j and joints[k]["zone"]
+				 and ( joints[k]["zone"] != "hair" or joints[j]["zone"] == "hair" ) ] for j in range( nj ) }
 	restRot = []
 	for j in range( nj ):
 		p = joints[j]["pos"]
@@ -893,8 +1019,8 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		with open( os.path.join( "sound", "char_%s.sndshd" % name ), "w" ) as fp:
 			fp.write( soundShaders )
 	for j, joint in enumerate( joints ):
-		if not joint["zone"]:
-			continue
+		if not joint["zone"] or joint["zone"] == "hair":
+			continue		# the hair has none: shots go through it
 		# the bone's vertexes in its joint's (rotated) space
 		rt = mtrans( restRot[j] )
 		pts = [ mvec( rt, vsub( rest[i], joint["pos"] ) ) for i in range( N ) if assign[i] == j ]

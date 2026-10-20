@@ -31,18 +31,25 @@ implements.
    quaternion method), and each vertex moves to the neighbouring bone whose motion carries it best. A term for nearness
    keeps parts that move together (chest and neck) from trading vertices at random. A vertex its bone carries badly
    (over 4 units off on average) tries every bone: a hip vertex the hanging hand took at first can't reach the leg
-   through neighbours. Repeat until stable, usually 3–4 rounds.
+   through neighbours. Repeat until stable, usually 3–4 rounds. Then a leg's vertices go by where they are along
+   it: the animations hardly bend the knees, so the motion can't tell a thigh from its shin, but the walk IK bends
+   them. One no leg bone carries well (a hand hanging against the thigh) goes back to the bone that does.
 3. **Joints.** Each joint goes to the point that moves least between the parent's and the child's segments over the
    frames, by least squares, but only along the directions the motion pins down. A hinge (knee, elbow) agrees all
    along its axis, and there the template's place stays. A joint moves at most a tenth of the height, and the legs'
    joints keep the template's heights (the knee halfway from crotch to floor): the walk IK bends the leg at them.
 4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
-   vertex), never one leg with the other: the walk IK moves them apart.
+   vertex), never one leg with the other (the walk IK moves them apart), and along a leg only near the joint between
+   the two bones.
 5. **Rest orientations.** Each joint rests along its bone (x toward the child), so hitboxes fitted in its space hug the
    limb.
-6. **Hardpoints.** Daikatana's `hp_gun` and `ctf_flag` triangles become rigid attachment joints, `WEAPON_ATTACHER` and
+6. **Hair.** A ponytail gets its own little spine: the head surface's vertices behind the back of the skull are hair,
+   and up to three bones (`Ponytail1`…, one per six vertices) run down its middle from the root, parented to `Head`.
+   They carry only the hair, which may also stay on the head or neck, and have no hitboxes. Hiro's hangs from the
+   back of his head, Mikiko's from her crown; Superfly has none.
+7. **Hardpoints.** Daikatana's `hp_gun` and `ctf_flag` triangles become rigid attachment joints, `WEAPON_ATTACHER` and
    `FLAG_ATTACHER`, as Doom 3 has `*_ATTACHER` joints.
-7. **Output.**
+8. **Output.**
    - An IQM: the first frame as the rest pose, every frame as a pose, and the frame names (`run01`…) giving the
      animations (`amb`, `walk`, `run`, `atak`, `die`…), the idle and moving ones looping.
    - A model def with a hitbox per bone: the box around the bone's vertices in the joint's space, zoned
@@ -52,17 +59,24 @@ implements.
 
 | Character | Vertexes | Frames | Animations | Average error | Worst vertex | Height |
 | --- | --- | --- | --- | --- | --- | --- |
-| Hiro | 726 | 1394 | 82 | 0.29 | 6 | 54 |
-| Mikiko | 637 | 1259 | 78 | 0.27 | 15 | 58 |
-| Superfly | 709 | 1263 | 77 | 0.31 | 7 | 54 |
+| Hiro | 726 | 1394 | 82 | 0.19 | 9 | 54 |
+| Mikiko | 637 | 1259 | 78 | 0.25 | 8 | 58 |
+| Superfly | 709 | 1263 | 77 | 0.36 | 9 | 54 |
 
 The error is how far each skinned vertex lands from Daikatana's, over all frames. In game the rigged and original models
 look the same frame for frame (`cg_drawSkeleton 1` shows the joints, 2 without the mesh; `def/char_hiro_md3.def` plays
 the original to compare:
 `spawncharacter model_hiro run -4 30; spawncharacter model_hiro_md3 run -4 -30`).
 
-A few vertexes go off (6–15 units) on a few frames: parts that move in ways no single limb does, such as hair, cloth,
-or the neck during the death animations. `RIG_WORST=1 ./dk rig` lists the worst, with the animation and the bones.
+A few vertices go off (8–9 units) on a few frames: parts that move in ways no single limb does, such as the tip of
+Mikiko's ponytail, or the body during the death animations. `RIG_WORST=1 ./dk rig` lists the worst, with the
+animation and the bones.
+
+**The skin table.** The rigger writes `dkres/models/rigged/<name>_skin.txt`: a line per vertex with its surface and
+index, its bone, the bone it blends with and the weight, how far it lands from Daikatana's (on average and at worst),
+and where it rests. Where the rigger gets one wrong, `tools/rig/skin/<name>.txt` pins it to a bone by hand
+(`<surface>:<index> <bone> [<blend bone> <weight>]`). The table stays in `dkres` (it holds Daikatana's positions);
+the pins are only numbers and names, so they're committed.
 
 ## Limits and what's next
 
