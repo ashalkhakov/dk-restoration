@@ -1,0 +1,120 @@
+// hiro's voice, made by tools/rig/autorig.py: Daikatana's (client.cpp PlayClientSound, volume 0.85, normal attenuation); Doom 3 sound shaders, distances in metres
+
+hiro_pain
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/pain1.wav
+	sounds/hiro/pain2.wav
+	sounds/hiro/pain3.wav
+	sounds/hiro/pain4.wav
+	sounds/hiro/pain5.wav
+	sounds/hiro/pain6.wav
+	sounds/hiro/pain7.wav
+	sounds/hiro/pain8.wav
+	sounds/hiro/pain9.wav
+	sounds/hiro/pain10.wav
+}
+
+hiro_pain_heavy
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/death1.wav
+	sounds/hiro/death2.wav
+	sounds/hiro/death3.wav
+	sounds/hiro/death4.wav
+	sounds/hiro/death5.wav
+	sounds/hiro/death6.wav
+	sounds/hiro/death7.wav
+	sounds/hiro/death8.wav
+	sounds/hiro/death9.wav
+	sounds/hiro/death10.wav
+}
+
+hiro_death
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/death1.wav
+	sounds/hiro/death2.wav
+	sounds/hiro/death3.wav
+	sounds/hiro/death4.wav
+}
+
+hiro_gib
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/udeath.wav
+}
+
+hiro_jump
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/jump1.wav
+	sounds/hiro/jump2.wav
+	sounds/hiro/jump3.wav
+}
+
+hiro_land
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/land1.wav
+	sounds/hiro/land2.wav
+	sounds/hiro/land3.wav
+}
+
+hiro_land_hurt
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/landhurt1.wav
+	sounds/hiro/landhurt2.wav
+}
+
+hiro_gasp
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/breathe2.wav
+	sounds/hiro/choke1.wav
+}
+
+hiro_drown
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/waterdeath1.wav
+	sounds/hiro/waterdeath2.wav
+	sounds/hiro/waterdeath3.wav
+}
+
+hiro_exitwater
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/hiro/exitwater.wav
+}

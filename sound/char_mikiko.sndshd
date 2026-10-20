@@ -1,0 +1,116 @@
+// mikiko's voice, made by tools/rig/autorig.py: Daikatana's (client.cpp PlayClientSound, volume 0.85, normal attenuation); Doom 3 sound shaders, distances in metres
+
+mikiko_pain
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/pain1.wav
+	sounds/Mikiko/pain2.wav
+	sounds/Mikiko/pain3.wav
+	sounds/Mikiko/pain4.wav
+	sounds/Mikiko/pain5.wav
+	sounds/Mikiko/pain6.wav
+	sounds/Mikiko/pain7.wav
+	sounds/Mikiko/pain8.wav
+}
+
+mikiko_pain_heavy
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/death1.wav
+	sounds/Mikiko/death2.wav
+	sounds/Mikiko/death3.wav
+	sounds/Mikiko/death4.wav
+	sounds/Mikiko/death5.wav
+	sounds/Mikiko/death6.wav
+	sounds/Mikiko/death7.wav
+	sounds/Mikiko/death8.wav
+}
+
+mikiko_death
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/death1.wav
+	sounds/Mikiko/death2.wav
+	sounds/Mikiko/death3.wav
+	sounds/Mikiko/death4.wav
+}
+
+mikiko_gib
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/udeath.wav
+}
+
+mikiko_jump
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/jump1.wav
+	sounds/Mikiko/jump2.wav
+	sounds/Mikiko/jump3.wav
+}
+
+mikiko_land
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/land1.wav
+	sounds/Mikiko/land2.wav
+	sounds/Mikiko/land3.wav
+}
+
+mikiko_land_hurt
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/landhurt1.wav
+	sounds/Mikiko/landhurt2.wav
+}
+
+mikiko_gasp
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/breathe2.wav
+	sounds/Mikiko/choke1.wav
+}
+
+mikiko_drown
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/waterchoke1.wav
+	sounds/Mikiko/waterchoke2.wav
+	sounds/Mikiko/waterchoke3.wav
+}
+
+mikiko_exitwater
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Mikiko/exitwater.wav
+}

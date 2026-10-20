@@ -80,5 +80,10 @@ hair, cloth, or the body during the death animations.
   though: the `a_*` models are pickups lying flat around their middle, so they sit oddly in the hand. Its only held
   ones are the soldiers' `hw_pistol` and `hw_shotgun` (grip at the origin, barrel along x) and the sword
   `ws_daikatana`.
+- **Sounds and footsteps.** The rigger also writes each character's voice (Daikatana's, `sound/char_<name>.sndshd`
+  sound shaders named by the def's `snd_*` keys) and footstep frames: where each ankle comes down in the run
+  animations (full volume) and the walk ones (0.4; Daikatana and Quake 3 were silent walking). The defs inherit
+  `character_base` (`def/dk_characters.def`), whose `snd_footstep_<type>` name Daikatana's footstep sounds per surface;
+  the converted maps keep Daikatana's surface types (wood, metal, stone, ice…) as Doom 3's in their surface flags.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

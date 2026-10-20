@@ -1,5 +1,6 @@
 // made by tools/rig/autorig.py from models/global/m_superfly.md3
 entityDef model_superfly {
+	"inherit"			"character_base"	// def/dk_characters.def
 	"mesh"				"models/rigged/superfly.iqm"
 	"mins"				"-27 -24 -28"
 	"maxs"				"21 24 34"
@@ -82,6 +83,36 @@ entityDef model_superfly {
 	"anim wstopra"		"wstopra"
 	"anim wstoprb"		"wstoprb"
 
+	"frame bwalk 8"	"footstep Rankle_r 0.4"
+	"frame bwalk 18"	"footstep Lankle_r 0.4"
+	"frame bwalka 9"	"footstep Rankle_r 0.4"
+	"frame bwalka 19"	"footstep Lankle_r 0.4"
+	"frame bwalkb 9"	"footstep Rankle_r 0.4"
+	"frame bwalkb 19"	"footstep Lankle_r 0.4"
+	"frame run 0"	"footstep Rankle_r"
+	"frame run 5"	"footstep Lankle_r"
+	"frame runa 0"	"footstep Rankle_r"
+	"frame runa 5"	"footstep Lankle_r"
+	"frame runb 0"	"footstep Rankle_r"
+	"frame runb 5"	"footstep Lankle_r"
+	"frame walk 8"	"footstep Lankle_r 0.4"
+	"frame walk 17"	"footstep Rankle_r 0.4"
+	"frame walka 8"	"footstep Lankle_r 0.4"
+	"frame walka 17"	"footstep Rankle_r 0.4"
+	"frame walkb 8"	"footstep Lankle_r 0.4"
+	"frame walkb 17"	"footstep Rankle_r 0.4"
+
+	"snd_pain"	"superfly_pain"
+	"snd_pain_heavy"	"superfly_pain_heavy"
+	"snd_death"	"superfly_death"
+	"snd_gib"	"superfly_gib"
+	"snd_jump"	"superfly_jump"
+	"snd_land"	"superfly_land"
+	"snd_land_hurt"	"superfly_land_hurt"
+	"snd_gasp"	"superfly_gasp"
+	"snd_drown"	"superfly_drown"
+	"snd_exitwater"	"superfly_exitwater"
+
 	"hitbox Hips"	"-3.4 -3.7 0.6 -0.2 3.0 3.6 torso"
 	"hitbox Lupleg"	"3.1 -4.8 -1.3 16.3 5.4 9.5 legs"
 	"hitbox Lloleg"	"0.8 -1.7 -2.2 1.6 1.7 1.2 legs"
@@ -123,7 +154,5 @@ entityDef model_superfly {
 	"player_anim LEGS_BACKCR"	"cwalk"
 	"player_anim LEGS_JUMP"	"jump"
 	"player_anim LEGS_JUMPB"	"jump"
-	"player_anim LEGS_LAND"	"aamb"
-	"player_anim LEGS_LANDB"	"aamb"
 	"player_anim LEGS_SWIM"	"swim"
 }

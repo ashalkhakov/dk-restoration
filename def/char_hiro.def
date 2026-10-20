@@ -1,5 +1,6 @@
 // made by tools/rig/autorig.py from models/global/m_hiro.md3
 entityDef model_hiro {
+	"inherit"			"character_base"	// def/dk_characters.def
 	"mesh"				"models/rigged/hiro.iqm"
 	"mins"				"-20 -19 -28"
 	"maxs"				"24 21 33"
@@ -87,6 +88,36 @@ entityDef model_hiro {
 	"anim wstopra"		"wstopra"
 	"anim wstoprb"		"wstoprb"
 
+	"frame bwalk 8"	"footstep Rankle_r 0.4"
+	"frame bwalk 18"	"footstep Lankle_r 0.4"
+	"frame bwalka 8"	"footstep Rankle_r 0.4"
+	"frame bwalka 18"	"footstep Lankle_r 0.4"
+	"frame bwalkb 8"	"footstep Rankle_r 0.4"
+	"frame bwalkb 18"	"footstep Lankle_r 0.4"
+	"frame run 7"	"footstep Lankle_r"
+	"frame run 11"	"footstep Rankle_r"
+	"frame runa 7"	"footstep Lankle_r"
+	"frame runa 11"	"footstep Rankle_r"
+	"frame runb 7"	"footstep Lankle_r"
+	"frame runb 11"	"footstep Rankle_r"
+	"frame walk 10"	"footstep Lankle_r 0.4"
+	"frame walk 18"	"footstep Rankle_r 0.4"
+	"frame walka 10"	"footstep Lankle_r 0.4"
+	"frame walka 18"	"footstep Rankle_r 0.4"
+	"frame walkb 10"	"footstep Lankle_r 0.4"
+	"frame walkb 18"	"footstep Rankle_r 0.4"
+
+	"snd_pain"	"hiro_pain"
+	"snd_pain_heavy"	"hiro_pain_heavy"
+	"snd_death"	"hiro_death"
+	"snd_gib"	"hiro_gib"
+	"snd_jump"	"hiro_jump"
+	"snd_land"	"hiro_land"
+	"snd_land_hurt"	"hiro_land_hurt"
+	"snd_gasp"	"hiro_gasp"
+	"snd_drown"	"hiro_drown"
+	"snd_exitwater"	"hiro_exitwater"
+
 	"hitbox Lupleg"	"7.0 -3.5 0.9 14.9 2.7 16.9 legs"
 	"hitbox Lloleg"	"-1.4 -2.4 -5.2 3.0 2.1 1.5 legs"
 	"hitbox Lankle_r"	"4.3 -3.1 -1.8 6.5 1.6 1.2 legs"
@@ -127,7 +158,5 @@ entityDef model_hiro {
 	"player_anim LEGS_BACKCR"	"cwalk"
 	"player_anim LEGS_JUMP"	"jump"
 	"player_anim LEGS_JUMPB"	"jump"
-	"player_anim LEGS_LAND"	"aamb"
-	"player_anim LEGS_LANDB"	"aamb"
 	"player_anim LEGS_SWIM"	"swim"
 }

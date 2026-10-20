@@ -190,7 +190,7 @@ PLAYER_ANIMS = [
 	( "LEGS_RUN", [ "run" ] ), ( "LEGS_BACK", [ "run" ] ),
 	( "LEGS_IDLECR", [ "camb" ] ), ( "LEGS_WALKCR", [ "cwalk" ] ), ( "LEGS_BACKCR", [ "cwalk" ] ),
 	( "LEGS_JUMP", [ "jump", "ajump" ] ), ( "LEGS_JUMPB", [ "jump", "ajump" ] ),
-	( "LEGS_LAND", [ "aamb", "amb" ] ), ( "LEGS_LANDB", [ "aamb", "amb" ] ),
+	# landing has none: the legs go on with what they play (bg_model.c)
 	( "LEGS_SWIM", [ "swim" ] ),
 ]
 
@@ -199,6 +199,48 @@ HARDPOINTS = { "hp_gun": ( "WEAPON_ATTACHER", "Rhand" ), "ctf_flag": ( "FLAG_ATT
 
 # the animations that loop: Daikatana's names, a weapon prefix (a, b, c, o)
 # and a variant suffix (a, b) on idling, walking, running...
+# footsteps: on these animations' frames where a foot comes down (the
+# cgame traces under it for the surface's sound), at a volume. Daikatana
+# and Quake 3 step only when running; here walking steps too, quieter, and
+# crouching is quiet (as Doom 3's)
+FOOTSTEP_ANIMS = [ ( re.compile( r"^run[ab]?$", re.I ), 1.0 ), ( re.compile( r"^b?walk[ab]?$", re.I ), 0.4 ) ]
+FOOTSTEP_JOINTS = ( "Lankle_r", "Rankle_r" )
+
+# the characters' voices (Daikatana's client.cpp): name -> ( folder, pains,
+# heavy pains (its "death" sounds for big hits), drowning sounds )
+CHARACTER_SOUNDS = {
+	"hiro": ( "hiro", 10, 10, [ "waterdeath1", "waterdeath2", "waterdeath3" ] ),
+	"mikiko": ( "Mikiko", 8, 8, [ "waterchoke1", "waterchoke2", "waterchoke3" ] ),
+	"superfly": ( "Superfly", 7, 7, [ "waterchoke2", "waterchoke3", "waterchoke4" ] ),
+}
+
+def character_sounds( name ):
+	"""The model def's sound keys, each naming a sound shader, and the shaders
+	(Doom 3's .sndshd): ( key lines, sound shader file text )."""
+	if name not in CHARACTER_SOUNDS:
+		return [], ""
+	folder, pains, heavy, drown = CHARACTER_SOUNDS[name]
+	sounds = [
+		( "snd_pain", [ "pain%d" % i for i in range( 1, pains + 1 ) ] ),
+		( "snd_pain_heavy", [ "death%d" % i for i in range( 1, heavy + 1 ) ] ),
+		( "snd_death", [ "death%d" % i for i in range( 1, 5 ) ] ),
+		( "snd_gib", [ "udeath" ] ),
+		( "snd_jump", [ "jump1", "jump2", "jump3" ] ),
+		( "snd_land", [ "land1", "land2", "land3" ] ),
+		( "snd_land_hurt", [ "landhurt1", "landhurt2" ] ),
+		( "snd_gasp", [ "breathe2", "choke1" ] ),
+		( "snd_drown", drown ),
+		( "snd_exitwater", [ "exitwater" ] ),
+	]
+	keys, shaders = [], [ "// %s's voice, made by tools/rig/autorig.py: Daikatana's (client.cpp PlayClientSound,"
+		" volume 0.85, normal attenuation); Doom 3 sound shaders, distances in metres\n" % name ]
+	for key, files in sounds:
+		shader = "%s_%s" % ( name, key[4:] )
+		keys.append( "\t\"%s\"\t\"%s\"" % ( key, shader ) )
+		shaders.append( "%s\n{\n\tminDistance\t6.5\n\tmaxDistance\t16.5\n\tvolume\t\t0.85\n\tno_dups\n%s}\n" % (
+			shader, "".join( "\tsounds/%s/%s.wav\n" % ( folder, f ) for f in files ) ) )
+	return keys, "\n".join( shaders )
+
 LOOPING = re.compile( r"^(a|b|c|o)?(amb|walk|run|ws|swim|ladderup|ladderdn|lookaround|talk|samb)[ab]?$", re.I )
 
 # ------------------------------------------------------------------------
@@ -681,6 +723,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	name = os.path.basename( outBase )
 	lines = [ "// made by tools/rig/autorig.py from %s" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
+			  "\t\"inherit\"\t\t\t\"character_base\"\t// def/dk_characters.def",
 			  "\t\"mesh\"\t\t\t\t\"%s.iqm\"" % gamePath( outBase ),
 			  "\t\"mins\"\t\t\t\t\"%.0f %.0f %.0f\"" % ( bounds[0], bounds[1], bounds[2] ),
 			  "\t\"maxs\"\t\t\t\t\"%.0f %.0f %.0f\"" % ( bounds[3], bounds[4], bounds[5] ),
@@ -692,6 +735,45 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		seen.add( a[0] )
 		lines.append( "\t\"anim %s\"\t\t\"%s\"" % ( a[0], a[0] ) )
 	lines.append( "" )
+
+	# footsteps: where each ankle comes down, once a cycle: the first frame
+	# after its highest that it's in the bottom third of its swing
+	J = { joint["name"]: j for j, joint in enumerate( joints ) }
+	steps = {}
+	stepVolume = {}
+	for a in anims:
+		volumes = [ v for r, v in FOOTSTEP_ANIMS if r.match( a[0] ) ]
+		if not volumes or a[0] in steps:
+			continue
+		stepVolume[a[0]] = volumes[0]
+		steps[a[0]] = {}
+		for foot in FOOTSTEP_JOINTS:
+			if foot not in J:
+				continue
+			z = [ world( J[foot], a[1] + i )[1][2] for i in range( a[2] ) ]
+			lo, hi = min( z ), max( z )
+			if hi - lo < 1:
+				continue
+			low = lo + ( hi - lo ) / 3
+			top = z.index( hi )
+			for k in range( 1, a[2] + 1 ):
+				i = ( top + k ) % a[2]		# the anim loops
+				if z[i] <= low:
+					steps[a[0]].setdefault( i, [] ).append( foot )
+					break
+	for anim in steps:
+		for i in sorted( steps[anim] ):
+			# one command a frame: both feet down at once step once
+			volume = "" if stepVolume[anim] == 1.0 else " %g" % stepVolume[anim]
+			lines.append( "\t\"frame %s %d\"\t\"footstep %s%s\"" % ( anim, i, steps[anim][i][0], volume ) )
+	lines.append( "" )
+	soundKeys, soundShaders = character_sounds( name )
+	lines += soundKeys
+	lines.append( "" )
+	if soundShaders:
+		os.makedirs( "sound", exist_ok = True )
+		with open( os.path.join( "sound", "char_%s.sndshd" % name ), "w" ) as fp:
+			fp.write( soundShaders )
 	for j, joint in enumerate( joints ):
 		if not joint["zone"]:
 			continue

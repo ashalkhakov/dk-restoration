@@ -1,0 +1,17 @@
+// What Daikatana's characters share; their model defs (char_*.def, made by
+// tools/rig/autorig.py) inherit it.
+//
+// Footsteps, Doom 3's way: the "footstep <joint>" frame commands trace under
+// the foot, and its material's surface type picks "snd_footstep_<type>", or
+// "snd_footstep": sound shaders (sound/dk_characters.sndshd). Daikatana's
+// glass steps were silent; here they're the plain ones.
+entityDef character_base {
+	"snd_footstep"				"dk_footstep"
+	"snd_footstep_metal"			"dk_footstep_metal"
+	"snd_footstep_stone"			"dk_footstep_stone"
+	"snd_footstep_wood"			"dk_footstep_wood"
+	"snd_footstep_liquid"			"dk_footstep_liquid"
+	"snd_footstep_ice"			"dk_footstep_ice"
+	"snd_footstep_snow"			"dk_footstep_snow"
+	"snd_footstep_sand"			"dk_footstep_sand"
+}

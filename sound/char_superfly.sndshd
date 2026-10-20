@@ -1,0 +1,114 @@
+// superfly's voice, made by tools/rig/autorig.py: Daikatana's (client.cpp PlayClientSound, volume 0.85, normal attenuation); Doom 3 sound shaders, distances in metres
+
+superfly_pain
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/pain1.wav
+	sounds/Superfly/pain2.wav
+	sounds/Superfly/pain3.wav
+	sounds/Superfly/pain4.wav
+	sounds/Superfly/pain5.wav
+	sounds/Superfly/pain6.wav
+	sounds/Superfly/pain7.wav
+}
+
+superfly_pain_heavy
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/death1.wav
+	sounds/Superfly/death2.wav
+	sounds/Superfly/death3.wav
+	sounds/Superfly/death4.wav
+	sounds/Superfly/death5.wav
+	sounds/Superfly/death6.wav
+	sounds/Superfly/death7.wav
+}
+
+superfly_death
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/death1.wav
+	sounds/Superfly/death2.wav
+	sounds/Superfly/death3.wav
+	sounds/Superfly/death4.wav
+}
+
+superfly_gib
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/udeath.wav
+}
+
+superfly_jump
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/jump1.wav
+	sounds/Superfly/jump2.wav
+	sounds/Superfly/jump3.wav
+}
+
+superfly_land
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/land1.wav
+	sounds/Superfly/land2.wav
+	sounds/Superfly/land3.wav
+}
+
+superfly_land_hurt
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/landhurt1.wav
+	sounds/Superfly/landhurt2.wav
+}
+
+superfly_gasp
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/breathe2.wav
+	sounds/Superfly/choke1.wav
+}
+
+superfly_drown
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/waterchoke2.wav
+	sounds/Superfly/waterchoke3.wav
+	sounds/Superfly/waterchoke4.wav
+}
+
+superfly_exitwater
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		0.85
+	no_dups
+	sounds/Superfly/exitwater.wav
+}

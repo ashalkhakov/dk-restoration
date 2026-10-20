@@ -1,0 +1,100 @@
+// Daikatana's footsteps, Doom 3 sound shaders: one of the files at random.
+// Characters name them by surface type (def/dk_characters.def:
+// "snd_footstep_<type>"). Daikatana plays them at full volume, normal
+// attenuation (p_client.cpp, cl_fx.cpp); distances are Doom 3's, metres.
+
+dk_footstep
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stp1.wav
+	sounds/global/p_stp2.wav
+	sounds/global/p_stp3.wav
+	sounds/global/p_stp4.wav
+}
+
+dk_footstep_metal
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stpmt1.wav
+	sounds/global/p_stpmt2.wav
+	sounds/global/p_stpmt3.wav
+	sounds/global/p_stpmt4.wav
+}
+
+dk_footstep_stone
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stpst1.wav
+	sounds/global/p_stpst2.wav
+	sounds/global/p_stpst3.wav
+	sounds/global/p_stpst4.wav
+}
+
+dk_footstep_wood
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stpwd1.wav
+	sounds/global/p_stpwd2.wav
+	sounds/global/p_stpwd3.wav
+	sounds/global/p_stpwd4.wav
+}
+
+dk_footstep_liquid
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stppu1.wav
+	sounds/global/p_stppu2.wav
+	sounds/global/p_stppu3.wav
+	sounds/global/p_stppu4.wav
+}
+
+dk_footstep_ice
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stpic1.wav
+	sounds/global/p_stpic2.wav
+	sounds/global/p_stpic3.wav
+	sounds/global/p_stpic4.wav
+}
+
+dk_footstep_snow
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stpsn1.wav
+	sounds/global/p_stpsn2.wav
+	sounds/global/p_stpsn3.wav
+	sounds/global/p_stpsn4.wav
+}
+
+dk_footstep_sand
+{
+	minDistance	6.5
+	maxDistance	16.5
+	volume		1
+	no_dups
+	sounds/global/p_stpsd1.wav
+	sounds/global/p_stpsd2.wav
+	sounds/global/p_stpsd3.wav
+	sounds/global/p_stpsd4.wav
+}
