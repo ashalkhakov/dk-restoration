@@ -32,6 +32,23 @@ the file's).
 
 `addbot Hiro` / `addbot Mikiko` (`scripts/dk.bot`) play on every map with an AAS.
 
+## Ladders
+
+A ladder is only held when Use (`+use`, bound to E) is pressed, as in Resident Evil 2's remake. Walking into one
+doesn't grab it. Facing one within reach, a prompt says `[E] Climb`. At the top of one, looking over the edge, it says
+`[E] Climb down`, and Use lowers you onto it, facing it. While held, the player only climbs up and down
+(forward or jump; back or crouch), and the view turns only so far. Use lets go. At the top the climber goes over onto the
+ledge, crouched if the ceiling is low. At the foot, going down steps off.
+
+bspc makes ladder reachabilities from the brush sides marked `SURF_LADDER`, as Daikatana's converted maps have them,
+as well as from Quake 3's `common/ladder` shader. Before that fix, the maps had none (e1m1a now has 97, e4dm1 86, e1dm1 18,
+e1m1b 12). A bot on a ladder reachability faces it, moves forward and presses Use until it holds the ladder
+(`BotTravel_Ladder`). Each press is released before the next, since pmove only takes a new press.
+
+To see a bot use a particular route, `botgoto <bot> <x> <y> <z>` (a server command) orders it there as a
+camp order. For example, on e1dm1, `teleport Hiro -1395 -1612 121 270` and then `botgoto Hiro -1395 -1640 328` send it up the
+ladder by the stairs: it takes hold, climbs and goes over the top. A nearby item can still lead it astray first.
+
 ## Seeing it
 
 `cg_drawAAS 1` (2 large, 3 xxl) draws a world around you, after RaZeR-RBI's
