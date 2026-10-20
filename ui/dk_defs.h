@@ -65,7 +65,6 @@
 	rect DK_PANEL_X DK_PANEL_Y DK_PANEL_W DK_PANEL_H \
 	fullScreen MENU_FALSE \
 	visible MENU_FALSE \
-	outOfBoundsClick \
 	focusColor DK_BRIGHT \
 	onEsc { close NAME }
 

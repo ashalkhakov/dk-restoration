@@ -1,5 +1,4 @@
 // Daikatana's menus, in a game (escape)
 {
 	loadMenu { "ui/dk_ingame.menu" }
-	loadMenu { "ui/dk_panels.menu" }
 }
