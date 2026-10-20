@@ -16,6 +16,8 @@
 #                              shots... to have the HUD, the weapon selector
 #                              and the weapon in them, and the scoreboard)
 #   ./dk rig [character...]    skeletal IQMs of the characters (hiro, mikiko)
+#   ./dk aas [map...]          bot navigation: an AAS world per creature size
+#                              (./dk build bspc first)
 #   ./dk test [map...]         load each map, check the log, take a screenshot
 #   ./dk install [dir]         copy the mod into a Quake 3 folder
 #
@@ -120,6 +122,7 @@ cmd_build() {
 	local name dir
 	[ $# -gt 0 ] || set -- $(repo_names)
 	for name in "$@"; do
+		[ "$name" = bspc ] && { build_bspc; continue; }
 		repo_field "$name" 1 | grep -q . || die "no repository $name"
 		need_repo "$name"
 		dir=$(repo_dir "$name")
@@ -132,6 +135,38 @@ cmd_build() {
 		cmake --build "$BUILD/$name" -j "$JOBS" >"$BUILD/$name.log" 2>&1 \
 			|| { grep -E 'error|Error' "$BUILD/$name.log" | head -20; die "building $name failed, see build/$name.log"; }
 	done
+}
+
+# Spearmint's bspc (code/bspc) still includes botlib and qcommon from where
+# they were before the engine's refactoring (they're in aas/, idlib/ and cm1/
+# now), and the AAS code it links allocates through idlib's import table.
+# It builds against a tree of links that puts them back where it looks,
+# with tools/bspc's allocator glue, into build/bspc.
+build_bspc() {
+	local src c=$BUILD/bspc/compat f
+	src=$(repo_dir spearmint)/code
+	need_repo spearmint
+	say "building bspc"
+	rm -rf "$c"
+	mkdir -p "$c/bspc" "$c/botlib" "$c/qcommon" "$c/idlib"
+	ln -s "$src/zlib" "$c/zlib"
+	for f in "$src"/bspc/*; do ln -s "$f" "$c/bspc/"; done
+	rm "$c/bspc/l_mem.c"
+	ln -s "$src/bspc/l_mem.c" "$c/bspc/l_mem_real.h"
+	cp "$ROOT/tools/bspc/l_mem.c" "$c/bspc/l_mem.c"
+	for f in "$src"/idlib/*; do [ -f "$f" ] && ln -s "$f" "$c/idlib/" && ln -s "$f" "$c/"; done
+	ln -s "$src/idlib/bsp" "$c/idlib/bsp"
+	for f in "$src"/aas/* "$src"/idlib/*.h; do ln -sf "$f" "$c/botlib/"; done
+	for f in l_script l_precomp l_struct l_libvar; do ln -sf "$src/idlib/$f.c" "$c/botlib/"; done
+	for f in "$src"/idlib/* "$src"/idlib/bsp/* "$src"/cm1/* "$src"/qcommon/unzip.* "$src"/qcommon/ioapi.*; do
+		[ -f "$f" ] && ln -sf "$f" "$c/qcommon/"
+	done
+	for f in "$c/idlib/l_memory.h" "$c/botlib/l_memory.h" "$c/l_memory.h"; do
+		rm -f "$f"; cp "$ROOT/tools/bspc/l_memory.h" "$f"
+	done
+	make -C "$src/bspc" release BUILD_DIR="$BUILD/bspc" MOUNT_DIR="$c" -j "$JOBS" >"$BUILD/bspc.log" 2>&1 \
+		|| { grep -E 'error|Undefined' "$BUILD/bspc.log" | head -20; die "building bspc failed, see build/bspc.log"; }
+	cp "$BUILD"/bspc/bspc-release-*/bspc.* "$BUILD/bspc/bspc"
 }
 
 tool() {
@@ -147,6 +182,42 @@ engine() {
 		[ -x "$e" ] && { printf '%s' "$e"; return; }
 	done
 	die "the engine isn't built; run ./dk build spearmint"
+}
+
+# ------------------------------------------------------------------------ aas
+
+# Bot navigation, RTCW's way: an AAS world per creature size, each its own
+# file (tools/aas/<size>.cfg): maps/<map>.aas the player's (bots),
+# <map>_large.aas and <map>_xxl.aas for bigger monsters
+AAS_SIZES="standard large xxl"
+
+cmd_aas() {
+	local bspc map size suffix tmp failed=""
+	bspc=$(tool bspc/bspc)
+	[ $# -gt 0 ] || set -- $(default_maps)
+	tmp=$(mktemp -d)
+	# bspc reads a config by a relative path only
+	cp "$ROOT"/tools/aas/*.cfg "$tmp/"
+	for map in "$@"; do
+		[ -f "$OUT/maps/$map.bsp" ] || die "no converted map out/maps/$map.bsp; ./dk convert $map"
+		printf 'aas %-8s ' "$map"
+		for size in $AAS_SIZES; do
+			suffix=_$size
+			[ "$size" = standard ] && suffix=""
+			rm -f "$tmp/$map.aas"
+			if (cd "$tmp" && "$bspc" -bsp2aas "$OUT/maps/$map.bsp" -output ./ -cfg "$size.cfg") \
+					>"$OUT/aas_$map$suffix.log" 2>&1 && [ -f "$tmp/$map.aas" ]; then
+				mv "$tmp/$map.aas" "$OUT/maps/$map$suffix.aas"
+				printf '%s ' "$size"
+			else
+				printf '%s FAILED (out/aas_%s%s.log) ' "$size" "$map" "$suffix"
+				failed="$failed $map$suffix"
+			fi
+		done
+		echo
+	done
+	rm -rf "$tmp"
+	[ -z "$failed" ] || die "AAS failed:$failed"
 }
 
 # -------------------------------------------------------------------- extract
@@ -441,7 +512,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|run|shots|test|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|aas|run|shots|test|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac
