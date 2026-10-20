@@ -292,9 +292,11 @@ entityDef weapon_shotcycler {
 
 	"weapon_slot"			"4"
 	"bot_rating"			"400"				// Weapons.csv
-	"burstCount"			"6"					// shots at frames 0, 5, ... 25
-	"burstRate"				"0.225"				// 5 frames at 0.045
-	"fireRate"				"1.89"				// the cycle ends at frame 42
+	"burstCount"			"6"					// shots at frames 2, 8, ... 32 of "shoot" (shotcycler.cpp)
+	"burstRate"				"0.27"				// 6 frames at 0.045
+	"fireRate"				"1.44"				// the volley, to frame 34
+	"clipSize"				"6"					// a volley, then it cycles: Doom 3's reload
+	"reloadRate"			"1.93"				// frames 34 to 77
 	"ammoRequired"			"1"
 	"maxAmmo"				"100"
 	"def_projectile"		"projectile_shotcycler"
@@ -308,7 +310,8 @@ entityDef weapon_shotcycler {
 	"anim_raise"			"ready"
 	"anim_lower"			"away"
 	"anim_idle"				"ambc 10"
-	"anim_fire"				"shoot"
+	"anim_fire"				"shoot 22 2 32"		// the volley...
+	"anim_reload"			"shoot 22 34"		// ...and the cycling after it
 	"snd_fire"				"sounds/e1/we_shotcyclershoota.wav sounds/e1/we_shotcyclershootb.wav"
 	"snd_raise"				"sounds/e1/we_shotcyclerready.wav"
 	"flashColor"			"1 0.8 0.4"
