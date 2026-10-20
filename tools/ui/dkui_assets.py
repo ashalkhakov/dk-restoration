@@ -7,6 +7,8 @@
   edit fields) becomes ui/assets/dk/buttons/<glyph>.tga.
 - background: the six 256x256 tiles of the menu backdrop become one
   640x480 ui/assets/dk/background.tga, cut the way Daikatana draws them.
+- console: the console's six tiles (pics/loadscreens/con_0..5) become one
+  640x480 ui/assets/dk/console.tga, laid out the way Daikatana draws them.
 - the status bar icons become ui/assets/dk/hud/<name>.tga.
 - the slider, scroll bar and arrow pictures the menu code loads by fixed
   name (ui/assets/slider2.tga and so on) get Daikatana's glyphs, and the
@@ -140,6 +142,19 @@ def write_background(dkres):
     print("background ->", dst)
 
 
+def write_console(dkres):
+    tiles = os.path.join(dkres, "pics", "loadscreens")
+    row0 = ["%s/con_%d.bmp" % (tiles, i) for i in range(3)]
+    row1 = ["%s/con_%d.bmp" % (tiles, i) for i in range(3, 6)]
+    dst = os.path.join(dkres, "ui", "assets", "dk", "console.tga")
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    # tiles 256, 256 and 128 wide make 640; Daikatana draws the second row
+    # 224 below the first (console.cpp Con_DrawConsolePic), over its bottom
+    magick("(", *row0, "+append", "-crop", "640x224+0+0", "+repage", ")",
+           "(", *row1, "+append", ")", "-append", dst)
+    print("console ->", dst)
+
+
 # fixed asset names of the menu code (ui_shared.h) -> int_buttons glyph
 FIXED_ASSETS = {
     "slider2": "slider_bar",
@@ -185,6 +200,7 @@ def main():
     write_buttons(dkres)
     write_fixed_assets(dkres)
     write_background(dkres)
+    write_console(dkres)
     write_hud_icons(dkres)
 
 

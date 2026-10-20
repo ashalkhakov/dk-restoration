@@ -177,3 +177,14 @@ gfx/2d/loadingblock
 		rgbGen vertex
 	}
 }
+
+// the console: Daikatana's picture (its con_0..5 tiles, tools/ui), slid
+// down from the top as the console opens (cg_console.c draws its bottom part)
+dk/console
+{
+	nopicmip
+	nomipmaps
+	{
+		clampmap ui/assets/dk/console.tga
+	}
+}

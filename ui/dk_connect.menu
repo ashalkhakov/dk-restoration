@@ -2,13 +2,15 @@
 #include "ui/dk_defs.h"
 
 {
-	// the background of the connection screen
+	// the background of the connection screen until the map's levelshot can
+	// show (ui_main.c UI_DrawConnectScreen): Daikatana's console picture, as
+	// it shows while loading
 	menuDef {
 		name Connect
 		fullScreen MENU_TRUE
 		rect 0 0 640 480
 		visible MENU_FALSE
 
-		DK_PIC( 0, 0, 640, 480, "ui/assets/dk/background" )
+		DK_PIC( 0, 0, 640, 480, "dk/console" )
 	}
 }
