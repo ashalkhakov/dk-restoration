@@ -7,6 +7,7 @@
   edit fields) becomes ui/assets/dk/buttons/<glyph>.tga.
 - background: the six 256x256 tiles of the menu backdrop become one
   640x480 ui/assets/dk/background.tga, cut the way Daikatana draws them.
+- the status bar icons become ui/assets/dk/hud/<name>.tga.
 - the slider, scroll bar and arrow pictures the menu code loads by fixed
   name (ui/assets/slider2.tga and so on) get Daikatana's glyphs, and the
   cursor its first frame.
@@ -164,6 +165,17 @@ def write_fixed_assets(dkres):
     print("fixed assets ->", assets)
 
 
+# the status bar's icons, 8-bit pictures with magenta for transparent
+HUD_ICONS = ["armoricon", "healthicon", "ammoicon", "fragicon", "explevicon"]
+
+
+def write_hud_icons(dkres):
+    outdir = os.path.join(dkres, "ui", "assets", "dk", "hud")
+    for name in HUD_ICONS:
+        to_tga(os.path.join(dkres, "pics", "statusbar", name + ".bmp"), os.path.join(outdir, name + ".tga"))
+    print("hud icons ->", outdir)
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
@@ -173,6 +185,7 @@ def main():
     write_buttons(dkres)
     write_fixed_assets(dkres)
     write_background(dkres)
+    write_hud_icons(dkres)
 
 
 if __name__ == "__main__":

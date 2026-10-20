@@ -1,0 +1,93 @@
+#include "ui/menudef.h"
+
+// Daikatana's status bar (cl_scrn.cpp, SCR_DrawStats), at its places on a
+// 640x480 screen kept at the bottom centre of wider ones: the bar and the
+// player's face, and the armor, health, ammo and frags, each an icon, a
+// label and a number, the number red when it runs low.
+
+#define HUD_NUMBERS			"fonts/dk/mainnums" 20		// green digits
+#define HUD_NUMBERS_LOW		"fonts/dk/mainnumsred" 20	// red digits
+#define HUD_LABELS			"fonts/dk/statbar_font" 20
+#define HUD_SCALE			.4167						// 20 pixel fonts at their own size
+
+// a picture of the bar
+#define HUD_PIC( X, Y, W, H, SHADER ) \
+	itemDef { \
+		rect X Y W H \
+		style WINDOW_STYLE_SHADER \
+		background SHADER \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+// a label under an icon
+#define HUD_LABEL( X, TEXT ) \
+	itemDef { \
+		rect X 458 80 16 \
+		text TEXT \
+		font HUD_LABELS \
+		textscale HUD_SCALE \
+		textaligny 16 \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+// a number centred on X, in FONT, shown when FLAGS say so
+#define HUD_VALUE( X, OWNERDRAW, FONT, FLAGS ) \
+	itemDef { \
+		rect X 445 80 16 \
+		ownerdraw OWNERDRAW \
+		ownerdrawflag FLAGS \
+		font FONT \
+		textscale HUD_SCALE \
+		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+{
+	menuDef {
+		name "dk_hud"
+		fullScreen MENU_FALSE
+		visible MENU_TRUE
+		rect 0 0 640 480
+		screenPlacement PLACE_CENTER PLACE_BOTTOM
+
+		// the bar: three pieces and, between the first two, the face
+		HUD_PIC( 98, 352, 128, 128, "pics/statusbar/bottom_1" )
+		HUD_PIC( 354, 352, 128, 128, "pics/statusbar/bottom_3" )
+		HUD_PIC( 482, 352, 128, 128, "pics/statusbar/bottom_4" )
+		itemDef {
+			name "face"
+			rect 226 352 128 128
+			ownerdraw CG_PLAYER_FACE
+			text "hud/dk/face_%m_%c"	// see scripts/dk_hud.shader
+			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
+
+		// icons
+		HUD_PIC( 112, 416, 64, 64, "ui/assets/dk/hud/armoricon" )
+		HUD_PIC( 202, 413, 64, 64, "ui/assets/dk/hud/healthicon" )
+		HUD_PIC( 354, 414, 64, 64, "ui/assets/dk/hud/ammoicon" )
+		HUD_PIC( 452, 416, 64, 64, "ui/assets/dk/hud/fragicon" )
+
+		// labels
+		HUD_LABEL( 139, "ARMOR" )
+		HUD_LABEL( 216, "HEALTH" )
+		HUD_LABEL( 382, "AMMO" )
+		HUD_LABEL( 468, "FRAGS" )
+
+		// numbers, centred on 163, 249, 402 and 492
+		HUD_VALUE( 123, CG_PLAYER_ARMOR_VALUE, HUD_NUMBERS, CG_SHOW_ARMOROK )
+		HUD_VALUE( 123, CG_PLAYER_ARMOR_VALUE, HUD_NUMBERS_LOW, CG_SHOW_ARMORLOW )
+		HUD_VALUE( 209, CG_PLAYER_HEALTH, HUD_NUMBERS, CG_SHOW_HEALTHOK )
+		HUD_VALUE( 209, CG_PLAYER_HEALTH, HUD_NUMBERS_LOW, CG_SHOW_HEALTHCRITICAL )
+		HUD_VALUE( 362, CG_PLAYER_AMMO_VALUE, HUD_NUMBERS, CG_SHOW_AMMOOK )
+		HUD_VALUE( 362, CG_PLAYER_AMMO_VALUE, HUD_NUMBERS_LOW, CG_SHOW_AMMOLOW )
+		HUD_VALUE( 452, CG_PLAYER_SCORE, HUD_NUMBERS, 0 )
+	}
+}

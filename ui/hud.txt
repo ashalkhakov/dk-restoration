@@ -1,0 +1,4 @@
+// the in-game HUD: Daikatana's status bar
+{
+	loadMenu { "ui/dk_hud.menu" }
+}

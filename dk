@@ -12,7 +12,8 @@
 #   ./dk extract [step...]     make game data from Daikatana's (see below)
 #   ./dk convert [map...]      convert maps, all the playable ones by default
 #   ./dk run [args...]         play, e.g. ./dk run +devmap e2dm1
-#   ./dk shots <map> [tag]     screenshots from the spawn points
+#   ./dk shots <map> [tag]     screenshots from the spawn points (HUD=1 ./dk
+#                              shots... to have the HUD and weapon in them)
 #   ./dk test [map...]         load each map, check the log, take a screenshot
 #   ./dk install [dir]         copy the mod into a Quake 3 folder
 #
@@ -108,7 +109,7 @@ cmake_args() {
 	[ -n "$CMAKE_BUILD_TYPE" ] && args="-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE"
 	case $1 in
 		spearmint) args="$args $SPEARMINT_CMAKE_ARGS" ;;
-		mint-arena) args="$args -DUSE_SCRIPTED_UI=ON $MINT_ARENA_CMAKE_ARGS" ;;
+		mint-arena) args="$args -DUSE_SCRIPTED_UI=ON -DUSE_BASEGAME_MP_HUD=ON $MINT_ARENA_CMAKE_ARGS" ;;
 	esac
 	printf '%s' "$args"
 }
@@ -326,7 +327,7 @@ play_script() {
 	mkdir -p "$home/$GAME"
 	printf '%s\n' "$@" quit >"$home/$GAME/dk_$name.cfg"
 	(play "$home" +set r_fullscreen 0 +set r_mode -1 +set r_customwidth 960 +set r_customheight 600 \
-		+set s_initsound 0 +set bot_enable 0 +set cg_draw2D 0 +set cg_drawGun 0 \
+		+set s_initsound 0 +set bot_enable 0 +set cg_draw2D "${HUD:-0}" +set cg_drawGun "${HUD:-0}" \
 		+devmap "$map" +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
 }
 
