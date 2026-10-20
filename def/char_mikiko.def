@@ -104,6 +104,19 @@ entityDef model_mikiko {
 	"frame walka 11"	"footstep Lankle_r 0.4"
 	"frame walkb 11"	"footstep Lankle_r 0.4"
 
+	"anim_speed bwalk"	"49"
+	"anim_speed bwalka"	"49"
+	"anim_speed bwalkb"	"49"
+	"anim_speed cwalk"	"32"
+	"anim_speed cwalka"	"32"
+	"anim_speed cwalkb"	"32"
+	"anim_speed run"	"155"
+	"anim_speed runa"	"154"
+	"anim_speed runb"	"154"
+	"anim_speed walk"	"39"
+	"anim_speed walka"	"39"
+	"anim_speed walkb"	"39"
+
 	"ladder_climb"		"28.0"	// a cycle of ladderup climbs this (rungs half as far apart)
 	"ladder_reach"		"9.5"	// the hands this far ahead
 

@@ -6,6 +6,13 @@
 // "snd_footstep": sound shaders (sound/dk_characters.sndshd). Daikatana's
 // glass steps were silent; here they're the plain ones.
 entityDef character_base {
+	// moving: Daikatana's characters move like people, Hiro's run about 110
+	// units a second (a unit is ~3.3 cm), its walk 45; Quake's 320 left the
+	// feet sliding. One speed for all, about Doom 3's run in these units; the
+	// legs play as fast as their "anim_speed" needs (bg_model.c)
+	"run_speed"				"170"
+	"walk_scale"			"0.35"
+
 	// Doom 3's walk IK (bg_ik.c, Doom 3's player keys): the feet planted on the
 	// floor under them; the rig's joints are Doom 3's. No ball joint: the ankle
 	// stands for the foot
@@ -19,6 +26,14 @@ entityDef character_base {
 	"ik_knee2"				"Rloleg"
 	"ik_ankle2"				"Rankle_r"
 	"ik_foot2"				"Rankle_r"
+	// the arms, Doom 3's reach IK (idIK_Reach): the hands on a ladder
+	"ik_numArms"			"2"
+	"ik_shoulder1"			"Luparm"
+	"ik_elbow1"				"Lloarm"
+	"ik_hand1"				"Lhand"
+	"ik_shoulder2"			"Ruparm"
+	"ik_elbow2"				"Rloarm"
+	"ik_hand2"				"Rhand"
 	"ik_footSize"			"4"
 
 	"snd_footstep"				"dk_footstep"

@@ -103,6 +103,19 @@ entityDef model_superfly {
 	"frame walkb 10"	"footstep Lankle_r 0.4"
 	"frame walkb 19"	"footstep Rankle_r 0.4"
 
+	"anim_speed bwalk"	"61"
+	"anim_speed bwalka"	"61"
+	"anim_speed bwalkb"	"61"
+	"anim_speed cwalk"	"53"
+	"anim_speed cwalka"	"53"
+	"anim_speed cwalkb"	"53"
+	"anim_speed run"	"143"
+	"anim_speed runa"	"143"
+	"anim_speed runb"	"142"
+	"anim_speed walk"	"50"
+	"anim_speed walka"	"50"
+	"anim_speed walkb"	"50"
+
 	"ladder_climb"		"25.8"	// a cycle of ladderup climbs this (rungs half as far apart)
 	"ladder_reach"		"11.1"	// the hands this far ahead
 

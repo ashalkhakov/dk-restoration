@@ -111,7 +111,10 @@ the pins are only numbers and names, so they're committed.
 - **Animation speed.** The IQM plays the animations at 20 frames a second, as Daikatana plays its characters'
   (`FRAMETIME_FPS20`: `client_init.cpp`, `bot.cpp`). They're paced like people: Hiro's run covers about 100 units a
   second and his walk 36 (he's 54 tall, so a unit is about 3.3 cm), while the player runs at 320 as in Daikatana and
-  Quake, whose feet slid too.
+  Quake, whose feet slid too. So the characters run at 170 (`character_base`'s `run_speed`, about Doom 3's run in
+  these units) and walk at 35% of it, and the rigger measures each move animation's speed over the ground
+  (`anim_speed`, from how far each sole reaches forward and back a cycle): the legs play that much faster or slower,
+  Hiro's run at 1.5×.
 - **Ladders.** `ladderup` and `ladderdn` are the climbing (`LEGS_CLIMB`, `LEGS_CLIMBDOWN`). They climb in place; the
   rigger measures how far a cycle climbs (the body rises as fast as the holding hands and feet go down: Hiro 26,
   e1m1a's rungs are 12 apart) and how far ahead the hands hold, `ladder_climb` and `ladder_reach`. Daikatana has no

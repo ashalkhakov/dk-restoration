@@ -365,6 +365,8 @@ def place_template( rest, tris, headVerts, gunHand = None ):
 # Daikatana plays its characters' animations at 20 frames a second
 # (FRAMETIME_FPS20: client_init.cpp, bot.cpp, Sidekick.cpp)
 ANIM_FPS = 20.0
+# the animations that move the character over the ground (their speed measured)
+MOVING_ANIMS = re.compile( r"^(run|walk|bwalk|cwalk)[ab]?$" )
 SEAM = 0.3			# vertexes this near are one place
 HAIR_BONES = 3		# at most
 
@@ -1098,6 +1100,29 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			volume = "" if stepVolume[anim] == 1.0 else " %g" % stepVolume[anim]
 			lines.append( "\t\"frame %s %d\"\t\"footstep %s%s\"" % ( anim, i, steps[anim][i][0], volume ) )
 	lines.append( "" )
+	# how fast each moving animation goes over the ground at ANIM_FPS: each
+	# foot's sole (its lowest third) reaches forward and back by a step a
+	# cycle, two steps a cycle; the game plays the legs faster or slower to
+	# match the player's speed ("anim_speed")
+	for a in anims:
+		if not MOVING_ANIMS.match( a[0] ) or a[2] < 2:
+			continue
+		reach = []
+		for foot in FOOTSTEP_JOINTS:
+			vs = [ i for i in range( N ) if assign[i] == J[foot] ]
+			if not vs:
+				continue
+			xs = []
+			for k in range( a[2] ):
+				pts = sorted( ( body[verts[i][0]].frames[a[1] + k][verts[i][1]] for i in vs ), key = lambda p: p[2] )
+				pts = pts[:max( 3, len( pts ) // 3 )]
+				xs.append( sum( p[0] for p in pts ) / len( pts ) )
+			reach.append( max( xs ) - min( xs ) )
+		if reach:
+			speed = 2 * sum( reach ) / len( reach ) / ( a[2] / ANIM_FPS )
+			lines.append( "\t\"anim_speed %s\"\t\"%.0f\"" % ( a[0], speed ) )
+	lines.append( "" )
+
 	# the ladder: how far a cycle of climbing climbs (the body rises as fast
 	# as the holding hands and feet go down it, which they do in place), and
 	# how far ahead the hands hold it
