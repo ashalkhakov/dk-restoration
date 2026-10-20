@@ -49,14 +49,10 @@ polygons (`r_maxpolys`, `r_maxpolyverts`), which `default.cfg` sets.
 
 ## bspc
 
-The compiler is Spearmint's own (`code/bspc`). It still includes the botlib and qcommon from where they were before the
-engine moved them into `aas/`, `idlib/` and `cm1/`, and the AAS code it links allocates through idlib's import table.
-`./dk build bspc` builds it, without touching Spearmint, against a tree of links that puts them back where it looks, with
-`tools/bspc`'s glue for the allocator and the import table. Bringing bspc up to date in Spearmint itself would make that
-unneeded.
-
-bspc takes its configuration by a relative path, and its output path must be short; `./dk aas` runs it in a temporary
-folder for both.
+The compiler is Spearmint's own (`code/bspc`), built by `./dk build bspc` from its Makefile. It links the AAS code in
+Spearmint's `code/aas`, idlib's script parser and BSP loaders, and the old collision code (`code/cm1`);
+`bspc/bspc_idlib.c` gives them what the engine would (idlib's import table over bspc's allocator and stdio, and the
+zone).
 
 ## What's next
 
