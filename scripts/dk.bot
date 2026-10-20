@@ -12,3 +12,9 @@ name		Mikiko
 model		mikiko
 aifile		bots/major_c.c
 }
+
+{
+name		Superfly
+model		superfly
+aifile		bots/grunt_c.c
+}

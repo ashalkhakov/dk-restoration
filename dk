@@ -257,7 +257,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 
 # skeletal IQMs of Daikatana's characters (tools/rig/autorig.py): into the
 # extracted data, as they're made from it, their model defs into def/
-RIG_CHARACTERS="hiro mikiko"
+RIG_CHARACTERS="hiro mikiko superfly"
 cmd_rig() {
 	local name
 	[ $# -gt 0 ] || set -- $RIG_CHARACTERS
