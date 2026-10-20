@@ -1,0 +1,109 @@
+// Rocket, grenade and C4 blasts (Daikatana CL_ExplosionParticles and
+// CL_BigExplosionParticles): fireballs, black smoke rising, orange sparks.
+
+Particle
+{
+	count		5 6
+	life		500 800
+	origin		0 -12 -12 12 12 12
+	velocity	40 -80 -80 150 80 80
+	rgb
+	{
+		start	0.9 0.85 0.3
+		end		0.8 0.3 0.05
+		flags	linear
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	8 12
+		end		20 28
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-30 30
+	shaders [ dkfx/cp4 dkfx/fire ]
+	flags		useAlpha
+}
+
+Particle
+{
+	count		8 10
+	life		1200 1800
+	delay		50 200
+	origin		0 -20 -20 10 20 20
+	velocity	20 -60 -60 80 60 60
+	gravity		40 70
+	rgb
+	{
+		start	0.08 0.07 0.06
+	}
+	alpha
+	{
+		start	0.75
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	12 18
+		end		36 48
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-15 15
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}
+
+Tail
+{
+	count		24 32
+	life		400 900
+	velocity	-160 -160 -160 160 160 160
+	gravity		-250
+	spawnFlags	absoluteVel
+	rgb
+	{
+		start	1 0.6 0.3
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	1 1.6
+	}
+	length
+	{
+		start	8 14
+		end		2
+		flags	linear
+	}
+	shaders [ dkfx/beamspark ]
+	flags		usePhysics expensivePhysics
+	bounce		0.35
+}
+
+Light
+{
+	life		250
+	rgb
+	{
+		start	1 0.55 0.15
+	}
+	size
+	{
+		start	320
+		end		0
+		flags	linear
+	}
+}

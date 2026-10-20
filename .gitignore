@@ -68,3 +68,6 @@ _deps
 dkres/
 basedk/
 build/
+
+out/
+.DS_Store

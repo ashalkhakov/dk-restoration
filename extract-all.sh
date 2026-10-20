@@ -41,7 +41,7 @@ fi
 if [ "$BUILD_TEXTURES" -gt 0 ]; then
     while IFS= read -r -d '' file; do
         # single filename is in $file
-        build/tools/wal-tools/wal-export "${file}" -mip 0 -o "${file%.wal}"
+        build/tools/wal-tools/wal-export "${file}" -mip 0 -expand -o "${file%.wal}"
         #rm "${file}"
     done < <(find dkres/textures -type f -name '*.wal' -print0)
 fi
@@ -50,7 +50,7 @@ fi
 if [ "$BUILD_SKINS" -gt 0 ]; then
     while IFS= read -r -d '' file; do
         # single filename is in $file
-        build/tools/wal-tools/wal-export "${file}" -mip 0 -o "${file%.wal}"
+        build/tools/wal-tools/wal-export "${file}" -mip 0 -expand -o "${file%.wal}"
         #rm "${file}"
     done < <(find dkres/skins -type f -name '*.wal' -print0)
 fi
@@ -110,10 +110,17 @@ if [ "$BUILD_MAPS" -gt 0 ]; then
     cp -f maps/*_tracemap.tga dkres/maps
 fi
 
-# scripts
+# scripts, effects and menus
 if [ "$BUILD_SCRIPTS" -gt 0 ]; then
     mkdir -p scripts
     cp -f scripts/* dkres/scripts
+    mkdir -p dkres/effects
+    cp -R effects/. dkres/effects/
+    # menu art from Daikatana's fonts and pictures, then the menu scripts
+    python3 tools/ui/dkui_assets.py dkres
+    mkdir -p dkres/ui
+    cp -f ui/* dkres/ui/
+    cp -f gameinfo.txt dkres/
 fi
 
 if [ "$INSTALL_FILES" -gt 0 ]; then

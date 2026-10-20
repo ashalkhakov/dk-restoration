@@ -1,0 +1,63 @@
+// Bullet hitting a wall (Daikatana TE_SMOKE plus the SM_BULLET sparks):
+// a small grey puff that drifts up and yellow spark streaks that fall.
+
+Particle
+{
+	count		2 3
+	life		600 900
+	origin		2 -2 -2 4 2 2
+	velocity	8 -6 -6 20 6 6
+	gravity		12 20
+	rgb
+	{
+		start	0.25 0.25 0.25 0.35 0.35 0.35
+	}
+	alpha
+	{
+		start	0.7
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	2 3
+		end		7 10
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-20 20
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}
+
+Tail
+{
+	count		6 10
+	life		250 450
+	origin		1
+	velocity	60 -90 -90 180 90 90
+	gravity		-250
+	rgb
+	{
+		start	1 1 0.5
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.8 1.2
+	}
+	length
+	{
+		start	4 7
+		end		1
+		flags	linear
+	}
+	shaders [ dkfx/beamspark ]
+	flags		usePhysics expensivePhysics
+	bounce		0.3
+}

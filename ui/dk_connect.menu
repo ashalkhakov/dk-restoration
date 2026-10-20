@@ -1,0 +1,14 @@
+#include "ui/menudef.h"
+#include "ui/dk_defs.h"
+
+{
+	// the background of the connection screen
+	menuDef {
+		name Connect
+		fullScreen MENU_TRUE
+		rect 0 0 640 480
+		visible MENU_FALSE
+
+		DK_PIC( 0, 0, 640, 480, "ui/assets/dk/background" )
+	}
+}

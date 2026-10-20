@@ -1,0 +1,7 @@
+// Daikatana's menus, outside a game
+{
+	loadMenu { "ui/dk_main.menu" }
+	loadMenu { "ui/dk_panels.menu" }
+	loadMenu { "ui/dk_connect.menu" }
+	loadMenu { "ui/dk_error.menu" }
+}

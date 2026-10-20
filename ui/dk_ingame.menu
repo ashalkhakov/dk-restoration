@@ -1,0 +1,31 @@
+#include "ui/menudef.h"
+#include "ui/dk_defs.h"
+
+{
+	// escape in a game: the main menu with Resume, over the paused game
+	menuDef {
+		name ingame
+		fullScreen MENU_FALSE
+		rect 0 0 640 480
+		focusColor DK_BRIGHT
+		onOpen { open dk_options ; plaqueSelect plaque_options }
+		onEsc { close ingame ; DK_CLOSE_PANELS }
+
+		DK_PIC( 0, 0, 640, 480, "ui/assets/dk/background" )
+
+		DK_PLAQUE_OFF( plaque_singleplay, 67, 8.350, "ui/dk/plaque_singleplay" )
+		DK_PLAQUE( plaque_multi, 95, 7.185, "ui/dk/plaque_multi", DK_CLOSE_PANELS ; open dk_multiplayer )
+		DK_PLAQUE_OFF( plaque_loadgame, 122, 6.020, "ui/dk/plaque_loadgame" )
+		DK_PLAQUE_OFF( plaque_savegame, 150, 4.855, "ui/dk/plaque_savegame" )
+		DK_PLAQUE( plaque_sound, 177, 3.690, "ui/dk/plaque_sound", DK_CLOSE_PANELS ; open dk_sound )
+		DK_PLAQUE( plaque_video, 205, 2.525, "ui/dk/plaque_video", DK_CLOSE_PANELS ; open dk_video )
+		DK_PLAQUE( plaque_mouse, 233, 1.360, "ui/dk/plaque_mouse", DK_CLOSE_PANELS ; open dk_mouse )
+		DK_PLAQUE( plaque_keyboard, 260, 0.195, "ui/dk/plaque_keyboard", DK_CLOSE_PANELS ; open dk_keyboard )
+		DK_PLAQUE_OFF( plaque_joystick, 288, -0.970, "ui/dk/plaque_joystick" )
+		DK_PLAQUE( plaque_options, 315, -2.135, "ui/dk/plaque_options", DK_CLOSE_PANELS ; open dk_options )
+		DK_PLAQUE_OFF( plaque_config, 343, -3.300, "ui/dk/plaque_config" )
+		DK_PLAQUE( plaque_credits, 371, -4.465, "ui/dk/plaque_credits", DK_CLOSE_PANELS ; open dk_credits )
+		DK_PLAQUE( plaque_resume, 398, -5.630, "ui/dk/plaque_resume", DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_PLAQUE( plaque_quit, 426, -6.795, "ui/dk/plaque_quit", DK_CLOSE_PANELS ; open dk_quit )
+	}
+}

@@ -1,0 +1,19 @@
+// Game types the menus offer (description, g_gametype)
+gametypes {
+  { "Deathmatch" 0 }
+  { "Tournament" 1 }
+  { "Team Deathmatch" 3 }
+  { "Capture the Flag" 4 }
+}
+
+joingametypes {
+  { "All" -1 }
+  { "Deathmatch" 0 }
+  { "Tournament" 1 }
+  { "Team Deathmatch" 3 }
+  { "Capture the Flag" 4 }
+}
+
+// the map list comes from scripts/*.arena
+maps {
+}

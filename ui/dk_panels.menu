@@ -1,0 +1,266 @@
+#include "ui/menudef.h"
+#include "ui/dk_defs.h"
+
+// The panels that open on the left of the main menu, one per plaque.
+// Positions are Daikatana's (dk_menu_*.cpp), less the panel corner (80, 90).
+
+{
+	// Multiplayer: who you are and where to play
+	menuDef {
+		DK_PANEL( dk_multiplayer )
+
+		DK_LABEL( 20, 20, "Player Name" )
+		DK_FIELD( 20, 40, "name", 32 )
+
+		DK_BUTTON_LONG( 20, 75, "Find an Internet Game", setcvar ui_netSource 2 ; close dk_multiplayer ; open dk_join )
+		DK_BUTTON_LONG( 20, 105, "Find a Local Game", setcvar ui_netSource 0 ; close dk_multiplayer ; open dk_join )
+		DK_BUTTON_LONG( 20, 135, "Start a Multiplayer Game", close dk_multiplayer ; open dk_host )
+
+		DK_PIC( 20, 175, 64, 64, "pics/interface/mplayer" )
+
+		DK_MULTI( 20, 270, "Connect Rate:", "rate", { "28.8k" 2500 "56.6k" 4000 "ISDN" 5000 "Cable/DSL" 25000 "T1/LAN" 90000 } )
+	}
+
+	// Join: the server list
+	menuDef {
+		DK_PANEL( dk_join )
+		onOpen { uiScript UpdateFilter }
+
+		DK_BACK( 20, 15, close dk_join ; open dk_multiplayer )
+		DK_LABEL_BRIGHT( 50, 16, "Join a Game" )
+
+		itemDef {
+			name serverlist
+			rect 20 45 376 230
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_EMPTY
+			elementwidth 376
+			elementheight 16
+			textscale DK_TS_SMALL
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_SERVERS
+			border 1
+			bordersize 2
+			bordercolor .5 .1 .1 1
+			forecolor DK_GOLD
+			outlinecolor DK_SELECT
+			visible 1
+			columns 4	2 40 24		200 20 10		275 20 5		335 20 4
+			doubleClick { uiScript JoinServer }
+		}
+
+		DK_LABEL( 22, 280, "Server" )
+		DK_LABEL( 220, 280, "Map" )
+		DK_LABEL( 295, 280, "Players" )
+		DK_LABEL( 355, 280, "Ping" )
+
+		DK_BUTTON_MEDIUM( 20, 310, "Refresh", uiScript RefreshServers )
+		DK_BUTTON_MEDIUM( 290, 310, "Join", uiScript JoinServer )
+	}
+
+	// Host: game type, map and limits
+	menuDef {
+		DK_PANEL( dk_host )
+		onOpen { uiScript loadArenas }
+
+		DK_BACK( 20, 15, close dk_host ; open dk_multiplayer )
+		DK_LABEL_BRIGHT( 50, 16, "Start a Game" )
+
+		itemDef {
+			type ITEM_TYPE_OWNERDRAW
+			ownerdraw UI_NETGAMETYPE
+			text "Game Mode:"
+			rect 20 45 300 18
+			textaligny 14
+			textscale DK_TS
+			forecolor DK_GOLD
+			visible 1
+		}
+
+		itemDef {
+			name maplist
+			rect 20 75 200 200
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_EMPTY
+			elementwidth 200
+			elementheight 16
+			textscale DK_TS_SMALL
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_ALLMAPS
+			border 1
+			bordersize 2
+			bordercolor .5 .1 .1 1
+			forecolor DK_GOLD
+			outlinecolor DK_SELECT
+			visible 1
+		}
+
+		DK_LABEL( 240, 75, "Frag Limit" )
+		DK_FIELD( 240, 95, "fraglimit", 4 )
+		DK_LABEL( 240, 125, "Time Limit" )
+		DK_FIELD( 240, 145, "timelimit", 4 )
+		DK_LABEL( 240, 175, "Max Players" )
+		DK_FIELD( 240, 195, "sv_maxclients", 2 )
+		DK_YESNO( 240, 230, "Dedicated:", "ui_dedicated" )
+
+		DK_BUTTON_MEDIUM( 280, 300, "Start!", uiScript StartServer )
+	}
+
+	// Sound
+	menuDef {
+		DK_PANEL( dk_sound )
+
+		DK_SLIDER( 100, 95, 77, "Sound Effect Volume", "s_volume", 0.8, 0, 1 )
+		DK_SLIDER( 100, 155, 137, "Music Volume", "s_musicvolume", 0.25, 0, 1 )
+		DK_YESNO( 100, 200, "Sound:", "s_initsound" )
+	}
+
+	// Video
+	menuDef {
+		DK_PANEL( dk_video )
+
+		DK_LABEL( 20, 35, "Driver" )
+		DK_LABEL_BRIGHT( 120, 35, "OpenGL" )
+
+		DK_MULTI( 20, 70, "Resolution:", "r_mode", { "Desktop" -2 "640x480" 3 "800x600" 4 "1024x768" 6 "1280x1024" 8 "1600x1200" 9 } )
+		DK_SLIDER( 20, 122, 104, "Brightness", "r_gamma", 1, 0.5, 2 )
+		DK_MULTI( 20, 152, "Texture Quality:", "r_picmip", { "Full" 0 "Half" 1 "Quarter" 2 "Eighth" 3 } )
+		DK_SLIDER( 20, 202, 184, "Screen Size", "cg_viewsize", 100, 30, 100 )
+
+		DK_YESNO( 240, 82, "Fullscreen:", "r_fullscreen" )
+		DK_MULTI( 240, 102, "Shadows:", "cg_shadows", { "Off" 0 "On" 1 } )
+		DK_YESNO( 240, 122, "Bullet Holes:", "cg_marks" )
+		DK_YESNO( 240, 142, "Snow and Rain:", "cg_atmosphericEffects" )
+		DK_YESNO( 240, 162, "Dynamic Lights:", "r_dynamiclight" )
+		DK_MULTI( 240, 182, "Effects:", "fx_countScale", { "Low" 0.5 "High" 1 } )
+
+		DK_BUTTON_LONG( 100, 300, "Apply Changes", exec "vid_restart" )
+	}
+
+	// Mouse
+	menuDef {
+		DK_PANEL( dk_mouse )
+
+		DK_LABEL_BRIGHT( 20, 20, "Configure Mouse options:" )
+
+		DK_MULTI( 20, 126, "Reverse Y-Axis:", "m_pitch", { "No" 0.022 "Yes" -0.022 } )
+		DK_YESNO( 20, 146, "Mouse Look:", "cl_freelook" )
+		DK_YESNO( 20, 166, "Smooth Mouse:", "m_filter" )
+
+		DK_SLIDER( 20, 226, 208, "Mouse Speed", "sensitivity", 5, 1, 30 )
+
+		DK_BIND( 20, 50, "Attack", "+attack" )
+		DK_BIND( 20, 68, "Next Weapon", "weapnext" )
+		DK_BIND( 20, 86, "Prev Weapon", "weapprev" )
+	}
+
+	// Keyboard: Daikatana's command list, in two columns
+	menuDef {
+		DK_PANEL( dk_keyboard )
+
+		DK_LABEL_BRIGHT( 24, 20, "Click or Enter to set, Backspace to clear" )
+
+		DK_BIND( 10, 48, "Forward", "+forward" )
+		DK_BIND( 10, 66, "Backward", "+back" )
+		DK_BIND( 10, 84, "Step Left", "+moveleft" )
+		DK_BIND( 10, 102, "Step Right", "+moveright" )
+		DK_BIND( 10, 120, "Attack", "+attack" )
+		DK_BIND( 10, 138, "Jump", "+moveup" )
+		DK_BIND( 10, 156, "Use/Operate", "+button2" )
+		DK_BIND( 10, 174, "Crouch", "+movedown" )
+		DK_BIND( 10, 192, "Next Weapon", "weapnext" )
+		DK_BIND( 10, 210, "Prev Weapon", "weapprev" )
+		DK_BIND( 10, 228, "Turn Left", "+left" )
+		DK_BIND( 10, 246, "Turn Right", "+right" )
+		DK_BIND( 10, 264, "Run", "+speed" )
+		DK_BIND( 10, 282, "Sidestep", "+strafe" )
+
+		DK_BIND( 210, 48, "Look Up", "+lookup" )
+		DK_BIND( 210, 66, "Look Down", "+lookdown" )
+		DK_BIND( 210, 84, "Center View", "centerview" )
+		DK_BIND( 210, 102, "MouseLook", "+mlook" )
+		DK_BIND( 210, 120, "Zoom", "+zoom" )
+		DK_BIND( 210, 138, "Talk", "messagemode" )
+		DK_BIND( 210, 156, "Talk to team", "messagemode2" )
+		DK_BIND( 210, 174, "Scoreboard", "+scores" )
+		DK_BIND( 210, 192, "Weapon 1", "weapon 1" )
+		DK_BIND( 210, 210, "Weapon 2", "weapon 2" )
+		DK_BIND( 210, 228, "Weapon 3", "weapon 3" )
+		DK_BIND( 210, 246, "Weapon 4", "weapon 4" )
+		DK_BIND( 210, 264, "Weapon 5", "weapon 5" )
+		DK_BIND( 210, 282, "Weapon 6", "weapon 6" )
+
+		DK_BUTTON_MEDIUM( 24, 310, "Defaults", exec "exec default.cfg" )
+	}
+
+	// Options
+	menuDef {
+		DK_PANEL( dk_options )
+
+		DK_YESNO( 20, 15, "Always Run:", "cl_run" )
+		DK_YESNO( 20, 35, "Weapon Visible:", "cg_drawGun" )
+		DK_YESNO( 20, 55, "Auto-switch Weapons:", "cg_autoswitch" )
+		DK_YESNO( 20, 75, "Target Names:", "cg_drawCrosshairNames" )
+		DK_YESNO( 20, 95, "Show FPS:", "cg_drawFPS" )
+		DK_YESNO( 20, 115, "Blood and Carnage:", "com_blood" )
+		DK_YESNO( 20, 135, "Weapon Bobbing:", "cg_bobUp" )
+
+		DK_MULTI( 220, 15, "Crosshair:", "cg_drawCrosshair", { "None" 0 "1" 1 "2" 2 "3" 3 "4" 4 } )
+		DK_YESNO( 220, 35, "Simple Items:", "cg_simpleItems" )
+		DK_YESNO( 220, 55, "Gibs:", "cg_gibs" )
+	}
+
+	// Credits
+	menuDef {
+		DK_PANEL( dk_credits )
+
+		DK_LABEL_BRIGHT( 120, 30, "Daikatana" )
+		DK_LABEL( 120, 50, "Ion Storm, 2000" )
+		DK_LABEL_BRIGHT( 120, 90, "This port" )
+		DK_LABEL( 120, 110, "Spearmint and mint-arena" )
+		DK_LABEL( 120, 130, "Daikatana restoration project" )
+		DK_LABEL( 120, 150, "id Software, Raven Software" )
+	}
+
+	// Quit
+	menuDef {
+		DK_PANEL( dk_quit )
+
+		itemDef {
+			rect 0 50 390 18
+			text "What? You quit?"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 195
+			textaligny 14
+			textscale DK_TS
+			forecolor DK_BRIGHT
+			decoration
+			visible 1
+		}
+		itemDef {
+			rect 0 65 390 18
+			text "Don't you want to stick around"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 195
+			textaligny 14
+			textscale DK_TS
+			forecolor DK_BRIGHT
+			decoration
+			visible 1
+		}
+		itemDef {
+			rect 0 80 390 18
+			text "and kill some more?"
+			textalign ITEM_ALIGN_CENTER
+			textalignx 195
+			textaligny 14
+			textscale DK_TS
+			forecolor DK_BRIGHT
+			decoration
+			visible 1
+		}
+
+		DK_BUTTON_SMALL( 110, 140, "Yes", uiScript Quit )
+		DK_BUTTON_SMALL( 210, 140, "No", play "sounds/menus/no_001.wav" ; close dk_quit )
+	}
+}

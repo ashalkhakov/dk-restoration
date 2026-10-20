@@ -1,0 +1,58 @@
+// Daikatana deathmatch maps (titles from its MultiplayerMaps.csv); replaces
+// Quake 3's list so the menus and bots offer only these
+{
+	map "e1dm1"
+	longname "Gibbler on the Roof"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e1dm2"
+	longname "Storm Sector 7"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e2dm1"
+	longname "Trials of Olympus"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e2dm2"
+	longname "Decay of Heroes"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e3dm1"
+	longname "Wizard's Roost"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e3dm2"
+	longname "Shallow Grave"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e4dm1"
+	longname "The Dojo"
+	fraglimit 20
+	type "ffa tourney team"
+}
+
+{
+	map "e4dm2"
+	longname "Hard Lesson"
+	fraglimit 20
+	type "ffa tourney team"
+}
+

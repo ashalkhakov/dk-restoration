@@ -1,0 +1,55 @@
+// Hit on a body (Daikatana TE_BLOOD): drops thrown back along the shot that
+// fall, and a quick spurt that swells and fades in place.
+
+Particle
+{
+	count		6 10
+	life		300 1100
+	origin		0 -2 -2 2 2 2
+	velocity	45 -40 -40 110 40 40
+	gravity		-250
+	rgb
+	{
+		start	0.8 0 0
+	}
+	alpha
+	{
+		start	0.9
+		end		0.2
+		flags	nonlinear
+		parm	60
+	}
+	size
+	{
+		start	1.5 3.5
+	}
+	rotation	0 360
+	shaders [ dkfx/blood2 dkfx/blood3 dkfx/blood4 dkfx/blood5 ]
+	flags		useAlpha usePhysics expensivePhysics impactKills
+}
+
+Particle
+{
+	count		2 3
+	life		250 450
+	velocity	5 -10 -10 20 10 10
+	rgb
+	{
+		start	0.6 0 0
+	}
+	alpha
+	{
+		start	0.8
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	3 5
+		end		10 15
+		flags	linear
+	}
+	rotation	0 360
+	shaders [ dkfx/cp4 dkfx/blood2 ]
+	flags		useAlpha
+}
