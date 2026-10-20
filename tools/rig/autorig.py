@@ -428,6 +428,41 @@ def plot_segments( rest, assign, joints, path ):
 	out.append( "</svg>" )
 	open( path, "w" ).write( "\n".join( out ) )
 
+def cap_holes( sf ):
+	"""Fills the triangle-sized holes in a surface (Hiro's back of the neck
+	misses one): a loop of three open edges, its vertexes by place (the md3
+	splits a vertex where its texture does), gets a triangle wound against
+	its neighbours'."""
+	rest = sf.frames[0]
+	place = {}
+	canon = [ place.setdefault( tuple( round( c * 4 ) for c in p ), i ) for i, p in enumerate( rest ) ]
+	uses = {}
+	for t in sf.triangles:
+		for a, b in ( ( t[0], t[1] ), ( t[1], t[2] ), ( t[2], t[0] ) ):
+			uses.setdefault( tuple( sorted( ( canon[a], canon[b] ) ) ), [] ).append( ( a, b ) )
+	# an open edge's way round, reversed: the filler's
+	back = {}
+	for e, used in uses.items():
+		if len( used ) == 1:
+			a, b = used[0]
+			back[canon[b]] = ( canon[a], b )		# from b's place to a's, b's own vertex
+	added = 0
+	for start in list( back ):
+		loop, at = [], start
+		while at in back and len( loop ) < 4:
+			nxt, vert = back[at]
+			loop.append( vert )
+			at = nxt
+			if at == start:
+				break
+		if len( loop ) == 3 and at == start:
+			sf.triangles.append( tuple( loop ) )
+			for k in loop:
+				back.pop( canon[k], None )
+			added += 1
+	if added:
+		print( "  %s: %d holes capped" % ( sf.name, added ) )
+
 def load_pins( name, body, verts, J ):
 	"""Vertexes pinned to bones by hand, tools/rig/skin/<name>.txt: lines of
 	"<surface>:<index> <bone> [<blend bone> <weight>]" (the skin table's
@@ -467,6 +502,8 @@ def main( md3Path, outBase ):
 	for hp in hps:
 		if HARDPOINTS[hp.name][1] == "Rhand":
 			gunHand = vscale( vadd( vadd( hp.frames[0][0], hp.frames[0][1] ), hp.frames[0][2] ), 1.0 / 3 )
+	for sf in body:
+		cap_holes( sf )
 	base, tris = {}, []
 	for k, ( si, vi ) in enumerate( verts ):
 		base.setdefault( si, k )

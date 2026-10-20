@@ -58,6 +58,10 @@ implements.
    - A model def with a hitbox per bone: the box around the bone's vertices in the joint's space, zoned
      `head` (×2), `torso`, `arms` and `legs` (×0.75).
 
+Daikatana's meshes have a few holes: one missing triangle each in Hiro (the back of his neck, beside the ponytail),
+Mikiko and Superfly, which the original's culling shows as well. The rigger caps them: a loop of three open edges in a
+surface gets a triangle wound like its neighbours.
+
 ## Results
 
 | Character | Vertexes | Frames | Animations | Average error | Worst vertex | Height |
