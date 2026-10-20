@@ -7,6 +7,7 @@ entityDef model_hiro {
 	"crouch_height"		"14"		// maxs z crouched
 	"eye_height"		"25"
 	"crouch_eye_height"	"10"
+	"ik_minWaistAnkleDist"	"21"	// the walk IK's waist drops no lower (Doom 3's)
 
 	"anim aamb"		"aamb"
 	"anim aamba"		"aamba"

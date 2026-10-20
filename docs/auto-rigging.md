@@ -101,6 +101,8 @@ or the neck during the death animations. `RIG_WORST=1 ./dk rig` lists the worst,
 - **Feet on the floor.** Doom 3's walk IK plants the feet on stairs and slopes (`character_base`'s `ik_*` keys, the
   rig's Doom 3 joint names; the ankle stands in for the missing ball joint). Unlike Doom 3, a foot moves at most a
   step (18), a foot over no floor stays as animated, a target out of reach is pulled in rather than folding the leg,
-  the knee bends only forward, and the bones turn without twisting about their length (`bg_ik.c`).
+  the knee bends only forward, and the bones turn without twisting about their length (`bg_ik.c`). The rigger sets each character's
+  `ik_minWaistAnkleDist` (Doom 3's) to 85% of its standing waist-to-ankle height: on a slope the box stands on its
+  uphill edge, and a waist dropping all the way to the feet below folds the other leg into a squat.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

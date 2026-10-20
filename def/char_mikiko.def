@@ -7,6 +7,7 @@ entityDef model_mikiko {
 	"crouch_height"		"15"		// maxs z crouched
 	"eye_height"		"29"
 	"crouch_eye_height"	"10"
+	"ik_minWaistAnkleDist"	"23"	// the walk IK's waist drops no lower (Doom 3's)
 
 	"anim aamb"		"aamb"
 	"anim aamba"		"aamba"

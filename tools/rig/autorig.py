@@ -825,6 +825,12 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	tall = top - bottom
 	eye = top - 0.09 * tall			# Doom 3's player: eyes 68 of 74
 	crouchEye = crouchTop - 0.09 * tall
+	# the walk IK's waist never closer to the higher ankle than this: on a
+	# slope the box stands on its uphill edge, and the waist dropping to the
+	# feet below folds the other leg into a squat
+	Jn = { joint["name"]: j for j, joint in enumerate( joints ) }
+	minWaistAnkle = 0.85 * ( joints[Jn["Body"]]["pos"][2]
+							 - 0.5 * ( joints[Jn["Lankle_r"]]["pos"][2] + joints[Jn["Rankle_r"]]["pos"][2] ) )
 	lines = [ "// made by tools/rig/autorig.py from %s" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
 			  "\t\"inherit\"\t\t\t\"character_base\"\t// def/dk_characters.def",
@@ -834,6 +840,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			  "\t\"crouch_height\"\t\t\"%.0f\"\t\t// maxs z crouched" % crouchTop,
 			  "\t\"eye_height\"\t\t\"%.0f\"" % eye,
 			  "\t\"crouch_eye_height\"\t\"%.0f\"" % crouchEye,
+			  "\t\"ik_minWaistAnkleDist\"\t\"%.0f\"\t// the walk IK's waist drops no lower (Doom 3's)" % minWaistAnkle,
 			  "" ]
 	seen = set()
 	for a in anims:
