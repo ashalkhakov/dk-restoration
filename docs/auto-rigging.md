@@ -1,0 +1,71 @@
+# Skeletal characters, rigged automatically
+
+Daikatana's characters are vertex-animated: each `.dkm` (converted to `.md3`) stores every vertex on every frame.
+Hitboxes and sword combat need skeletons. `tools/rig/autorig.py` recovers a skeleton and skinning weights from those
+frames, so nobody has to rig in Blender, and it keeps Daikatana's own animations.
+
+```
+./dk rig                 # hiro and mikiko, into dkres/models/rigged/, their model defs into def/
+./dk rig hiro            # one
+```
+
+Each character takes about 20 seconds in plain Python. numpy isn't needed. It would only matter for a heavier solve or
+for converting every character in a batch.
+
+## How it works
+
+This is a small form of skinning decomposition, after Le & Deng's SSDR (2012/2014), which Electronic Arts' Dem Bones
+implements.
+
+1. **Skeleton.** The joints are Doom 3's: its human rig's names and hierarchy (`origin`, `Body`, `Hips`, `Lupleg`,
+   `Lloleg`, `Lankle_r`, `Waist`, `Chest`, `Loneck`, `Head`, `Luparm`, `Lloarm`, `Lhand`, and the right side), so tools and
+   animations made for Doom 3 skeletons line up. Where the joints go is measured from the mesh, because Daikatana's
+   characters aren't built like Doom 3's:
+   - the neck, where the body narrows into the head
+   - the crotch, where mesh first appears between the legs
+   - the shoulders, from the body's width there
+   - the hands, at the arms' outermost points (the right one at the gun hardpoint)
+2. **Segments.** Each vertex starts on the nearest bone. Each bone's rigid motion is then fitted to every frame (Horn's
+   quaternion method), and each vertex moves to the neighbouring bone whose motion carries it best. A term for nearness
+   keeps parts that move together (chest and neck) from trading vertices at random. Repeat until stable, usually 3–4
+   rounds.
+3. **Joints.** Each joint goes to the point that moves least between the parent's and the child's segments over the
+   frames, by least squares.
+4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
+   vertex).
+5. **Hardpoints.** Daikatana's `hp_gun` and `ctf_flag` triangles become rigid attachment joints, `WEAPON_ATTACHER` and
+   `FLAG_ATTACHER`, as Doom 3 has `*_ATTACHER` joints.
+6. **Output.**
+   - An IQM: the first frame as the rest pose, every frame as a pose, and the frame names (`run01`…) giving the
+     animations (`amb`, `walk`, `run`, `atak`, `die`…), the idle and moving ones looping.
+   - A model def with a hitbox per bone: the box around the bone's vertices in the joint's space, zoned
+     `head` (×2), `torso`, `arms` and `legs` (×0.75).
+
+## Results
+
+| Character | Vertexes | Frames | Animations | Average error | Worst vertex | Height |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hiro | 726 | 1394 | 82 | 0.35 | 28 | 54 |
+| Mikiko | 637 | 1259 | 78 | 0.42 | 31 | 58 |
+
+The error is how far each skinned vertex lands from Daikatana's, over all frames. In game the rigged and original models
+look the same frame for frame (`def/char_hiro_md3.def` plays the original to compare:
+`spawncharacter model_hiro run -4 30; spawncharacter model_hiro_md3 run -4 -30`).
+
+A few vertexes go far off (28–31 units) on a few frames. They're parts that move in ways no single limb does, such as
+hair, cloth, or the body during the death animations.
+
+## Limits and what's next
+
+- **More bones.** Hands and feet are one bone each, and there are no fingers, toes, hair or cloth. More bones, or a
+  joint placed automatically wherever the error stays high, would bring down the worst vertexes.
+- **Doom 3's rest orientations.** The joints share Doom 3's names and hierarchy, but they rest unrotated, whereas Doom 3's
+  joints rest along their bones. Retargeting Doom 3 animations needs the orientations too, which is a fixed rotation a
+  joint, worked out once.
+- **Animation blending.** Doom 3 plays several animations at once on channels (legs, torso, head, eyes), cross-fades
+  them and syncs them (`idAnimator`/`idAnimBlend`, GPL). Following it means:
+  - porting that blending to the cgame and game (for hitboxes)
+  - an engine call to draw an IQM from joint matrices the cgame computes; Spearmint's IQM drawing only lerps two frames
+    today
+- **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
+  animations of our own or freely licensed ones.

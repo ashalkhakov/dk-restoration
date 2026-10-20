@@ -15,6 +15,7 @@
 #   ./dk shots <map> [tag]     screenshots from the spawn points (HUD=1 ./dk
 #                              shots... to have the HUD, the weapon selector
 #                              and the weapon in them, and the scoreboard)
+#   ./dk rig [character...]    skeletal IQMs of the characters (hiro, mikiko)
 #   ./dk test [map...]         load each map, check the log, take a screenshot
 #   ./dk install [dir]         copy the mod into a Quake 3 folder
 #
@@ -203,6 +204,20 @@ step_sounds() {
 
 step_ui() { python3 "$ROOT/tools/ui/dkui_assets.py" "$DKRES"; }
 step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
+
+# skeletal IQMs of Daikatana's characters (tools/rig/autorig.py): into the
+# extracted data, as they're made from it, their model defs into def/
+RIG_CHARACTERS="hiro mikiko"
+cmd_rig() {
+	local name
+	[ $# -gt 0 ] || set -- $RIG_CHARACTERS
+	mkdir -p "$DKRES/models/rigged"
+	for name in "$@"; do
+		say "rigging $name"
+		(cd "$ROOT" && python3 tools/rig/autorig.py "$DKRES/models/global/m_$name.md3" "$DKRES/models/rigged/$name") \
+			|| die "rigging $name failed"
+	done
+}
 
 cmd_extract() {
 	local step
@@ -426,7 +441,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|run|shots|test|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|run|shots|test|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac
