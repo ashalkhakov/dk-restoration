@@ -1,0 +1,417 @@
+#!/usr/bin/env bash
+# dk: builds, converts, runs and tests the Daikatana port.
+#
+# The code lives in repositories next to this one, each its own checkout:
+# spearmint (engine), mint-arena (game), bsp-sekai (map converter),
+# wal-tools, qwalk and pakextract. Everything builds into build/ here, the
+# converted maps go to out/maps and the game runs with its home in out/.
+#
+#   ./dk setup                 clone the repositories that are missing
+#   ./dk status                branch and state of every repository
+#   ./dk build [repo...]       configure (once) and build, all by default
+#   ./dk extract [step...]     make game data from Daikatana's (see below)
+#   ./dk convert [map...]      convert maps, all the playable ones by default
+#   ./dk run [args...]         play, e.g. ./dk run +devmap e2dm1
+#   ./dk shots <map> [tag]     screenshots from the spawn points
+#   ./dk test [map...]         load each map, check the log, take a screenshot
+#   ./dk install [dir]         copy the mod into a Quake 3 folder
+#
+# Settings for this machine go in dk.local (see dk.local.example).
+#
+# Extract steps, in the order "all" runs them: paks (unpack Daikatana's
+# paks into dkres/), envs, textures, skins, models, sounds, ui (menu art),
+# levelshots (loading screens). "all" leaves out paks.
+
+set -eu
+
+ROOT=$(cd "$(dirname "$0")" && pwd)
+PROJECTS=$(dirname "$ROOT")
+
+# settings, overridden by dk.local
+DK_DATA=""					# Daikatana's data folder, with pak1.pak... (extract paks)
+Q3_DIR=""					# Quake 3 with baseq3, the engine's base path
+INSTALL_DIR=""				# where install puts the mod, Q3_DIR when empty
+RENDERER=opengl2
+JOBS=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
+CMAKE_BUILD_TYPE=""
+SPEARMINT_CMAKE_ARGS=""
+MINT_ARENA_CMAKE_ARGS=""
+EXTRA_MAPS="e1m1a e1m1b e1m1c"	# converted besides the maps of scripts/arenas.txt
+[ -f "$ROOT/dk.local" ] && . "$ROOT/dk.local"
+
+BUILD=$ROOT/build
+OUT=$ROOT/out
+DKRES=$ROOT/dkres
+GAME=dkres					# fs_game
+
+# name, branch, url
+REPOS="spearmint d3-physics git@github.com:ashalkhakov/spearmint.git
+mint-arena cmake-build git@github.com:ashalkhakov/mint-arena.git
+bsp-sekai daikatana-support git@github.com:ashalkhakov/bsp-sekai.git
+wal-tools palette-expansion git@github.com:ashalkhakov/wal-tools.git
+qwalk master https://github.com/ashalkhakov/qwalk.git
+pakextract cmake-build git@github.com:ashalkhakov/pakextract.git"
+
+say() { printf '\033[1m%s\033[0m\n' "$*"; }
+die() { printf 'dk: %s\n' "$*" >&2; exit 1; }
+
+# where a repository is checked out: ../<name>, or <NAME>_DIR from dk.local
+repo_dir() {
+	local var
+	var=$(printf '%s' "$1" | tr 'a-z-' 'A-Z_')_DIR
+	eval "printf '%s' \"\${$var:-$PROJECTS/$1}\""
+}
+
+repo_names() { printf '%s\n' "$REPOS" | awk '{print $1}'; }
+repo_field() { printf '%s\n' "$REPOS" | awk -v n="$1" -v f="$2" '$1 == n {print $f}'; }
+
+need_repo() {
+	[ -d "$(repo_dir "$1")" ] || die "$1 isn't checked out at $(repo_dir "$1"); run ./dk setup"
+}
+
+# ---------------------------------------------------------------- repositories
+
+cmd_setup() {
+	local name dir
+	for name in $(repo_names); do
+		dir=$(repo_dir "$name")
+		if [ -d "$dir" ]; then
+			continue
+		fi
+		say "cloning $name ($(repo_field "$name" 2)) into $dir"
+		git clone -b "$(repo_field "$name" 2)" "$(repo_field "$name" 3)" "$dir"
+	done
+	cmd_status
+}
+
+cmd_status() {
+	local name dir state
+	for name in dk-restoration $(repo_names); do
+		if [ "$name" = dk-restoration ]; then dir=$ROOT; else dir=$(repo_dir "$name"); fi
+		if [ ! -d "$dir/.git" ]; then
+			printf '%-15s missing (./dk setup)\n' "$name"
+			continue
+		fi
+		state=$(git -C "$dir" status -sb | head -1 | sed -n 's/.*\[\(.*\)\]/\1/p')
+		if [ -n "$(git -C "$dir" status --porcelain --untracked-files=no)" ]; then
+			state="changed${state:+, $state}"
+		fi
+		printf '%-15s %-18s %s%s\n' "$name" "$(git -C "$dir" branch --show-current)" \
+			"$(git -C "$dir" log --oneline -1 | cut -c1-60)" "${state:+  ($state)}"
+	done
+}
+
+# ---------------------------------------------------------------------- build
+
+cmake_args() {
+	local args=""
+	[ -n "$CMAKE_BUILD_TYPE" ] && args="-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE"
+	case $1 in
+		spearmint) args="$args $SPEARMINT_CMAKE_ARGS" ;;
+		mint-arena) args="$args -DUSE_SCRIPTED_UI=ON $MINT_ARENA_CMAKE_ARGS" ;;
+	esac
+	printf '%s' "$args"
+}
+
+cmd_build() {
+	local name dir
+	[ $# -gt 0 ] || set -- $(repo_names)
+	for name in "$@"; do
+		repo_field "$name" 1 | grep -q . || die "no repository $name"
+		need_repo "$name"
+		dir=$(repo_dir "$name")
+		say "building $name"
+		if [ ! -f "$BUILD/$name/CMakeCache.txt" ]; then
+			# shellcheck disable=SC2046
+			cmake -S "$dir" -B "$BUILD/$name" $(cmake_args "$name") >"$BUILD/$name.configure.log" 2>&1 \
+				|| { tail -20 "$BUILD/$name.configure.log"; die "configuring $name failed, see build/$name.configure.log"; }
+		fi
+		cmake --build "$BUILD/$name" -j "$JOBS" >"$BUILD/$name.log" 2>&1 \
+			|| { grep -E 'error|Error' "$BUILD/$name.log" | head -20; die "building $name failed, see build/$name.log"; }
+	done
+}
+
+tool() {
+	local path=$BUILD/$1
+	[ -x "$path" ] || die "$1 isn't built; run ./dk build ${1%%/*}"
+	printf '%s' "$path"
+}
+
+engine() {
+	local e
+	for e in "$BUILD"/spearmint/spearmint_*; do
+		case $e in *.dylib|*.so|*.dll|*server*|*ded*) continue ;; esac
+		[ -x "$e" ] && { printf '%s' "$e"; return; }
+	done
+	die "the engine isn't built; run ./dk build spearmint"
+}
+
+# -------------------------------------------------------------------- extract
+
+step_paks() {
+	[ -n "$DK_DATA" ] || die "set DK_DATA in dk.local to Daikatana's data folder"
+	local pak
+	mkdir -p "$DKRES"
+	for pak in "$DK_DATA"/pak*.pak; do
+		"$(tool pakextract/pakextract)" -dk -o "$DKRES" "$pak"
+	done
+	for dir in maps models music sounds; do
+		[ -d "$DK_DATA/$dir" ] && cp -R "$DK_DATA/$dir" "$DKRES/"
+	done
+}
+
+# skyboxes: <name>bk.tga -> <name>_bk.tga, Quake 3's naming
+step_envs() {
+	find "$DKRES/env/32bit" -type f -name '*.tga' | while IFS= read -r f; do
+		case $f in
+			*_bk.tga|*_dn.tga|*_ft.tga|*_lf.tga|*_rt.tga|*_up.tga) ;;
+			*bk.tga|*dn.tga|*ft.tga|*lf.tga|*rt.tga|*up.tga)
+				mv "$f" "${f%??.tga}_$(basename "$f" .tga | tail -c 3).tga" ;;
+		esac
+	done
+}
+
+wal_export_all() {
+	local exporter
+	exporter=$(tool wal-tools/wal-export)
+	find "$DKRES/$1" -type f -name '*.wal' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c \
+		'"$0" "$1" -mip 0 -expand -o "${1%.wal}"' "$exporter"
+}
+step_textures() { wal_export_all textures; }
+step_skins() { wal_export_all skins; }
+
+step_models() {
+	local converter
+	converter=$(tool qwalk/qwalk_converter)
+	(cd "$DKRES" && find models -type f -name '*.dkm' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c \
+		'rm -f "${1%.dkm}.md3"; "$0" -force -i "$1" "${1%.dkm}.md3" >/dev/null' "$converter")
+}
+
+# Daikatana's wavs are 4-bit IMA ADPCM, which Spearmint can't play
+step_sounds() {
+	find "$DKRES/sounds" -type f -name '*.wav' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c '
+		if ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$1" | grep -q adpcm; then
+			ffmpeg -v error -i "$1" -codec:a pcm_s16le -f wav -y "$1.pcm" && mv -f "$1.pcm" "$1"
+		fi' sh
+}
+
+step_ui() { python3 "$ROOT/tools/ui/dkui_assets.py" "$DKRES"; }
+step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
+
+cmd_extract() {
+	local step
+	[ $# -gt 0 ] || die "name the steps: paks envs textures skins models sounds ui levelshots, or all"
+	[ "$1" = all ] && set -- envs textures skins models sounds ui levelshots
+	for step in "$@"; do
+		type "step_$step" >/dev/null 2>&1 || die "no extract step $step"
+		say "extract: $step"
+		"step_$step"
+	done
+}
+
+# -------------------------------------------------------------------- convert
+
+# the maps people play: those of scripts/arenas.txt, and EXTRA_MAPS
+default_maps() {
+	sed -n 's/^[[:space:]]*map[[:space:]]*"\([^"]*\)".*/\1/p' "$ROOT/scripts/arenas.txt"
+	printf '%s\n' $EXTRA_MAPS
+}
+
+cmd_convert() {
+	local converter map failed=""
+	converter=$(tool bsp-sekai/bspsekai)
+	[ $# -gt 0 ] || set -- $(default_maps)
+	mkdir -p "$OUT/maps" "$DKRES/scripts"
+	# the converter leaves out shaders the other maps' files define already,
+	# so a map's own file goes before it is converted again
+	for map in "$@"; do
+		rm -f "$DKRES/scripts/${map}_gen.shader" "$OUT/maps/$map.cm"
+	done
+	for map in "$@"; do
+		[ -f "$DKRES/maps/$map.bsp" ] || die "no Daikatana map $DKRES/maps/$map.bsp"
+		printf 'convert %-8s ' "$map"
+		if (cd "$DKRES" && "$converter" none "maps/$map.bsp" quake3 "$OUT/maps/$map.bsp") >"$OUT/$map.log" 2>&1; then
+			grep -h 'WARNING' "$OUT/$map.log" | head -3 || true
+			echo ok
+		else
+			echo "FAILED, see out/$map.log"
+			failed="$failed $map"
+		fi
+	done
+	[ -z "$failed" ] || die "converting failed:$failed"
+}
+
+# ------------------------------------------------------------------- the mod
+
+# The mod folder <dir>/dkres, made of links to the working trees (link) or
+# of copies (copy).
+assemble() {
+	local mod=$1/$GAME mode=$2 d f lib
+	put() {
+		if [ "$mode" = link ]; then
+			rm -rf "${2:?}"
+			ln -s "$1" "$2"
+		elif [ -d "$1" ]; then
+			mkdir -p "$2"
+			rsync -aL --delete --exclude '*.cm' "$1/" "$2/"
+		else
+			rm -f "${2:?}"
+			cp -L "$1" "$2"
+		fi
+	}
+
+	mkdir -p "$mod/ui" "$mod/scripts"
+	for d in textures env pics sounds models skins fonts music levelshots; do
+		[ -e "$DKRES/$d" ] && put "$DKRES/$d" "$mod/$d"
+	done
+	put "$OUT/maps" "$mod/maps"
+	put "$ROOT/effects" "$mod/effects"
+	put "$ROOT/gameinfo.txt" "$mod/gameinfo.txt"
+
+	for f in "$ROOT"/ui/*; do
+		put "$f" "$mod/ui/$(basename "$f")"
+	done
+	[ -e "$DKRES/ui/assets" ] && put "$DKRES/ui/assets" "$mod/ui/assets"
+
+	# shaders: those of the maps and those of this repository
+	find "$mod/scripts" -name '*_gen.shader' -exec rm -f {} +
+	for f in "$DKRES"/scripts/*_gen.shader "$ROOT"/scripts/*; do
+		[ -e "$f" ] && put "$f" "$mod/scripts/$(basename "$f")"
+	done
+
+	# settings, and the game modules; replaced rather than overwritten,
+	# macOS refuses a signed library changed in place
+	cp -f "$ROOT"/mint/* "$mod/"
+	for lib in "$BUILD"/mint-arena/*.dylib "$BUILD"/mint-arena/*.so "$BUILD"/mint-arena/*.dll; do
+		[ -e "$lib" ] || continue
+		rm -f "$mod/$(basename "$lib")"
+		cp "$lib" "$mod/"
+	done
+	ls "$mod"/mint-cgame_* >/dev/null 2>&1 || die "the game isn't built; run ./dk build mint-arena"
+}
+
+# runs the engine with its home in <home>
+play() {
+	local home=$1 e
+	shift
+	e=$(engine)
+	[ -n "$Q3_DIR" ] || die "set Q3_DIR in dk.local to Quake 3's folder"
+	rm -f "$home"/*.pid "$home/$GAME"/*.pid
+	cd "$(dirname "$e")"
+	"$e" +set fs_basepath "$Q3_DIR" +set fs_homepath "$home" +set fs_game "$GAME" \
+		+set vm_game 0 +set vm_cgame 0 +set sv_pure 0 +set fs_pakWarningDialog 0 \
+		+set com_renderer "$RENDERER" "$@"
+}
+
+cmd_run() {
+	assemble "$OUT/home" link
+	(play "$OUT/home" "$@")
+}
+
+cmd_install() {
+	local dir=${1:-${INSTALL_DIR:-$Q3_DIR}}
+	[ -n "$dir" ] || die "name a folder, or set INSTALL_DIR in dk.local"
+	say "installing into $dir/$GAME"
+	assemble "$dir" copy
+}
+
+# ---------------------------------------------------------------- testing
+
+# runs a script in the engine, its own home so it doesn't touch yours:
+# play_script <name> <map> <commands...>
+play_script() {
+	local name=$1 map=$2 home=$OUT/test-home
+	shift 2
+	assemble "$home" link
+	mkdir -p "$home/$GAME"
+	printf '%s\n' "$@" quit >"$home/$GAME/dk_$name.cfg"
+	(play "$home" +set r_fullscreen 0 +set r_mode -1 +set r_customwidth 960 +set r_customheight 600 \
+		+set s_initsound 0 +set bot_enable 0 +set cg_draw2D 0 +set cg_drawGun 0 \
+		+devmap "$map" +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
+}
+
+cmd_shots() {
+	[ $# -ge 1 ] || die "usage: ./dk shots <map> [tag]"
+	local map=$1 tag=${2:-shots} shots="" i=0 x y z yaw
+	mkdir -p "$OUT/test" "$OUT/shots/$tag"
+	rm -f "$OUT/test-home/$GAME/screenshots/${map}_"*
+	while read -r x y z yaw; do
+		shots="$shots|setviewpos $x $y $z $yaw 0|wait 60|screenshotJPEG ${map}_$i|wait 10"
+		i=$((i + 1))
+	done <<EOF
+$(python3 "$ROOT/tools/dk_spawns.py" "$OUT/maps/$map.bsp" 4)
+EOF
+	local IFS='|'
+	# shellcheck disable=SC2086
+	play_script "shots_$map" "$map" "wait 200" ${shots#|}
+	unset IFS
+	mv "$OUT/test-home/$GAME/screenshots/${map}_"*.jpg "$OUT/shots/$tag/" 2>/dev/null \
+		|| die "no screenshots, see out/test/shots_$map.log"
+	ls "$OUT/shots/$tag/${map}_"*.jpg
+}
+
+# contact_sheet <out.jpg> <pictures...>: four to a row
+contact_sheet() {
+	local sheet=$1 row="" rows="" n=0 r=0 f tmp
+	shift
+	[ -e "$1" ] || return 0
+	tmp=$(mktemp -d)
+	for f in "$@"; do
+		row="$row|$f"
+		n=$((n + 1))
+		if [ $n -eq 4 ]; then
+			(IFS='|'; magick ${row#|} -resize 320x200! +append "$tmp/$r.jpg")
+			rows="$rows|$tmp/$r.jpg"; row=""; n=0; r=$((r + 1))
+		fi
+	done
+	if [ -n "$row" ]; then
+		(IFS='|'; magick ${row#|} -resize 320x200! +append "$tmp/$r.jpg")
+		rows="$rows|$tmp/$r.jpg"
+	fi
+	(IFS='|'; magick ${rows#|} -background black -append "$sheet")
+	rm -rf "${tmp:?}"
+	echo "all: ${sheet#$ROOT/}"
+}
+
+# what makes a map fail its test
+TEST_ERRORS='ERROR|Server crashed|unsupported format|Less than 8 bit|couldn.t open music|MAX_[A-Z_]* exceeded'
+
+cmd_test() {
+	local map failed="" shot
+	[ $# -gt 0 ] || set -- $(default_maps)
+	mkdir -p "$OUT/test" "$OUT/shots/test"
+	for map in "$@"; do
+		printf 'test %-8s ' "$map"
+		shot=$OUT/test-home/$GAME/screenshots/test_$map.jpg
+		rm -f "$shot"
+		play_script "test_$map" "$map" "wait 300" "screenshotJPEG test_$map" "wait 20"
+		if grep -Eq "$TEST_ERRORS" "$OUT/test/test_$map.log"; then
+			echo "FAILED:"
+			grep -E "$TEST_ERRORS" "$OUT/test/test_$map.log" | sort | uniq -c | head -5
+			failed="$failed $map"
+		elif [ ! -s "$DKRES/scripts/${map}_gen.shader" ]; then
+			echo "FAILED: the converter wrote no shaders for it (dkres/scripts/${map}_gen.shader)"
+			failed="$failed $map"
+		elif [ ! -f "$shot" ]; then
+			echo "FAILED: no screenshot, see out/test/test_$map.log"
+			failed="$failed $map"
+		else
+			mv "$shot" "$OUT/shots/test/$map.jpg"
+			echo "ok   out/shots/test/$map.jpg"
+		fi
+	done
+	# all the screenshots on one page
+	command -v magick >/dev/null && contact_sheet "$OUT/shots/test.jpg" "$OUT"/shots/test/*.jpg
+	[ -z "$failed" ] || die "failed:$failed"
+}
+
+# ------------------------------------------------------------------------ main
+
+[ $# -gt 0 ] || { sed -n '2,/^$/s/^# \{0,1\}//p' "$0"; exit 0; }
+command=$1
+shift
+case $command in
+	setup|status|build|extract|convert|run|shots|test|install) "cmd_$command" "$@" ;;
+	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
+	*) die "no command $command; ./dk help" ;;
+esac

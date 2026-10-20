@@ -1,0 +1,27 @@
+# Settings for ./dk on this machine. Copy to dk.local (git ignores it).
+
+# Quake 3 Arena with baseq3: the engine's base path
+Q3_DIR="$HOME/Games/gog/quake-iii-arena"
+
+# Daikatana's data folder, with pak1.pak...: only for ./dk extract paks
+DK_DATA="$HOME/Games/gog/daikatana/data"
+
+# where ./dk install puts the mod; Q3_DIR when empty
+#INSTALL_DIR=""
+
+# a repository somewhere other than next to dk-restoration
+#SPEARMINT_DIR="$HOME/src/spearmint"
+#MINT_ARENA_DIR=...  BSP_SEKAI_DIR=...  WAL_TOOLS_DIR=...  QWALK_DIR=...  PAKEXTRACT_DIR=...
+
+# build options (applied when a build folder is first configured;
+# rm -rf build/<repo> to change them)
+#CMAKE_BUILD_TYPE=Release
+#SPEARMINT_CMAKE_ARGS="-DUSE_INTERNAL_JPEG=ON"	# the Steam Deck needs it
+#MINT_ARENA_CMAKE_ARGS=""
+#JOBS=8
+
+# opengl2 or opengl1
+#RENDERER=opengl2
+
+# maps converted besides those of scripts/arenas.txt
+#EXTRA_MAPS="e1m1a e1m1b e1m1c"
