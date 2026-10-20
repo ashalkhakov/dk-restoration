@@ -1,0 +1,14 @@
+// Daikatana's characters as bots: their skeletal models (def/char_*.def),
+// for now with Quake 3's bot characters for their behaviour
+
+{
+name		Hiro
+model		hiro
+aifile		bots/sarge_c.c
+}
+
+{
+name		Mikiko
+model		mikiko
+aifile		bots/major_c.c
+}

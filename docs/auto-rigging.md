@@ -72,5 +72,10 @@ hair, cloth, or the body during the death animations.
   matrices the cgame hands it (`trap_R_BlendSkeleton`, `trap_R_AddSkeletonToScene`). Try
   `spawncharacter model_hiro walk; characteranim all torso atak`. Eyes and syncing a channel's timing to another's are
   still Doom 3's alone.
+- **Players.** The model defs map Quake 3's player animations (pmove's) to Daikatana's (`player_anim`, from
+  `PLAYER_ANIMS` in `autorig.py`), so `model hiro` (the default) or `model mikiko` plays them as players, with hitboxes;
+  `addbot Hiro` and `addbot Mikiko` (`scripts/dk.bot`) as bots. The weapon goes on `WEAPON_ATTACHER`, the gun
+  hardpoint, oriented as the hand is in the first frame (`aamb001`); Daikatana's own convention for it isn't known
+  here, so a weapon may sit turned or too big.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

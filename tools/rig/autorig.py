@@ -177,6 +177,23 @@ D3_TEMPLATE = [
 # Doom 3's bind pose)
 D3_HEIGHT = 77.0
 
+# Quake 3's player animations (animNumber_t) to Daikatana's, for a character
+# as a player model: the first of each list it has. The torso's attack plays
+# over the legs' (from the waist up); the others leave the torso to the legs.
+PLAYER_ANIMS = [
+	( "BOTH_DEATH1", [ "die" ] ), ( "BOTH_DEAD1", [ "die hold" ] ),
+	( "BOTH_DEATH2", [ "diea", "die" ] ), ( "BOTH_DEAD2", [ "diea hold", "die hold" ] ),
+	( "BOTH_DEATH3", [ "dieb", "die" ] ), ( "BOTH_DEAD3", [ "dieb hold", "die hold" ] ),
+	( "TORSO_ATTACK", [ "atak" ] ), ( "TORSO_ATTACK2", [ "atak" ] ),
+	( "LEGS_IDLE", [ "aamb", "amb" ] ), ( "LEGS_TURN", [ "aamb", "amb" ] ),
+	( "LEGS_WALK", [ "walk" ] ), ( "LEGS_BACKWALK", [ "bwalk", "walk" ] ),
+	( "LEGS_RUN", [ "run" ] ), ( "LEGS_BACK", [ "run" ] ),
+	( "LEGS_IDLECR", [ "camb" ] ), ( "LEGS_WALKCR", [ "cwalk" ] ), ( "LEGS_BACKCR", [ "cwalk" ] ),
+	( "LEGS_JUMP", [ "jump", "ajump" ] ), ( "LEGS_JUMPB", [ "jump", "ajump" ] ),
+	( "LEGS_LAND", [ "aamb", "amb" ] ), ( "LEGS_LANDB", [ "aamb", "amb" ] ),
+	( "LEGS_SWIM", [ "swim" ] ),
+]
+
 # hardpoint surfaces -> attachment joints (Doom 3 names its weapon ones so)
 HARDPOINTS = { "hp_gun": ( "WEAPON_ATTACHER", "Rhand" ), "ctf_flag": ( "FLAG_ATTACHER", "Chest" ) }
 
@@ -686,7 +703,17 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		lo = [ min( p[k] for p in pts ) for k in range( 3 ) ]
 		hi = [ max( p[k] for p in pts ) for k in range( 3 ) ]
 		lines.append( "\t\"hitbox %s\"\t\"%.1f %.1f %.1f %.1f %.1f %.1f %s\"" % ( joint["name"], *lo, *hi, joint["zone"] ) )
-	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale arms\"\t\"0.75\"", "\t\"damage_scale legs\"\t\"0.75\"", "}", "" ]
+	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale arms\"\t\"0.75\"", "\t\"damage_scale legs\"\t\"0.75\"" ]
+	# as a player model: Quake 3's animations (pmove's) to Daikatana's, the
+	# first of each list the character has
+	lines.append( "" )
+	for q3, candidates in PLAYER_ANIMS:
+		for c in candidates:
+			anim, hold = ( c.split() + [ "" ] )[:2]
+			if anim in seen:
+				lines.append( "\t\"player_anim %s\"\t\"%s\"" % ( q3, c ) )
+				break
+	lines += [ "}", "" ]
 	defPath = os.path.join( "def", "char_%s.def" % name )
 	with open( defPath, "w" ) as fp:
 		fp.write( "\n".join( lines ) )
