@@ -1,6 +1,9 @@
-// Daikatana's menus, outside a game
+// Daikatana's menus. They're painted in the order they load, so the main
+// and in-game menus (whose backgrounds fill the screen) come before the
+// panels that open over them.
 {
 	loadMenu { "ui/dk_main.menu" }
+	loadMenu { "ui/dk_ingame.menu" }
 	loadMenu { "ui/dk_panels.menu" }
 	loadMenu { "ui/dk_connect.menu" }
 	loadMenu { "ui/dk_error.menu" }

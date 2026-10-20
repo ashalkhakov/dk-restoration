@@ -1,4 +1,4 @@
-// Daikatana's menus, in a game (escape)
+// Daikatana's in-game menu (escape) loads with the others (ui/menus.txt), so
+// that it's painted under the panels; the UI reads this file after them
 {
-	loadMenu { "ui/dk_ingame.menu" }
 }
