@@ -265,7 +265,6 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
 #   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal]
-#   [selfcollision=0]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -277,8 +276,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # animations play at 10 frames a second (fps=), their idle and their ways of
 # getting about looping; RIG_ANIMS_<name> ("<anim> <fps> [loop];...") sets
 # them one by one. surface=metal: a robot (Daikatana's no-blood monsters), its
-# hits spark. selfcollision=0 (creatures): its ragdoll's bodies don't collide
-# with each other, for one whose small bodies never settle (the frog's).
+# hits spark.
 RIG_MODELS="
 # the player characters
 hiro            player    global/m_hiro
@@ -298,7 +296,7 @@ prisonerb       human     e1/m_prizb
 torture1        human     e1/m_torture1
 torture2        human     e1/m_torture2
 inmater         human     e1/m_inmater           surface=metal
-froginator      creature  e1/m_frog              bones=16 surface=metal selfcollision=0
+froginator      creature  e1/m_frog              bones=16 surface=metal
 slaughterskeet  creature  e1/m_skeeter           bones=10 surface=metal
 thunderskeet    creature  e1/m_tskeet            bones=24 surface=metal
 venomvermin     creature  e1/m_vermin            bones=24 surface=metal
@@ -392,7 +390,7 @@ RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" selfcoll="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -402,7 +400,6 @@ rig_model() {
 			fps=*) fps="--fps ${kv#fps=}" ;;
 			iqm=*) iqm=${kv#iqm=} ;;
 			surface=*) surface="--surface ${kv#surface=}" ;;
-			selfcollision=0) selfcoll="--no-self-collision" ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -413,7 +410,7 @@ rig_model() {
 		player) python3 tools/rig/autorig.py "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
 		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface --anims "$anims" "$md3" "$out" ;;
-		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface $selfcoll --anims "$anims" "$md3" "$out" "$name" ;;
+		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac
 }
