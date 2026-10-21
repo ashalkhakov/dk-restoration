@@ -63,6 +63,9 @@ entity cine_spawn( string def, vector origin, float yaw, string name ) {
 	actor = sys.spawn( def );
 	if ( actor != $null_entity ) {
 		actor.setName( name );
+		if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
+			actor.playCycle( ANIMCHANNEL_LEGS, "amba" );		// its idle, until it's told otherwise
+		}
 	}
 	return actor;
 }

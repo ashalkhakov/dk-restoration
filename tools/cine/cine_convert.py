@@ -283,7 +283,7 @@ def task_lines( task, var, actors ):
 		return [ "// start_walking%s" % ( ( " (Daikatana's " + task["animation"] + ")" ) if task["animation"] else "" ) ]
 	if rig and ty in ( "play_animation", "set_idle_animation" ):
 		a = rig["anims"].get( task["animation"] )
-		if not a:
+		if a is None:
 			return [ "// %s: %s (no such animation of %s's)" % ( ty, task["animation"], rig["character"] ) ]
 		name = a.get( "iqm_name", task["animation"] )
 		if ty == "set_idle_animation":
