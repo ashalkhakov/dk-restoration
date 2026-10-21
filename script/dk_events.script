@@ -10,6 +10,16 @@ scriptEvent	void		wait( float time );
 scriptEvent	void		waitFrame();
 scriptEvent	void		waitFor( entity mover );
 scriptEvent	void		waitForThread( float threadNumber );
+
+// cinematics (Doom 3's): every player sees from the camera, frozen and
+// unhurt, letterboxed, until firstPerson(); a press skips (waits end at once)
+scriptEvent	void		setCamera( entity cameraEnt );
+scriptEvent	void		firstPerson();
+scriptEvent	float		inCinematic();
+scriptEvent	float		skippingCinematic();
+scriptEvent	void		fadeIn( vector color, float time );
+scriptEvent	void		fadeOut( vector color, float time );
+scriptEvent	void		fadeTo( vector color, float alpha, float time );
 scriptEvent	void		print( string text );
 scriptEvent	void		println( string text );
 scriptEvent	void		say( string text );
@@ -133,6 +143,8 @@ scriptEvent	float		getCurrentYaw();
 scriptEvent	float		facingIdeal();
 scriptEvent	void		setFlySpeed( float speed );
 scriptEvent	void		setFlyOffset( float offset );
+scriptEvent	void		start();			// a camera plays (func_cameraspline)
+scriptEvent	void		stop();
 scriptEvent	float		perch( vector pos, vector normal );	// a flyer lands at pos on what faces normal; false if there's no room. Told to move, it takes off
 scriptEvent	float		isPerched();
 scriptEvent	void		enableGravity();

@@ -128,12 +128,12 @@ a hop toward it, a little to one side or the other, as far as there's room
 void monster_froginator::hop() {
 	vector	dir;
 	vector	dest;
-	vector	start;
+	vector	from;
 	float	len;
 	float	frac;
 
-	start = getOrigin();
-	dir = getEnemyPos() - start;
+	from = getOrigin();
+	dir = getEnemyPos() - from;
 	dir_z = 0;
 	dir = sys.vecNormalize( dir + sys.angToRight( '0 1 0' * getCurrentYaw() ) * ( sys.random( 0.6 ) - 0.3 ) * sys.vecLength( dir ) );
 	len = getFloatKey( "hop_min" ) + sys.random( getFloatKey( "hop_max" ) - getFloatKey( "hop_min" ) );
@@ -142,9 +142,9 @@ void monster_froginator::hop() {
 	}
 
 	// short of what's in the way (not you: it means to land on you)
-	frac = sys.trace( start + '0 0 32', start + '0 0 32' + dir * len, getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self );
+	frac = sys.trace( from + '0 0 32', from + '0 0 32' + dir * len, getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self );
 	if ( frac * len >= 48 ) {
-		dest = floorUnder( start + dir * ( frac * len - 16 ) );
+		dest = floorUnder( from + dir * ( frac * len - 16 ) );
 		if ( throwTo( dest, getFloatKey( "hop_up" ), getFloatKey( "hop_speed" ), "jumpa" ) ) {
 			crouch();
 			return;
