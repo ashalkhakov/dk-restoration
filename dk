@@ -237,11 +237,7 @@ wal_export_all() {
 		'"$0" "$1" -mip 0 -expand -o "${1%.wal}"' "$exporter"
 }
 step_textures() { wal_export_all textures; }
-step_skins() {
-	wal_export_all skins
-	# the skins with holes (Daikatana's palette index 255) alpha tested
-	python3 "$ROOT/tools/models/skin_shaders.py" "$DKRES" "$DKRES/scripts/dkskins_gen.shader"
-}
+step_skins() { wal_export_all skins; }
 
 step_models() {
 	local converter
