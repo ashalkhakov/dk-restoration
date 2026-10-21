@@ -5,6 +5,7 @@ entityDef model_sludgeminion {
 	"maxs"			"46 46 67"
 	"hit_mins"		"-56 -56 -42"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"56 56 70"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim amba"		"amba 10 loop"
 	"anim ambb"		"ambb 10"

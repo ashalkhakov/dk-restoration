@@ -5,6 +5,7 @@ entityDef model_trackattack {
 	"maxs"			"23 23 8"
 	"hit_mins"		"-23 -23 -5"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"23 23 8"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim shoota"		"shoota 10"
 

@@ -21,7 +21,8 @@ How (a small form of skinning decomposition, Le & Deng's SSDR):
 With --name, a monster or another character, not a player: def/rig_<name>.def
 (model_<name>) and af/monster_<name>.af, its animations at 10 frames a second
 (--fps) or as --anims "<anim> <fps> [loop];..." says, and with --extra N up to
-N more bones for what the template has no bone for (a cape, wings, a sword).
+N more bones for what the template has no bone for (a cape, wings, a sword);
+--surface metal makes it a robot, its hits spark.
 With --lying, the model lies on its back, its head toward -x (as Daikatana's
 dead bodies: their frames are poses, not animations): it's rigged stood up,
 head up and facing +x, and everything written is turned back to lying.
@@ -590,6 +591,7 @@ def hair_chain( rest, headVerts, head ):
 	return chain, hairIdx
 
 EXTRA_BONES = 0		# --extra: at most this many bones for what the template doesn't carry
+SURFACE = None		# --surface: "metal" for a robot, its hits spark
 LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
 WRITE = True		# False: only how well it fits
 EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
@@ -1646,8 +1648,10 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			  "\t\"crouch_height\"\t\t\"%.0f\"\t\t// maxs z crouched" % crouchTop,
 			  "\t\"eye_height\"\t\t\"%.0f\"" % eye,
 			  "\t\"crouch_eye_height\"\t\"%.0f\"" % crouchEye,
-			  "\t\"ik_minWaistAnkleDist\"\t\"%.0f\"\t// the walk IK's waist drops no lower (Doom 3's)" % minWaistAnkle,
-			  "" ]
+			  "\t\"ik_minWaistAnkleDist\"\t\"%.0f\"\t// the walk IK's waist drops no lower (Doom 3's)" % minWaistAnkle ]
+	if SURFACE:
+		lines.append( "\t\"surface\"\t\t\t\"%s\"\t// Doom 3's surface type: its hits spark, no blood" % SURFACE )
+	lines.append( "" )
 	seen = set()
 	for a in anims:
 		if a[0] in seen:
@@ -1793,7 +1797,7 @@ if __name__ == "__main__":
 		TO_MODEL = lie_down
 		args = args[1:]
 	for opt, var, kind in ( ( "--name", "NAME", str ), ( "--fps", "FPS", float ), ( "--anims", "ANIMS", str ),
-							( "--extra", "EXTRA_BONES", int ) ):
+							( "--extra", "EXTRA_BONES", int ), ( "--surface", "SURFACE", str ) ):
 		if opt in args:
 			i = args.index( opt )
 			globals()[var] = kind( args[i + 1] )

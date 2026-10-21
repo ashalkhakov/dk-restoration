@@ -54,8 +54,9 @@ knights, the gangs and the SEALs, Kage, Mikiko as Kage's…) on Doom 3's human j
 and swords; the rest (the Sludge Minion, the Ragemaster, the Battle Boar, the Crox, the spiders, Medusa, Cerberus, the
 griffon, the dragon, the turrets, the rats and fish) on their own bones. Each is `model_<name>` (the classname without
 `monster_`) in `def/rig_<name>.def`, with its animations at Daikatana's 10 frames a second, hitboxes, both boxes,
-`anim_speed` for its walks and runs, its hardpoints as joints (`hr_muzzle`: where the shots leave) and a ragdoll
-(`af/monster_<name>.af`). Their monster defs (behaviour, AIData's values) are still to be written, as the frog's and the
+`anim_speed` for its walks and runs, its hardpoints as joints (`hr_muzzle`: where the shots leave), a ragdoll
+(`af/monster_<name>.af`) and, for Daikatana's robots, `"surface" "metal"`: hits spark white, as Daikatana's did, instead
+of bleeding. Their monster defs (behaviour, AIData's values) are still to be written, as the frog's and the
 skeet's are.
 
 ## Its script

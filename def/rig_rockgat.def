@@ -5,6 +5,7 @@ entityDef model_rockgat {
 	"maxs"			"41 41 -14"
 	"hit_mins"		"-47 -47 -32"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"47 47 -14"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim ataka"		"ataka 10"
 	"anim stand"		"stand 10"

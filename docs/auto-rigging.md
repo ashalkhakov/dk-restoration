@@ -116,9 +116,9 @@ the pins are only numbers and names, so they're committed.
 `./dk rig` rigs every model of `RIG_MODELS` in `dk`, a table with a line a model:
 
 ```
-# name           rigger    model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name]
+# name           rigger    model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal]
 fatworker        human     e1/m_mwfaty
-froginator       creature  e1/m_frog              bones=16
+froginator       creature  e1/m_frog              bones=16 surface=metal
 priest           human     cinematic/c_priest_e3m1  iqm=priest
 ```
 
@@ -130,7 +130,9 @@ priest           human     cinematic/c_priest_e3m1  iqm=priest
 - **bones=** the most bones a creature gets; **extra=** the most extra bones a humanoid gets (8 by default; the
   players none, so their joints stay as they were); **fps=** the animations' rate (10 by default, a server frame
   each, as Daikatana plays its monsters; the players' 20); **iqm=** the IQM's name (by default the model's file name
-  without `m_`, `dkres/models/rigged/mwfaty.iqm`).
+  without `m_`, `dkres/models/rigged/mwfaty.iqm`); **surface=metal** a robot: the def's `"surface" "metal"` (Doom 3's
+  surface type) makes its hits spark, no blood. They're Daikatana's robotic no-blood monsters (`FRAGTYPE_ROBOTIC`,
+  `FRAGTYPE_NOBLOOD`): the frog, the skeets, the Inmater, the Sludge Minion, the turrets...
 - `RIG_ANIMS_<name>` (`"<anim> <fps> [loop];..."`) sets animations one by one; otherwise the idle (`amba`) and the
   ways of getting about (`walk*`, `run*`, `swim*`, `fly*`, `hover*`, `row*`) loop.
 

@@ -5,6 +5,7 @@ entityDef model_deathsphere {
 	"maxs"			"25 25 34"
 	"hit_mins"		"-32 -32 -12"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"32 32 35"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim amba"		"amba 10 loop"
 	"anim ataka"		"ataka 10"

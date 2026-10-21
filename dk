@@ -264,7 +264,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -275,7 +275,8 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # defs); the IQM is the model's file name without m_, or iqm=. The monsters'
 # animations play at 10 frames a second (fps=), their idle and their ways of
 # getting about looping; RIG_ANIMS_<name> ("<anim> <fps> [loop];...") sets
-# them one by one.
+# them one by one. surface=metal: a robot (Daikatana's no-blood monsters), its
+# hits spark.
 RIG_MODELS="
 # the player characters
 hiro            player    global/m_hiro
@@ -294,22 +295,22 @@ prisoner        human     e1/m_priza
 prisonerb       human     e1/m_prizb
 torture1        human     e1/m_torture1
 torture2        human     e1/m_torture2
-inmater         human     e1/m_inmater
-froginator      creature  e1/m_frog              bones=16
-slaughterskeet  creature  e1/m_skeeter           bones=10
-thunderskeet    creature  e1/m_tskeet            bones=24
-venomvermin     creature  e1/m_vermin            bones=24
-sludgeminion    creature  e1/m_sludgeminion      bones=24
-ragemaster      creature  e1/m_ragemaster        bones=24
+inmater         human     e1/m_inmater           surface=metal
+froginator      creature  e1/m_frog              bones=16 surface=metal
+slaughterskeet  creature  e1/m_skeeter           bones=10 surface=metal
+thunderskeet    creature  e1/m_tskeet            bones=24 surface=metal
+venomvermin     creature  e1/m_vermin            bones=24 surface=metal
+sludgeminion    creature  e1/m_sludgeminion      bones=24 surface=metal
+ragemaster      creature  e1/m_ragemaster        bones=24 surface=metal
 psyclaw         creature  e1/m_psyclaw           bones=24
-battleboar      creature  e1/m_bboar             bones=24
-crox            creature  e1/m_croco             bones=24
-protopod        creature  e1/m_proto             bones=12
-cambot          creature  e1/m_cambot            bones=12
-deathsphere     creature  e1/m_dsphere           bones=16
-lasergat        creature  e1/m_lasergat          bones=8
-trackattack     creature  e1/m_trakatak          bones=8
-rockgat         creature  e1/m_gatguns           bones=8
+battleboar      creature  e1/m_bboar             bones=24 surface=metal
+crox            creature  e1/m_croco             bones=24 surface=metal
+protopod        creature  e1/m_proto             bones=12 surface=metal
+cambot          creature  e1/m_cambot            bones=12 surface=metal
+deathsphere     creature  e1/m_dsphere           bones=16 surface=metal
+lasergat        creature  e1/m_lasergat          bones=8 surface=metal
+trackattack     creature  e1/m_trakatak          bones=8 surface=metal
+rockgat         creature  e1/m_gatguns           bones=8 surface=metal
 # episode 2: Greece
 centurion       human     e2/m_centurion
 satyr           human     e2/m_satyr
@@ -320,7 +321,7 @@ harpy           human     e2/m_harpy
 cyclops         human     e2/m_cyclops
 minotaur        human     e2/m_minotaur
 kingminos       human     e2/m_kminos
-column          creature  e2/m_column            bones=24
+column          creature  e2/m_column            bones=24 surface=metal
 medusa          creature  e2/m_medusa            bones=24
 cerberus        creature  e2/m_cerberus          bones=24
 griffon         creature  e2/m_griffon           bones=24
@@ -389,7 +390,7 @@ RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -398,6 +399,7 @@ rig_model() {
 			extra=*) extra=${kv#extra=} ;;
 			fps=*) fps="--fps ${kv#fps=}" ;;
 			iqm=*) iqm=${kv#iqm=} ;;
+			surface=*) surface="--surface ${kv#surface=}" ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -407,8 +409,8 @@ rig_model() {
 	case $rigger in
 		player) python3 tools/rig/autorig.py "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
-		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps --anims "$anims" "$md3" "$out" ;;
-		creature) python3 tools/rig/creature_rig.py --bones "$bones" --anims "$anims" "$md3" "$out" "$name" ;;
+		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface --anims "$anims" "$md3" "$out" ;;
+		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac
 }

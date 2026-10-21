@@ -5,6 +5,7 @@ entityDef model_venomvermin {
 	"maxs"			"38 38 14"
 	"hit_mins"		"-38 -38 -7"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"38 38 19"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim amba"		"amba 10 loop"
 	"anim ambb"		"ambb 10"

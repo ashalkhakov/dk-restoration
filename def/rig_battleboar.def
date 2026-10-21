@@ -5,6 +5,7 @@ entityDef model_battleboar {
 	"maxs"			"26 26 29"
 	"hit_mins"		"-34 -34 -14"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"34 34 29"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim amba"		"amba 10 loop"
 	"anim ambb"		"ambb 10"

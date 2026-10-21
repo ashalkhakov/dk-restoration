@@ -5,6 +5,7 @@ entityDef model_lasergat {
 	"maxs"			"16 16 32"
 	"hit_mins"		"-18 -18 25"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"18 18 41"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim diea"		"diea 10"
 	"anim dieb"		"dieb 10"

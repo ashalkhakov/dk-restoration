@@ -5,6 +5,7 @@ entityDef model_thunderskeet {
 	"maxs"			"55 55 54"
 	"hit_mins"		"-141 -141 -28"	// the box shots meet: all of it, whichever way it faces
 	"hit_maxs"		"141 141 117"
+	"surface"		"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim amba"		"amba 10 loop"
 	"anim ataka"		"ataka 10"

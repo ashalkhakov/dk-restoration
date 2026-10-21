@@ -8,6 +8,7 @@ entityDef model_inmater {
 	"eye_height"		"43"
 	"crouch_eye_height"	"43"
 	"ik_minWaistAnkleDist"	"37"	// the walk IK's waist drops no lower (Doom 3's)
+	"surface"			"metal"	// Doom 3's surface type: its hits spark, no blood
 
 	"anim amba"		"amba 10 loop"
 	"anim ataka"		"ataka 10"

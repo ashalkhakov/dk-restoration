@@ -24,7 +24,9 @@ The joints' rest frames are the mesh's first frame; every frame of the MD3
 becomes a pose, its animations (named by the frame names) the IQM's.
 
 	python3 tools/rig/creature_rig.py <md3> <out base> <name> [--bones N] [--anims "<anim> <fps> [loop];..."]
-(--bones: merge the parts that move most alike until there are no more than N)
+		[--surface metal]
+(--bones: merge the parts that move most alike until there are no more than N;
+--surface metal: a robot, its hits spark)
 	python3 tools/rig/creature_rig.py dkres/models/e1/m_frog.md3 dkres/models/rigged/frog froginator \\
 		--anims "amba 10 loop;runa 15 loop;..."
 writes dkres/models/rigged/frog.iqm, def/rig_froginator.def (model_froginator:
@@ -55,7 +57,7 @@ def centroid( pts ):
 	n = float( len( pts ) )
 	return ( sum( p[0] for p in pts ) / n, sum( p[1] for p in pts ) / n, sum( p[2] for p in pts ) / n )
 
-def main( md3Path, outBase, name, animSpec, maxBones = 64 ):
+def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None ):
 	m = MD3( md3Path )
 	# the body: every surface but the hardpoints (a triangle each: a muzzle, an eye)
 	body = [ s for s in m.surfaces if not A.is_hardpoint( s ) ]
@@ -455,7 +457,7 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64 ):
 	spec, looping = A.anim_spec( animSpec, DEFAULT_FPS, A.MONSTER_LOOPING )
 	anims, restRot = A.write_iqm( m, body, verts, rest, joints, jmotion, weights, outBase, looping, DEFAULT_FPS )
 
-	write_def( m, name, outBase, joints, rest, jassign, anims, spec, looping, restRot, frames )
+	write_def( m, name, outBase, joints, rest, jassign, anims, spec, looping, restRot, frames, surface )
 	write_af( name, joints, rest, jassign, S )
 
 def zone_of( name ):
@@ -583,7 +585,7 @@ def perch_frame( joints, assign, anims, frames ):
 	print( "  perch: frame %d (%s), its wings %.1f out to its sides" % ( best[1], best[2], best[0] ) )
 	return best[1]
 
-def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, restRot, frames ):
+def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, restRot, frames, surface = None ):
 	N = len( rest )
 	mins, maxs, hitMins, hitMaxs = boxes( joints, assign, anims, looping, frames )
 	lines = [ "// made by tools/rig/creature_rig.py from %s: the rigged model, in place of the md3's" % m.path.split( "dkres/" )[-1],
@@ -592,8 +594,10 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, res
 			  "\t\"mins\"\t\t\t\"%.0f %.0f %.0f\"\t// the box it moves with: all but its wings, idling" % mins,
 			  "\t\"maxs\"\t\t\t\"%.0f %.0f %.0f\"" % maxs,
 			  "\t\"hit_mins\"\t\t\"%.0f %.0f %.0f\"\t// the box shots meet: all of it, whichever way it faces" % hitMins,
-			  "\t\"hit_maxs\"\t\t\"%.0f %.0f %.0f\"" % hitMaxs,
-			  "" ]
+			  "\t\"hit_maxs\"\t\t\"%.0f %.0f %.0f\"" % hitMaxs ]
+	if surface:
+		lines.append( "\t\"surface\"\t\t\"%s\"\t// Doom 3's surface type: its hits spark, no blood" % surface )
+	lines.append( "" )
 	seen = set()
 	for a in anims:
 		if a[0] in seen:
@@ -739,7 +743,12 @@ if __name__ == "__main__":
 		i = args.index( "--bones" )
 		maxBones = int( args[i + 1] )
 		args = args[:i] + args[i + 2:]
+	surface = None
+	if "--surface" in args:
+		i = args.index( "--surface" )
+		surface = args[i + 1]
+		args = args[:i] + args[i + 2:]
 	if len( args ) != 3:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], args[1], args[2], animSpec, maxBones )
+	main( args[0], args[1], args[2], animSpec, maxBones, surface )
