@@ -8,10 +8,9 @@
 #include "script/ai/monster_froginator.script"
 #include "script/ai/monster_slaughterskeet.script"
 
-// cinematics: the helpers, then each (cine/cine.script includes them: the
-// converted ones and ours, assembled by ./dk)
+// cinematics: the helpers (each map's cinematics are in cine/maps/<map>.script,
+// compiled with the map's script)
 #include "script/cine_base.script"
-#include "cine/cine.script"
 
 /*
 ================

@@ -373,7 +373,7 @@ goldfish        creature  global/e_goldfish      bones=4
 greyfish        creature  global/e_greyfish      bones=4
 guppy           creature  global/e_guppy         bones=3
 guppy2          creature  global/e_guppy2        bones=3
-seagull         creature  global/d4_gull         bones=6
+seagull         creature  e4/d4_gull             bones=6
 dopefish        creature  global/dopefish        bones=12
 # Mikiko as Kage's (monster_mikiko), and carrying Superfly
 mikikomonster   human     global/m_smikiko
@@ -566,22 +566,19 @@ assemble() {
 		[ -e "$f" ] && put "$f" "$mod/def/$(basename "$f")"
 	done
 	# the cinematics: the converted ones, then ours by the same names in their
-	# place; cine/cine.script includes them all
+	# place; cine/maps/<map>.script includes a map's (the game compiles it
+	# with the map's script)
 	rm -rf "$mod/cameras" "$mod/cine"
-	mkdir -p "$mod/cameras" "$mod/cine"
+	mkdir -p "$mod/cameras" "$mod/cine/maps"
 	for f in "$OUT"/cine/cameras/*.camera "$ROOT"/cine/cameras/*.camera; do
 		[ -e "$f" ] && put "$f" "$mod/cameras/$(basename "$f")"
 	done
 	for f in "$OUT"/cine/script/*.script "$ROOT"/cine/script/*.script; do
 		[ -e "$f" ] && put "$f" "$mod/cine/$(basename "$f")"
 	done
-	{
-		echo "// the cinematics, assembled by ./dk: the converted ones and ours"
-		for f in "$mod"/cine/*.script; do
-			[ -e "$f" ] && [ "$(basename "$f")" != cine.script ] && echo "#include \"cine/$(basename "$f")\""
-		done
-	} >"$mod/cine/cine.script.new"
-	mv "$mod/cine/cine.script.new" "$mod/cine/cine.script"
+	for f in "$OUT"/cine/maps/*.script "$ROOT"/cine/maps/*.script; do
+		[ -e "$f" ] && put "$f" "$mod/cine/maps/$(basename "$f")"
+	done
 	put "$ROOT/script" "$mod/script"
 	put "$ROOT/af" "$mod/af"
 	put "$ROOT/sound" "$mod/sound"

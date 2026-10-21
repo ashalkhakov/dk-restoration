@@ -14,6 +14,10 @@ For each cinematic <name> (all of them, or those named):
 									one after another, cut, each starting its
 									actors' threads and its sounds, as
 									Daikatana's player did
+	<out>/maps/<map>.script			what a map includes: the cinematics it
+									starts (the game compiles it with the
+									map's script; all of them at once would be
+									more than the scripts' memory)
 	<out>/def/cine_actors.def		the actors: each a cinematic character
 									(scriptobject cine_actor). One of our rigged
 									characters (Hiro, Mikiko, Superfly) is that
@@ -347,9 +351,9 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 			out.append( "\tsys.stopGlobalLoops();" )
 		out += [ "}", "" ]
 
-	out += [ "/*", "================", "%s::play" % ns, "================", "*/", "void play() {", "\tcine_begin();" ]
+	out += [ "/*", "================", "%s::play" % ns, "================", "*/", "void play() {", "\tcine_start();" ]
 	out += [ "\t%s();" % f for f in shotFuncs ]
-	out += [ "\tcine_end();" ]
+	out += [ "\tcine_finish();" ]
 	for var in sorted( actors ):
 		out.append( "\tif ( %s != $null_entity ) { %s.remove(); }" % ( var, var ) )
 	out += [ "}", "", "}", "" ]
@@ -365,7 +369,7 @@ def main( argv ):
 	dkres, outdir = argv[0], argv[1]
 	names = [ n.lower() for n in argv[2:] ]
 	srcdir = os.path.join( dkres, "cin", "scripts" )
-	for d in ( "cameras", "script", "def" ):
+	for d in ( "cameras", "script", "def", "maps" ):
 		os.makedirs( os.path.join( outdir, d ), exist_ok = True )
 	uses = map_cinematics( dkres )
 	actorDefs = {}
@@ -386,6 +390,18 @@ def main( argv ):
 		write_script( os.path.join( outdir, "script", name + ".script" ), name, data, name, mapname, cams, dkres, actorDefs )
 		done += 1
 		print( "  %s: %d shots%s" % ( name, len( data["shots"] ), ( ", from " + ", ".join( "%s (%s)" % m for m in maps ) ) if maps else ", no map starts it" ) )
+
+	# each map's cinematics
+	maps = {}
+	for name, used in uses.items():
+		if os.path.exists( os.path.join( outdir, "script", name + ".script" ) ):
+			for m, key in used:
+				maps.setdefault( m, set() ).add( name )
+	for m, names in sorted( maps.items() ):
+		with open( os.path.join( outdir, "maps", m + ".script" ), "w" ) as fp:
+			fp.write( "// %s's cinematics, by tools/cine/cine_convert.py\n" % m )
+			for name in sorted( names ):
+				fp.write( "#include \"cine/%s.script\"\n" % name )
 
 	path = os.path.join( outdir, "def", "cine_actors.def" )
 	with open( path, "w" ) as fp:

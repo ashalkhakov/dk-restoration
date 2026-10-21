@@ -195,17 +195,17 @@ void cine_use( string name, entity actor ) {
 
 /*
 ================
-cine_begin / cine_end
+cine_start / cine_finish
 
 a cinematic starts black (its first shot fades it in, if it means to), and
 ends with the players' own eyes back, its loops stopped and the screen clear
 ================
 */
-void cine_begin() {
+void cine_start() {
 	cine_lastCamera = $null_entity;
 }
 
-void cine_end() {
+void cine_finish() {
 	sys.stopGlobalLoops();
 	sys.firstPerson();
 	sys.fadeTo( '0 0 0', 0, 0 );

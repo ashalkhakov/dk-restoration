@@ -85,9 +85,11 @@ reads them, `tools/cine/cine_convert.py` converts them) into `out/cine`:
   - a task runs once its time comes, after the ones before it. An actor's tasks from one shot stop when the next
     shot starts.
 - **Actors:** `def/cine_actors.def`.
+- **Maps:** `maps/<map>.script` includes the cinematics that map starts. The game compiles it with the map's own
+  script; all the cinematics at once would be more than the scripts' memory.
 
 `script/cine_base.script` holds the helpers they use (`cine_camera`, `cine_spawn`, `cine_play`, `cine_playMove`,
-`cine_move`, `cine_turn`, `cine_use`, `cine_begin`/`cine_end`) and `cine_actor`, a character with no mind of its
+`cine_move`, `cine_turn`, `cine_use`, `cine_start`/`cine_finish`) and `cine_actor`, a character with no mind of its
 own.
 
 **How maps start them.** As Daikatana's maps do: in the campaign, worldspawn's `"cinematic_intro" "<name>"`
