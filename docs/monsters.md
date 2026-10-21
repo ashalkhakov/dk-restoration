@@ -56,6 +56,19 @@ waits for what it waits for. The game runs that thread as it thinks, before it m
   bites, flies off up and away, and comes again. It flies as a drone: momentum, banking into turns, bouncing off
   walls (a hard crash hurts it).
 
+## Flying: routes through the air
+
+A flyer flies straight at where it goes when its box gets there in a line; else it takes a route through the air,
+as Doom 3's flyers do (`idAASLocal::FlyPathToGoal`), on the map's AAS (`maps/<map>.aas`, made by `./dk aas`). The
+game reads it (mint-arena `g_airnav.c`): its areas cover the air as well as the floors, and they're linked through
+the faces between them (Doom 3's fly reachabilities). A route is A* from area to area, no liquid, through the faces'
+middles, pulled straight with the flyer's box; it's planned again as what it goes to moves, and a flyer heads for
+the farthest waypoint it sees. A map with no AAS has its flyers fly straight. The AAS is made for a player's box,
+so routes keep that far from the walls. `g_debugMove 1` prints the routes and the flight.
+
+A monster that starts in something (a map's skeet in a physics prop) or flies into something is moved out of it,
+to the nearest place its box fits.
+
 The events a monster has (Doom 3's names): `setState`, `getState`; `findEnemy`, `setEnemy`, `clearEnemy`,
 `getEnemy`, `enemyRange`, `enemyRange2D`, `getEnemyPos`, `canSee`; `moveToEnemy`, `moveToPosition`,
 `moveToEntity`, `wander`, `stopMove`, `moveStatus`, `setMoveSpeed`; `faceEnemy`, `faceEntity`, `turnTo`,
@@ -65,6 +78,5 @@ an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 
 ## What's to come
 
-Paths (it goes straight at you now: AAS routes are next), the frog's spit, the skeet hatching from a protopod,
-their getting noticed (an effect that makes them stand out), leaps as the frog's way to move and hit, the skeet's
-real flight (paths through the air).
+Ground paths (the frog goes straight at you), the frog's spit, the skeet hatching from a protopod,
+their getting noticed (an effect that makes them stand out), and leaps as the frog's way to move and hit.
