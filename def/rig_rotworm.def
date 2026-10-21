@@ -1,0 +1,38 @@
+// made by tools/rig/creature_rig.py from models/e3/m_rotworm.md3: the rigged model, in place of the md3's
+entityDef model_rotworm {
+	"mesh"			"models/rigged/rotworm.iqm"
+	"mins"			"-17 -17 -8"	// the box it moves with: all but its wings, idling
+	"maxs"			"17 17 7"
+	"hit_mins"		"-19 -19 -9"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"19 19 12"
+
+	"anim amba"		"amba 10 loop"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"25"	// over the ground, from its feet
+	"anim_speed walka"	"9"	// over the ground, from its feet
+	"anim perch"		"114 1 1 loop"	// landed, its wings raised: the frame they reach out least
+
+	"hitbox Body"	"-3.3 -3.8 -3.6 3.0 4.4 4.0 torso"
+	"hitbox Head"	"0.7 -3.3 1.5 8.8 1.9 4.1 head"
+	"hitbox Head2"	"0.1 -6.2 -4.0 9.0 4.6 4.8 head"
+	"hitbox Head3"	"-1.9 -5.0 -0.0 0.3 -3.8 1.9 head"
+	"hitbox Head3b"	"2.2 -2.7 -3.0 6.0 3.1 -0.6 head"
+	"hitbox Head2b"	"-3.8 -1.0 -0.3 10.0 3.4 2.8 head"
+	"hitbox Head3bb"	"-1.3 2.4 -0.3 1.3 3.8 1.6 head"
+	"hitbox Rfore1"	"-1.4 -0.8 -0.2 -0.0 2.1 1.0 legs"
+	"hitbox Rwing1"	"0.7 -3.3 -3.7 4.9 3.5 2.9 legs"
+	"hitbox Rwing2"	"-2.6 -5.3 -2.9 7.0 3.3 4.3 legs"
+	"hitbox Tail1"	"0.0 -3.1 -2.6 6.8 3.6 2.2 torso"
+	"hitbox Tail2"	"0.4 -2.5 -1.0 3.2 0.6 2.5 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_rotworm"	// af/monster_rotworm.af, Doom 3's articulated figure
+}

@@ -1,0 +1,49 @@
+// made by tools/rig/creature_rig.py from models/e2/m_griffon.md3: the rigged model, in place of the md3's
+entityDef model_griffon {
+	"mesh"			"models/rigged/griffon.iqm"
+	"mins"			"-97 -97 -48"	// the box it moves with: all but its wings, idling
+	"maxs"			"97 97 57"
+	"hit_mins"		"-133 -133 -52"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"133 133 140"
+
+	"anim amba"		"amba 10 loop"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim atakd"		"atakd 10"
+	"anim diea"		"diea 10"
+	"anim drop"		"drop 10"
+	"anim flya"		"flya 10 loop"
+	"anim flyb"		"flyb 10 loop"
+	"anim flyc"		"flyc 10 loop"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim hovera"		"hovera 10 loop"
+	"anim jumpa"		"jumpa 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"155"	// over the ground, from its feet
+	"anim_speed walka"	"30"	// over the ground, from its feet
+	"anim perch"		"49 1 1 loop"	// landed, its wings raised: the frame they reach out least
+
+	"hitbox Body"	"-15.6 -13.3 -20.5 15.0 16.8 19.4 torso"
+	"hitbox Head"	"6.0 -4.6 -12.9 13.1 3.9 -3.3 head"
+	"hitbox Head2"	"-4.7 -9.9 -10.7 12.9 6.3 4.8 head"
+	"hitbox Headb1"	"-0.2 0.1 -11.4 14.7 18.6 10.3 head"
+	"hitbox Lwing1"	"1.0 -49.4 7.6 112.6 17.7 27.6 legs"
+	"hitbox Rwing1"	"7.4 -57.2 -3.7 96.5 14.7 16.0 legs"
+	"hitbox Rwing2"	"-18.7 -33.3 -9.4 25.1 35.4 11.0 legs"
+	"hitbox Tail1"	"-7.9 -13.3 -8.3 19.9 14.9 10.6 torso"
+	"hitbox Tail2"	"-10.1 -8.1 -14.4 38.7 4.9 6.3 torso"
+	"hitbox Tail3"	"3.4 -4.4 -11.1 17.6 5.7 6.0 torso"
+	"hitbox Tail2b"	"1.2 -5.1 -14.4 27.5 7.7 6.2 torso"
+	"hitbox Tail3b"	"2.0 -5.7 -8.1 19.4 4.3 6.5 torso"
+	"hitbox Tail2c"	"-0.3 -3.4 -4.2 22.2 1.2 1.9 torso"
+	"hitbox Tail3c"	"4.4 -3.4 -16.3 18.1 4.1 -3.5 torso"
+	"hitbox Tailb1"	"3.0 -5.3 -26.9 33.7 11.7 0.0 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_griffon"	// af/monster_griffon.af, Doom 3's articulated figure
+}

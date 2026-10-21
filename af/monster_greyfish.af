@@ -1,0 +1,52 @@
+// made by tools/rig/creature_rig.py: the greyfish's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_greyfish {
+	settings {
+		model "model_greyfish"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -4.30, -2.11, -2.09 ), ( 4.30, 2.11, 2.09 ) )
+		origin ( 5.77, 0.19, -2.41 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail1" {
+		joint "Tail1"
+		mod orientation
+		model box( ( -7.08, -1.32, -3.24 ), ( 7.08, 1.32, 3.24 ) )
+		origin ( 0.03, 0.16, 1.25 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Tail1" {
+		body1 "tail1"
+		body2 "body"
+		anchor joint( "Tail1" )
+		shafts ( -0.68, -0.09, 0.73 ), ( 0.68, 0.09, -0.73 )
+		friction 0.20
+		coneLimit ( -0.68, -0.09, 0.73 ), 80
+	}
+
+}

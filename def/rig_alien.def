@@ -1,0 +1,32 @@
+// made by tools/rig/creature_rig.py from models/e4/m_alien.md3: the rigged model, in place of the md3's
+entityDef model_alien {
+	"mesh"			"models/rigged/alien.iqm"
+	"mins"			"-51 -51 -24"	// the box it moves with: all but its wings, idling
+	"maxs"			"51 51 24"
+	"hit_mins"		"-59 -59 -29"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"59 59 27"
+
+	"anim amba"		"amba 10 loop"
+	"anim ataka"		"ataka 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"32"	// over the ground, from its feet
+	"anim_speed walka"	"21"	// over the ground, from its feet
+
+	"hitbox Body"	"-10.1 -8.3 -13.2 13.4 7.7 11.7 torso"
+	"hitbox Head"	"-8.3 -18.1 -11.0 23.7 12.4 17.7 head"
+	"hitbox Lfore1"	"5.4 0.5 -30.5 17.9 7.3 -3.9 legs"
+	"hitbox Lhind1"	"-3.4 -22.9 -20.4 8.9 -11.3 6.3 legs"
+	"hitbox Rfore1"	"12.3 -4.7 3.8 18.2 -0.3 11.1 legs"
+	"hitbox Rfore2"	"-4.9 -3.8 -15.8 2.2 0.5 0.6 legs"
+	"hitbox Rhind1"	"4.9 2.0 -18.8 21.1 7.3 8.0 legs"
+	"hitbox Tail1"	"8.2 -1.6 -5.3 20.3 3.3 0.6 torso"
+	"hitbox Tail2"	"3.0 -4.0 1.8 13.5 -0.7 13.3 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_alien"	// af/monster_alien.af, Doom 3's articulated figure
+}

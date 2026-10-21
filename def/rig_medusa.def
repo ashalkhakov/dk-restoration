@@ -1,0 +1,44 @@
+// made by tools/rig/creature_rig.py from models/e2/m_medusa.md3: the rigged model, in place of the md3's
+entityDef model_medusa {
+	"mesh"			"models/rigged/medusa.iqm"
+	"mins"			"-161 -161 -26"	// the box it moves with: all but its wings, idling
+	"maxs"			"161 161 46"
+	"hit_mins"		"-180 -180 -28"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"180 180 54"
+
+	"anim amba"		"amba 10 loop"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim atakd"		"atakd 10"
+	"anim atake"		"atake 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"13"	// over the ground, from its feet
+	"anim_speed walka"	"32"	// over the ground, from its feet
+
+	"hitbox Body"	"-11.4 -12.4 -11.3 10.8 10.7 9.8 torso"
+	"hitbox Head"	"4.8 -10.6 -7.2 17.5 11.2 7.3 head"
+	"hitbox Head2"	"-10.9 -11.1 -13.4 35.4 14.7 10.6 head"
+	"hitbox Head3"	"-1.6 -13.7 -4.6 10.8 12.4 3.8 head"
+	"hitbox Head4"	"-1.5 -12.4 -5.6 18.9 15.9 4.7 head"
+	"hitbox Head5"	"-4.6 -1.6 -4.9 3.3 1.1 1.2 head"
+	"hitbox Head3b"	"9.4 -27.9 -18.9 17.1 -2.4 -1.2 head"
+	"hitbox Head3c"	"-3.9 -4.7 -3.2 20.1 3.2 5.4 head"
+	"hitbox Head4c"	"1.4 -2.2 -1.0 6.7 9.4 15.0 head"
+	"hitbox Head3d"	"-2.5 -3.1 -5.7 20.9 2.6 2.7 head"
+	"hitbox Head4d"	"2.8 -8.4 3.1 9.5 0.4 18.4 head"
+	"hitbox Head3e"	"-2.5 -9.4 -1.0 31.3 -1.0 10.0 head"
+	"hitbox Head4e"	"5.4 1.5 -13.3 12.0 7.1 -5.7 head"
+	"hitbox Tail1"	"24.9 -8.0 -10.0 29.7 9.7 3.7 torso"
+	"hitbox Tail2"	"14.0 -7.2 -8.2 15.4 7.8 4.3 torso"
+	"hitbox Tail3"	"17.5 -7.2 -9.0 18.0 2.1 0.6 torso"
+	"hitbox Tail4"	"4.2 9.0 -4.3 15.6 29.3 18.4 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_medusa"	// af/monster_medusa.af, Doom 3's articulated figure
+}

@@ -1,0 +1,241 @@
+// made by tools/rig/autorig.py: kage's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() and bone*() name the IQM's joints)
+articulatedFigure monster_kage {
+	settings {
+		model "model_kage"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "waist" {
+		joint "origin"
+		mod orientation
+		model box( ( -5.94, -4.92, -6.24 ), ( 5.94, 4.92, 6.24 ) )
+		origin ( 8.62, 0.45, -1.49 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "chest" {
+		joint "Waist"
+		mod orientation
+		model box( ( -9.84, -10.11, -11.92 ), ( 9.84, 10.11, 11.92 ) )
+		origin ( 2.66, 1.59, 7.41 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head" {
+		joint "Loneck"
+		mod orientation
+		model box( ( -8.45, -6.11, -7.13 ), ( 8.45, 6.11, 7.13 ) )
+		origin ( 1.24, -0.08, 24.30 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Luparm" {
+		joint "Luparm"
+		mod orientation
+		model bone( ( 9.60, 15.45, 20.02 ), ( 10.37, 20.89, 19.28 ), 8.57 )
+		origin ( 9.99, 18.17, 19.65 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Lloarm" {
+		joint "Lloarm"
+		mod orientation
+		model bone( ( 10.37, 20.89, 19.28 ), ( 9.64, 31.01, 23.26 ), 2.00 )
+		origin ( 10.01, 25.95, 21.27 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Lupleg" {
+		joint "Lupleg"
+		mod orientation
+		model bone( ( 5.01, 3.70, 6.51 ), ( 2.13, 2.18, -12.36 ), 13.88 )
+		origin ( 3.57, 2.94, -2.93 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Lloleg" {
+		joint "Lloleg"
+		mod orientation
+		model bone( ( 2.13, 2.18, -12.36 ), ( -6.45, 2.07, -22.42 ), 12.75 )
+		origin ( -2.16, 2.13, -17.39 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Ruparm" {
+		joint "Ruparm"
+		mod orientation
+		model bone( ( 9.28, -22.91, 22.52 ), ( 9.28, -22.91, 11.62 ), 3.00 )
+		origin ( 9.28, -22.91, 17.07 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Rloarm" {
+		joint "Rloarm"
+		mod orientation
+		model bone( ( 9.28, -22.91, 11.62 ), ( 11.05, -8.42, -11.55 ), 15.98 )
+		origin ( 10.16, -15.66, 0.04 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Rupleg" {
+		joint "Rupleg"
+		mod orientation
+		model bone( ( 14.91, -7.44, 5.05 ), ( 11.19, -8.27, -12.36 ), 14.07 )
+		origin ( 13.05, -7.85, -3.65 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Rloleg" {
+		joint "Rloleg"
+		mod orientation
+		model bone( ( 11.19, -8.27, -12.36 ), ( 17.09, -5.77, -22.05 ), 13.69 )
+		origin ( 14.14, -7.02, -17.20 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "waistChest" {
+		body1 "chest"
+		body2 "waist"
+		anchor joint( "Waist" )
+		shafts ( 0.00, 0.00, 1.00 ), ( 0.00, 0.00, -1.00 )
+		friction 0.20
+		coneLimit ( 0.00, 0.00, 1.00 ), 60
+	}
+
+	universalJoint "chestHead" {
+		body1 "head"
+		body2 "chest"
+		anchor joint( "Loneck" )
+		shafts ( 0.00, 0.00, 1.00 ), ( 0.00, 0.00, -1.00 )
+		friction 0.20
+		coneLimit ( 0.00, 0.00, 1.00 ), 80
+	}
+
+	universalJoint "Lshoulder" {
+		body1 "Luparm"
+		body2 "chest"
+		anchor joint( "Luparm" )
+		shafts ( 0.14, 0.98, -0.13 ), ( -0.14, -0.98, 0.13 )
+		friction 0.20
+		coneLimit ( 0.00, 0.37, -0.93 ), 170
+	}
+
+	hinge "Lelbow" {
+		body1 "Lloarm"
+		body2 "Luparm"
+		anchor joint( "Lloarm" )
+		axis ( 0.00, 1.00, 0.00 )
+		friction 0.20
+		limit -153.6, 150.0, 136.4
+	}
+
+	universalJoint "Lhip" {
+		body1 "Lupleg"
+		body2 "waist"
+		anchor joint( "Lupleg" )
+		shafts ( -0.15, -0.08, -0.99 ), ( 0.15, 0.08, 0.99 )
+		friction 0.20
+		coneLimit ( 0.50, 0.15, -0.85 ), 120
+	}
+
+	hinge "Lknee" {
+		body1 "Lloleg"
+		body2 "Lupleg"
+		anchor joint( "Lloleg" )
+		axis ( 0.00, 1.00, 0.00 )
+		friction 0.20
+		limit 16.3, 140.0, 81.3
+	}
+
+	universalJoint "Rshoulder" {
+		body1 "Ruparm"
+		body2 "chest"
+		anchor joint( "Ruparm" )
+		shafts ( 0.00, 0.00, -1.00 ), ( -0.00, -0.00, 1.00 )
+		friction 0.20
+		coneLimit ( 0.00, -0.37, -0.93 ), 170
+	}
+
+	hinge "Relbow" {
+		body1 "Rloarm"
+		body2 "Ruparm"
+		anchor joint( "Rloarm" )
+		axis ( 0.00, 1.00, 0.00 )
+		friction 0.20
+		limit 160.0, 150.0, 90.0
+	}
+
+	universalJoint "Rhip" {
+		body1 "Rupleg"
+		body2 "waist"
+		anchor joint( "Rupleg" )
+		shafts ( -0.21, -0.05, -0.98 ), ( 0.21, 0.05, 0.98 )
+		friction 0.20
+		coneLimit ( 0.50, -0.15, -0.85 ), 120
+	}
+
+	hinge "Rknee" {
+		body1 "Rloleg"
+		body2 "Rupleg"
+		anchor joint( "Rloleg" )
+		axis ( 0.00, 1.00, 0.00 )
+		friction 0.20
+		limit 12.9, 140.0, 77.9
+	}
+
+}

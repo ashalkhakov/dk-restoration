@@ -1,0 +1,59 @@
+// made by tools/rig/autorig.py from models/e4/m_rockgang.md3
+entityDef model_rocketdude {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/rockgang.iqm"
+	"mins"				"-16 -16 -24"	// standing, at the origin (pmove's)
+	"maxs"				"16 16 41"
+	"crouch_height"		"41"		// maxs z crouched
+	"eye_height"		"35"
+	"crouch_eye_height"	"35"
+	"ik_minWaistAnkleDist"	"22"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim jumpa"		"jumpa 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+
+	"frame runa 1"	"footstep Lankle_r"
+	"frame runa 8"	"footstep Rankle_r"
+	"frame walka 10"	"footstep Rankle_r 0.4"
+	"frame walka 23"	"footstep Lankle_r 0.4"
+
+	"anim_speed runa"	"44"
+	"anim_speed walka"	"22"
+
+
+	"hitbox Hips"	"-3.0 -9.1 -9.4 11.6 3.5 8.0 torso"
+	"hitbox Lupleg"	"-11.3 -1.3 0.9 9.4 7.9 10.0 legs"
+	"hitbox Lloleg"	"-0.6 -4.9 -0.6 10.9 3.6 10.4 legs"
+	"hitbox Lankle_r"	"2.9 -5.4 -4.7 8.9 2.6 4.0 legs"
+	"hitbox Rupleg"	"-2.2 -7.0 -5.6 18.1 3.2 6.1 legs"
+	"hitbox Rloleg"	"1.5 -2.4 -3.1 10.0 1.8 4.1 legs"
+	"hitbox Rankle_r"	"-0.4 -2.6 -1.9 5.6 3.4 8.6 legs"
+	"hitbox Waist"	"-1.8 -7.5 -5.9 9.4 7.3 3.6 torso"
+	"hitbox Chest"	"3.3 -6.7 -7.0 15.8 8.8 7.2 torso"
+	"hitbox Loneck"	"0.6 -3.4 -4.8 5.2 2.9 4.3 head"
+	"hitbox Head"	"-1.2 -3.4 -4.1 2.7 2.1 3.3 head"
+	"hitbox Luparm"	"-2.6 -5.7 -4.3 7.0 5.3 5.6 arms"
+	"hitbox Lloarm"	"-0.8 -3.7 -5.0 9.6 3.6 4.8 arms"
+	"hitbox Lhand"	"-0.9 -4.3 -2.3 9.2 3.8 6.8 arms"
+	"hitbox Ruparm"	"-1.2 -3.1 -7.7 13.2 4.3 1.0 arms"
+	"hitbox Rloarm"	"-0.7 -2.3 -6.5 15.4 7.7 7.5 arms"
+	"hitbox Rhand"	"-0.8 -0.8 -0.4 3.3 -0.5 7.5 arms"
+	"hitbox Rhand_1"	"-1.5 -20.0 -28.0 8.8 -11.5 -23.0 arms"
+	"hitbox Chest_1"	"-0.6 -5.0 -2.9 3.8 4.0 1.8 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_rocketdude"	// af/monster_rocketdude.af, Doom 3's articulated figure
+
+}

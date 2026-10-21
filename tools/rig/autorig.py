@@ -15,8 +15,13 @@ How (a small form of skinning decomposition, Le & Deng's SSDR):
     frames (least squares).
  4. Each vertex blends its bone with a neighbouring one where that fits the
     frames better (two weights a vertex).
- 5. Daikatana's hardpoints (hp_gun, ctf_flag: a triangle each) become rigid
-    attachment joints, as Doom 3's *_ATTACHER joints.
+ 5. Daikatana's hardpoints (hp_gun, ctf_flag, the monsters' hr_muzzle...: a
+    triangle each) become rigid attachment joints, as Doom 3's *_ATTACHER
+    joints.
+With --name, a monster or another character, not a player: def/rig_<name>.def
+(model_<name>) and af/monster_<name>.af, its animations at 10 frames a second
+(--fps) or as --anims "<anim> <fps> [loop];..." says, and with --extra N up to
+N more bones for what the template has no bone for (a cape, wings, a sword).
 With --lying, the model lies on its back, its head toward -x (as Daikatana's
 dead bodies: their frames are poses, not animations): it's rigged stood up,
 head up and facing +x, and everything written is turned back to lying.
@@ -25,9 +30,10 @@ becomes a pose, its animations (named by the frame names) the IQM's.
 
 	python3 tools/rig/autorig.py dkres/models/global/m_hiro.md3 dkres/models/rigged/hiro
 	python3 tools/rig/autorig.py --lying dkres/models/e1/m_dead.md3 dkres/models/rigged/dead
+	python3 tools/rig/autorig.py --name fatworker --extra 8 dkres/models/e1/m_mwfaty.md3 dkres/models/rigged/mwfaty
 writes dkres/models/rigged/hiro.iqm and def/char_hiro.def (the model def,
 with hitboxes fitted to the bones) and prints how far the skinned frames
-are from the original ones. ./dk rig runs it for the characters.
+are from the original ones. ./dk rig runs it for the characters (RIG_MODELS).
 
 Pure Python (no numpy): a few minutes for a character.
 """
@@ -227,6 +233,52 @@ PLAYER_ANIMS = [
 # hardpoint surfaces -> attachment joints (Doom 3 names its weapon ones so)
 HARDPOINTS = { "hp_gun": ( "WEAPON_ATTACHER", "Rhand" ), "ctf_flag": ( "FLAG_ATTACHER", "Chest" ) }
 
+def is_hardpoint( s ):
+	"""Daikatana's hardpoints are surfaces of one triangle (hp_gun, the
+	monsters' hr_muzzle, hp_head, eye1, sword1...): points, not mesh"""
+	return s.name in HARDPOINTS or ( s.numVerts == 3 and len( s.triangles ) == 1 )
+
+def hardpoint_joints( hps, joints, motion, bones, F, sample ):
+	"""The hardpoints as rigid joints: hp_gun and ctf_flag Doom 3's
+	attachers on their bones, the others by their surface's name on the bone
+	whose motion carries the triangle best"""
+	out = []
+	J = { j["name"]: i for i, j in enumerate( joints ) }
+	for s in hps:
+		c = vscale( vadd( vadd( s.frames[0][0], s.frames[0][1] ), s.frames[0][2] ), 1.0 / 3 )
+		if s.name in HARDPOINTS and HARDPOINTS[s.name][1] in J:
+			name, parent = HARDPOINTS[s.name][0], J[HARDPOINTS[s.name][1]]
+		else:
+			def err( b ):
+				return sum( vlen( vsub( xform( motion[b][f], s.frames[0][k] ), s.frames[f][k] ) ) for f in sample for k in range( 3 ) )
+			name, parent = s.name, min( bones, key = err )
+		out.append( ( { "name": name, "parent": joints[parent]["name"], "parentIndex": parent, "zone": None, "pos": c },
+					  { f: rigid_fit( s.frames[0], s.frames[f] ) for f in range( F ) } ) )
+	return out
+
+# a monster's or another character's animations: Daikatana plays them at 10
+# frames a second (a server frame each); those that loop, its idle and its
+# ways of getting about. A spec ("<anim> <fps> [loop];...") overrides.
+MONSTER_FPS = 10.0
+MONSTER_LOOPING = r"^(amba|(walk|run|swim|fly|hover|row)[a-z]?)$"
+
+class Looping:
+	"""Which animations loop: the spec's say, the others by the default's names"""
+	def __init__( self, spec, default ):
+		self.spec, self.default = spec, re.compile( default, re.I )
+	def match( self, anim ):
+		return self.spec[anim][1] if anim in self.spec else bool( self.default.match( anim ) )
+
+def anim_spec( text, fps, looping ):
+	"""{ anim: ( fps, loops ) } from a spec ("<anim> <fps> [loop];..."), and
+	which animations loop"""
+	spec = {}
+	for part in text.split( ";" ):
+		w = part.split()
+		if w:
+			spec[w[0]] = ( float( w[1] ) if len( w ) > 1 else fps, "loop" in w[2:] )
+	return spec, Looping( spec, looping )
+
 # the animations that loop: Daikatana's names, a weapon prefix (a, b, c, o)
 # and a variant suffix (a, b) on idling, walking, running...
 # footsteps: on these animations' frames where a foot comes down (the
@@ -275,7 +327,7 @@ LOOPING = re.compile( r"^(a|b|c|o)?(amb|walk|run|ws|swim|ladderup|ladderdn|looka
 
 # ------------------------------------------------------------------------
 
-def place_template( rest, tris, headVerts, gunHand = None ):
+def place_template( rest, tris, headVerts, gunHand = None, headPoint = None ):
 	"""The template's joints in the mesh, measured from it: Daikatana's
 	characters aren't built like Doom 3's (bigger heads, shorter legs), so only
 	the names and the hierarchy are Doom 3's. Where the neck narrows to the
@@ -301,6 +353,20 @@ def place_template( rest, tris, headVerts, gunHand = None ):
 	while k > steps // 2 and widths[k] < 0.45 * wmax:
 		k -= 1
 	zNeck = zmin + ( k + 1 ) / steps * H
+	if NAME:
+		# a monster's or another character's head may be as wide as its
+		# shoulders (a helmet, a mane, arms up): its head hardpoint (hp_head,
+		# under the face) if it has one, else a head too small to be one
+		# goes by Doom 3's proportions, the motion fitting the joint after
+		# (the top near the middle, where there's a head's worth of mesh: an
+		# arm or a bow may be raised over it)
+		central = sorted( ( v[2] for v in rest if abs( v[1] - y0 ) < 0.12 * H ), reverse = True )
+		ztop = next( ( z for z in central if sum( 1 for c in central if z - 0.05 * H <= c <= z ) >= max( 5, 0.03 * len( central ) ) ),
+					 zmax )
+		if headPoint:
+			zNeck = headPoint[2] - 0.02 * H
+		elif not 0.08 * H < ztop - zNeck < 0.3 * H:
+			zNeck = ztop - 0.13 * ( ztop - zmin )
 	zShoulder = zNeck - 0.05 * H
 	# the crotch: going down, where a gap first opens between the legs, no
 	# triangle cut there crossing the middle (going up from the feet stops
@@ -381,6 +447,14 @@ LIE_DOWN = [ [ 0.0, 0.0, -1.0 ], [ 0.0, 1.0, 0.0 ], [ 1.0, 0.0, 0.0 ] ]	# lie_do
 def to_model( v ):
 	return TO_MODEL( v ) if TO_MODEL else v
 
+# --name: a monster or another character, not a player: def/rig_<name>.def
+# (model_<name>) and af/monster_<name>.af, its animations at --fps (else
+# MONSTER_FPS) or as --anims says; None for a player character
+# (def/char_<file>.def, af/char_<file>.af, player animations, a voice)
+NAME = None
+FPS = None
+ANIMS = ""
+
 # Daikatana plays its characters' animations at 20 frames a second
 # (FRAMETIME_FPS20: client_init.cpp, bot.cpp, Sidekick.cpp)
 ANIM_FPS = 20.0
@@ -423,6 +497,130 @@ def hair_chain( rest, headVerts, head ):
 		parent = name
 	print( "  hair: %d vertexes, %.1f long, %d bones" % ( len( hair ), reach, numBones ) )
 	return chain, hairIdx
+
+EXTRA_BONES = 0		# --extra: at most this many bones for what the template doesn't carry
+EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
+EXTRA_MIN = 8		# vertexes: a smaller part stays on its bone
+
+def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins, hairIdx, budget ):
+	"""Bones for the mesh no template bone carries well: its pieces (joined by
+	the mesh) are split by their motion until each moves rigidly, the biggest
+	first; each becomes a bone on the one it meets most, the vertexes it
+	carries better than their bones moving to it. Returns the new bones'
+	joint indexes (joints, bones and assign are updated)"""
+	N = len( rest )
+	H = max( v[2] for v in rest ) - min( v[2] for v in rest )
+	def err( i, mt ):
+		return sum( vlen( vsub( xform( mt[f], rest[i] ), frames[f][i] ) ) for f in sample ) / len( sample )
+	def fit( idx ):
+		src = [ rest[i] for i in idx ]
+		return { f: rigid_fit( src, [ frames[f][i] for i in idx ] ) for f in sample }
+	adj = [ set() for i in range( N ) ]
+	for t in tris:
+		for p, q in ( ( t[0], t[1] ), ( t[1], t[2] ), ( t[2], t[0] ) ):
+			adj[p].add( q )
+			adj[q].add( p )
+	# one place, one vertex (seams)
+	place = {}
+	for i, v in enumerate( rest ):
+		place.setdefault( tuple( int( round( c / SEAM ) ) for c in v ), [] ).append( i )
+	for ms in place.values():
+		for i in ms:
+			adj[i].update( k for k in ms if k != i )
+	cur = [ err( i, motion[assign[i]] ) for i in range( N ) ]
+	bad = set( i for i in range( N ) if cur[i] > EXTRA_ERROR * H and i not in pins and i not in hairIdx )
+	def pieces( vs ):
+		vs, out, seen = set( vs ), [], set()
+		for s0 in vs:
+			if s0 in seen:
+				continue
+			stack, piece = [ s0 ], []
+			seen.add( s0 )
+			while stack:
+				v = stack.pop()
+				piece.append( v )
+				for n in adj[v]:
+					if n in vs and n not in seen:
+						seen.add( n )
+						stack.append( n )
+			out.append( piece )
+		return out
+	def split( idx ):
+		"""two parts by motion: the two farthest apart seed them, each vertex to
+		the part whose motion carries it best, a few rounds"""
+		a = max( idx, key = lambda i: vlen( vsub( rest[i], rest[idx[0]] ) ) )
+		b = max( idx, key = lambda i: vlen( vsub( rest[i], rest[a] ) ) )
+		side = { i: vlen( vsub( rest[i], rest[a] ) ) < vlen( vsub( rest[i], rest[b] ) ) for i in idx }
+		for it in range( 4 ):
+			pa = [ i for i in idx if side[i] ]
+			pb = [ i for i in idx if not side[i] ]
+			if len( pa ) < 3 or len( pb ) < 3:
+				return None
+			ma, mb = fit( pa ), fit( pb )
+			side = { i: err( i, ma ) <= err( i, mb ) for i in idx }
+		parts = []
+		for flag in ( True, False ):
+			parts += pieces( [ i for i in idx if side[i] == flag ] )
+		return parts
+	# a separate piece of mesh (an arrow, a prop) is big enough from a triangle
+	whole = {}
+	for p in pieces( range( N ) ):
+		for i in p:
+			whole[i] = len( p )
+	def big( p ):
+		return len( p ) >= EXTRA_MIN or ( len( p ) >= 3 and whole[p[0]] == len( p ) )
+	# the pieces, split until rigid (or too small to split)
+	todo = [ p for p in pieces( bad ) if big( p ) ]
+	parts = []
+	while todo and len( parts ) + len( todo ) <= budget * 2:
+		p = max( todo, key = len )
+		todo.remove( p )
+		mt = fit( p )
+		mean = sum( err( i, mt ) for i in p ) / len( p )
+		if mean < 0.5 * EXTRA_ERROR * H or len( p ) < 2 * EXTRA_MIN:
+			parts.append( ( p, mt ) )
+			continue
+		halves = split( p )
+		if not halves or len( halves ) < 2:
+			parts.append( ( p, mt ) )
+			continue
+		for h in halves:
+			if big( h ):
+				todo.append( h )
+	parts.sort( key = lambda pm: -len( pm[0] ) )
+	added = []
+	for idx, mt in parts:
+		if len( added ) >= budget:
+			break
+		# the vertexes it carries better than their bones do (by a good margin)
+		gain = [ i for i in idx if err( i, mt ) < 0.5 * cur[i] ]
+		if not big( gain ):
+			continue
+		# on the bone it meets most (its old one, else a new one)
+		meet = {}
+		gs = set( gain )
+		for i in gain:
+			for n in adj[i]:
+				if n not in gs:
+					meet[assign[n]] = meet.get( assign[n], 0 ) + 1
+		parent = max( meet, key = meet.get ) if meet else max( set( assign[i] for i in gain ), key = [ assign[i] for i in gain ].count )
+		edge = [ rest[n] for i in gain for n in adj[i] if n not in gs and assign[n] == parent ]
+		pos = vscale( ( sum( v[0] for v in edge ), sum( v[1] for v in edge ), sum( v[2] for v in edge ) ), 1.0 / len( edge ) ) if edge \
+			else min( ( rest[i] for i in gain ), key = lambda v: vlen( vsub( v, joints[parent]["pos"] ) ) )
+		pname = joints[parent]["name"]
+		k = 1
+		while any( j["name"] == "%s_%d" % ( pname, k ) for j in joints ):
+			k += 1
+		joints.append( { "name": "%s_%d" % ( pname, k ), "parent": pname, "parentIndex": parent,
+						 "zone": joints[parent]["zone"], "pos": pos, "extra": True } )
+		b = len( joints ) - 1
+		bones.append( b )
+		added.append( b )
+		motion[b] = mt
+		for i in gain:
+			assign[i] = b
+			cur[i] = err( i, mt )
+	return added
 
 def seg_dist( p, a, b ):
 	ab = vsub( b, a )
@@ -516,8 +714,8 @@ def main( md3Path, outBase ):
 		for sf in m.surfaces:
 			sf.frames = [ [ stand_up( v ) for v in frame ] for frame in sf.frames ]
 	# the body: every surface but the hardpoints
-	body = [ s for s in m.surfaces if s.name not in HARDPOINTS ]
-	hps = [ s for s in m.surfaces if s.name in HARDPOINTS ]
+	body = [ s for s in m.surfaces if not is_hardpoint( s ) ]
+	hps = [ s for s in m.surfaces if is_hardpoint( s ) ]
 	verts = []		# [ ( surface index, vertex index ) ]
 	for si, s in enumerate( body ):
 		verts += [ ( si, vi ) for vi in range( s.numVerts ) ]
@@ -528,7 +726,7 @@ def main( md3Path, outBase ):
 
 	gunHand = None
 	for hp in hps:
-		if HARDPOINTS[hp.name][1] == "Rhand":
+		if HARDPOINTS.get( hp.name, ( None, None ) )[1] == "Rhand":
 			gunHand = vscale( vadd( vadd( hp.frames[0][0], hp.frames[0][1] ), hp.frames[0][2] ), 1.0 / 3 )
 	for sf in body:
 		cap_holes( sf )
@@ -541,7 +739,9 @@ def main( md3Path, outBase ):
 	def tri_name( t ):
 		a, b, c = tris[t]
 		return "%s:%d-%d-%d" % ( body[verts[a][0]].name, verts[a][1], verts[b][1], verts[c][1] )
-	joints, hairIdx = place_template( rest, tris, headVerts, gunHand )
+	headPoint = next( ( vscale( vadd( vadd( hp.frames[0][0], hp.frames[0][1] ), hp.frames[0][2] ), 1.0 / 3 )
+					   for hp in hps if hp.name == "hp_head" ), None )
+	joints, hairIdx = place_template( rest, tris, headVerts, gunHand, headPoint )
 	J = { j["name"]: i for i, j in enumerate( joints ) }
 	pins = load_pins( os.path.basename( outBase ), body, verts, J )
 	for j in joints:
@@ -552,7 +752,7 @@ def main( md3Path, outBase ):
 	# 1. first split: the nearest bone (from its joint toward its first child)
 	def bone_segment( i ):
 		a = joints[i]["pos"]
-		kids = children[i]
+		kids = [ k for k in children[i] if not joints[k].get( "extra" ) ]	# an extra bone leaves its parent's be
 		if kids:
 			# toward the middle of its children
 			b = vscale( ( sum( joints[k]["pos"][0] for k in kids ), sum( joints[k]["pos"][1] for k in kids ),
@@ -661,9 +861,33 @@ def main( md3Path, outBase ):
 	for i in range( N ):
 		if any( assign[i] in chain for chain in legChains ) and fit( i, assign[i] ) > len( sample ) * BAD_FIT ** 2:
 			assign[i] = min( allowed_bones( i, bones ), key = lambda b: fit( i, b ) )
+	# a head that never turns on its body (a helmet, a mane) the motion can't
+	# tell from the chest: it's the mesh over the neck, but what the arms carry
+	if NAME and assign.count( J["Head"] ) < EXTRA_MIN:
+		H0 = max( v[2] for v in rest ) - min( v[2] for v in rest )
+		hp = joints[J["Head"]]["pos"]
+		for i, v in enumerate( rest ):
+			if v[2] > joints[J["Loneck"]]["pos"][2] and math.hypot( v[0] - hp[0], v[1] - hp[1] ) < 0.15 * H0 \
+					and joints[assign[i]]["zone"] in ( "torso", "head" ):
+				assign[i] = J["Head"]
+		print( "  head: %d vertexes over the neck" % assign.count( J["Head"] ) )
+
 	# and what's pinned by hand
 	for i, pin in pins.items():
 		assign[i] = pin[0]
+
+	# what the template has no bone for (a cape, wings, a held sword, more
+	# arms): the mesh no bone carries gets bones of its own, as the creature
+	# rigger finds them (EXTRA_BONES at most)
+	if EXTRA_BONES:
+		motion = fit_bones( sample )
+		added = extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins, hairIdx, EXTRA_BONES )
+		if added:
+			children = { i: [ k for k, j in enumerate( joints ) if j["parentIndex"] == i ] for i in range( len( joints ) ) }
+			J = { j["name"]: i for i, j in enumerate( joints ) }
+			for b in added:
+				segs[b] = bone_segment( b )
+			print( "  extra bones: %s" % ", ".join( "%s(%d, on %s)" % ( joints[b]["name"], assign.count( b ), joints[b]["parent"] ) for b in added ) )
 	motion = fit_bones( range( F ) )
 	if os.environ.get( "RIG_DEBUG" ):
 		plot_segments( rest, assign, joints, os.environ["RIG_DEBUG"] )
@@ -846,11 +1070,10 @@ def main( md3Path, outBase ):
 	print( "  wrote %s_skin.txt" % outBase )
 
 	# 5. hardpoints as attachment joints
-	for s in hps:
-		name, parent = HARDPOINTS[s.name]
-		c = vscale( vadd( vadd( s.frames[0][0], s.frames[0][1] ), s.frames[0][2] ), 1.0 / 3 )
-		joints.append( { "name": name, "parent": parent, "parentIndex": J[parent], "zone": None, "pos": c } )
-		motion[len( joints ) - 1] = { f: rigid_fit( s.frames[0], s.frames[f] ) for f in range( F ) }
+	for joint, jm in hardpoint_joints( hps, joints, motion, bones, F, sample ):
+		joints.append( joint )
+		motion[len( joints ) - 1] = jm
+		print( "  hardpoint %s on %s" % ( joint["name"], joint["parent"] ) )
 	motion[J["origin"]] = { f: ( IDENT, ( 0, 0, 0 ) ) for f in range( F ) }
 
 	write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase )
@@ -897,7 +1120,7 @@ def d3_rotation_angle( axis, frm, to ):
 	a = math.atan2( vdot( axis, vcross( frm, to ) ), vdot( frm, to ) )
 	return -math.degrees( a )
 
-def ragdoll_af( name, joints, rest, assign ):
+def ragdoll_af( name, joints, rest, assign, afName = None ):
 	J = { joint["name"]: j for j, joint in enumerate( joints ) }
 	if any( n not in J for n in ( "Hips", "Waist", "Chest", "Loneck", "Head", "Luparm", "Lloarm", "Lhand",
 								  "Ruparm", "Rloarm", "Rhand", "Lupleg", "Lloleg", "Lankle_r", "Rupleg", "Rloleg", "Rankle_r" ) ):
@@ -913,6 +1136,9 @@ def ragdoll_af( name, joints, rest, assign ):
 			# thighs): the body about its joint
 			c = P( names[0] )
 			ps = [ v for v in rest if vlen( vsub( v, c ) ) < 0.1 * H ]
+			if not ps:
+				# nothing near it (a joint the fit left in a gap): its nearest
+				ps = sorted( rest, key = lambda v: vlen( vsub( v, c ) ) )[:8]
 		lo = [ min( p[k] for p in ps ) for k in range( 3 ) ]
 		hi = [ max( p[k] for p in ps ) for k in range( 3 ) ]
 		c = [ 0.5 * ( lo[k] + hi[k] ) for k in range( 3 ) ]
@@ -943,7 +1169,7 @@ def ragdoll_af( name, joints, rest, assign ):
 
 	lines = [ "// made by tools/rig/autorig.py: %s's ragdoll, Doom 3's articulated figure" % name,
 			  "// (made in the model's bind pose; joint() and bone*() name the IQM's joints)",
-			  "articulatedFigure char_%s {" % name,
+			  "articulatedFigure %s {" % ( afName or "char_" + name ),
 			  "	settings {",
 			  "		model \"model_%s\"" % name,
 			  "		friction 0.01, 0.01, 0.8, 0.5",
@@ -1053,7 +1279,8 @@ def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping =
 	# x down the bone (to the child, or on from the parent at an end), z as
 	# near up as it can be; so hitboxes fitted in the joint's space hug the limb
 	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j and joints[k]["zone"]
-				 and ( joints[k]["zone"] != "hair" or joints[j]["zone"] == "hair" ) ] for j in range( nj ) }
+				 and ( joints[k]["zone"] != "hair" or joints[j]["zone"] == "hair" )
+				 and ( not joints[k].get( "extra" ) or joints[j].get( "extra" ) ) ] for j in range( nj ) }
 	restRot = []
 	for j in range( nj ):
 		p = joints[j]["pos"]
@@ -1226,10 +1453,14 @@ def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping =
 
 def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase ):
 	N = len( verts )
-	anims, restRot = write_iqm( m, body, verts, rest, joints, motion, weights, outBase )
+	spec, looping = anim_spec( ANIMS, FPS or MONSTER_FPS, MONSTER_LOOPING ) if NAME else ( {}, None )
+	fps = ( FPS or MONSTER_FPS ) if NAME else ANIM_FPS
+	anims, restRot = write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping, fps )
 
 	# the model def: animations and hitboxes fitted to each bone's vertexes
-	name = os.path.basename( outBase )
+	name = NAME or os.path.basename( outBase )
+	prefix = "rig_" if NAME else "char_"
+	afName = ( "monster_" if NAME else "char_" ) + name
 
 	# the collision box, Doom 3's "mins"/"maxs": the body standing (its idle),
 	# legs, torso and head, not the arms (the hitboxes have those); square
@@ -1243,8 +1474,10 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 				if joints[assign[i]]["zone"] in ( "legs", "torso", "head" ) ]
 		half = max( max( abs( p[0] ), abs( p[1] ) ) for p in pts )
 		return half, min( p[2] for p in pts ), max( p[2] for p in pts )
-	half, bottom, top = pose_extent( [ "amb", "aamb" ] )
+	half, bottom, top = pose_extent( [ "amb", "aamb", "amba" ] )
 	_, _, crouchTop = pose_extent( [ "camb", "acamb" ] )
+	if not any( n in animAt for n in ( "camb", "acamb" ) ):
+		crouchTop = top		# it doesn't crouch
 	if TO_MODEL:
 		# lying: the box about the body as it lies
 		lying = [ to_model( v ) for v in rest ]
@@ -1276,7 +1509,11 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		if a[0] in seen:
 			continue
 		seen.add( a[0] )
-		lines.append( "\t\"anim %s\"\t\t\"%s\"" % ( a[0], a[0] ) )
+		if NAME:
+			afps, loop = spec.get( a[0], ( fps, looping.match( a[0] ) ) )
+			lines.append( "\t\"anim %s\"\t\t\"%s %g%s\"" % ( a[0], a[0], afps, " loop" if loop else "" ) )
+		else:
+			lines.append( "\t\"anim %s\"\t\t\"%s\"" % ( a[0], a[0] ) )
 	lines.append( "" )
 
 	# footsteps: where each foot comes down, once a cycle: its sole (the
@@ -1314,7 +1551,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			volume = "" if stepVolume[anim] == 1.0 else " %g" % stepVolume[anim]
 			lines.append( "\t\"frame %s %d\"\t\"footstep %s%s\"" % ( anim, i, steps[anim][i][0], volume ) )
 	lines.append( "" )
-	# how fast each moving animation goes over the ground at ANIM_FPS: each
+	# how fast each moving animation goes over the ground at its rate: each
 	# foot's sole (its lowest third) reaches forward and back by a step a
 	# cycle, two steps a cycle; the game plays the legs faster or slower to
 	# match the player's speed ("anim_speed")
@@ -1333,7 +1570,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 				xs.append( sum( p[0] for p in pts ) / len( pts ) )
 			reach.append( max( xs ) - min( xs ) )
 		if reach:
-			speed = 2 * sum( reach ) / len( reach ) / ( a[2] / ANIM_FPS )
+			speed = 2 * sum( reach ) / len( reach ) / ( a[2] / spec.get( a[0], ( fps, ) )[0] )
 			lines.append( "\t\"anim_speed %s\"\t\"%.0f\"" % ( a[0], speed ) )
 	lines.append( "" )
 
@@ -1365,7 +1602,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		lines.append( "\t\"ladder_climb\"\t\t\"%.1f\"\t// a cycle of ladderup climbs this (rungs half as far apart)" % rise )
 		lines.append( "\t\"ladder_reach\"\t\t\"%.1f\"\t// the hands this far ahead" % reach )
 		lines.append( "" )
-	soundKeys, soundShaders = character_sounds( name )
+	soundKeys, soundShaders = character_sounds( name ) if not NAME else ( [], "" )
 	lines += soundKeys
 	lines.append( "" )
 	if soundShaders:
@@ -1384,23 +1621,24 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		hi = [ max( p[k] for p in pts ) for k in range( 3 ) ]
 		lines.append( "\t\"hitbox %s\"\t\"%.1f %.1f %.1f %.1f %.1f %.1f %s\"" % ( joint["name"], *lo, *hi, joint["zone"] ) )
 	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale arms\"\t\"0.75\"", "\t\"damage_scale legs\"\t\"0.75\"" ]
-	af = ragdoll_af( name, joints, rest, assign )
+	af = ragdoll_af( name, joints, rest, assign, afName )
 	if af:
 		os.makedirs( "af", exist_ok = True )
-		with open( os.path.join( "af", "char_%s.af" % name ), "w" ) as fp:
+		with open( os.path.join( "af", "%s.af" % afName ), "w" ) as fp:
 			fp.write( af )
-		lines += [ "", "\t\"ragdoll\"\t\t\t\"char_%s\"\t// af/char_%s.af, Doom 3's articulated figure" % ( name, name ) ]
+		lines += [ "", "\t\"ragdoll\"\t\t\t\"%s\"\t// af/%s.af, Doom 3's articulated figure" % ( afName, afName ) ]
 	# as a player model: Quake 3's animations (pmove's) to Daikatana's, the
 	# first of each list the character has
 	lines.append( "" )
-	for q3, candidates in PLAYER_ANIMS:
+	for q3, candidates in PLAYER_ANIMS if not NAME else []:
 		for c in candidates:
 			anim, hold = ( c.split() + [ "" ] )[:2]
 			if anim in seen:
 				lines.append( "\t\"player_anim %s\"\t\"%s\"" % ( q3, c ) )
 				break
 	lines += [ "}", "" ]
-	defPath = os.path.join( "def", "char_%s.def" % name )
+	os.makedirs( "def", exist_ok = True )
+	defPath = os.path.join( "def", "%s%s.def" % ( prefix, name ) )
 	with open( defPath, "w" ) as fp:
 		fp.write( "\n".join( lines ) )
 	print( "  wrote %s" % defPath )
@@ -1410,6 +1648,12 @@ if __name__ == "__main__":
 	if args and args[0] == "--lying":
 		TO_MODEL = lie_down
 		args = args[1:]
+	for opt, var, kind in ( ( "--name", "NAME", str ), ( "--fps", "FPS", float ), ( "--anims", "ANIMS", str ),
+							( "--extra", "EXTRA_BONES", int ) ):
+		if opt in args:
+			i = args.index( opt )
+			globals()[var] = kind( args[i + 1] )
+			args = args[:i] + args[i + 2:]
 	if len( args ) != 2:
 		print( __doc__ )
 		sys.exit( 1 )

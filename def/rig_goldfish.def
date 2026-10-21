@@ -1,0 +1,21 @@
+// made by tools/rig/creature_rig.py from models/global/e_goldfish.md3: the rigged model, in place of the md3's
+entityDef model_goldfish {
+	"mesh"			"models/rigged/e_goldfish.iqm"
+	"mins"			"-12 -12 -5"	// the box it moves with: all but its wings, idling
+	"maxs"			"12 12 5"
+	"hit_mins"		"-12 -12 -5"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"12 12 5"
+
+	"anim amba"		"amba 10 loop"
+	"anim diea"		"diea 10"
+	"anim stand"		"stand 10"
+	"anim swima"		"swima 10 loop"
+
+	"hitbox Body"	"-6.4 -2.3 -3.5 9.4 2.6 5.2 torso"
+	"hitbox Tail1"	"2.0 -0.3 -4.1 8.5 1.8 4.3 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_goldfish"	// af/monster_goldfish.af, Doom 3's articulated figure
+}

@@ -57,7 +57,9 @@ def centroid( pts ):
 
 def main( md3Path, outBase, name, animSpec, maxBones = 64 ):
 	m = MD3( md3Path )
-	body = m.surfaces
+	# the body: every surface but the hardpoints (a triangle each: a muzzle, an eye)
+	body = [ s for s in m.surfaces if not A.is_hardpoint( s ) ]
+	hps = [ s for s in m.surfaces if A.is_hardpoint( s ) ]
 	verts = []
 	for si, s in enumerate( body ):
 		verts += [ ( si, vi ) for vi in range( s.numVerts ) ]
@@ -443,16 +445,17 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64 ):
 			print( "   %s: %d vertex-frames over 3 units, worst %.1f (frame %d, vertex %d)" % ( a, len( l ), l[0][0], l[0][1], l[0][2] ) )
 	print( "  bones: %s" % ", ".join( "%s(%d)" % ( names[p], len( ps[p] ) ) for p in boneOrder ) )
 
+	# the hardpoints, rigid joints on the bones that carry them
+	for joint, jm in A.hardpoint_joints( hps, joints, jmotion, [ index[p] for p in boneOrder ], F, sample ):
+		joints.append( joint )
+		jmotion[len( joints ) - 1] = jm
+		print( "  hardpoint %s on %s" % ( joint["name"], joint["parent"] ) )
+
 	# the IQM, with Daikatana's frame rates and loops
-	spec = {}
-	for part in animSpec.split( ";" ):
-		w = part.split()
-		if w:
-			spec[w[0]] = ( float( w[1] ) if len( w ) > 1 else DEFAULT_FPS, "loop" in w[2:] )
-	looping = re.compile( "^(%s)$" % "|".join( re.escape( a ) for a, ( fps, loop ) in spec.items() if loop ) if any( l for f, l in spec.values() ) else "^$" )
+	spec, looping = A.anim_spec( animSpec, DEFAULT_FPS, A.MONSTER_LOOPING )
 	anims, restRot = A.write_iqm( m, body, verts, rest, joints, jmotion, weights, outBase, looping, DEFAULT_FPS )
 
-	write_def( m, name, outBase, joints, rest, jassign, anims, spec, restRot, frames )
+	write_def( m, name, outBase, joints, rest, jassign, anims, spec, looping, restRot, frames )
 	write_af( name, joints, rest, jassign, S )
 
 def zone_of( name ):
@@ -498,6 +501,12 @@ def name_bones( ps, parentOf, root, mids, rest, restLo, restHi ):
 		# out along the branch
 		def label( p, depth, suffix ):
 			n = "%s%d%s" % ( stem, depth, suffix ) if not ( kind == "Head" and depth == 1 and stem == "Head" ) else "Head" + suffix
+			# two forks may come to the same name (Head3's second child, Head2b's
+			# first): the later one takes the next letter free
+			base, k = n, 0
+			while n in used:
+				k += 1
+				n = base + chr( ord( "a" ) + k )
 			names[p] = n
 			used.add( n )
 			kids = sorted( [ q for q in ps if parentOf[q] == p ], key = lambda q: -len( ps[q] ) )
@@ -506,14 +515,14 @@ def name_bones( ps, parentOf, root, mids, rest, restLo, restHi ):
 		label( top, 1, "" )
 	return names
 
-def boxes( joints, assign, anims, spec, frames ):
+def boxes( joints, assign, anims, looping, frames ):
 	"""Its boxes: the one it moves with, of all but its wings as it idles
 	(its first looping animation; a frog's legs kick out far behind it as it
 	swims, which a box that can't turn would make room for whichever way it
 	faced), square (Quake 3's boxes don't turn); and the one shots meet, of all
 	of it over all it does that loops (idling and moving), as far as it reaches
 	whichever way it faces."""
-	loops = [ a for a in anims if spec.get( a[0], ( 0, False ) )[1] ] or anims[:1]
+	loops = [ a for a in anims if looping.match( a[0] ) ] or anims[:1]
 	idle = range( loops[0][1], loops[0][1] + loops[0][2] )
 	fs = sorted( set( f for a in loops for f in range( a[1], a[1] + a[2] ) ) )
 	N = len( assign )
@@ -525,6 +534,31 @@ def boxes( joints, assign, anims, spec, frames ):
 	hlo = min( frames[f][i][2] for f in fs for i in range( N ) )
 	hhi = max( frames[f][i][2] for f in fs for i in range( N ) )
 	return ( -half, -half, zlo ), ( half, half, zhi ), ( -reach, -reach, hlo ), ( reach, reach, hhi )
+
+MOVING = re.compile( r"^(walk|run)[a-z]?$" )
+
+def ground_speed( a, fps, frames ):
+	"""How fast a walk or a run goes over the ground, as it plays in place:
+	what's on the ground (the frame's lowest vertexes) goes back as fast as
+	the creature goes forward. None if nothing stays on the ground"""
+	if not MOVING.match( a[0] ) or a[2] < 2:
+		return None
+	speeds = []
+	for k in range( a[2] ):
+		f0, f1 = a[1] + k, a[1] + ( k + 1 ) % a[2]
+		zs = [ p[2] for p in frames[f0] ]
+		lo, hi = min( zs ), max( zs )
+		near = 0.04 * ( hi - lo )
+		lo1 = min( v[2] for v in frames[f1] )
+		for i, p in enumerate( frames[f0] ):
+			q = frames[f1][i]
+			# on the ground in both frames, going back
+			if p[2] < lo + near and q[2] < lo1 + near and q[0] < p[0]:
+				speeds.append( ( p[0] - q[0] ) * fps )
+	if len( speeds ) < a[2]:
+		return None
+	speeds.sort()
+	return speeds[len( speeds ) // 2]
 
 def perch_frame( joints, assign, anims, frames ):
 	"""A winged creature's frame with its wings raised over its back, as an
@@ -549,9 +583,9 @@ def perch_frame( joints, assign, anims, frames ):
 	print( "  perch: frame %d (%s), its wings %.1f out to its sides" % ( best[1], best[2], best[0] ) )
 	return best[1]
 
-def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot, frames ):
+def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, restRot, frames ):
 	N = len( rest )
-	mins, maxs, hitMins, hitMaxs = boxes( joints, assign, anims, spec, frames )
+	mins, maxs, hitMins, hitMaxs = boxes( joints, assign, anims, looping, frames )
 	lines = [ "// made by tools/rig/creature_rig.py from %s: the rigged model, in place of the md3's" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
 			  "\t\"mesh\"\t\t\t\"%s.iqm\"" % A.gamePath( outBase ),
@@ -565,8 +599,12 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot, fra
 		if a[0] in seen:
 			continue
 		seen.add( a[0] )
-		fps, loop = spec.get( a[0], ( DEFAULT_FPS, False ) )
+		fps, loop = spec.get( a[0], ( DEFAULT_FPS, looping.match( a[0] ) ) )
 		lines.append( "\t\"anim %s\"\t\t\"%s %g%s\"" % ( a[0], a[0], fps, " loop" if loop else "" ) )
+	for a in anims:
+		speed = ground_speed( a, spec.get( a[0], ( DEFAULT_FPS, ) )[0], frames )
+		if speed:
+			lines.append( "\t\"anim_speed %s\"\t\"%.0f\"\t// over the ground, from its feet" % ( a[0], speed ) )
 	perch = perch_frame( joints, assign, anims, frames )
 	if perch is not None:
 		lines.append( "\t\"anim perch\"\t\t\"%d 1 1 loop\"\t// landed, its wings raised: the frame they reach out least" % perch )
@@ -584,6 +622,7 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot, fra
 	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale legs\"\t\"0.75\"",
 			   "", "\t\"ragdoll\"\t\t\"monster_%s\"\t// af/monster_%s.af, Doom 3's articulated figure" % ( name, name ),
 			   "}", "" ]
+	os.makedirs( "def", exist_ok = True )
 	path = os.path.join( "def", "rig_%s.def" % name )
 	with open( path, "w" ) as fp:
 		fp.write( "\n".join( lines ) )
@@ -595,7 +634,7 @@ def write_af( name, joints, rest, assign, S ):
 	its joint, bending within a cone"""
 	N = len( rest )
 	nj = len( joints )
-	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j ] for j in range( nj ) }
+	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j and joints[k]["zone"] ] for j in range( nj ) }
 	vec = lambda v: "( %.2f, %.2f, %.2f )" % tuple( v )
 	minHalf = max( 0.75, 0.03 * S )
 	lines = [ "// made by tools/rig/creature_rig.py: the %s's ragdoll, Doom 3's articulated figure" % name,

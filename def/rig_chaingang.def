@@ -1,0 +1,71 @@
+// made by tools/rig/autorig.py from models/e4/m_chgang.md3
+entityDef model_chaingang {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/chgang.iqm"
+	"mins"				"-25 -25 -24"	// standing, at the origin (pmove's)
+	"maxs"				"25 25 40"
+	"crouch_height"		"40"		// maxs z crouched
+	"eye_height"		"34"
+	"crouch_eye_height"	"34"
+	"ik_minWaistAnkleDist"	"23"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ambc"		"ambc 10"
+	"anim ambd"		"ambd 10"
+	"anim ambe"		"ambe 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim atakf"		"atakf 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim diec"		"diec 10"
+	"anim flya"		"flya 10 loop"
+	"anim flyb"		"flyb 10 loop"
+	"anim flyc"		"flyc 10 loop"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim hitc"		"hitc 10"
+	"anim runa"		"runa 10 loop"
+	"anim transa"		"transa 10"
+	"anim transb"		"transb 10"
+	"anim transc"		"transc 10"
+	"anim transd"		"transd 10"
+	"anim walka"		"walka 10 loop"
+
+	"frame runa 1"	"footstep Rankle_r"
+	"frame runa 7"	"footstep Lankle_r"
+	"frame walka 0"	"footstep Rankle_r 0.4"
+	"frame walka 10"	"footstep Lankle_r 0.4"
+
+	"anim_speed runa"	"47"
+	"anim_speed walka"	"25"
+
+
+	"hitbox Hips"	"-2.8 -6.2 -11.1 4.0 2.7 0.6 torso"
+	"hitbox Lupleg"	"2.8 0.6 -6.6 17.2 9.0 4.4 legs"
+	"hitbox Lloleg"	"6.0 -4.8 -3.0 18.3 3.8 4.9 legs"
+	"hitbox Lankle_r"	"-3.3 -11.5 -9.9 5.9 1.6 0.4 legs"
+	"hitbox Rupleg"	"-0.5 -3.7 0.7 12.5 10.5 20.6 legs"
+	"hitbox Rloleg"	"-5.1 -9.2 -2.0 11.7 5.2 8.7 legs"
+	"hitbox Rankle_r"	"-1.8 -9.8 -5.7 6.9 5.6 4.8 legs"
+	"hitbox Waist"	"-2.5 -4.5 -5.8 5.7 7.4 6.4 torso"
+	"hitbox Chest"	"2.0 -6.1 -10.2 13.2 8.3 6.6 torso"
+	"hitbox Loneck"	"-4.4 -4.7 -2.2 6.0 1.9 5.9 head"
+	"hitbox Head"	"-4.5 -4.9 -6.1 8.2 9.3 8.0 head"
+	"hitbox Luparm"	"-4.1 -3.8 -5.8 7.4 4.9 6.0 arms"
+	"hitbox Lloarm"	"-0.3 -2.9 -6.4 13.1 4.0 2.6 arms"
+	"hitbox Lhand"	"0.1 -4.3 -1.0 11.8 3.0 6.5 arms"
+	"hitbox Ruparm"	"-4.0 -4.9 -6.6 15.2 2.5 3.8 arms"
+	"hitbox Rloarm"	"-3.3 -2.1 -0.2 3.8 15.3 11.1 arms"
+	"hitbox Rhand"	"-3.9 -1.0 -7.8 4.7 4.7 0.5 arms"
+	"hitbox Waist_1"	"-0.7 -3.1 -5.3 6.8 4.6 -1.1 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_chaingang"	// af/monster_chaingang.af, Doom 3's articulated figure
+
+}

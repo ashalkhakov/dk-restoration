@@ -1,0 +1,37 @@
+// made by tools/rig/autorig.py from models/e1/m_torture2.md3
+entityDef model_torture2 {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/torture2.iqm"
+	"mins"				"-14 -14 -30"	// standing, at the origin (pmove's)
+	"maxs"				"14 14 29"
+	"crouch_height"		"29"		// maxs z crouched
+	"eye_height"		"24"
+	"crouch_eye_height"	"24"
+	"ik_minWaistAnkleDist"	"21"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim amba"		"amba 10 loop"
+
+
+
+
+	"hitbox Hips"	"3.4 -2.5 -0.3 5.3 1.2 2.8 torso"
+	"hitbox Lupleg"	"-5.6 -2.7 -5.1 8.7 4.4 7.7 legs"
+	"hitbox Lloleg"	"5.8 -0.0 -2.8 10.5 4.3 0.0 legs"
+	"hitbox Rupleg"	"-8.4 -9.4 -6.1 8.4 4.8 2.2 legs"
+	"hitbox Rloleg"	"5.2 -4.6 -4.7 7.5 0.0 -0.1 legs"
+	"hitbox Waist"	"-2.0 -8.0 -2.4 6.8 7.8 3.8 torso"
+	"hitbox Chest"	"-1.8 -2.9 -4.2 6.8 3.5 5.4 torso"
+	"hitbox Head"	"-7.3 -3.7 -0.5 1.1 2.6 7.3 head"
+	"hitbox Luparm"	"-6.2 -7.5 0.4 -0.7 -2.4 6.0 arms"
+	"hitbox Lloarm"	"6.6 -5.1 -4.6 8.2 -0.0 -0.0 arms"
+	"hitbox Ruparm"	"-4.6 0.9 -0.4 0.2 5.8 7.3 arms"
+	"hitbox Rloarm"	"-0.0 -0.3 -4.8 6.5 2.0 -0.0 arms"
+	"hitbox Waist_1"	"1.0 -2.0 -4.3 4.4 3.6 2.0 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_torture2"	// af/monster_torture2.af, Doom 3's articulated figure
+
+}

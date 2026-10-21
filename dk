@@ -426,7 +426,9 @@ cmd_rig() {
 	list=$(printf '%s\n' "$RIG_MODELS" | sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d')
 	if [ $# -gt 0 ]; then
 		list=$(printf '%s\n' "$list" | while read -r name rest; do
-			for want in "$@"; do [ "$want" = "$name" ] && printf '%s %s\n' "$name" "$rest"; done
+			for want in "$@"; do
+				if [ "$want" = "$name" ]; then printf '%s %s\n' "$name" "$rest"; fi
+			done
 		done)
 		[ -n "$list" ] || die "no such model in RIG_MODELS: $*"
 	fi
@@ -675,7 +677,7 @@ EOF
 
 # ./dk rigshots [name...]: the rigged models in e1m1a, three to a shot,
 # before its spawn points (each way they face), to compare with
-# Daikatana's; out/shots/rig/
+# Daikatana's (DEAD=1 kills the middle one: its ragdoll); out/shots/rig/
 cmd_rigshots() {
 	local map=e1m1a spots shots="" i=0 n x y z yaw turn
 	mkdir -p "$OUT/test" "$OUT/shots/rig"
@@ -692,6 +694,8 @@ cmd_rigshots() {
 					shots="$shots|spawncharacter model_$1 \"\" 0 $n"
 					shift
 				done
+				# DEAD=1: the middle one killed, to see its ragdoll
+				[ "${DEAD:-0}" = 0 ] || shots="$shots|wait 20|damage 1000 aim|wait 60"
 				shots="$shots|wait 40|screenshotJPEG rig_$i|wait 10"
 				i=$((i + 1))
 			done <<EOF

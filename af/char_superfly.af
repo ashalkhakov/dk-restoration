@@ -19,8 +19,8 @@ articulatedFigure char_superfly {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -2.97, -3.57, -1.00 ), ( 2.97, 3.57, 1.00 ) )
-		origin ( -3.65, -3.88, 0.00 )
+		model box( ( -3.26, -4.35, -2.72 ), ( 3.26, 4.35, 2.72 ) )
+		origin ( -3.11, -0.48, 1.13 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse

@@ -1,0 +1,48 @@
+// made by tools/rig/creature_rig.py from models/e1/m_sludgeminion.md3: the rigged model, in place of the md3's
+entityDef model_sludgeminion {
+	"mesh"			"models/rigged/sludgeminion.iqm"
+	"mins"			"-46 -46 -39"	// the box it moves with: all but its wings, idling
+	"maxs"			"46 46 67"
+	"hit_mins"		"-56 -56 -42"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"56 56 70"
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakstart"		"atakstart 10"
+	"anim atakstop"		"atakstop 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"54"	// over the ground, from its feet
+	"anim_speed walka"	"26"	// over the ground, from its feet
+
+	"hitbox Body"	"-14.7 -15.9 -19.6 20.0 17.5 10.9 torso"
+	"hitbox Tail1"	"4.4 -4.1 -9.8 15.4 9.1 4.8 torso"
+	"hitbox Tail2"	"14.7 -9.4 -12.4 24.1 2.8 2.2 torso"
+	"hitbox Tail3"	"-28.4 -4.3 -1.2 3.6 10.4 24.5 torso"
+	"hitbox Tail3b"	"1.7 -11.2 -15.5 20.7 8.3 37.9 torso"
+	"hitbox Tail4b"	"-14.2 -11.7 -10.8 51.7 10.3 11.4 torso"
+	"hitbox Tail5b"	"-0.4 6.1 -4.5 20.1 21.5 5.7 torso"
+	"hitbox Tail3c"	"-4.4 -8.6 -10.9 32.4 7.7 8.1 torso"
+	"hitbox Tail4c"	"-7.2 -4.4 2.0 3.0 4.8 18.2 torso"
+	"hitbox Tail4cb"	"-4.1 -14.2 -5.9 8.8 0.3 8.3 torso"
+	"hitbox Tail5cb"	"-1.8 -4.9 -8.2 10.5 4.5 8.1 torso"
+	"hitbox Tail2b"	"10.8 -6.8 -9.3 40.7 7.9 13.3 torso"
+	"hitbox Tail3bb"	"-8.0 -7.2 -5.1 2.7 -1.6 6.4 torso"
+	"hitbox Tail2c"	"-6.2 -11.0 -0.7 4.7 4.0 25.8 torso"
+	"hitbox Tail2d"	"5.8 -13.8 -15.1 24.1 6.0 38.0 torso"
+	"hitbox Tail3d"	"-13.8 -18.4 -17.1 54.9 16.7 13.1 torso"
+	"hitbox Tail4d"	"1.0 -17.5 -3.7 24.0 0.5 10.1 torso"
+	"hitbox Tail2e"	"-4.4 -7.8 -10.3 33.4 10.6 8.5 torso"
+	"hitbox Tail3e"	"-6.3 -5.6 1.8 4.8 3.7 18.4 torso"
+	"hitbox Tail3eb"	"-2.2 -0.1 -4.8 7.5 14.5 10.7 torso"
+	"hitbox Tail4eb"	"0.5 -4.5 -4.1 10.5 5.1 12.1 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_sludgeminion"	// af/monster_sludgeminion.af, Doom 3's articulated figure
+}

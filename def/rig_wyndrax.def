@@ -1,0 +1,68 @@
+// made by tools/rig/autorig.py from models/e3/m_wyndrax.md3
+entityDef model_wyndrax {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/wyndrax.iqm"
+	"mins"				"-23 -23 -24"	// standing, at the origin (pmove's)
+	"maxs"				"23 23 36"
+	"crouch_height"		"36"		// maxs z crouched
+	"eye_height"		"30"
+	"crouch_eye_height"	"30"
+	"ik_minWaistAnkleDist"	"30"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"		"ataka 10"
+	"anim chargea"		"chargea 10"
+	"anim charged"		"charged 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim turna"		"turna 10"
+	"anim turnb"		"turnb 10"
+	"anim walka"		"walka 10 loop"
+	"anim wispa"		"wispa 10"
+	"anim wispb"		"wispb 10"
+	"anim wispc"		"wispc 10"
+	"anim wispd"		"wispd 10"
+
+	"frame runa 1"	"footstep Rankle_r"
+	"frame runa 6"	"footstep Lankle_r"
+	"frame walka 1"	"footstep Rankle_r 0.4"
+	"frame walka 10"	"footstep Lankle_r 0.4"
+
+	"anim_speed runa"	"62"
+	"anim_speed walka"	"29"
+
+
+	"hitbox Hips"	"0.1 -8.8 -6.5 13.6 7.6 5.9 torso"
+	"hitbox Lupleg"	"13.2 2.1 -6.9 19.7 6.1 -0.1 legs"
+	"hitbox Lloleg"	"-7.7 -2.7 -0.8 6.4 2.6 7.9 legs"
+	"hitbox Lankle_r"	"-2.5 -3.0 -1.2 4.7 6.2 11.4 legs"
+	"hitbox Rupleg"	"18.4 -7.5 0.1 32.5 -4.6 7.6 legs"
+	"hitbox Rloleg"	"18.9 -5.8 8.4 21.9 2.3 8.6 legs"
+	"hitbox Rankle_r"	"-8.3 -13.5 -19.9 0.6 8.0 3.3 legs"
+	"hitbox Waist"	"0.7 -4.2 -1.7 3.7 -1.4 0.7 torso"
+	"hitbox Chest"	"-1.5 -1.0 -10.3 11.0 11.1 7.8 torso"
+	"hitbox Loneck"	"-3.0 -5.2 -7.3 6.5 3.7 2.6 head"
+	"hitbox Head"	"-2.6 -4.5 -3.3 5.3 5.6 5.9 head"
+	"hitbox Lloarm"	"3.7 -2.3 -2.1 11.6 3.7 3.6 arms"
+	"hitbox Lhand"	"-16.6 -20.9 -37.6 3.1 0.6 -0.8 arms"
+	"hitbox Ruparm"	"-2.2 -5.8 -12.2 9.2 7.2 7.6 arms"
+	"hitbox Rloarm"	"-1.4 -3.4 -6.1 12.4 2.5 3.0 arms"
+	"hitbox Rhand"	"4.6 1.8 -7.4 16.8 6.6 9.5 arms"
+	"hitbox Rankle_r_1"	"-5.6 -5.1 -3.3 5.3 5.4 3.3 legs"
+	"hitbox Rupleg_1"	"0.3 -1.2 -12.0 8.7 7.5 1.5 legs"
+	"hitbox Rloleg_1"	"-19.6 -4.2 7.4 -2.2 4.0 15.5 legs"
+	"hitbox Lloleg_1"	"-4.4 -4.8 -2.2 3.4 2.5 7.1 legs"
+	"hitbox Rupleg_1_1"	"-16.8 1.6 -0.7 -4.1 7.9 12.4 legs"
+	"hitbox Rloleg_2"	"5.0 -5.0 -6.9 17.7 6.6 13.6 legs"
+	"hitbox Lupleg_1"	"-2.9 -3.4 -1.3 15.9 1.1 9.9 legs"
+	"hitbox Rloleg_2_1"	"-12.5 -5.6 -17.4 3.9 10.2 -8.5 legs"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_wyndrax"	// af/monster_wyndrax.af, Doom 3's articulated figure
+
+}

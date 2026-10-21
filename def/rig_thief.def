@@ -1,0 +1,60 @@
+// made by tools/rig/autorig.py from models/e2/m_thief.md3
+entityDef model_thief {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/thief.iqm"
+	"mins"				"-14 -14 -24"	// standing, at the origin (pmove's)
+	"maxs"				"14 14 10"
+	"crouch_height"		"10"		// maxs z crouched
+	"eye_height"		"7"
+	"crouch_eye_height"	"7"
+	"ik_minWaistAnkleDist"	"12"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim jumpa"		"jumpa 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+
+	"frame runa 0"	"footstep Lankle_r"
+	"frame runa 6"	"footstep Rankle_r"
+	"frame walka 0"	"footstep Lankle_r 0.4"
+	"frame walka 10"	"footstep Rankle_r 0.4"
+
+	"anim_speed runa"	"28"
+	"anim_speed walka"	"12"
+
+
+	"hitbox Hips"	"-1.9 -1.4 -6.4 3.4 4.8 0.5 torso"
+	"hitbox Lloleg"	"-0.3 -2.4 -4.4 7.7 2.7 5.4 legs"
+	"hitbox Lankle_r"	"-0.9 -1.7 -3.0 2.7 2.2 3.2 legs"
+	"hitbox Rupleg"	"4.2 -4.5 -6.4 7.8 1.2 4.4 legs"
+	"hitbox Rloleg"	"2.5 -0.8 -2.7 7.3 5.1 2.8 legs"
+	"hitbox Rankle_r"	"-4.1 -9.2 -5.4 0.6 -1.8 -0.8 legs"
+	"hitbox Waist"	"-2.0 -2.1 -0.9 2.0 2.1 1.7 torso"
+	"hitbox Chest"	"0.3 -0.8 -2.2 5.6 4.0 2.5 torso"
+	"hitbox Loneck"	"-3.0 -2.1 -0.9 4.6 3.5 6.2 head"
+	"hitbox Head"	"-6.2 -2.8 -6.4 2.2 0.9 3.1 head"
+	"hitbox Luparm"	"-0.5 -1.8 -3.7 5.1 2.4 2.6 arms"
+	"hitbox Lloarm"	"2.3 -0.7 -2.5 4.6 2.1 1.2 arms"
+	"hitbox Lhand"	"2.1 -4.4 -0.4 4.8 0.3 3.1 arms"
+	"hitbox Ruparm"	"-0.5 -1.2 0.0 2.2 2.4 2.1 arms"
+	"hitbox Rhand"	"0.0 -1.4 -4.4 2.5 1.6 -1.0 arms"
+	"hitbox Rupleg_1"	"-3.0 -3.2 -1.7 0.8 0.9 1.4 legs"
+	"hitbox Head_1"	"-2.2 -1.6 -2.3 0.6 1.8 2.2 head"
+	"hitbox Lloleg_1"	"-2.1 -0.6 -1.4 1.5 3.3 4.6 legs"
+	"hitbox Lhand_1"	"-1.8 -0.5 -0.0 0.0 1.4 0.4 arms"
+	"hitbox Hips_1"	"0.8 -3.3 -6.2 3.8 0.5 -2.6 torso"
+	"hitbox Rankle_r_1"	"-4.8 -4.5 -1.2 0.9 0.6 1.5 legs"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_thief"	// af/monster_thief.af, Doom 3's articulated figure
+
+}

@@ -1,0 +1,20 @@
+// made by tools/rig/creature_rig.py from models/global/e_greyfish.md3: the rigged model, in place of the md3's
+entityDef model_greyfish {
+	"mesh"			"models/rigged/e_greyfish.iqm"
+	"mins"			"-11 -11 -5"	// the box it moves with: all but its wings, idling
+	"maxs"			"11 11 5"
+	"hit_mins"		"-11 -11 -5"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"11 11 5"
+
+	"anim amba"		"amba 10 loop"
+	"anim diea"		"diea 10"
+	"anim swima"		"swima 10 loop"
+
+	"hitbox Body"	"-2.5 -3.1 -5.0 3.5 1.9 4.6 torso"
+	"hitbox Tail1"	"-1.1 -2.2 -10.6 11.3 1.6 4.7 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_greyfish"	// af/monster_greyfish.af, Doom 3's articulated figure
+}

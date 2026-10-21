@@ -48,6 +48,16 @@ looping animations, as far as it reaches whichever way it faces. It writes the I
 dies. The frog's tongue stretches tenfold to spit, which a rigid bone can't: it only slides out (joint scale is to
 come).
 
+Every other monster is rigged too, by `./dk rig` from `RIG_MODELS` in `dk` (docs/auto-rigging.md has the table, the
+settings and how well each fits): the humanoids (the Mishima workers and guards, the prisoners, the centurion, the
+knights, the gangs and the SEALs, Kage, Mikiko as Kage's…) on Doom 3's human joints, with extra bones for capes, wings
+and swords; the rest (the Sludge Minion, the Ragemaster, the Battle Boar, the Crox, the spiders, Medusa, Cerberus, the
+griffon, the dragon, the turrets, the rats and fish) on their own bones. Each is `model_<name>` (the classname without
+`monster_`) in `def/rig_<name>.def`, with its animations at Daikatana's 10 frames a second, hitboxes, both boxes,
+`anim_speed` for its walks and runs, its hardpoints as joints (`hr_muzzle`: where the shots leave) and a ragdoll
+(`af/monster_<name>.af`). Their monster defs (behaviour, AIData's values) are still to be written, as the frog's and the
+skeet's are.
+
 ## Its script
 
 `script/ai/monster_base.script` is what every monster's object has:

@@ -1,0 +1,50 @@
+// made by tools/rig/autorig.py from models/cinematic/c_inshiro_intr.md3
+entityDef model_inshiro {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/inshiro.iqm"
+	"mins"				"-12 -12 -24"	// standing, at the origin (pmove's)
+	"maxs"				"12 12 26"
+	"crouch_height"		"26"		// maxs z crouched
+	"eye_height"		"22"
+	"crouch_eye_height"	"22"
+	"ik_minWaistAnkleDist"	"18"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim nodd"		"nodd 10"
+	"anim samba"		"samba 10"
+	"anim sambb"		"sambb 10"
+	"anim sambc"		"sambc 10"
+	"anim sambd"		"sambd 10"
+	"anim sfa"		"sfa 10"
+	"anim sfamb"		"sfamb 10"
+	"anim sfb"		"sfb 10"
+	"anim tka"		"tka 10"
+	"anim tkb"		"tkb 10"
+
+
+
+
+	"hitbox Hips"	"0.0 -3.0 -4.7 2.5 2.5 2.6 torso"
+	"hitbox Lupleg"	"2.2 -4.1 -4.9 11.8 2.7 3.8 legs"
+	"hitbox Lloleg"	"8.1 -3.2 -5.6 10.8 7.5 2.3 legs"
+	"hitbox Lankle_r"	"0.8 -1.3 -2.3 4.1 1.9 5.8 legs"
+	"hitbox Rupleg"	"-3.2 -3.1 -5.4 6.4 3.8 -0.6 legs"
+	"hitbox Rloleg"	"5.4 -6.6 -2.5 13.7 1.4 2.7 legs"
+	"hitbox Rankle_r"	"-5.3 -10.2 -4.9 3.9 0.4 5.4 legs"
+	"hitbox Waist"	"-1.4 -3.3 -2.6 4.5 4.6 4.0 torso"
+	"hitbox Chest"	"-3.8 -1.4 0.9 -3.8 -1.4 0.9 torso"
+	"hitbox Loneck"	"0.3 -3.7 -3.3 7.1 2.2 -0.6 head"
+	"hitbox Head"	"-11.2 -5.2 -3.3 -2.4 1.3 5.9 head"
+	"hitbox Luparm"	"2.1 -2.8 -3.0 14.0 1.1 3.5 arms"
+	"hitbox Lloarm"	"0.4 -1.9 -2.0 7.4 1.5 2.0 arms"
+	"hitbox Lhand"	"0.1 -1.7 -2.3 4.4 1.0 1.0 arms"
+	"hitbox Ruparm"	"2.0 -0.8 -8.8 7.2 5.0 3.4 arms"
+	"hitbox Rloarm"	"2.4 -2.0 -3.5 8.5 2.2 2.5 arms"
+	"hitbox Rhand"	"-0.4 -0.7 -1.0 4.0 2.0 1.9 arms"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_inshiro"	// af/monster_inshiro.af, Doom 3's articulated figure
+
+}

@@ -1,0 +1,325 @@
+// made by tools/rig/creature_rig.py: the lasergat's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_lasergat {
+	settings {
+		model "model_lasergat"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -5.88, -2.79, -3.05 ), ( 5.88, 2.79, 3.05 ) )
+		origin ( 2.40, -5.80, 28.59 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head" {
+		joint "Head"
+		mod orientation
+		model box( ( -4.45, -0.93, -1.07 ), ( 4.45, 0.93, 1.07 ) )
+		origin ( 10.94, -7.23, 27.87 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "headb1" {
+		joint "Headb1"
+		mod orientation
+		model box( ( -4.45, -0.92, -1.07 ), ( 4.45, 0.92, 1.07 ) )
+		origin ( 10.94, -5.81, 29.77 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing1" {
+		joint "Lwing1"
+		mod orientation
+		model bone( ( 1.61, -10.26, 28.69 ), ( -2.70, 2.39, 26.80 ), 13.13 )
+		origin ( -0.55, -3.94, 27.74 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing2" {
+		joint "Lwing2"
+		mod orientation
+		model bone( ( -2.70, 2.39, 26.80 ), ( 0.03, 0.81, 31.31 ), 8.91 )
+		origin ( -1.33, 1.60, 29.05 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing3" {
+		joint "Lwing3"
+		mod orientation
+		model box( ( -0.75, -0.93, -2.30 ), ( 0.75, 0.93, 2.30 ) )
+		origin ( -0.05, -1.80, 33.39 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing3b" {
+		joint "Lwing3b"
+		mod orientation
+		model bone( ( 0.03, -1.29, 31.30 ), ( -0.11, 1.61, 35.15 ), 5.79 )
+		origin ( -0.04, 0.16, 33.23 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing4b" {
+		joint "Lwing4b"
+		mod orientation
+		model box( ( -3.49, -4.56, -0.92 ), ( 3.49, 4.56, 0.92 ) )
+		origin ( -0.13, 0.61, 36.10 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing4bb" {
+		joint "Lwing4bb"
+		mod orientation
+		model box( ( -3.69, -4.05, -1.11 ), ( 3.69, 4.05, 1.11 ) )
+		origin ( -0.16, 0.70, 37.79 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwingb1" {
+		joint "Lwingb1"
+		mod orientation
+		model bone( ( 5.70, -1.78, 28.48 ), ( 10.42, 7.75, 28.48 ), 18.75 )
+		origin ( 8.06, 2.98, 28.48 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwingb2" {
+		joint "Lwingb2"
+		mod orientation
+		model bone( ( 10.42, 7.75, 28.48 ), ( 10.05, 9.82, 28.22 ), 3.08 )
+		origin ( 10.24, 8.79, 28.35 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwingb3" {
+		joint "Lwingb3"
+		mod orientation
+		model box( ( -5.88, -2.80, -3.05 ), ( 5.88, 2.80, 3.05 ) )
+		origin ( 2.40, 7.40, 28.59 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwingb3b" {
+		joint "Lwingb3b"
+		mod orientation
+		model box( ( -4.44, -0.93, -1.07 ), ( 4.44, 0.93, 1.07 ) )
+		origin ( 5.95, 5.95, 27.87 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwingb3c" {
+		joint "Lwingb3c"
+		mod orientation
+		model bone( ( 10.42, 8.50, 29.14 ), ( 8.36, 8.78, 38.81 ), 3.94 )
+		origin ( 9.39, 8.64, 33.98 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwingb4c" {
+		joint "Lwingb4c"
+		mod orientation
+		model box( ( -7.09, -7.09, -0.83 ), ( 7.09, 7.09, 0.83 ) )
+		origin ( 0.02, 0.45, 39.79 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Head" {
+		body1 "head"
+		body2 "body"
+		anchor joint( "Head" )
+		shafts ( 0.37, 0.93, -0.03 ), ( -0.37, -0.93, 0.03 )
+		friction 0.20
+		coneLimit ( 0.37, 0.93, -0.03 ), 45
+	}
+
+	universalJoint "Headb1" {
+		body1 "headb1"
+		body2 "body"
+		anchor joint( "Headb1" )
+		shafts ( 0.35, 0.94, -0.02 ), ( -0.35, -0.94, 0.02 )
+		friction 0.20
+		coneLimit ( 0.35, 0.94, -0.02 ), 45
+	}
+
+	universalJoint "Lwing1" {
+		body1 "lwing1"
+		body2 "body"
+		anchor joint( "Lwing1" )
+		shafts ( -0.32, 0.94, -0.14 ), ( 0.32, -0.94, 0.14 )
+		friction 0.20
+		coneLimit ( -0.32, 0.94, -0.14 ), 30
+	}
+
+	universalJoint "Lwing2" {
+		body1 "lwing2"
+		body2 "lwing1"
+		anchor joint( "Lwing2" )
+		shafts ( 0.50, -0.29, 0.82 ), ( -0.50, 0.29, -0.82 )
+		friction 0.20
+		coneLimit ( 0.50, -0.29, 0.82 ), 30
+	}
+
+	universalJoint "Lwing3" {
+		body1 "lwing3"
+		body2 "lwing2"
+		anchor joint( "Lwing3" )
+		shafts ( 0.52, 0.10, 0.85 ), ( -0.52, -0.10, -0.85 )
+		friction 0.20
+		coneLimit ( 0.52, 0.10, 0.85 ), 30
+	}
+
+	universalJoint "Lwing3b" {
+		body1 "lwing3b"
+		body2 "lwing2"
+		anchor joint( "Lwing3b" )
+		shafts ( -0.03, 0.60, 0.80 ), ( 0.03, -0.60, -0.80 )
+		friction 0.20
+		coneLimit ( -0.03, 0.60, 0.80 ), 30
+	}
+
+	universalJoint "Lwing4b" {
+		body1 "lwing4b"
+		body2 "lwing3b"
+		anchor joint( "Lwing4b" )
+		shafts ( -0.02, 0.64, 0.77 ), ( 0.02, -0.64, -0.77 )
+		friction 0.20
+		coneLimit ( -0.02, 0.64, 0.77 ), 30
+	}
+
+	universalJoint "Lwing4bb" {
+		body1 "lwing4bb"
+		body2 "lwing3b"
+		anchor joint( "Lwing4bb" )
+		shafts ( -0.04, 0.54, 0.84 ), ( 0.04, -0.54, -0.84 )
+		friction 0.20
+		coneLimit ( -0.04, 0.54, 0.84 ), 30
+	}
+
+	universalJoint "Lwingb1" {
+		body1 "lwingb1"
+		body2 "body"
+		anchor joint( "Lwingb1" )
+		shafts ( 0.44, 0.90, 0.00 ), ( -0.44, -0.90, -0.00 )
+		friction 0.20
+		coneLimit ( 0.44, 0.90, 0.00 ), 30
+	}
+
+	universalJoint "Lwingb2" {
+		body1 "lwingb2"
+		body2 "lwingb1"
+		anchor joint( "Lwingb2" )
+		shafts ( -0.17, 0.98, -0.12 ), ( 0.17, -0.98, 0.12 )
+		friction 0.20
+		coneLimit ( -0.17, 0.98, -0.12 ), 30
+	}
+
+	universalJoint "Lwingb3" {
+		body1 "lwingb3"
+		body2 "lwingb2"
+		anchor joint( "Lwingb3" )
+		shafts ( -0.17, 0.96, -0.22 ), ( 0.17, -0.96, 0.22 )
+		friction 0.20
+		coneLimit ( -0.17, 0.96, -0.22 ), 30
+	}
+
+	universalJoint "Lwingb3b" {
+		body1 "lwingb3b"
+		body2 "lwingb2"
+		anchor joint( "Lwingb3b" )
+		shafts ( 0.00, -1.00, 0.00 ), ( -0.00, 1.00, -0.00 )
+		friction 0.20
+		coneLimit ( 0.00, -1.00, 0.00 ), 30
+	}
+
+	universalJoint "Lwingb3c" {
+		body1 "lwingb3c"
+		body2 "lwingb2"
+		anchor joint( "Lwingb3c" )
+		shafts ( -0.21, 0.03, 0.98 ), ( 0.21, -0.03, -0.98 )
+		friction 0.20
+		coneLimit ( -0.21, 0.03, 0.98 ), 30
+	}
+
+	universalJoint "Lwingb4c" {
+		body1 "lwingb4c"
+		body2 "lwingb3c"
+		anchor joint( "Lwingb4c" )
+		shafts ( -0.21, 0.03, 0.98 ), ( 0.21, -0.03, -0.98 )
+		friction 0.20
+		coneLimit ( -0.21, 0.03, 0.98 ), 30
+	}
+
+}

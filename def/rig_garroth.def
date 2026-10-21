@@ -1,0 +1,58 @@
+// made by tools/rig/autorig.py from models/e3/m_gharroth.md3
+entityDef model_garroth {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/gharroth.iqm"
+	"mins"				"-27 -27 -26"	// standing, at the origin (pmove's)
+	"maxs"				"27 27 77"
+	"crouch_height"		"77"		// maxs z crouched
+	"eye_height"		"68"
+	"crouch_eye_height"	"68"
+	"ik_minWaistAnkleDist"	"37"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ambc"		"ambc 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+
+	"frame runa 0"	"footstep Rankle_r"
+	"frame runa 6"	"footstep Lankle_r"
+	"frame walka 0"	"footstep Rankle_r 0.4"
+	"frame walka 10"	"footstep Lankle_r 0.4"
+
+	"anim_speed runa"	"75"
+	"anim_speed walka"	"32"
+
+
+	"hitbox Hips"	"-1.5 -8.0 -15.3 20.5 8.7 3.8 torso"
+	"hitbox Lupleg"	"-1.2 -2.3 -2.3 17.4 14.6 26.2 legs"
+	"hitbox Lloleg"	"-6.8 -12.2 -2.6 18.0 2.5 10.2 legs"
+	"hitbox Lankle_r"	"0.9 -10.8 -7.4 11.7 4.9 5.0 legs"
+	"hitbox Rupleg"	"15.9 -15.0 -11.3 43.6 18.7 6.6 legs"
+	"hitbox Rloleg"	"-1.0 1.6 -0.2 16.6 12.7 12.0 legs"
+	"hitbox Rankle_r"	"-1.7 -6.4 -8.3 10.7 9.2 5.2 legs"
+	"hitbox Waist"	"10.6 -3.6 -1.9 20.8 7.2 7.3 torso"
+	"hitbox Chest"	"-8.3 -7.6 -8.7 8.8 13.9 9.0 torso"
+	"hitbox Loneck"	"-6.7 -13.0 -0.6 3.9 10.4 12.9 head"
+	"hitbox Head"	"2.7 -0.7 20.0 9.8 4.8 40.9 head"
+	"hitbox Luparm"	"-2.2 -7.5 -2.3 8.8 10.7 4.2 arms"
+	"hitbox Lloarm"	"-0.3 -9.1 -4.9 8.9 4.0 5.2 arms"
+	"hitbox Lhand"	"-0.4 -6.9 -2.6 8.9 4.3 4.8 arms"
+	"hitbox Ruparm"	"-0.5 -3.7 -50.3 24.5 6.7 27.6 arms"
+	"hitbox Rloarm"	"-3.1 -6.6 -4.8 22.8 2.4 3.0 arms"
+	"hitbox Rhand"	"-9.4 -1.6 -5.4 8.3 6.3 4.8 arms"
+	"hitbox Hips_1"	"-3.5 -11.7 -6.2 4.5 -0.3 4.0 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_garroth"	// af/monster_garroth.af, Doom 3's articulated figure
+
+}

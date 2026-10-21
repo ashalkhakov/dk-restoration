@@ -1,0 +1,21 @@
+// made by tools/rig/creature_rig.py from models/e4/d4_gull.md3: the rigged model, in place of the md3's
+entityDef model_seagull {
+	"mesh"			"models/rigged/d4_gull.iqm"
+	"mins"			"-19 -19 -16"	// the box it moves with: all but its wings, idling
+	"maxs"			"19 19 -8"
+	"hit_mins"		"-61 -61 -56"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"61 61 35"
+
+	"anim fastfly"		"fastfly 10"
+	"anim sfly"		"sfly 10"
+	"anim perch"		"30 1 1 loop"	// landed, its wings raised: the frame they reach out least
+
+	"hitbox Body"	"-15.7 -5.2 -2.3 19.2 3.4 3.9 torso"
+	"hitbox Lwing1"	"-12.3 0.3 0.8 7.3 13.5 47.7 legs"
+	"hitbox Rwing1"	"-12.8 -14.0 1.0 3.9 -0.3 48.3 legs"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_seagull"	// af/monster_seagull.af, Doom 3's articulated figure
+}

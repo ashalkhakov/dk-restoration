@@ -1,0 +1,39 @@
+// made by tools/rig/creature_rig.py from models/e1/m_vermin.md3: the rigged model, in place of the md3's
+entityDef model_venomvermin {
+	"mesh"			"models/rigged/vermin.iqm"
+	"mins"			"-38 -38 -7"	// the box it moves with: all but its wings, idling
+	"maxs"			"38 38 14"
+	"hit_mins"		"-38 -38 -7"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"38 38 19"
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"25"	// over the ground, from its feet
+	"anim_speed walka"	"14"	// over the ground, from its feet
+
+	"hitbox Body"	"-8.3 -5.8 -4.2 10.9 6.3 6.9 torso"
+	"hitbox Head"	"-4.2 -1.2 -1.1 5.8 6.3 8.4 head"
+	"hitbox Head2"	"-8.2 -0.1 -2.3 -4.6 2.8 4.0 head"
+	"hitbox Lfore1"	"-0.7 -2.1 -1.0 7.5 2.0 3.3 legs"
+	"hitbox Lfore2"	"-0.5 -9.8 -5.4 6.5 -1.5 3.4 legs"
+	"hitbox Lhind1"	"-0.2 -4.8 -3.6 12.4 2.7 3.1 legs"
+	"hitbox Lhind2"	"-1.4 -7.8 -7.4 2.7 -0.6 -0.7 legs"
+	"hitbox Rfore1"	"1.9 -2.6 -0.5 7.6 1.6 3.1 legs"
+	"hitbox Rfore2"	"-1.3 0.9 -5.4 5.9 9.2 3.2 legs"
+	"hitbox Rhind1"	"-0.3 -2.3 -2.5 12.1 5.2 3.2 legs"
+	"hitbox Rhind2"	"-0.7 0.9 -6.8 3.3 8.2 -0.0 legs"
+	"hitbox Tail1"	"3.9 -0.2 -0.8 4.5 2.0 1.4 torso"
+	"hitbox Tail2"	"1.7 -1.3 0.5 12.1 1.5 6.0 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_venomvermin"	// af/monster_venomvermin.af, Doom 3's articulated figure
+}

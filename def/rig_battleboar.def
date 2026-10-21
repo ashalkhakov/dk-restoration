@@ -1,0 +1,48 @@
+// made by tools/rig/creature_rig.py from models/e1/m_bboar.md3: the rigged model, in place of the md3's
+entityDef model_battleboar {
+	"mesh"			"models/rigged/bboar.iqm"
+	"mins"			"-26 -26 -14"	// the box it moves with: all but its wings, idling
+	"maxs"			"26 26 29"
+	"hit_mins"		"-34 -34 -14"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"34 34 29"
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ambc"		"ambc 10"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim hitc"		"hitc 10"
+	"anim rev"		"rev 10"
+	"anim runa"		"runa 10 loop"
+	"anim_speed runa"	"0"	// over the ground, from its feet
+
+	"hitbox Body"	"-12.5 -13.1 -10.2 14.6 11.0 10.4 torso"
+	"hitbox Head"	"-1.9 -7.0 -3.7 4.2 6.6 0.7 head"
+	"hitbox Head2"	"0.9 -11.0 -1.8 12.5 -1.9 3.8 head"
+	"hitbox Head2b"	"-8.0 5.6 -2.8 3.8 14.3 3.0 head"
+	"hitbox Headb1"	"1.1 -6.9 -3.6 12.8 7.1 7.0 head"
+	"hitbox Headb2"	"1.0 -7.5 -2.8 5.3 7.4 7.0 head"
+	"hitbox Lfore1"	"3.5 -2.8 -1.6 8.8 3.3 6.8 legs"
+	"hitbox Lfore2"	"1.0 -6.2 -6.8 14.0 3.2 2.8 legs"
+	"hitbox Lfore3"	"-5.2 -12.6 -12.4 11.6 8.8 5.7 legs"
+	"hitbox Lfore4"	"-9.6 1.4 -7.5 2.0 20.5 4.9 legs"
+	"hitbox Lhind1"	"-1.5 -4.3 -10.5 14.3 10.5 10.1 legs"
+	"hitbox Lhind2"	"-6.7 -15.8 -12.5 15.2 8.9 10.0 legs"
+	"hitbox Lhindb1"	"-2.8 -4.9 -4.1 2.9 7.7 -1.0 legs"
+	"hitbox Rfore1"	"2.4 -3.9 -2.1 7.5 2.6 6.4 legs"
+	"hitbox Rfore2"	"0.7 -3.2 -5.9 14.2 6.6 2.7 legs"
+	"hitbox Rfore3"	"-2.6 -7.7 -8.2 11.4 13.7 5.8 legs"
+	"hitbox Rfore4"	"-7.2 -19.9 -5.0 1.4 0.0 5.0 legs"
+	"hitbox Rhind1"	"-0.1 -10.2 -10.4 14.3 4.5 11.3 legs"
+	"hitbox Rhind2"	"-6.7 -9.4 -13.0 14.8 15.6 9.1 legs"
+	"hitbox Tail1"	"-1.0 -2.7 -2.5 9.8 2.8 8.7 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_battleboar"	// af/monster_battleboar.af, Doom 3's articulated figure
+}

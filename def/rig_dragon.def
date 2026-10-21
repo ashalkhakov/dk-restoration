@@ -1,0 +1,45 @@
+// made by tools/rig/creature_rig.py from models/e3/m_dragon.md3: the rigged model, in place of the md3's
+entityDef model_dragon {
+	"mesh"			"models/rigged/dragon.iqm"
+	"mins"			"-305 -305 26"	// the box it moves with: all but its wings, idling
+	"maxs"			"305 305 213"
+	"hit_mins"		"-362 -362 -162"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"362 362 449"
+
+	"anim ataka"		"ataka 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim flya"		"flya 10 loop"
+	"anim hita"		"hita 10"
+	"anim hover"		"hover 10 loop"
+	"anim perch"		"130 1 1 loop"	// landed, its wings raised: the frame they reach out least
+
+	"hitbox Body"	"-34.7 -37.9 -52.4 44.1 42.3 44.8 torso"
+	"hitbox Head"	"-3.6 -12.1 -11.6 30.4 12.0 6.9 head"
+	"hitbox Head2"	"-27.9 -18.3 -25.5 49.2 28.9 44.2 head"
+	"hitbox Headb1"	"-12.8 -50.4 -8.6 11.5 -4.7 14.8 head"
+	"hitbox Headc1"	"-0.8 -8.1 -35.2 32.9 39.9 -0.4 head"
+	"hitbox Lwing1"	"24.7 4.7 -71.1 116.9 72.5 8.9 legs"
+	"hitbox Lwing2"	"4.4 -18.4 -6.7 90.5 -5.3 15.0 legs"
+	"hitbox Lwing3"	"-65.9 56.3 -109.8 10.7 186.0 -6.5 legs"
+	"hitbox Lwing3b"	"-2.4 2.6 -124.8 53.8 77.2 1.5 legs"
+	"hitbox Lwing3c"	"12.9 26.3 -110.3 23.9 75.4 -35.1 legs"
+	"hitbox Lwing2b"	"40.0 2.4 -91.6 98.7 43.6 -20.4 legs"
+	"hitbox Lwing3bb"	"-3.5 -57.4 -95.1 10.3 2.3 -25.3 legs"
+	"hitbox Rwing1"	"26.0 -9.0 -106.0 130.9 1.8 0.2 legs"
+	"hitbox Rwing2"	"0.1 -125.1 -36.5 84.1 42.2 16.9 legs"
+	"hitbox Rwing3"	"44.5 -14.8 -48.0 162.2 105.4 16.5 legs"
+	"hitbox Rwing4"	"37.6 -14.7 -0.3 100.9 8.4 21.1 legs"
+	"hitbox Rwing3b"	"1.7 3.7 -89.6 84.7 61.6 -2.6 legs"
+	"hitbox Rwing2b"	"73.3 -92.5 -67.2 113.4 -38.1 -10.9 legs"
+	"hitbox Tail1"	"18.5 -18.2 -16.8 64.8 -1.2 3.9 torso"
+	"hitbox Tail2"	"-11.9 -13.5 2.9 20.4 10.2 74.6 torso"
+	"hitbox Tailb1"	"-7.5 -23.2 -72.3 43.5 7.7 1.5 torso"
+	"hitbox Tailc1"	"0.5 -25.6 -0.2 29.9 26.4 22.2 torso"
+	"hitbox Tailc2"	"-5.8 -18.6 -9.3 36.8 3.6 22.8 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_dragon"	// af/monster_dragon.af, Doom 3's articulated figure
+}

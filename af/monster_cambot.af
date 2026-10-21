@@ -1,0 +1,94 @@
+// made by tools/rig/creature_rig.py: the cambot's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_cambot {
+	settings {
+		model "model_cambot"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -34.11, -18.14, -10.59 ), ( 34.11, 18.14, 10.59 ) )
+		origin ( 8.26, -0.27, -5.99 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail1" {
+		joint "Tail1"
+		mod orientation
+		model bone( ( 11.79, -0.22, -19.91 ), ( -6.15, 1.28, -17.17 ), 42.50 )
+		origin ( 2.82, 0.53, -18.54 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail2" {
+		joint "Tail2"
+		mod orientation
+		model box( ( -6.16, -3.38, -2.96 ), ( 6.16, 3.38, 2.96 ) )
+		origin ( -1.19, -0.48, -15.74 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail2b" {
+		joint "Tail2b"
+		mod orientation
+		model box( ( -19.04, -2.64, -12.13 ), ( 19.04, 2.64, 12.13 ) )
+		origin ( -13.55, -0.60, -1.49 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Tail1" {
+		body1 "tail1"
+		body2 "body"
+		anchor joint( "Tail1" )
+		shafts ( -0.99, 0.08, 0.15 ), ( 0.99, -0.08, -0.15 )
+		friction 0.20
+		coneLimit ( -0.99, 0.08, 0.15 ), 80
+	}
+
+	universalJoint "Tail2" {
+		body1 "tail2"
+		body2 "tail1"
+		anchor joint( "Tail2" )
+		shafts ( -0.97, 0.18, 0.16 ), ( 0.97, -0.18, -0.16 )
+		friction 0.20
+		coneLimit ( -0.97, 0.18, 0.16 ), 80
+	}
+
+	universalJoint "Tail2b" {
+		body1 "tail2b"
+		body2 "tail1"
+		anchor joint( "Tail2b" )
+		shafts ( -0.99, 0.01, 0.15 ), ( 0.99, -0.01, -0.15 )
+		friction 0.20
+		coneLimit ( -0.99, 0.01, 0.15 ), 80
+	}
+
+}

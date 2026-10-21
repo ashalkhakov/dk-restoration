@@ -1,0 +1,73 @@
+// made by tools/rig/creature_rig.py: the seagull's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_seagull {
+	settings {
+		model "model_seagull"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -14.79, -3.43, -2.38 ), ( 14.79, 3.43, 2.38 ) )
+		origin ( -1.93, 0.03, -13.34 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing1" {
+		joint "Lwing1"
+		mod orientation
+		model box( ( -7.13, -4.50, -20.09 ), ( 7.13, 4.50, 20.09 ) )
+		origin ( -3.84, 6.96, 11.10 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rwing1" {
+		joint "Rwing1"
+		mod orientation
+		model box( ( -6.67, -5.31, -20.17 ), ( 6.67, 5.31, 20.17 ) )
+		origin ( -4.53, -6.96, 11.20 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Lwing1" {
+		body1 "lwing1"
+		body2 "body"
+		anchor joint( "Lwing1" )
+		shafts ( 0.98, 0.19, 0.07 ), ( -0.98, -0.19, -0.07 )
+		friction 0.20
+		coneLimit ( 0.98, 0.19, 0.07 ), 30
+	}
+
+	universalJoint "Rwing1" {
+		body1 "rwing1"
+		body2 "body"
+		anchor joint( "Rwing1" )
+		shafts ( 1.00, -0.08, 0.05 ), ( -1.00, 0.08, -0.05 )
+		friction 0.20
+		coneLimit ( 1.00, -0.08, 0.05 ), 30
+	}
+
+}

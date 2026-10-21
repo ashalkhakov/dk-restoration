@@ -1,0 +1,388 @@
+// made by tools/rig/creature_rig.py: the psyclaw's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_psyclaw {
+	settings {
+		model "model_psyclaw"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -18.25, -11.19, -16.00 ), ( 18.25, 11.19, 16.00 ) )
+		origin ( 11.48, 4.41, 14.41 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head" {
+		joint "Head"
+		mod orientation
+		model box( ( -4.73, -3.04, -3.04 ), ( 4.73, 3.04, 3.04 ) )
+		origin ( 37.68, -2.76, 10.59 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "headb1" {
+		joint "Headb1"
+		mod orientation
+		model box( ( -3.04, -3.04, -3.04 ), ( 3.04, 3.04, 3.04 ) )
+		origin ( 39.96, 4.06, 10.73 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lhind1" {
+		joint "Lhind1"
+		mod orientation
+		model bone( ( -11.51, 6.20, 8.59 ), ( -35.33, 14.52, -9.05 ), 11.52 )
+		origin ( -23.42, 10.36, -0.23 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lhind2" {
+		joint "Lhind2"
+		mod orientation
+		model box( ( -10.20, -5.03, -3.96 ), ( 10.20, 5.03, 3.96 ) )
+		origin ( -17.69, 16.11, -19.52 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lhindb1" {
+		joint "Lhindb1"
+		mod orientation
+		model bone( ( 18.91, 10.76, 6.74 ), ( 7.69, 11.64, -14.22 ), 10.84 )
+		origin ( 13.30, 11.20, -3.74 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lhindb2" {
+		joint "Lhindb2"
+		mod orientation
+		model box( ( -9.11, -5.05, -3.31 ), ( 9.11, 5.05, 3.31 ) )
+		origin ( 21.50, 10.32, -20.13 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind1" {
+		joint "Rhind1"
+		mod orientation
+		model bone( ( -0.71, -0.93, 18.38 ), ( -17.95, -2.48, 17.40 ), 23.77 )
+		origin ( -9.33, -1.71, 17.89 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind2" {
+		joint "Rhind2"
+		mod orientation
+		model bone( ( -15.28, -9.40, 9.77 ), ( -30.80, -18.79, -12.11 ), 11.64 )
+		origin ( -23.04, -14.10, -1.17 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind3" {
+		joint "Rhind3"
+		mod orientation
+		model box( ( -9.60, -5.03, -4.60 ), ( 9.60, 5.03, 4.60 ) )
+		origin ( -22.46, -17.09, -18.75 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind2b" {
+		joint "Rhind2b"
+		mod orientation
+		model bone( ( -31.66, 1.47, 12.08 ), ( -48.05, -0.16, 11.65 ), 6.08 )
+		origin ( -39.85, 0.66, 11.86 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind3b" {
+		joint "Rhind3b"
+		mod orientation
+		model box( ( -3.04, -3.04, -3.04 ), ( 3.04, 3.04, 3.04 ) )
+		origin ( -50.41, -0.01, 14.04 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind2c" {
+		joint "Rhind2c"
+		mod orientation
+		model bone( ( -6.91, 0.49, 30.36 ), ( -2.27, 0.97, 15.45 ), 11.55 )
+		origin ( -4.59, 0.73, 22.90 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhind3c" {
+		joint "Rhind3c"
+		mod orientation
+		model box( ( -3.04, -3.04, -3.04 ), ( 3.04, 3.04, 3.04 ) )
+		origin ( -3.88, -0.01, 32.48 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhindb1" {
+		joint "Rhindb1"
+		mod orientation
+		model bone( ( 18.76, -10.55, 6.54 ), ( 8.45, -13.36, -14.83 ), 11.74 )
+		origin ( 13.60, -11.95, -4.15 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rhindb2" {
+		joint "Rhindb2"
+		mod orientation
+		model box( ( -9.21, -5.05, -3.40 ), ( 9.21, 5.05, 3.40 ) )
+		origin ( 21.27, -10.20, -20.25 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail1" {
+		joint "Tail1"
+		mod orientation
+		model bone( ( 17.08, -0.63, 27.17 ), ( 1.50, -0.23, 26.72 ), 10.41 )
+		origin ( 9.29, -0.43, 26.94 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail2" {
+		joint "Tail2"
+		mod orientation
+		model box( ( -3.04, -3.04, -3.04 ), ( 3.04, 3.04, 3.04 ) )
+		origin ( 2.99, -0.01, 33.64 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Head" {
+		body1 "head"
+		body2 "body"
+		anchor joint( "Head" )
+		shafts ( 0.97, -0.22, -0.07 ), ( -0.97, 0.22, 0.07 )
+		friction 0.20
+		coneLimit ( 0.97, -0.22, -0.07 ), 45
+	}
+
+	universalJoint "Headb1" {
+		body1 "headb1"
+		body2 "body"
+		anchor joint( "Headb1" )
+		shafts ( 0.99, 0.10, 0.13 ), ( -0.99, -0.10, -0.13 )
+		friction 0.20
+		coneLimit ( 0.99, 0.10, 0.13 ), 45
+	}
+
+	universalJoint "Lhind1" {
+		body1 "lhind1"
+		body2 "body"
+		anchor joint( "Lhind1" )
+		shafts ( -0.77, 0.27, -0.57 ), ( 0.77, -0.27, 0.57 )
+		friction 0.20
+		coneLimit ( -0.77, 0.27, -0.57 ), 80
+	}
+
+	universalJoint "Lhind2" {
+		body1 "lhind2"
+		body2 "lhind1"
+		anchor joint( "Lhind2" )
+		shafts ( -0.77, 0.27, -0.57 ), ( 0.77, -0.27, 0.57 )
+		friction 0.20
+		coneLimit ( -0.77, 0.27, -0.57 ), 80
+	}
+
+	universalJoint "Lhindb1" {
+		body1 "lhindb1"
+		body2 "body"
+		anchor joint( "Lhindb1" )
+		shafts ( -0.47, 0.04, -0.88 ), ( 0.47, -0.04, 0.88 )
+		friction 0.20
+		coneLimit ( -0.47, 0.04, -0.88 ), 80
+	}
+
+	universalJoint "Lhindb2" {
+		body1 "lhindb2"
+		body2 "lhindb1"
+		anchor joint( "Lhindb2" )
+		shafts ( -0.47, 0.04, -0.88 ), ( 0.47, -0.04, 0.88 )
+		friction 0.20
+		coneLimit ( -0.47, 0.04, -0.88 ), 80
+	}
+
+	universalJoint "Rhind1" {
+		body1 "rhind1"
+		body2 "body"
+		anchor joint( "Rhind1" )
+		shafts ( -0.99, -0.09, -0.06 ), ( 0.99, 0.09, 0.06 )
+		friction 0.20
+		coneLimit ( -0.99, -0.09, -0.06 ), 80
+	}
+
+	universalJoint "Rhind2" {
+		body1 "rhind2"
+		body2 "rhind1"
+		anchor joint( "Rhind2" )
+		shafts ( -0.55, -0.33, -0.77 ), ( 0.55, 0.33, 0.77 )
+		friction 0.20
+		coneLimit ( -0.55, -0.33, -0.77 ), 80
+	}
+
+	universalJoint "Rhind3" {
+		body1 "rhind3"
+		body2 "rhind2"
+		anchor joint( "Rhind3" )
+		shafts ( -0.55, -0.33, -0.77 ), ( 0.55, 0.33, 0.77 )
+		friction 0.20
+		coneLimit ( -0.55, -0.33, -0.77 ), 80
+	}
+
+	universalJoint "Rhind2b" {
+		body1 "rhind2b"
+		body2 "rhind1"
+		anchor joint( "Rhind2b" )
+		shafts ( -0.99, -0.10, -0.03 ), ( 0.99, 0.10, 0.03 )
+		friction 0.20
+		coneLimit ( -0.99, -0.10, -0.03 ), 80
+	}
+
+	universalJoint "Rhind3b" {
+		body1 "rhind3b"
+		body2 "rhind2b"
+		anchor joint( "Rhind3b" )
+		shafts ( -0.99, -0.10, -0.03 ), ( 0.99, 0.10, 0.03 )
+		friction 0.20
+		coneLimit ( -0.99, -0.10, -0.03 ), 80
+	}
+
+	universalJoint "Rhind2c" {
+		body1 "rhind2c"
+		body2 "rhind1"
+		anchor joint( "Rhind2c" )
+		shafts ( 0.30, 0.03, -0.95 ), ( -0.30, -0.03, 0.95 )
+		friction 0.20
+		coneLimit ( 0.30, 0.03, -0.95 ), 80
+	}
+
+	universalJoint "Rhind3c" {
+		body1 "rhind3c"
+		body2 "rhind2c"
+		anchor joint( "Rhind3c" )
+		shafts ( 0.30, 0.03, -0.95 ), ( -0.30, -0.03, 0.95 )
+		friction 0.20
+		coneLimit ( 0.30, 0.03, -0.95 ), 80
+	}
+
+	universalJoint "Rhindb1" {
+		body1 "rhindb1"
+		body2 "body"
+		anchor joint( "Rhindb1" )
+		shafts ( -0.43, -0.12, -0.89 ), ( 0.43, 0.12, 0.89 )
+		friction 0.20
+		coneLimit ( -0.43, -0.12, -0.89 ), 80
+	}
+
+	universalJoint "Rhindb2" {
+		body1 "rhindb2"
+		body2 "rhindb1"
+		anchor joint( "Rhindb2" )
+		shafts ( -0.43, -0.12, -0.89 ), ( 0.43, 0.12, 0.89 )
+		friction 0.20
+		coneLimit ( -0.43, -0.12, -0.89 ), 80
+	}
+
+	universalJoint "Tail1" {
+		body1 "tail1"
+		body2 "body"
+		anchor joint( "Tail1" )
+		shafts ( -1.00, 0.03, -0.03 ), ( 1.00, -0.03, 0.03 )
+		friction 0.20
+		coneLimit ( -1.00, 0.03, -0.03 ), 80
+	}
+
+	universalJoint "Tail2" {
+		body1 "tail2"
+		body2 "tail1"
+		anchor joint( "Tail2" )
+		shafts ( -1.00, 0.03, -0.03 ), ( 1.00, -0.03, 0.03 )
+		friction 0.20
+		coneLimit ( -1.00, 0.03, -0.03 ), 80
+	}
+
+}

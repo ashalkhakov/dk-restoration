@@ -1,0 +1,25 @@
+// made by tools/rig/creature_rig.py from models/e1/m_trakatak.md3: the rigged model, in place of the md3's
+entityDef model_trackattack {
+	"mesh"			"models/rigged/trakatak.iqm"
+	"mins"			"-23 -23 -5"	// the box it moves with: all but its wings, idling
+	"maxs"			"23 23 8"
+	"hit_mins"		"-23 -23 -5"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"23 23 8"
+
+	"anim shoota"		"shoota 10"
+
+	"hitbox Body"	"-8.1 -3.0 -6.0 10.7 2.6 6.1 torso"
+	"hitbox Head"	"-7.2 0.2 -3.6 -3.7 9.2 -0.1 head"
+	"hitbox Headb1"	"-3.4 -5.1 -2.3 0.0 -2.2 -0.1 head"
+	"hitbox Tail1"	"2.2 -4.3 -2.7 9.0 3.7 4.0 torso"
+	"hitbox Tail2"	"-2.8 1.8 -3.9 1.8 4.1 0.6 torso"
+	"hitbox Tail2b"	"1.2 -1.4 -4.5 4.8 0.2 1.2 torso"
+	"hitbox Tail3b"	"0.5 -3.6 -2.4 11.7 6.8 8.2 torso"
+	"hitbox Tail4b"	"-10.2 0.3 -5.6 -0.6 7.8 3.8 torso"
+	"hitbox Tail2c"	"-2.6 -4.3 0.7 2.5 1.0 5.0 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_trackattack"	// af/monster_trackattack.af, Doom 3's articulated figure
+}

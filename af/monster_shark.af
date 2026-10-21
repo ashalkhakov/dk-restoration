@@ -1,0 +1,136 @@
+// made by tools/rig/creature_rig.py: the shark's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_shark {
+	settings {
+		model "model_shark"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -19.13, -17.70, -16.46 ), ( 19.13, 17.70, 16.46 ) )
+		origin ( -32.51, -9.16, 12.45 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head" {
+		joint "Head"
+		mod orientation
+		model box( ( -5.44, -7.19, -4.68 ), ( 5.44, 7.19, 4.68 ) )
+		origin ( 10.40, -2.05, -2.34 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "headb1" {
+		joint "Headb1"
+		mod orientation
+		model box( ( -25.80, -9.01, -9.51 ), ( 25.80, 9.01, 9.51 ) )
+		origin ( 1.15, -1.04, 8.41 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lfore1" {
+		joint "Lfore1"
+		mod orientation
+		model box( ( -13.89, -7.38, -4.68 ), ( 13.89, 7.38, 4.68 ) )
+		origin ( -26.34, 19.22, -1.36 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail1" {
+		joint "Tail1"
+		mod orientation
+		model bone( ( -52.35, 1.73, 7.97 ), ( -99.80, 0.00, 2.04 ), 12.54 )
+		origin ( -76.08, 0.87, 5.01 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail2" {
+		joint "Tail2"
+		mod orientation
+		model box( ( -8.55, -4.68, -11.62 ), ( 8.55, 4.68, 11.62 ) )
+		origin ( -114.35, -2.00, 7.16 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Head" {
+		body1 "head"
+		body2 "body"
+		anchor joint( "Head" )
+		shafts ( 0.98, 0.10, -0.18 ), ( -0.98, -0.10, 0.18 )
+		friction 0.20
+		coneLimit ( 0.98, 0.10, -0.18 ), 45
+	}
+
+	universalJoint "Headb1" {
+		body1 "headb1"
+		body2 "body"
+		anchor joint( "Headb1" )
+		shafts ( 0.95, 0.30, -0.04 ), ( -0.95, -0.30, 0.04 )
+		friction 0.20
+		coneLimit ( 0.95, 0.30, -0.04 ), 45
+	}
+
+	universalJoint "Lfore1" {
+		body1 "lfore1"
+		body2 "body"
+		anchor joint( "Lfore1" )
+		shafts ( 0.70, 0.69, -0.15 ), ( -0.70, -0.69, 0.15 )
+		friction 0.20
+		coneLimit ( 0.70, 0.69, -0.15 ), 80
+	}
+
+	universalJoint "Tail1" {
+		body1 "tail1"
+		body2 "body"
+		anchor joint( "Tail1" )
+		shafts ( -0.99, -0.04, -0.12 ), ( 0.99, 0.04, 0.12 )
+		friction 0.20
+		coneLimit ( -0.99, -0.04, -0.12 ), 80
+	}
+
+	universalJoint "Tail2" {
+		body1 "tail2"
+		body2 "tail1"
+		anchor joint( "Tail2" )
+		shafts ( -0.99, -0.04, -0.12 ), ( 0.99, 0.04, 0.12 )
+		friction 0.20
+		coneLimit ( -0.99, -0.04, -0.12 ), 80
+	}
+
+}

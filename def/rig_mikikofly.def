@@ -1,0 +1,51 @@
+// made by tools/rig/creature_rig.py from models/global/m_mikikofly.md3: the rigged model, in place of the md3's
+entityDef model_mikikofly {
+	"mesh"			"models/rigged/mikikofly.iqm"
+	"mins"			"-27 -27 -24"	// the box it moves with: all but its wings, idling
+	"maxs"			"27 27 30"
+	"hit_mins"		"-40 -40 -25"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"40 40 34"
+
+	"anim amba"		"amba 10 loop"
+	"anim camb"		"camb 10"
+	"anim cdie"		"cdie 10"
+	"anim cin"		"cin 10"
+	"anim cout"		"cout 10"
+	"anim cwalk"		"cwalk 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim jumpa"		"jumpa 10"
+	"anim putdown"		"putdown 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"82"	// over the ground, from its feet
+	"anim_speed walka"	"31"	// over the ground, from its feet
+
+	"hitbox Body"	"-1.5 -3.8 -5.5 4.1 4.6 4.1 torso"
+	"hitbox Head"	"1.5 -5.3 0.9 10.9 0.2 9.0 head"
+	"hitbox Headb1"	"0.0 -8.3 -8.6 15.0 10.7 6.4 head"
+	"hitbox Headb2"	"8.0 -2.4 -17.7 21.0 2.5 1.7 head"
+	"hitbox Headb3"	"1.8 -6.9 -6.4 11.8 5.2 2.6 head"
+	"hitbox Headb4"	"-19.0 -0.5 -8.0 1.1 4.6 0.5 head"
+	"hitbox Headb4b"	"-0.3 -2.7 -0.7 13.0 5.9 6.2 head"
+	"hitbox Headb5b"	"-3.5 -20.5 -12.5 25.2 0.3 4.4 head"
+	"hitbox Headb5bb"	"-1.8 3.3 -5.2 23.0 18.4 4.4 head"
+	"hitbox Headb4c"	"-0.4 -1.2 -1.2 10.0 1.7 1.9 head"
+	"hitbox Headb5c"	"5.8 0.4 -5.7 9.3 3.2 -1.7 head"
+	"hitbox Headb2b"	"-0.7 -2.5 -3.2 6.4 3.0 4.6 head"
+	"hitbox Headb2c"	"-0.9 -6.1 -3.1 10.0 2.0 2.9 head"
+	"hitbox Headb3c"	"-3.4 2.5 1.8 1.5 8.2 5.2 head"
+	"hitbox Headb2d"	"-0.3 -1.8 -2.6 11.5 6.9 3.4 head"
+	"hitbox Headb3d"	"-0.3 -7.6 -4.8 5.6 -1.9 0.6 head"
+	"hitbox Headb2e"	"-0.8 -9.7 -8.7 8.4 -1.5 -0.6 head"
+	"hitbox Lhind1"	"3.0 -3.2 -3.8 13.1 3.9 3.8 legs"
+	"hitbox Lhind2"	"-0.5 -4.0 -2.4 14.6 5.5 6.6 legs"
+	"hitbox Lhind3"	"-3.9 -7.3 -7.4 4.4 2.9 -1.1 legs"
+	"hitbox Rfore1"	"6.8 -1.7 -0.8 19.8 7.3 9.4 legs"
+	"hitbox Rfore2"	"-1.6 -1.2 -5.3 7.9 8.4 5.0 legs"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_mikikofly"	// af/monster_mikikofly.af, Doom 3's articulated figure
+}

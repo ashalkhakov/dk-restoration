@@ -1,0 +1,19 @@
+// made by tools/rig/creature_rig.py from models/global/e_guppy.md3: the rigged model, in place of the md3's
+entityDef model_guppy {
+	"mesh"			"models/rigged/e_guppy.iqm"
+	"mins"			"-5 -5 -2"	// the box it moves with: all but its wings, idling
+	"maxs"			"5 5 2"
+	"hit_mins"		"-5 -5 -2"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"5 5 2"
+
+	"anim amba"		"amba 10 loop"
+	"anim diea"		"diea 10"
+	"anim swima"		"swima 10 loop"
+
+	"hitbox Body"	"-1.9 -1.2 -3.9 1.6 1.2 4.4 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_guppy"	// af/monster_guppy.af, Doom 3's articulated figure
+}

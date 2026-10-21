@@ -17,6 +17,8 @@ entityDef model_froginator {
 	"anim runa"		"runa 15 loop"
 	"anim swima"		"swima 10 loop"
 	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"99"	// over the ground, from its feet
+	"anim_speed walka"	"20"	// over the ground, from its feet
 
 	"hitbox Body"	"-3.2 -7.4 -1.8 6.2 5.2 2.7 torso"
 	"hitbox Head"	"2.1 -5.3 -5.4 7.2 4.3 1.9 head"

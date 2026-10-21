@@ -1,0 +1,35 @@
+// made by tools/rig/creature_rig.py from models/global/dopefish.md3: the rigged model, in place of the md3's
+entityDef model_dopefish {
+	"mesh"			"models/rigged/dopefish.iqm"
+	"mins"			"-26 -26 -22"	// the box it moves with: all but its wings, idling
+	"maxs"			"26 26 12"
+	"hit_mins"		"-26 -26 -22"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"26 26 12"
+
+	"anim atak"		"atak 10"
+	"anim burp"		"burp 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim swima"		"swima 10 loop"
+	"anim perch"		"33 1 1 loop"	// landed, its wings raised: the frame they reach out least
+
+	"hitbox Body"	"-10.8 -15.6 -10.8 20.9 14.0 13.0 torso"
+	"hitbox Head"	"-2.2 -10.8 -8.8 13.7 12.4 3.9 head"
+	"hitbox Head2"	"2.6 -1.9 -7.4 8.1 6.7 2.8 head"
+	"hitbox Head3"	"-6.2 -8.3 -4.8 -2.4 -0.8 3.9 head"
+	"hitbox Lwing1"	"-3.3 1.0 -4.0 10.6 15.7 16.5 legs"
+	"hitbox Lwing2"	"4.8 -0.8 -1.2 12.2 3.4 9.4 legs"
+	"hitbox Rhind1"	"0.1 -0.6 -3.3 7.2 2.5 7.2 legs"
+	"hitbox Tail1"	"-0.8 -4.4 -15.4 16.0 4.3 16.3 torso"
+	"hitbox Tailb1"	"1.6 -7.5 -6.6 11.0 7.2 8.2 torso"
+	"hitbox Tailc1"	"-2.3 -10.7 0.8 10.3 -2.7 4.3 torso"
+	"hitbox Tailc2"	"0.9 -6.2 2.2 5.6 1.1 2.5 torso"
+	"hitbox Tailc3"	"-3.5 -2.6 7.3 -0.5 3.9 9.6 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_dopefish"	// af/monster_dopefish.af, Doom 3's articulated figure
+}

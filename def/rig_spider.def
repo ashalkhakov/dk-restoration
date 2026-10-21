@@ -1,0 +1,45 @@
+// made by tools/rig/creature_rig.py from models/e2/m_spider.md3: the rigged model, in place of the md3's
+entityDef model_spider {
+	"mesh"			"models/rigged/spider.iqm"
+	"mins"			"-57 -57 -10"	// the box it moves with: all but its wings, idling
+	"maxs"			"57 57 32"
+	"hit_mins"		"-82 -82 -12"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"82 82 37"
+
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"		"ataka 10"
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim jumpa"		"jumpa 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"		"walka 10 loop"
+	"anim_speed runa"	"142"	// over the ground, from its feet
+	"anim_speed walka"	"70"	// over the ground, from its feet
+	"anim perch"		"134 1 1 loop"	// landed, its wings raised: the frame they reach out least
+
+	"hitbox Body"	"-18.0 -20.7 -10.6 14.0 11.9 27.8 torso"
+	"hitbox Head"	"-3.0 -1.9 -3.7 5.9 12.2 6.1 head"
+	"hitbox Head2"	"-8.6 -3.0 -9.3 3.2 1.9 -3.2 head"
+	"hitbox Lfore1"	"24.1 -4.9 10.4 27.7 0.7 16.0 legs"
+	"hitbox Lfore2"	"-4.7 -5.5 -33.0 2.1 0.0 -6.3 legs"
+	"hitbox Lforeb1"	"18.8 -0.2 6.6 23.2 5.5 12.5 legs"
+	"hitbox Lforeb2"	"-3.2 -3.5 -26.9 6.8 3.0 1.2 legs"
+	"hitbox Lhind1"	"15.5 -4.6 3.0 19.8 0.9 8.2 legs"
+	"hitbox Lhind2"	"-0.4 -16.9 -19.7 21.8 -5.4 -3.2 legs"
+	"hitbox Lhindb1"	"22.3 0.4 4.7 26.1 5.7 10.0 legs"
+	"hitbox Lhindb2"	"-7.9 6.1 -39.5 -1.1 11.4 -12.5 legs"
+	"hitbox Rfore1"	"24.2 -4.6 5.8 28.4 0.9 11.6 legs"
+	"hitbox Rfore2"	"-5.4 -4.4 -29.6 1.3 -0.1 -0.6 legs"
+	"hitbox Rhind1"	"3.5 0.2 -23.0 23.1 7.9 -2.1 legs"
+	"hitbox Rhindb1"	"18.4 -2.9 5.0 22.0 2.4 10.4 legs"
+	"hitbox Rhindb2"	"-10.3 -8.4 -39.3 -3.6 -4.2 -12.3 legs"
+	"hitbox Rwing1"	"0.9 -1.0 -2.8 31.0 6.9 4.9 legs"
+	"hitbox Rwing2"	"-19.7 3.2 -46.4 -8.3 9.3 -21.2 legs"
+	"hitbox Tail1"	"4.1 -11.1 -12.5 24.4 12.5 6.0 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_spider"	// af/monster_spider.af, Doom 3's articulated figure
+}

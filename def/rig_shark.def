@@ -1,0 +1,29 @@
+// made by tools/rig/creature_rig.py from models/e4/m_shark.md3: the rigged model, in place of the md3's
+entityDef model_shark {
+	"mesh"			"models/rigged/shark.iqm"
+	"mins"			"-125 -125 -7"	// the box it moves with: all but its wings, idling
+	"maxs"			"125 125 32"
+	"hit_mins"		"-125 -125 -7"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"125 125 32"
+
+	"anim amba"		"amba 10 loop"
+	"anim ataka"		"ataka 10"
+	"anim atakb"		"atakb 10"
+	"anim atakc"		"atakc 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim swima"		"swima 10 loop"
+
+	"hitbox Body"	"-19.6 -21.5 -13.0 25.0 28.0 26.2 torso"
+	"hitbox Head"	"6.3 -6.8 -2.2 20.2 9.4 2.4 head"
+	"hitbox Headb1"	"-18.0 -16.6 -6.3 42.7 10.4 15.1 head"
+	"hitbox Lfore1"	"-11.4 -2.1 -8.1 4.6 30.8 2.9 legs"
+	"hitbox Tail1"	"3.8 -8.5 -11.5 41.7 9.7 9.2 torso"
+	"hitbox Tail2"	"3.5 -0.5 -5.5 25.2 3.8 21.7 torso"
+
+	"damage_scale head"	"2"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"		"monster_shark"	// af/monster_shark.af, Doom 3's articulated figure
+}
