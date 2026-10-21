@@ -34,7 +34,7 @@ entityDef model_harpy {
 
 	"hitbox Hips"	"-0.9 -17.1 -6.4 17.0 -9.9 1.7 torso"
 	"hitbox Lupleg"	"-6.2 0.6 -13.3 9.7 9.3 4.1 legs"
-	"hitbox Lloleg"	"-2.1 0.7 -0.9 9.3 4.6 4.9 legs"
+	"hitbox Lloleg"	"7.6 0.7 -0.9 9.3 3.0 0.7 legs"
 	"hitbox Lankle_r"	"1.2 -5.0 -4.7 8.4 3.0 2.4 legs"
 	"hitbox Rupleg"	"0.8 -9.6 -25.7 16.4 11.7 -6.2 legs"
 	"hitbox Rloleg"	"-3.3 -2.7 -2.2 8.9 4.1 5.5 legs"

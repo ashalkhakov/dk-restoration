@@ -67,7 +67,7 @@ articulatedFigure monster_cyclops {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 6.93, 26.70, 33.57 ), ( 12.04, 32.01, 4.70 ), 12.40 )
+		model bone( ( 6.93, 26.70, 33.57 ), ( 12.04, 32.01, 4.70 ), 12.35 )
 		origin ( 9.48, 29.36, 19.14 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_cyclops {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 7.33, -14.11, 39.27 ), ( 6.16, -26.62, 41.42 ), 16.59 )
+		model bone( ( 7.33, -14.11, 39.27 ), ( 6.16, -26.62, 41.42 ), 17.31 )
 		origin ( 6.75, -20.37, 40.34 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_cyclops {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 6.16, -26.62, 41.42 ), ( 6.84, -28.42, 17.12 ), 13.94 )
+		model bone( ( 6.16, -26.62, 41.42 ), ( 6.84, -28.42, 17.12 ), 12.71 )
 		origin ( 6.50, -27.52, 29.27 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -139,7 +139,7 @@ articulatedFigure monster_cyclops {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 7.54, -16.81, -7.33 ), ( 0.65, -13.72, -23.00 ), 14.14 )
+		model bone( ( 7.54, -16.81, -7.33 ), ( 0.65, -13.72, -23.00 ), 11.89 )
 		origin ( 4.09, -15.27, -15.17 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

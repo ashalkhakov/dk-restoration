@@ -14,17 +14,18 @@ entityDef model_dead {
 
 
 
-	"hitbox Lloleg"	"-5.8 -6.3 0.5 7.3 0.6 13.0 legs"
+	"hitbox Lloleg"	"5.6 -1.4 0.5 7.3 0.6 2.6 legs"
 	"hitbox Lankle_r"	"-0.6 -4.0 -1.4 6.9 1.2 1.4 legs"
-	"hitbox Rupleg"	"6.0 -2.0 -1.3 28.9 2.2 3.6 legs"
-	"hitbox Rloleg"	"3.9 -1.2 1.7 5.8 0.7 3.8 legs"
+	"hitbox Rupleg"	"6.0 -2.0 -1.3 22.6 1.3 3.6 legs"
+	"hitbox Rloleg"	"-1.2 -1.2 -2.9 5.8 3.1 3.8 legs"
 	"hitbox Chest"	"-3.6 -3.4 -3.1 13.2 4.1 3.6 torso"
 	"hitbox Loneck"	"2.3 -4.5 -9.0 8.4 5.1 2.0 head"
 	"hitbox Head"	"-1.2 -3.3 -0.5 4.1 3.1 5.8 head"
-	"hitbox Lloarm"	"0.1 -0.7 -1.4 3.5 2.3 2.0 arms"
+	"hitbox Luparm"	"4.1 -2.1 -1.2 6.6 0.1 0.7 arms"
+	"hitbox Lloarm"	"0.9 -0.7 -1.4 3.2 2.0 0.5 arms"
 	"hitbox Lhand"	"1.2 -1.8 -9.9 7.1 2.6 -0.9 arms"
-	"hitbox Ruparm"	"0.5 -2.5 -0.7 8.4 1.1 3.7 arms"
-	"hitbox Rloarm"	"2.5 -2.3 -1.2 12.1 1.6 1.7 arms"
+	"hitbox Ruparm"	"0.5 -2.5 -0.7 8.2 1.1 3.7 arms"
+	"hitbox Rloarm"	"-0.3 -2.3 -1.2 12.1 1.6 1.7 arms"
 
 	"damage_scale head"	"2"
 	"damage_scale arms"	"0.75"

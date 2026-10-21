@@ -79,7 +79,7 @@ articulatedFigure monster_surgeon {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -0.97, 3.59, 3.99 ), ( -0.59, 4.98, -8.92 ), 6.23 )
+		model bone( ( -0.97, 3.59, 3.99 ), ( -0.59, 4.98, -8.92 ), 6.54 )
 		origin ( -0.78, 4.29, -2.46 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure monster_surgeon {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -0.59, 4.98, -8.92 ), ( -1.74, 5.01, -22.28 ), 3.32 )
+		model bone( ( -0.59, 4.98, -8.92 ), ( -1.74, 5.01, -22.28 ), 3.39 )
 		origin ( -1.16, 5.00, -15.60 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_surgeon {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( -1.54, -5.15, 17.47 ), ( 0.15, -6.83, 21.34 ), 3.11 )
+		model bone( ( -1.54, -5.15, 17.47 ), ( 0.15, -6.83, 21.34 ), 5.39 )
 		origin ( -0.69, -5.99, 19.40 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

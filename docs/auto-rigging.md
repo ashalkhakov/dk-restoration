@@ -44,7 +44,12 @@ implements.
    joints keep the template's heights (the knee halfway from crotch to floor): the walk IK bends the leg at them.
 4. **Weights.** Each vertex blends its own bone with a neighbouring one where that fits the frames better (two weights a
    vertex), never one leg with the other (the walk IK moves them apart), and along a leg only near the joint between
-   the two bones. Seams are welded: vertices of different surfaces in one place (Hiro's head on his neck) take
+   the two bones. The knees and the elbows go by place instead: across each, the vertexes of the two bones blend
+   smoothly over a band about the joint (30% of the shorter bone either side), as Doom 3's rigs are weighted.
+   Daikatana's frames hardly bend them, so a blend fitted to them lands off the joint (on Hiro's lower thigh) and the
+   limb thins where the walk IK or a retargeted animation bends it: bent 110°, the thinnest tenth of Mikiko's knee
+   keeps 43% of its thickness (19% fitted), Hiro's elbow 18% (6%). Linear blending still pinches the inside of a deep
+   bend; dual-quaternion skinning in the renderer is what holds volume (to come). Seams are welded: vertices of different surfaces in one place (Hiro's head on his neck) take
    the same weights, whichever carries the group best, or a pose the animations never had (the head pitched to aim)
    opens a hole between the surfaces. The rigger also reports the triangles that turn over (culled, so a hole) in
    some frames against Daikatana's; `RIG_FLIPS=<n>` lists more of them.

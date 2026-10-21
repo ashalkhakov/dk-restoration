@@ -55,7 +55,7 @@ articulatedFigure monster_sealdiver {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 0.79, -0.35, 19.08 ), ( -2.23, 3.60, 11.77 ), 4.43 )
+		model bone( ( 0.79, -0.35, 19.08 ), ( -2.23, 3.60, 11.77 ), 4.23 )
 		origin ( -0.72, 1.62, 15.43 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_sealdiver {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -2.23, 3.60, 11.77 ), ( -3.07, 6.45, 1.28 ), 3.06 )
+		model bone( ( -2.23, 3.60, 11.77 ), ( -3.07, 6.45, 1.28 ), 3.05 )
 		origin ( -2.65, 5.02, 6.53 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -79,7 +79,7 @@ articulatedFigure monster_sealdiver {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -1.00, 1.63, 7.00 ), ( 2.01, 2.31, -11.12 ), 10.47 )
+		model bone( ( -1.00, 1.63, 7.00 ), ( 2.01, 2.31, -11.12 ), 8.55 )
 		origin ( 0.51, 1.97, -2.06 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure monster_sealdiver {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 2.01, 2.31, -11.12 ), ( 5.95, 9.63, -21.92 ), 8.14 )
+		model bone( ( 2.01, 2.31, -11.12 ), ( 5.95, 9.63, -21.92 ), 11.27 )
 		origin ( 3.98, 5.97, -16.52 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_sealdiver {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 0.08, -10.72, 19.03 ), ( -1.68, -15.22, 12.38 ), 4.20 )
+		model bone( ( 0.08, -10.72, 19.03 ), ( -1.68, -15.22, 12.38 ), 4.01 )
 		origin ( -0.80, -12.97, 15.71 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_sealdiver {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -1.68, -15.22, 12.38 ), ( 6.05, -18.58, 4.51 ), 3.83 )
+		model bone( ( -1.68, -15.22, 12.38 ), ( 6.05, -18.58, 4.51 ), 4.20 )
 		origin ( 2.19, -16.90, 8.45 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

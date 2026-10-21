@@ -55,7 +55,7 @@ articulatedFigure monster_ferryman {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 10.02, 5.67, 17.12 ), ( 11.60, 5.81, 19.95 ), 6.87 )
+		model bone( ( 10.02, 5.67, 17.12 ), ( 11.60, 5.81, 19.95 ), 11.74 )
 		origin ( 10.81, 5.74, 18.53 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_ferryman {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 11.60, 5.81, 19.95 ), ( 1.43, 8.82, 14.77 ), 12.26 )
+		model bone( ( 11.60, 5.81, 19.95 ), ( 1.43, 8.82, 14.77 ), 4.72 )
 		origin ( 6.52, 7.31, 17.36 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

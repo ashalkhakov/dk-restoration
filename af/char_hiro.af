@@ -67,7 +67,7 @@ articulatedFigure char_hiro {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 0.59, 9.66, 13.25 ), ( 3.26, 12.43, 3.01 ), 3.96 )
+		model bone( ( 0.59, 9.66, 13.25 ), ( 3.26, 12.43, 3.01 ), 4.43 )
 		origin ( 1.93, 11.04, 8.13 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure char_hiro {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 2.08, -1.63, 3.67 ), ( -0.99, -5.02, -7.57 ), 5.48 )
+		model bone( ( 2.08, -1.63, 3.67 ), ( -0.99, -5.02, -7.57 ), 5.65 )
 		origin ( 0.55, -3.33, -1.95 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

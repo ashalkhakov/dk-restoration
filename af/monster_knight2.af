@@ -55,7 +55,7 @@ articulatedFigure monster_knight2 {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 4.91, -4.83, 14.31 ), ( 4.60, 0.43, 17.53 ), 5.25 )
+		model bone( ( 4.91, -4.83, 14.31 ), ( 4.60, 0.43, 17.53 ), 5.45 )
 		origin ( 4.76, -2.20, 15.92 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_knight2 {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 4.60, 0.43, 17.53 ), ( 18.21, 3.10, -2.42 ), 6.70 )
+		model bone( ( 4.60, 0.43, 17.53 ), ( 18.21, 3.10, -2.42 ), 6.56 )
 		origin ( 11.41, 1.76, 7.55 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure monster_knight2 {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 1.94, -5.24, 5.58 ), ( 2.82, -12.75, -7.44 ), 6.40 )
+		model bone( ( 1.94, -5.24, 5.58 ), ( 2.82, -12.75, -7.44 ), 6.50 )
 		origin ( 2.38, -9.00, -0.93 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

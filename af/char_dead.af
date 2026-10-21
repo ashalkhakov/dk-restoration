@@ -55,7 +55,7 @@ articulatedFigure char_dead {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( -9.72, 15.16, 1.80 ), ( -9.94, 7.57, 2.54 ), 3.00 )
+		model bone( ( -9.72, 15.16, 1.80 ), ( -9.94, 7.57, 2.54 ), 3.98 )
 		origin ( -9.83, 11.37, 2.17 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure char_dead {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -9.94, 7.57, 2.54 ), ( -4.67, 13.97, 3.09 ), 3.69 )
+		model bone( ( -9.94, 7.57, 2.54 ), ( -4.67, 13.97, 3.09 ), 3.03 )
 		origin ( -7.30, 10.77, 2.81 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -79,7 +79,7 @@ articulatedFigure char_dead {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 15.56, 5.57, 4.31 ), ( 27.59, 5.64, -3.20 ), 3.00 )
+		model bone( ( 15.56, 5.57, 4.31 ), ( 27.59, 5.64, -3.20 ), 2.89 )
 		origin ( 21.57, 5.60, 0.55 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure char_dead {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 27.59, 5.64, -3.20 ), ( 36.42, 8.42, 0.71 ), 7.38 )
+		model bone( ( 27.59, 5.64, -3.20 ), ( 36.42, 8.42, 0.71 ), 4.36 )
 		origin ( 32.01, 7.03, -1.25 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure char_dead {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -11.14, -11.18, 2.05 ), ( -1.95, -20.30, 1.66 ), 3.55 )
+		model bone( ( -11.14, -11.18, 2.05 ), ( -1.95, -20.30, 1.66 ), 3.03 )
 		origin ( -6.55, -15.74, 1.86 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure char_dead {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 10.27, -3.31, 5.11 ), ( 27.59, -21.83, 2.49 ), 5.72 )
+		model bone( ( 10.27, -3.31, 5.11 ), ( 27.59, -21.83, 2.49 ), 3.84 )
 		origin ( 18.93, -12.57, 3.80 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

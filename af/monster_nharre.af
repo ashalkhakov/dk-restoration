@@ -55,7 +55,7 @@ articulatedFigure monster_nharre {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 8.87, 12.27, 13.05 ), ( 8.98, 8.57, 5.18 ), 16.89 )
+		model bone( ( 8.87, 12.27, 13.05 ), ( 8.98, 8.57, 5.18 ), 15.00 )
 		origin ( 8.93, 10.42, 9.12 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_nharre {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 8.98, 8.57, 5.18 ), ( 9.28, 15.06, 4.55 ), 8.40 )
+		model bone( ( 8.98, 8.57, 5.18 ), ( 9.28, 15.06, 4.55 ), 8.11 )
 		origin ( 9.13, 11.81, 4.87 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

@@ -79,7 +79,7 @@ articulatedFigure monster_prisonerb {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -8.89, 2.35, 10.43 ), ( -3.61, 6.76, -6.39 ), 8.15 )
+		model bone( ( -8.89, 2.35, 10.43 ), ( -3.61, 6.76, -6.39 ), 8.67 )
 		origin ( -6.25, 4.56, 2.02 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure monster_prisonerb {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -3.61, 6.76, -6.39 ), ( -8.98, 8.51, -21.94 ), 8.00 )
+		model bone( ( -3.61, 6.76, -6.39 ), ( -8.98, 8.51, -21.94 ), 7.86 )
 		origin ( -6.30, 7.64, -14.17 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure monster_prisonerb {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -10.18, -1.06, 10.81 ), ( -3.26, -7.05, -6.88 ), 8.25 )
+		model bone( ( -10.18, -1.06, 10.81 ), ( -3.26, -7.05, -6.88 ), 8.45 )
 		origin ( -6.72, -4.06, 1.97 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

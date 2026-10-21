@@ -103,7 +103,7 @@ articulatedFigure monster_dwarf {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 10.66, -7.23, 9.69 ), ( 8.68, -8.59, 11.17 ), 9.66 )
+		model bone( ( 10.66, -7.23, 9.69 ), ( 8.68, -8.59, 11.17 ), 8.44 )
 		origin ( 9.67, -7.91, 10.43 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_dwarf {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 8.68, -8.59, 11.17 ), ( 10.85, -15.43, -7.14 ), 7.21 )
+		model bone( ( 8.68, -8.59, 11.17 ), ( 10.85, -15.43, -7.14 ), 7.08 )
 		origin ( 9.77, -12.01, 2.02 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

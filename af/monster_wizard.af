@@ -115,7 +115,7 @@ articulatedFigure monster_wizard {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 12.27, -12.56, 47.12 ), ( 11.29, -15.68, 28.84 ), 9.42 )
+		model bone( ( 12.27, -12.56, 47.12 ), ( 11.29, -15.68, 28.84 ), 9.59 )
 		origin ( 11.78, -14.12, 37.98 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -139,7 +139,7 @@ articulatedFigure monster_wizard {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 10.84, -6.45, -4.76 ), ( 16.01, -8.08, -22.06 ), 13.15 )
+		model bone( ( 10.84, -6.45, -4.76 ), ( 16.01, -8.08, -22.06 ), 3.36 )
 		origin ( 13.42, -7.26, -13.41 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

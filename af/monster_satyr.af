@@ -67,7 +67,7 @@ articulatedFigure monster_satyr {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 10.57, 16.07, 17.75 ), ( 16.40, 13.26, 2.03 ), 8.45 )
+		model bone( ( 10.57, 16.07, 17.75 ), ( 16.40, 13.26, 2.03 ), 8.30 )
 		origin ( 13.49, 14.67, 9.89 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_satyr {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 5.18, -6.83, 22.43 ), ( 2.57, -12.45, 20.32 ), 8.97 )
+		model bone( ( 5.18, -6.83, 22.43 ), ( 2.57, -12.45, 20.32 ), 9.21 )
 		origin ( 3.88, -9.64, 21.38 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_satyr {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 2.57, -12.45, 20.32 ), ( 4.22, -16.71, 2.14 ), 9.28 )
+		model bone( ( 2.57, -12.45, 20.32 ), ( 4.22, -16.71, 2.14 ), 8.97 )
 		origin ( 3.39, -14.58, 11.23 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

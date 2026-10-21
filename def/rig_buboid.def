@@ -33,8 +33,8 @@ entityDef model_buboid {
 
 
 	"hitbox Hips"	"-1.6 -1.8 -10.3 8.5 6.1 -3.1 torso"
-	"hitbox Lupleg"	"0.1 -4.4 0.6 10.4 3.3 6.7 legs"
-	"hitbox Lloleg"	"-2.4 -7.1 -4.4 8.5 3.1 4.0 legs"
+	"hitbox Lupleg"	"0.1 -4.4 -4.5 13.4 3.3 6.7 legs"
+	"hitbox Lloleg"	"3.2 -7.1 -4.4 8.5 3.1 -0.5 legs"
 	"hitbox Lankle_r"	"-5.7 -8.6 -7.0 1.1 3.3 -2.3 legs"
 	"hitbox Rupleg"	"-1.7 -4.6 -4.4 12.5 2.0 1.9 legs"
 	"hitbox Rloleg"	"0.6 -1.8 -4.3 11.0 1.3 -0.9 legs"
@@ -44,7 +44,7 @@ entityDef model_buboid {
 	"hitbox Loneck"	"-4.2 -4.4 2.7 5.5 2.4 9.7 head"
 	"hitbox Head"	"0.8 -7.9 -9.4 7.0 6.4 3.4 head"
 	"hitbox Luparm"	"-1.8 -6.8 -2.8 10.1 6.2 6.8 arms"
-	"hitbox Lloarm"	"-1.2 -2.0 -2.2 8.4 2.8 3.9 arms"
+	"hitbox Lloarm"	"-1.2 -2.0 -1.9 8.4 2.8 3.9 arms"
 	"hitbox Lhand"	"-0.0 -3.1 -1.7 3.8 2.0 3.0 arms"
 	"hitbox Ruparm"	"-1.9 -2.3 -2.8 7.8 3.7 3.9 arms"
 	"hitbox Rloarm"	"0.5 -2.8 -1.9 4.1 2.0 2.1 arms"

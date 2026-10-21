@@ -67,7 +67,7 @@ articulatedFigure monster_uzigang {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 1.33, 6.99, 23.53 ), ( -0.16, 12.42, 19.29 ), 8.05 )
+		model bone( ( 1.33, 6.99, 23.53 ), ( -0.16, 12.42, 19.29 ), 7.65 )
 		origin ( 0.58, 9.70, 21.41 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -139,7 +139,7 @@ articulatedFigure monster_uzigang {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 0.66, -8.10, -6.09 ), ( 0.63, -5.39, -21.84 ), 7.10 )
+		model bone( ( 0.66, -8.10, -6.09 ), ( 0.63, -5.39, -21.84 ), 5.46 )
 		origin ( 0.64, -6.75, -13.97 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

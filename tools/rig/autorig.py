@@ -622,6 +622,13 @@ def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins
 			cur[i] = err( i, mt )
 	return added
 
+# the hinges blended by place: ( upper bone, the hinge's bone, the one after
+# it ), and how far the blend reaches either side of the joint (of the shorter
+# bone's length)
+HINGES = [ ( "Lupleg", "Lloleg", "Lankle_r" ), ( "Rupleg", "Rloleg", "Rankle_r" ),
+		   ( "Luparm", "Lloarm", "Lhand" ), ( "Ruparm", "Rloarm", "Rhand" ) ]
+HINGE_BAND = 0.3
+
 def seg_dist( p, a, b ):
 	ab = vsub( b, a )
 	l2 = vdot( ab, ab )
@@ -982,6 +989,28 @@ def main( md3Path, outBase ):
 		if i in pins:
 			best = pins[i] if len( pins[i] ) == 3 else ( pins[i][0], pins[i][0], 1.0 )
 		weights.append( best[:3] )
+
+	# the knees and the elbows by where the vertexes are: blended across the
+	# joint over a band about it, smoothly, so the limb keeps its volume as it
+	# bends (fitted to Daikatana's frames, which hardly bend them, the blend
+	# lands off the joint and the limb thins where it bends)
+	for upper, hinge, lower in HINGES:
+		if not all( n in J for n in ( upper, hinge ) ):
+			continue
+		P, C = J[upper], J[hinge]
+		c, a = joints[C]["pos"], joints[P]["pos"]
+		d = joints[J[lower]]["pos"] if lower in J else vadd( c, vsub( c, a ) )
+		up, down = vnorm( vsub( c, a ) ), vnorm( vsub( d, c ) )
+		axis = vnorm( vadd( up, down ) )
+		h = HINGE_BAND * min( vlen( vsub( c, a ) ), vlen( vsub( d, c ) ) )
+		for i in range( N ):
+			b, o, w = weights[i]
+			if b not in ( P, C ) or o not in ( P, C ) or i in pins:
+				continue
+			t = min( 1.0, max( 0.0, ( vdot( vsub( rest[i], c ), axis ) + h ) / ( 2 * h ) ) )
+			wc = t * t * ( 3 - 2 * t )
+			weights[i] = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
+			assign[i] = weights[i][0]
 
 	# the seams: vertexes of different surfaces in one place (Hiro's head on
 	# his neck) skin alike, or a pose the animations never had (the head

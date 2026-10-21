@@ -55,7 +55,7 @@ articulatedFigure monster_garroth {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 0.08, 3.36, 37.84 ), ( 2.93, 10.98, 35.50 ), 7.57 )
+		model bone( ( 0.08, 3.36, 37.84 ), ( 2.93, 10.98, 35.50 ), 8.05 )
 		origin ( 1.51, 7.17, 36.67 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_garroth {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 2.93, 10.98, 35.50 ), ( 9.82, 17.63, 19.59 ), 12.29 )
+		model bone( ( 2.93, 10.98, 35.50 ), ( 9.82, 17.63, 19.59 ), 11.51 )
 		origin ( 6.38, 14.31, 27.54 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -79,7 +79,7 @@ articulatedFigure monster_garroth {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -0.26, 10.15, 23.88 ), ( -2.70, 9.07, -2.08 ), 45.29 )
+		model bone( ( -0.26, 10.15, 23.88 ), ( -2.70, 9.07, -2.08 ), 45.00 )
 		origin ( -1.48, 9.61, 10.90 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure monster_garroth {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -2.70, 9.07, -2.08 ), ( 2.47, 16.81, -22.50 ), 17.57 )
+		model bone( ( -2.70, 9.07, -2.08 ), ( 2.47, 16.81, -22.50 ), 17.35 )
 		origin ( -0.12, 12.94, -12.29 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_garroth {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( -6.19, -27.91, 30.05 ), ( -0.29, -29.34, 28.75 ), 17.34 )
+		model bone( ( -6.19, -27.91, 30.05 ), ( -0.29, -29.34, 28.75 ), 21.09 )
 		origin ( -3.24, -28.63, 29.40 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_garroth {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -0.29, -29.34, 28.75 ), ( -15.66, -22.52, 36.56 ), 9.54 )
+		model bone( ( -0.29, -29.34, 28.75 ), ( -15.66, -22.52, 36.56 ), 11.15 )
 		origin ( -7.97, -25.93, 32.66 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure monster_garroth {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -9.52, -6.26, 17.98 ), ( -8.57, -4.16, -2.08 ), 30.18 )
+		model bone( ( -9.52, -6.26, 17.98 ), ( -8.57, -4.16, -2.08 ), 29.44 )
 		origin ( -9.04, -5.21, 7.95 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

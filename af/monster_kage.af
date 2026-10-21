@@ -139,7 +139,7 @@ articulatedFigure monster_kage {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 11.19, -8.27, -12.36 ), ( 17.09, -5.77, -22.05 ), 13.69 )
+		model bone( ( 11.19, -8.27, -12.36 ), ( 17.09, -5.77, -22.05 ), 10.68 )
 		origin ( 14.14, -7.02, -17.20 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

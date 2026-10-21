@@ -103,7 +103,7 @@ articulatedFigure monster_sealcaptain {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 0.39, -8.41, 29.05 ), ( 0.69, -11.73, 21.42 ), 7.27 )
+		model bone( ( 0.39, -8.41, 29.05 ), ( 0.69, -11.73, 21.42 ), 7.42 )
 		origin ( 0.54, -10.07, 25.24 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_sealcaptain {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 0.69, -11.73, 21.42 ), ( 1.77, -14.27, 22.24 ), 8.81 )
+		model bone( ( 0.69, -11.73, 21.42 ), ( 1.77, -14.27, 22.24 ), 7.13 )
 		origin ( 1.23, -13.00, 21.83 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

@@ -55,7 +55,7 @@ articulatedFigure monster_labworker {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 1.18, 8.62, 17.91 ), ( 0.66, 12.94, 10.86 ), 6.48 )
+		model bone( ( 1.18, 8.62, 17.91 ), ( 0.66, 12.94, 10.86 ), 7.14 )
 		origin ( 0.92, 10.78, 14.38 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_labworker {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 0.66, 12.94, 10.86 ), ( 2.20, 16.99, -0.23 ), 7.43 )
+		model bone( ( 0.66, 12.94, 10.86 ), ( 2.20, 16.99, -0.23 ), 7.16 )
 		origin ( 1.43, 14.97, 5.32 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_labworker {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 0.89, -8.66, 18.05 ), ( -4.81, -18.06, 0.79 ), 7.67 )
+		model bone( ( 0.89, -8.66, 18.05 ), ( -4.81, -18.06, 0.79 ), 7.23 )
 		origin ( -1.96, -13.36, 9.42 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

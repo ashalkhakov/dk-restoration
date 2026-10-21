@@ -79,7 +79,7 @@ articulatedFigure monster_harpy {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -4.39, 11.85, -2.32 ), ( -0.20, 4.72, -13.04 ), 17.88 )
+		model bone( ( -4.39, 11.85, -2.32 ), ( -0.20, 4.72, -13.04 ), 7.47 )
 		origin ( -2.30, 8.29, -7.68 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure monster_harpy {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -0.20, 4.72, -13.04 ), ( 6.38, 7.47, -22.06 ), 5.52 )
+		model bone( ( -0.20, 4.72, -13.04 ), ( 6.38, 7.47, -22.06 ), 4.67 )
 		origin ( 3.09, 6.10, -17.55 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

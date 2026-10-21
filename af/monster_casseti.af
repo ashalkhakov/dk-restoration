@@ -55,7 +55,7 @@ articulatedFigure monster_casseti {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( -3.24, 4.22, 22.97 ), ( -1.91, 6.70, 21.17 ), 6.13 )
+		model bone( ( -3.24, 4.22, 22.97 ), ( -1.91, 6.70, 21.17 ), 6.92 )
 		origin ( -2.58, 5.46, 22.07 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -67,7 +67,7 @@ articulatedFigure monster_casseti {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -1.91, 6.70, 21.17 ), ( -5.66, 12.62, 10.74 ), 3.89 )
+		model bone( ( -1.91, 6.70, 21.17 ), ( -5.66, 12.62, 10.74 ), 4.77 )
 		origin ( -3.79, 9.66, 15.96 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -79,7 +79,7 @@ articulatedFigure monster_casseti {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -2.18, 4.64, -1.38 ), ( 2.14, 6.59, -11.49 ), 6.96 )
+		model bone( ( -2.18, 4.64, -1.38 ), ( 2.14, 6.59, -11.49 ), 7.53 )
 		origin ( -0.02, 5.62, -6.44 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_casseti {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( -1.10, -5.31, 22.00 ), ( -2.29, -7.17, 21.97 ), 6.11 )
+		model bone( ( -1.10, -5.31, 22.00 ), ( -2.29, -7.17, 21.97 ), 6.48 )
 		origin ( -1.69, -6.24, 21.98 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -115,7 +115,7 @@ articulatedFigure monster_casseti {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -2.29, -7.17, 21.97 ), ( -1.45, -9.00, 8.94 ), 4.47 )
+		model bone( ( -2.29, -7.17, 21.97 ), ( -1.45, -9.00, 8.94 ), 4.61 )
 		origin ( -1.87, -8.09, 15.45 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
