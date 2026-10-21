@@ -331,8 +331,9 @@ from their richest cinematic model, the one with the most frames; their other ma
   out once.
 - **Animation blending.** Done, after Doom 3's `idAnimator`/`idAnimBlend`: animations play on channels (legs, torso
   from `Waist`, head from `Head`), each over the ones before it, and cross-fade over `blend_time`. The game and the cgame
-  blend the same joints the same way (so hitboxes follow what's drawn), and the renderer skins the IQM from the joint
-  matrices the cgame hands it (`trap_R_BlendSkeleton`, `trap_R_AddSkeletonToScene`). Try
+  read the IQM's frames and blend the joints themselves, with the same code (`BG_ModelPose`; Doom 3's game reads its
+  animations too), so hitboxes follow what's drawn and the server needs no renderer; the renderer only skins the IQM
+  from the joint matrices the cgame hands it (`trap_R_AddSkeletonToScene`). Try
   `spawncharacter model_hiro walk; characteranim all torso atak`. Eyes and syncing a channel's timing to another's are
   still Doom 3's alone.
 - **Players.** The model defs map Quake 3's player animations (pmove's) to Daikatana's (`player_anim`, from
