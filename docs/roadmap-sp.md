@@ -51,8 +51,16 @@ server. Its first body's origin goes in `pos` and every body's orientation goes 
 is enough, since the figure's joint mods are orientation only. Clients pose the model from that, interpolating
 between snapshots (`CG_ServerRagdoll`). Hits push the corpse (`g_ragdollPush`).
 
-**Still to do.** Doom 3's entity events, and a bigger variable-length state for what doesn't fit in 512 bits (the
-plan below), when monsters or vehicles need it.
+**Entity events (done).** Doom 3's `ServerSendEvent` is `G_ServerSendEvent` (`g_netevent.c`). An entity's event
+carries up to 128 bytes of bit-message parameters and the time it happened. It goes out as a reliable server
+command (`eev`). The client queues it and runs it when its own time gets there (`cg_netevent.c`,
+`ClientProcessEntityNetworkEventQueue`). Saved events go again to players who begin later, until their entity is
+freed. The first common event is `ENTEV_STARTSOUND`, Doom 3's `EVENT_STARTSOUNDSHADER`: a sound shader by index,
+a channel and a volume. Ragdolls use it to thud when they hit something (`snd_bounce`). `cg_debugEvents 1` prints the
+events as they run.
+
+**Still to do.** A bigger, variable-length state for what doesn't fit in 512 bits (the plan below), when
+monsters or vehicles need it.
 
 **Plan.** Keep `entityState_t` as the header every entity has, so Quake 3's entities keep working. Add Doom 3's
 per-entity state after it:

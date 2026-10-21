@@ -152,7 +152,9 @@ the pins are only numbers and names, so they're committed.
   `damage <amount>` (a cheat) hurts you without gibbing you, to test it. The server runs figures too: a `misc_character` that dies goes limp on the server
   (`g_ragdoll.c`, Doom 3's `idActor::StartRagdoll`), sent to the clients in its entity snapshot
   (`bg_snapshot.c`), and hits push it (`g_ragdollPush`). `damage <amount> <entity | aim>` kills one, and
-  `spawncharacter` prints its number. Not done yet: the bodies don't collide with each other (self collision),
-  and a client-side ragdoll isn't pushed by shots.
+  `spawncharacter` prints its number. The bodies collide with each other too (Doom 3's self collision), except those a
+  joint holds together: each body traces against the others' trace models. A body that hits something hard thuds
+  (`snd_bounce`, `dk_bodyhit`); the server's ragdolls send it as an entity event. Not done yet: a client-side
+  ragdoll isn't pushed by shots.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

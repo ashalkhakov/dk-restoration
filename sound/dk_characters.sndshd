@@ -98,3 +98,16 @@ dk_footstep_sand
 	sounds/global/p_stpsd3.wav
 	sounds/global/p_stpsd4.wav
 }
+
+// a ragdoll hitting the floor or a wall (Doom 3's "snd_bounce")
+dk_bodyhit
+{
+	minDistance	6.5
+	maxDistance	20
+	volume		0.8
+	no_dups
+	sounds/global/m_bodyhita.wav
+	sounds/global/m_bodyhitb.wav
+	sounds/global/m_bodyhitc.wav
+	sounds/global/m_bodyhitd.wav
+}

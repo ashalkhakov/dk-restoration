@@ -6,6 +6,7 @@
 // "snd_footstep": sound shaders (sound/dk_characters.sndshd). Daikatana's
 // glass steps were silent; here they're the plain ones.
 entityDef character_base {
+	"snd_bounce"			"dk_bodyhit"	// a ragdoll hitting something (Doom 3's)
 	// moving: Daikatana's characters move like people, Hiro's run about 115
 	// units a second (a unit is ~3.3 cm), its walk 45; Quake's 320 left the
 	// feet sliding, 170 had the legs racing. One speed for all, near their
