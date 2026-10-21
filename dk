@@ -618,6 +618,7 @@ play() {
 	cd "$(dirname "$e")"
 	"$e" +set fs_basepath "$Q3_DIR" +set fs_homepath "$home" +set fs_game "$GAME" \
 		+set vm_game 0 +set vm_cgame 0 +set sv_pure 0 +set fs_pakWarningDialog 0 \
+		+set vm_gameHeapMegs "${GAME_HEAP_MEGS:-64}" \
 		+set com_renderer "$RENDERER" "$@"
 }
 
