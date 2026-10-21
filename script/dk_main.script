@@ -1,0 +1,14 @@
+// dk_main.script -- the game's script: compiled as the game starts, before
+// any map's (maps/<map>.script). What it includes, every map's script knows.
+
+#include "script/dk_events.script"
+
+/*
+================
+dk_main
+
+run as each map starts, before its entities spawn
+================
+*/
+void dk_main() {
+}

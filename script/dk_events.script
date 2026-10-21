@@ -1,0 +1,114 @@
+// dk_events.script -- the events the game responds to, as scripts call them:
+// sys.<event>( ... ) the system's, <entity>.<event>( ... ) an entity's.
+// The compiler checks each against the game's own (g_script_thread.c,
+// g_script_events.c): its arguments and what it returns.
+
+// sys (a thread)
+scriptEvent	void		terminate( float threadNumber );
+scriptEvent	void		pause();
+scriptEvent	void		wait( float time );
+scriptEvent	void		waitFrame();
+scriptEvent	void		waitFor( entity mover );
+scriptEvent	void		waitForThread( float threadNumber );
+scriptEvent	void		print( string text );
+scriptEvent	void		println( string text );
+scriptEvent	void		say( string text );
+scriptEvent	void		assert( float condition );
+scriptEvent	void		trigger( entity entityToTrigger );
+scriptEvent	void		setcvar( string name, string value );
+scriptEvent	string		getcvar( string name );
+scriptEvent	float		random( float range );
+scriptEvent	float		getTime();
+scriptEvent	void		killthread( string threadName );
+scriptEvent	void		threadname( string name );
+scriptEvent	entity		getEntity( string name );
+scriptEvent	entity		spawn( string classname );
+scriptEvent	void		setSpawnArg( string key, string value );
+scriptEvent	string		SpawnString( string key, string default );
+scriptEvent	float		SpawnFloat( string key, float default );
+scriptEvent	vector		SpawnVector( string key, vector default );
+scriptEvent	vector		angToForward( vector angles );
+scriptEvent	vector		angToRight( vector angles );
+scriptEvent	vector		angToUp( vector angles );
+scriptEvent	float		sin( float degrees );
+scriptEvent	float		cos( float degrees );
+scriptEvent	float		sqrt( float square );
+scriptEvent	vector		vecNormalize( vector vec );
+scriptEvent	float		vecLength( vector vec );
+scriptEvent	float		DotProduct( vector vec1, vector vec2 );
+scriptEvent	vector		CrossProduct( vector vec1, vector vec2 );
+scriptEvent	vector		VecToAngles( vector vec );
+scriptEvent	float		trace( vector start, vector end, vector mins, vector maxs, float contents_mask, entity passEntity );
+scriptEvent	float		tracePoint( vector start, vector end, float contents_mask, entity passEntity );
+scriptEvent	float		getTraceFraction();
+scriptEvent	vector		getTraceEndPos();
+scriptEvent	vector		getTraceNormal();
+scriptEvent	entity		getTraceEntity();
+scriptEvent	string		getTraceJoint();
+scriptEvent	string		getTraceBody();
+scriptEvent	void		music( string shaderName );
+scriptEvent	void		error( string text );
+scriptEvent	void		warning( string text );
+scriptEvent	float		strLength( string text );
+scriptEvent	string		strLeft( string text, float num );
+scriptEvent	string		strRight( string text, float num );
+scriptEvent	string		strSkip( string text, float num );
+scriptEvent	string		strMid( string text, float start, float num );
+scriptEvent	float		strToFloat( string text );
+scriptEvent	float		isClient();
+scriptEvent	float		isMultiplayer();
+scriptEvent	float		getFrameTime();
+scriptEvent	float		getTicsPerSecond();
+
+// an entity
+scriptEvent	string		getName();
+scriptEvent	void		setName( string name );
+scriptEvent	void		remove();
+scriptEvent	void		activate( entity activator );
+scriptEvent	void		activateTargets( entity activator );
+scriptEvent	float		numTargets();
+scriptEvent	entity		getTarget( float num );
+scriptEvent	entity		randomTarget( string ignoreName );
+scriptEvent	void		setOwner( entity owner );
+scriptEvent	vector		getWorldOrigin();
+scriptEvent	void		setWorldOrigin( vector origin );
+scriptEvent	vector		getOrigin();
+scriptEvent	void		setOrigin( vector origin );
+scriptEvent	vector		getAngles();
+scriptEvent	void		setAngles( vector angles );
+scriptEvent	vector		getLinearVelocity();
+scriptEvent	void		setLinearVelocity( vector velocity );
+scriptEvent	vector		getSize();
+scriptEvent	void		setSize( vector mins, vector maxs );
+scriptEvent	vector		getMins();
+scriptEvent	vector		getMaxs();
+scriptEvent	float		isHidden();
+scriptEvent	void		hide();
+scriptEvent	void		show();
+scriptEvent	float		touches( entity other );
+scriptEvent	float		startSoundShader( string shaderName, float channel );
+scriptEvent	void		setKey( string key, string value );
+scriptEvent	string		getKey( string key );
+scriptEvent	float		getIntKey( string key );
+scriptEvent	float		getFloatKey( string key );
+scriptEvent	vector		getVectorKey( string key );
+scriptEvent	entity		getEntityKey( string key );
+scriptEvent	float		distanceTo( entity other );
+scriptEvent	float		distanceToPoint( vector point );
+scriptEvent	float		hasFunction( string functionName );
+scriptEvent	void		callFunction( string functionName );
+scriptEvent	float		getHealth();
+scriptEvent	void		setHealth( float health );
+
+// a player
+scriptEvent	float		getMaxHealth();
+scriptEvent	void		giveInventoryItem( string item );
+scriptEvent	void		removeInventoryItem( string item );
+scriptEvent	float		hasInventoryItem( string item );
+scriptEvent	void		centerPrint( string text );
+
+// a mover: a door, a plat, a button
+scriptEvent	void		open();
+scriptEvent	void		close();
+scriptEvent	float		isOpen();
+scriptEvent	float		isMoving();

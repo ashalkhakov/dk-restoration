@@ -95,7 +95,7 @@ objectives, AF physics. Quake 2 and DK are a reference for how Daikatana behaves
 | Objectives | Doom 3 (PDA) / RTCW (notebook) | DK has none: add them, as defs set by scripts, shown in a script menu. |
 | Monsters | RTCW AI Cast | AAS movement, sight and hearing, attacks, and scripted actions. Each DK monster is a def (stats from `AIData.csv`, animations, attacks) plus C where it needs its own behaviour. Ragdoll deaths. |
 | Sidekicks | AI Cast | Follow, stay, attack, back off, come, get; pick up their own items; HUD status (script). Level exits that need them. |
-| Scripts | RTCW `.ai` scripts | DK's `.sca` converted to them; actions mapped (animate, moveto, face, say, use, attack, spawn…). |
+| Scripts | Doom 3's script system (done; see `scripts.md`) | Straight-line code in threads, map scripts, script objects, scriptable items. DK's `.sca` converted to Doom 3 scripts; actions mapped to events (animate, moveto, face, say, use, attack, spawn…). |
 | Cutscenes | Doom 3 cinematic mode + RTCW camera splines | DK's `.script` shots converted to camera paths with actors. Letterbox, skip, and fades in scripts. |
 | Dialogue and subtitles | Doom 3 sound shaders | Subtitles per line (DK names them by sound), shown by the HUD script; sidekick banter on nodes, as areas or triggers. |
 | XP | DK's rules | Five stats in the persistent player state, level-up menu in script, stat tables in defs. |
@@ -129,7 +129,8 @@ Each step ends with something to play:
    games with save gems. Tested from e1m1a into e1m1b, and saving and loading in e1m1b; no monsters yet.
 3. **The first monsters:** AI Cast ported, one easy and one ranged e1 monster as defs, ragdoll deaths. Then e1's
    roster, tuned.
-4. **Scripts and cutscenes:** `.sca` and `.script` converted, cinematic mode, subtitles. e1's intro and its scenes.
+4. **Scripts and cutscenes:** the language is in (Doom 3's, `scripts.md`). Then `.sca` and `.script` converted to
+   it, cinematic mode, subtitles. e1's intro and its scenes.
 5. **Sidekicks:** Superfly first, his commands and HUD.
 6. **XP and the HUD and menus** for inventory, objectives and stats.
 7. **The trucks**, simulated in their cutscenes, then drivable.

@@ -342,10 +342,15 @@ assemble() {
 	for d in textures env pics sounds models skins fonts music levelshots; do
 		[ -e "$DKRES/$d" ] && put "$DKRES/$d" "$mod/$d"
 	done
+	# the maps' scripts (maps/<map>.script) go with the converted maps
+	for f in "$ROOT"/maps/*.script; do
+		[ -e "$f" ] && mkdir -p "$OUT/maps" && cp -f "$f" "$OUT/maps/"
+	done
 	put "$OUT/maps" "$mod/maps"
 	put "$ROOT/effects" "$mod/effects"
 	put "$ROOT/characters" "$mod/characters"
 	put "$ROOT/def" "$mod/def"
+	put "$ROOT/script" "$mod/script"
 	put "$ROOT/af" "$mod/af"
 	put "$ROOT/sound" "$mod/sound"
 	put "$ROOT/gameinfo.txt" "$mod/gameinfo.txt"

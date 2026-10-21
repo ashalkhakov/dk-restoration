@@ -2,8 +2,8 @@
 
 The campaign is mint-arena's gametype 3 (`GT_CAMPAIGN`). It plays Daikatana's single player maps as Daikatana does:
 a level is several maps (`e1m1a`, `e1m1b`, …) walked between by `trigger_changelevel`s, with the player's things
-carried across, keys and an inventory, secrets and saved games. Monsters, sidekicks, scripts and cutscenes come
-later (see `roadmap-sp.md`).
+carried across, keys and an inventory, secrets and saved games, and Doom 3's scripts (`scripts.md`). Monsters,
+sidekicks and cutscenes come later (see `roadmap-sp.md`).
 
 ## Playing it
 
@@ -53,8 +53,9 @@ RTCW's ways, in `g_save.c`:
 - **Changing maps:** the changelevel writes `save/current.psw`, with each player's health, armor, weapons,
   ammo and inventory. The next map gives it back at their first spawn there (`G_SavePersistant`,
   `G_LoadPersistant`). Only a changelevel carries anything (`g_persistant`); a new game starts with nothing.
-- **Saved games:** `save/<name>.svg` holds the map, the time, the level's secrets, every entity as it is, and
-  each player's place, view, health, armor, weapons, ammo, powerups and inventory. An entity's pointers are
+- **Saved games:** `save/<name>.svg` holds the map, the time, the level's secrets, every entity as it is, the
+  scripts' variables and threads (`scripts.md`), and each player's place, view, health, armor, weapons, ammo,
+  powerups and inventory. An entity's pointers are
   written as names and numbers: strings by their text, callbacks (`think`, `touch`, `use`…) by function name,
   entities by number and items by classname. The function names come from `g_funcs.h`, which
   `code/tools/extractfuncs.py` (RTCW's tool) writes at build time. A callback therefore can't be `static`, or

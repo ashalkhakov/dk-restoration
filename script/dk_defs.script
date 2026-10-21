@@ -1,0 +1,41 @@
+// dk_defs.script -- the constants every script is compiled with (the compiler
+// includes this first, as Doom 3's does its doom_defs.script). Only #defines:
+// each script includes it again.
+
+#define	true				1
+#define	false				0
+
+#define	M_PI				3.14159265358979323846
+
+#define	vec_zero			'0 0 0'
+#define	vec_up				'0 0 1'
+#define	vec_down			'0 0 -1'
+
+// the sound channels of startSoundShader()
+#define	CHAN_AUTO			0
+#define	CHAN_LOCAL			1
+#define	CHAN_WEAPON			2
+#define	CHAN_VOICE			3
+#define	CHAN_ITEM			4
+#define	CHAN_BODY			5
+
+// what sys.trace() and sys.tracePoint() stop at, numbered as Doom 3's: a
+// script's numbers are floats, which hold these low bits exactly
+#define	CONTENTS_SOLID		1
+#define	CONTENTS_WATER		4
+#define	CONTENTS_PLAYERCLIP	8
+#define	CONTENTS_MONSTERCLIP	16
+#define	CONTENTS_BODY		256
+#define	CONTENTS_CORPSE		1024
+#define	CONTENTS_RENDERMODEL	2048
+#define	CONTENTS_TRIGGER	4096
+#define	CONTENTS_LAVA		65536
+#define	CONTENTS_SLIME		131072
+#define	CONTENTS_MOVER		262144
+
+#define	MASK_ALL			-1
+#define	MASK_SOLID			CONTENTS_SOLID
+#define	MASK_PLAYERSOLID	( CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_BODY )
+#define	MASK_WATER			( CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME )
+#define	MASK_OPAQUE			( CONTENTS_SOLID | CONTENTS_LAVA | CONTENTS_SLIME )
+#define	MASK_SHOT			( CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE )
