@@ -1,0 +1,16 @@
+// episode 1's monsters: Daikatana's sounds (sounds/e1/m_*.wav); Doom 3 sound shaders, distances in metres
+
+frog_sight		{ minDistance 2.5 maxDistance 20 volume 0.85 sounds/e1/m_frogsighta.wav sounds/e1/m_frogsightb.wav }
+frog_idle		{ minDistance 2.5 maxDistance 20 volume 0.65 sounds/e1/m_frogamba.wav sounds/e1/m_frogambb.wav }
+frog_attack		{ minDistance 2.5 maxDistance 20 volume 0.85 sounds/e1/m_frogataka.wav sounds/e1/m_frogatakb.wav }
+frog_leap		{ minDistance 2.5 maxDistance 20 volume 0.85 sounds/e1/m_frogjumpa.wav }
+frog_land		{ minDistance 2.5 maxDistance 20 volume 0.85 sounds/e1/m_frogambb.wav }
+frog_impact		{ minDistance 2.5 maxDistance 20 volume 0.85 sounds/e1/m_frogatakc.wav }
+frog_death		{ minDistance 2.5 maxDistance 20 volume 0.85 sounds/e1/m_frogdiea.wav sounds/e1/m_frogdieb.wav }
+
+skeet_sight		{ minDistance 5 maxDistance 20 volume 0.85 sounds/e1/m_skeetersighta.wav sounds/e1/m_skeetersightb.wav }
+skeet_idle		{ minDistance 5 maxDistance 20 volume 0.65 sounds/e1/m_skeeteramba.wav sounds/e1/m_skeeterambb.wav }
+skeet_attack	{ minDistance 5 maxDistance 20 volume 0.85 sounds/e1/m_skeeterataka.wav sounds/e1/m_skeeteratakb.wav }
+skeet_fly		{ minDistance 5 maxDistance 20 volume 0.65 sounds/e1/m_skeeterflya.wav }
+skeet_impact	{ minDistance 5 maxDistance 20 volume 0.85 sounds/e1/m_skeeterhita.wav }
+skeet_death		{ minDistance 5 maxDistance 20 volume 0.85 sounds/e1/m_skeeterdiea.wav }

@@ -3,6 +3,11 @@
 
 #include "script/dk_events.script"
 
+// the monsters
+#include "script/ai/monster_base.script"
+#include "script/ai/monster_froginator.script"
+#include "script/ai/monster_slaughterskeet.script"
+
 /*
 ================
 dk_main

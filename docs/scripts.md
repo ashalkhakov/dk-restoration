@@ -100,6 +100,7 @@ in `g_script_thread.c`. An entity's (`$door.open()`…) are in `g_script_events.
   `startSoundShader`; `getHealth`, `setHealth`; `wait`, `waitFrame`; `hasFunction`, `callFunction`.
 - **a player:** `getMaxHealth`, `giveInventoryItem`, `removeInventoryItem`, `hasInventoryItem`, `centerPrint`.
 - **a mover** (door, plat, button): `open`, `close`, `isOpen`, `isMoving`.
+- **a monster**: its states, enemy, moves, facing, flight, attacks, animations and sounds (`monsters.md`).
 
 A script's numbers are floats. `sys.trace()`'s contents mask is therefore numbered as Doom 3's (low bits, which a
 float holds exactly), and the game translates it.
@@ -147,4 +148,4 @@ line, stopping at script errors and warnings. Its clients are dhewm3's: UDQuakeT
   behaves: a `$` that isn't a `$evalint`-style directive is a token of its own (`$name`), and a `#define` ends
   with the file it's in.
 - A thread runs when its time comes at the start of a frame, as Doom 3's `EV_Thread_Execute` events do.
-- No signals (`onSignal`), cameras, fades or debug drawing yet; no AI or animation events (no monsters yet).
+- No signals (`onSignal`), cameras, fades or debug drawing yet.

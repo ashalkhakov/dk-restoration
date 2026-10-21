@@ -1,0 +1,102 @@
+// Daikatana's episode 1 monsters, as Doom 3 style monsters (mint-arena
+// g_monster.c): a model def, the monster def (Daikatana's AIData.csv values
+// at medium skill) and the damage defs of its attacks. What they do is their
+// scripts' (script/ai/). The models are the md3s for now; their rigged IQMs
+// (models/rigged/) take their place with the same animation names.
+
+// the Froginator: a hopping melee frog, amphibious
+
+entityDef model_froginator {
+	"mesh"			"models/e1/m_frog.md3"
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"	"ataka 10"		// spit
+	"anim atakb"	"atakb 10"		// bite
+	"anim atakc"	"atakc 10"		// the leap
+	"anim diea"		"diea 10"
+	"anim hita"		"hita 10"
+	"anim jumpa"	"jumpa 10"
+	"anim runa"		"runa 15 loop"
+	"anim swima"	"swima 10 loop"
+	"anim walka"	"walka 10 loop"
+}
+
+entityDef monster_froginator {
+	"spawnclass"	"monster"
+	"model"			"model_froginator"
+	"scriptobject"	"monster_froginator"
+	"health"		"30"
+	"mins"			"-8 -8 -12"
+	"maxs"			"8 8 12"
+	"modelscale"	"0.65"
+	"run_speed"		"220"
+	"walk_speed"	"45"
+	"turn_rate"		"540"
+	"fov"			"270"
+	"sight_range"	"1500"
+	"melee_range"	"24"			// past its box: Daikatana's 60 from its middle
+	"jump_up"		"270"			// a leap's upward speed
+	"impact_speed"	"300"			// a leap into a wall at more hurts it
+	"impact_damage"	"6"				// per 100 u/s more
+	"impact_bounce"	"0.5"
+	"snd_sight"		"frog_sight"
+	"snd_idle"		"frog_idle"
+	"snd_attack"	"frog_attack"
+	"snd_leap"		"frog_leap"
+	"snd_land"		"frog_land"
+	"snd_impact"	"frog_impact"
+	"snd_death"		"frog_death"
+}
+
+entityDef damage_frog_bite {
+	"damage"		"4"
+	"damage_random"	"2"
+	"range"			"24"
+}
+
+// the Slaughter Skeet: a flying insect that darts in to bite, then off
+
+entityDef model_slaughterskeet {
+	"mesh"			"models/e1/m_skeeter.md3"
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"	"ataka 10"
+	"anim atakb"	"atakb 10"
+	"anim diea"		"diea 10"
+	"anim flya"		"flya 15 loop"
+	"anim hita"		"hita 10"
+	"anim speciala"	"speciala 10"	// hatching
+}
+
+entityDef monster_slaughterskeet {
+	"spawnclass"	"monster"
+	"model"			"model_slaughterskeet"
+	"scriptobject"	"monster_slaughterskeet"
+	"health"		"50"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 8"
+	"fly"			"1"
+	"fly_speed"		"150"			// Daikatana's 200, slowed by skill (0.75 at medium)
+	"fly_accel"		"500"			// how fast its thrust changes its velocity
+	"fly_offset"	"24"			// above what it flies at
+	"fly_bob"		"6"
+	"turn_rate"		"360"
+	"fov"			"215"
+	"sight_range"	"1800"
+	"melee_range"	"16"
+	"impact_speed"	"250"			// crashing hurts it, a drone's way
+	"impact_damage"	"4"
+	"impact_bounce"	"0.6"
+	"snd_sight"		"skeet_sight"
+	"snd_idle"		"skeet_idle"
+	"snd_attack"	"skeet_attack"
+	"snd_fly"		"skeet_fly"
+	"snd_impact"	"skeet_impact"
+	"snd_death"		"skeet_death"
+}
+
+entityDef damage_skeet_bite {
+	"damage"		"5"
+	"damage_random"	"2"
+	"range"			"16"
+}

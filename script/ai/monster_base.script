@@ -1,0 +1,120 @@
+// monster_base.script -- what every monster's script object has (Doom 3's
+// ai_monster_base.script, in short): the fields the game keeps up to date
+// (g_monster.c), the skill, idle until it sees someone, and death.
+//
+// A monster's script runs in states: setState( "state_X" ) and its
+// state_X() runs from the monster's next think, in a thread of its own, as
+// straight-line code that waits (sys.wait, sys.waitFrame) for what it waits for.
+
+object monster_base {
+	// kept by the game each think
+	boolean		AI_ONGROUND;
+	boolean		AI_PAIN;			// hurt since its last think
+	boolean		AI_DEAD;
+	boolean		AI_ENEMY_VISIBLE;
+	boolean		AI_ENEMY_IN_FOV;
+	boolean		AI_MOVE_DONE;
+	boolean		AI_BLOCKED;			// its move got nowhere
+	boolean		AI_IMPACT;			// it hit the world hard
+	boolean		AI_IN_WATER;
+
+	float		skill;				// 0 easy, 1 medium, 2 hard (g_skill)
+	float		idleTime;
+
+	void		init();
+	void		state_Idle();
+	void		state_Combat();
+	void		state_Killed();
+
+	void		idleAnims();
+	void		sightEnemy();
+	void		waitAnim( string anim );
+};
+
+void monster_base::init() {
+	skill = sys.strToFloat( sys.getcvar( "g_skill" ) );
+	setState( "state_Idle" );
+}
+
+/*
+================
+monster_base::waitAnim
+
+plays it through
+================
+*/
+void monster_base::waitAnim( string anim ) {
+	playAnim( ANIMCHANNEL_LEGS, anim );
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_base::idleAnims
+
+its idle animation, now and then the other
+================
+*/
+void monster_base::idleAnims() {
+	if ( sys.getTime() > idleTime ) {
+		idleTime = sys.getTime() + 3 + sys.random( 4 );
+		if ( sys.random( 1 ) < 0.3 ) {
+			startSound( "snd_idle", CHAN_VOICE, false );
+		}
+	}
+}
+
+/*
+================
+monster_base::sightEnemy
+================
+*/
+void monster_base::sightEnemy() {
+	startSound( "snd_sight", CHAN_VOICE, false );
+	setState( "state_Combat" );
+}
+
+/*
+================
+monster_base::state_Idle
+
+until someone's seen, or hurts it
+================
+*/
+void monster_base::state_Idle() {
+	entity enemy;
+
+	stopMove();
+	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	while( 1 ) {
+		enemy = findEnemy( true );
+		if ( enemy ) {
+			setEnemy( enemy );
+			sightEnemy();
+			return;
+		}
+		if ( AI_PAIN && getEnemy() != $null_entity ) {
+			sightEnemy();
+			return;
+		}
+		idleAnims();
+		sys.wait( 0.1 );
+	}
+}
+
+void monster_base::state_Combat() {
+	setState( "state_Idle" );
+}
+
+/*
+================
+monster_base::state_Killed
+================
+*/
+void monster_base::state_Killed() {
+	stopMove();
+	startSound( "snd_death", CHAN_VOICE, false );
+	waitAnim( "diea" );
+}

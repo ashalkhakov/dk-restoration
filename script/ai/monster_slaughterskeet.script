@@ -1,0 +1,128 @@
+// monster_slaughterskeet.script -- Daikatana's Slaughter Skeet: a flying
+// insect that closes in, darts at you to bite, then flies off and comes
+// again. It flies as a drone: the game turns its thrust to where it goes,
+// it keeps its momentum, banks and bounces off walls (a hard one hurts it).
+
+object monster_slaughterskeet : monster_base {
+	void		state_Combat();
+	void		closeIn();
+	void		dart();
+	void		bite();
+	void		flyAway();
+};
+
+/*
+================
+monster_slaughterskeet::state_Combat
+================
+*/
+void monster_slaughterskeet::state_Combat() {
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+	startSound( "snd_fly", CHAN_BODY, false );
+	while( 1 ) {
+		if ( !getEnemy() ) {
+			setState( "state_Idle" );
+			return;
+		}
+		closeIn();
+		dart();
+		bite();
+		flyAway();
+	}
+}
+
+/*
+================
+monster_slaughterskeet::closeIn
+
+after it, above it, until it's seen up close (178 away), ten seconds at most
+================
+*/
+void monster_slaughterskeet::closeIn() {
+	float t;
+
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+	setFlyOffset( 24 );
+	moveToEnemy();
+	t = sys.getTime() + 10;
+	while( sys.getTime() < t && getEnemy() != $null_entity ) {
+		if ( AI_ENEMY_VISIBLE && enemyRange() < 178 ) {
+			return;
+		}
+		sys.wait( 0.1 );
+	}
+}
+
+/*
+================
+monster_slaughterskeet::dart
+
+at it, half as fast again, until it's close or three seconds went by
+================
+*/
+void monster_slaughterskeet::dart() {
+	float t;
+
+	setFlySpeed( getFloatKey( "fly_speed" ) * 1.5 );
+	setFlyOffset( 8 );
+	faceEnemy();
+	moveToEnemy();
+	t = sys.getTime() + 3;
+	while( sys.getTime() < t && getEnemy() != $null_entity ) {
+		if ( enemyRange() < 64 ) {
+			return;
+		}
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_slaughterskeet::bite
+================
+*/
+void monster_slaughterskeet::bite() {
+	float t;
+
+	faceEnemy();
+	playAnim( ANIMCHANNEL_LEGS, "ataka" );
+	startSound( "snd_attack", CHAN_VOICE, false );
+	t = sys.getTime() + 0.5;
+	while( sys.getTime() < t ) {
+		sys.waitFrame();
+	}
+	attackMelee( "damage_skeet_bite" );
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		sys.waitFrame();
+	}
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+}
+
+/*
+================
+monster_slaughterskeet::flyAway
+
+off and up, away from it, until it's there or three seconds went by
+================
+*/
+void monster_slaughterskeet::flyAway() {
+	vector	dir;
+	vector	dest;
+	float	t;
+
+	dir = getOrigin() - getEnemyPos();
+	dir_z = 0;
+	dir = sys.vecNormalize( dir );
+	dir_z = 0.6;
+	dest = getOrigin() + sys.vecNormalize( dir ) * 400;
+	sys.trace( getOrigin(), dest, getMins(), getMaxs(), MASK_SOLID, self );
+	dest = sys.getTraceEndPos();
+
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+	setFlyOffset( 0 );
+	moveToPosition( dest );
+	t = sys.getTime() + 3;
+	while( sys.getTime() < t && moveStatus() == MOVE_STATUS_MOVING ) {
+		sys.waitFrame();
+	}
+}

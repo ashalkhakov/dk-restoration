@@ -127,8 +127,9 @@ Each step ends with something to play:
 2. **The SP gametype's frame (done; see `campaign.md`):** the campaign gametype, the single player menu, levels
    of several maps with the player carried across, DK's triggers and walls, keys and the inventory, and saved
    games with save gems. Tested from e1m1a into e1m1b, and saving and loading in e1m1b; no monsters yet.
-3. **The first monsters:** AI Cast ported, one easy and one ranged e1 monster as defs, ragdoll deaths. Then e1's
-   roster, tuned.
+3. **The first monsters:** Doom 3's monsters (an entity, its behaviour in script; `monsters.md`): the Froginator and
+   the Slaughter Skeet first (in), then their rigged models and ragdoll deaths, paths, e1's roster, tuned. Humans
+   and sidekicks, bot-like, on RTCW's AI Cast.
 4. **Scripts and cutscenes:** the language is in (Doom 3's, `scripts.md`). Then `.sca` and `.script` converted to
    it, cinematic mode, subtitles. e1's intro and its scenes.
 5. **Sidekicks:** Superfly first, his commands and HUD.

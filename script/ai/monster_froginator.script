@@ -1,0 +1,150 @@
+// monster_froginator.script -- Daikatana's Froginator: it hops after you,
+// bites up close and, on hard, leaps at you from afar (its spit at range is
+// to come, with a projectile of its own). A leap is a throw:
+// the game flies it on its arc, and one into a wall hurts it.
+
+object monster_froginator : monster_base {
+	void		state_Combat();
+	void		chase();
+	void		leap();
+	void		attack();
+	void		pain();
+};
+
+/*
+================
+monster_froginator::state_Combat
+
+Daikatana's frog: every tenth of a second, up close an attack now and then,
+else after you
+================
+*/
+void monster_froginator::state_Combat() {
+	float dist;
+
+	while( 1 ) {
+		if ( !getEnemy() ) {
+			setState( "state_Idle" );
+			return;
+		}
+		if ( AI_PAIN && sys.random( 1 ) < 0.2 ) {
+			pain();
+		}
+		dist = enemyRange();
+		if ( AI_ONGROUND && dist < 80 && AI_ENEMY_VISIBLE ) {
+			attack();
+		} else {
+			chase();
+		}
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_froginator::chase
+
+runs at it, ten seconds at most: a leap when it's a way off (hard), an attack
+when it's close
+================
+*/
+void monster_froginator::chase() {
+	float	dist;
+	float	until;
+
+	until = sys.getTime() + 10;
+	if ( AI_IN_WATER ) {
+		playCycle( ANIMCHANNEL_LEGS, "swima" );
+	} else {
+		playCycle( ANIMCHANNEL_LEGS, "runa" );
+	}
+	moveToEnemy();
+	while( sys.getTime() < until ) {
+		if ( !getEnemy() || AI_PAIN ) {
+			return;
+		}
+		dist = enemyRange();
+		if ( skill >= 2 && AI_ONGROUND && !AI_IN_WATER && AI_ENEMY_VISIBLE && dist > 200 && dist < 500 && sys.random( 1 ) > 0.5 ) {
+			leap();
+			return;
+		}
+		if ( dist < 60 && AI_ENEMY_VISIBLE ) {
+			attack();
+			return;
+		}
+		sys.wait( 0.1 );
+	}
+	stopMove();
+}
+
+/*
+================
+monster_froginator::leap
+
+thrown at it: farther the farther it is, Daikatana's speeds
+================
+*/
+void monster_froginator::leap() {
+	vector	dir;
+	vector	vel;
+	float	dist;
+	float	t;
+
+	stopMove();
+	faceEnemy();
+	dir = getEnemyPos() - getOrigin();
+	dir_z = 0;
+	dist = sys.vecLength( dir );
+	dir = sys.vecNormalize( dir );
+	vel = dir * ( getFloatKey( "run_speed" ) * ( dist / 500 ) * 2.35 );
+	vel_z = getFloatKey( "jump_up" );
+
+	playAnim( ANIMCHANNEL_LEGS, "atakc" );
+	startSound( "snd_leap", CHAN_VOICE, false );
+	setLinearVelocity( vel );
+
+	// in the air until it lands, two seconds at most
+	t = sys.getTime() + 2;
+	sys.waitFrame();
+	while( !AI_ONGROUND && sys.getTime() < t ) {
+		if ( AI_IMPACT ) {
+			startSound( "snd_impact", CHAN_BODY, false );
+		}
+		sys.waitFrame();
+	}
+	startSound( "snd_land", CHAN_BODY, false );
+}
+
+/*
+================
+monster_froginator::attack
+
+a bite, as its animation strikes
+================
+*/
+void monster_froginator::attack() {
+	float t;
+
+	stopMove();
+	faceEnemy();
+	playAnim( ANIMCHANNEL_LEGS, "atakb" );
+	startSound( "snd_attack", CHAN_VOICE, false );
+	t = sys.getTime() + 0.6;
+	while( sys.getTime() < t ) {
+		sys.waitFrame();
+	}
+	attackMelee( "damage_frog_bite" );
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_froginator::pain
+================
+*/
+void monster_froginator::pain() {
+	stopMove();
+	waitAnim( "hita" );
+}

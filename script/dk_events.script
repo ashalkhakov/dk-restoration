@@ -107,6 +107,43 @@ scriptEvent	void		removeInventoryItem( string item );
 scriptEvent	float		hasInventoryItem( string item );
 scriptEvent	void		centerPrint( string text );
 
+// a monster (Doom 3's idAI and idActor): its states, its enemy, its moves
+scriptEvent	void		setState( string name );
+scriptEvent	string		getState();
+scriptEvent	entity		findEnemy( float onlyInFov );
+scriptEvent	void		setEnemy( entity enemy );
+scriptEvent	void		clearEnemy();
+scriptEvent	entity		getEnemy();
+scriptEvent	float		enemyRange();
+scriptEvent	float		enemyRange2D();
+scriptEvent	vector		getEnemyPos();
+scriptEvent	float		canSee( entity ent );
+scriptEvent	void		moveToEnemy();
+scriptEvent	void		moveToPosition( vector pos );
+scriptEvent	void		moveToEntity( entity destination );
+scriptEvent	void		wander();
+scriptEvent	void		stopMove();
+scriptEvent	float		moveStatus();
+scriptEvent	void		setMoveSpeed( float speed );
+scriptEvent	void		faceEnemy();
+scriptEvent	void		faceEntity( entity ent );
+scriptEvent	void		turnTo( float yaw );
+scriptEvent	void		turnToPos( vector pos );
+scriptEvent	float		getCurrentYaw();
+scriptEvent	float		facingIdeal();
+scriptEvent	void		setFlySpeed( float speed );
+scriptEvent	void		setFlyOffset( float offset );
+scriptEvent	void		enableGravity();
+scriptEvent	void		disableGravity();
+scriptEvent	void		allowMovement( float allow );
+scriptEvent	float		attackMelee( string damageDef );
+scriptEvent	void		directDamage( entity damageTarget, string damageDef );
+scriptEvent	float		playAnim( float channel, string animName );
+scriptEvent	float		playCycle( float channel, string animName );
+scriptEvent	float		animDone( float channel, float blendFrames );
+scriptEvent	float		hasAnim( float channel, string animName );
+scriptEvent	float		startSound( string sound, float channel, float netSync );
+
 // a mover: a door, a plat, a button
 scriptEvent	void		open();
 scriptEvent	void		close();
