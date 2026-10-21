@@ -55,7 +55,7 @@ entityDef damage_frog_bite {
 	"range"			"24"
 }
 
-// the Slaughter Skeet: a flying insect that darts in to bite, then off
+// the Slaughter Skeet: a flying insect that crowds over you, darts in to bite, dodges your aim
 
 entityDef model_slaughterskeet {
 	"mesh"			"models/e1/m_skeeter.md3"
@@ -78,7 +78,7 @@ entityDef monster_slaughterskeet {
 	"maxs"			"16 16 8"
 	"fly"			"1"
 	"fly_speed"		"150"			// Daikatana's 200, slowed by skill (0.75 at medium)
-	"fly_accel"		"500"			// how fast its thrust changes its velocity
+	"fly_accel"		"900"			// how fast its thrust changes its velocity: nimble, it dodges
 	"fly_offset"	"24"			// above what it flies at
 	"fly_bob"		"6"
 	"turn_rate"		"360"

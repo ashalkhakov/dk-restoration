@@ -52,8 +52,10 @@ waits for what it waits for. The game runs that thread as it thinks, before it m
 - **Froginator** (`monster_froginator.script`): runs at you (it swims in water), bites in reach and, on hard,
   leaps at you from 200 to 500 away. A leap is a throw: the game flies it on its arc, and one into a wall hurts it.
   Its spit at range is to come, with a projectile of its own.
-- **Slaughter Skeet** (`monster_slaughterskeet.script`): closes in from above, darts at you half as fast again,
-  bites, flies off up and away, and comes again. It flies as a drone: momentum, banking into turns, bouncing off
+- **Slaughter Skeet** (`monster_slaughterskeet.script`): skeets crowd over you, each circling at its own height,
+  angle and way round (70 to 130 away, 30 to 80 over your head), darting down to bite now and then and back to their
+  circle, and dodging aside when you aim at them (as Fallout's bloodbugs do). Out of sight or far off, they find
+  their way to you through the air. It flies as a drone: momentum, banking into turns, bouncing off
   walls (a hard crash hurts it).
 
 ## Flying: routes through the air
