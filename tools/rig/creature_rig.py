@@ -24,9 +24,10 @@ The joints' rest frames are the mesh's first frame; every frame of the MD3
 becomes a pose, its animations (named by the frame names) the IQM's.
 
 	python3 tools/rig/creature_rig.py <md3> <out base> <name> [--bones N] [--anims "<anim> <fps> [loop];..."]
-		[--surface metal]
+		[--surface metal] [--no-self-collision]
 (--bones: merge the parts that move most alike until there are no more than N;
---surface metal: a robot, its hits spark)
+--surface metal: a robot, its hits spark; --no-self-collision: its ragdoll's
+bodies don't collide with each other, for one whose small bodies never settle)
 	python3 tools/rig/creature_rig.py dkres/models/e1/m_frog.md3 dkres/models/rigged/frog froginator \\
 		--anims "amba 10 loop;runa 15 loop;..."
 writes dkres/models/rigged/frog.iqm, def/rig_froginator.def (model_froginator:
@@ -57,7 +58,7 @@ def centroid( pts ):
 	n = float( len( pts ) )
 	return ( sum( p[0] for p in pts ) / n, sum( p[1] for p in pts ) / n, sum( p[2] for p in pts ) / n )
 
-def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None ):
+def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, selfCollision = True ):
 	m = MD3( md3Path )
 	# the body: every surface but the hardpoints (a triangle each: a muzzle, an eye)
 	body = [ s for s in m.surfaces if not A.is_hardpoint( s ) ]
@@ -458,7 +459,7 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None ):
 	anims, restRot = A.write_iqm( m, body, verts, rest, joints, jmotion, weights, outBase, looping, DEFAULT_FPS )
 
 	write_def( m, name, outBase, joints, rest, jassign, anims, spec, looping, restRot, frames, surface )
-	write_af( name, joints, rest, jassign, S )
+	write_af( name, joints, rest, jassign, S, selfCollision )
 
 def zone_of( name ):
 	if name.startswith( "Head" ):
@@ -632,7 +633,7 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, res
 		fp.write( "\n".join( lines ) )
 	print( "  wrote %s" % path )
 
-def write_af( name, joints, rest, assign, S ):
+def write_af( name, joints, rest, assign, S, selfCollision = True ):
 	"""Doom 3's articulated figure: a body a bone (a bone shape along a limb,
 	a box for the rest), each held to its parent's by a universal joint at
 	its joint, bending within a cone"""
@@ -656,7 +657,7 @@ def write_af( name, joints, rest, assign, S ):
 			  "		totalMass -1",
 			  "		contents corpse",
 			  "		clipMask solid, corpse",
-			  "		selfCollision 1",
+			  "		selfCollision %d%s" % ( selfCollision, "" if selfCollision else "\t// --no-self-collision: its small bodies jitter against each other for ever" ),
 			  "	}", "" ]
 	bodyName = {}
 	for j in range( 1, nj ):
@@ -748,7 +749,9 @@ if __name__ == "__main__":
 		i = args.index( "--surface" )
 		surface = args[i + 1]
 		args = args[:i] + args[i + 2:]
+	selfCollision = "--no-self-collision" not in args
+	args = [ a for a in args if a != "--no-self-collision" ]
 	if len( args ) != 3:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], args[1], args[2], animSpec, maxBones, surface )
+	main( args[0], args[1], args[2], animSpec, maxBones, surface, selfCollision )

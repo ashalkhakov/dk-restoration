@@ -13,7 +13,7 @@ articulatedFigure monster_froginator {
 		totalMass -1
 		contents corpse
 		clipMask solid, corpse
-		selfCollision 1
+		selfCollision 0	// --no-self-collision: its small bodies jitter against each other for ever
 	}
 
 	body "body" {
