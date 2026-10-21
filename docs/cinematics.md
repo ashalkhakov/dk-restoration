@@ -124,5 +124,9 @@ the one that plays, and keep movement and faces apart:
   plays in place; the `.json` keeps what was taken. A converted task whose animation travelled plays it with
   `cine_playMove`: in place, while the game carries the actor along the travel. A character that walks is walked
   by the game.
-- **Actors without rigs:** other characters and monsters stay on Daikatana's models (with their animations as they
-  are) until they're rigged.
+- **Monsters:** a `monster_*` actor (e1m1's workers) is its rigged model (`def/rig_<name>.def`, `./dk rig`) playing
+  its own animations.
+- **Walking:** a move task walks the actor there at its `walk_speed`, playing its walk (`walka`), or runs it with
+  `runa` after a `start_running`, then it stands (`cine_move`).
+- **Actors without rigs:** characters not rigged yet stay on Daikatana's models, with their animations as they
+  are.

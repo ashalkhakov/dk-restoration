@@ -138,21 +138,33 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 ================
 cine_move
 
-the actor walks there
+the actor walks there (or runs: gait "runa"), at its walk_speed (run_speed),
+playing its walk, then stands
 ================
 */
-void cine_move( entity actor, vector dest ) {
+void cine_move( entity actor, vector dest, string gait ) {
 	if ( actor == $null_entity ) {
 		return;
+	}
+	if ( gait == "runa" ) {
+		actor.setMoveSpeed( actor.getFloatKey( "run_speed" ) );
+	} else {
+		actor.setMoveSpeed( actor.getFloatKey( "walk_speed" ) );
+	}
+	if ( actor.hasAnim( ANIMCHANNEL_LEGS, gait ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, gait );
 	}
 	actor.moveToPosition( dest );
 	while( actor.moveStatus() == MOVE_STATUS_MOVING ) {
 		if ( sys.skippingCinematic() ) {
 			actor.stopMove();
 			actor.setOrigin( dest );
-			return;
+			break;
 		}
 		sys.waitFrame();
+	}
+	if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
 	}
 }
 

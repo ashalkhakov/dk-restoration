@@ -75,6 +75,18 @@ RIGGED = {
 	"cine_superfly": ( "superfly", "c_super_" ), "cine_super": ( "superfly", "c_super_" ),
 }
 
+def monster_rig( classname ):
+	"""a monster's rigged model def (def/rig_<name>.def, ./dk rig): ( model def
+	name, its animations ), or None"""
+	if not classname.startswith( "monster_" ):
+		return None
+	path = os.path.join( "def", "rig_%s.def" % classname[8:] )
+	if not os.path.exists( path ):
+		return None
+	text = open( path ).read()
+	m = re.search( r"entityDef\s+(\S+)", text )
+	return ( m.group( 1 ), set( re.findall( r'"anim (\S+)"', text ) ) ) if m else None
+
 def rigged( dkres, classname, model ):
 	"""our character's cinematic animations for that model: ( character, tag,
 	the retargeting's JSON ), or None"""
@@ -200,16 +212,26 @@ def actor_model( dkres, classname, mapname ):
 	return base if os.path.exists( os.path.join( dkres, base + ".md3" ) ) else None
 
 def write_actor_def( fp, dkres, defname, model ):
+	if isinstance( model, str ) and model.startswith( "model_" ):
+		# a rigged monster, as it is
+		fp.write( "entityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"%s\"\n"
+				  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
+				  "\t\"run_speed\"\t\"220\"\n\t\"walk_speed\"\t\"90\"\n\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n" % ( defname, model ) )
+		return
 	if isinstance( model, tuple ):
 		# our character, with this map's cinematic animations
 		char, tag, rig = model
 		fp.write( "entityDef model_%s {\n\t\"inherit\"\t\"model_%s\"\n\t\"mesh\"\t\t\"models/rigged/%s_%s.iqm\"\n" % ( defname, char, char, tag ) )
 		for name in sorted( rig["anims"] ):
+			if " " in rig["anims"][name].get( "iqm_name", name ) or not name.strip():
+				continue		# (Daikatana's leftovers, "copy of ...": a def's key can't name them)
 			fp.write( "\t\"anim %s\"\t\"%s\"\n" % ( rig["anims"][name].get( "iqm_name", name ), rig["anims"][name].get( "iqm_name", name ) ) )
 	else:
 		m = MD3( os.path.join( dkres, model + ".md3" ) )
 		fp.write( "entityDef model_%s {\n\t\"mesh\"\t\t\"%s.md3\"\n" % ( defname, model ) )
 		for a in m.animations():
+			if " " in a[0] or not a[0].strip():
+				continue
 			fp.write( "\t\"anim %s\"\t\"%s 10%s\"\n" % ( a[0], a[0], " loop" if a[0].startswith( "amb" ) else "" ) )
 	fp.write( "}\nentityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"model_%s\"\n"
 			  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
@@ -222,10 +244,18 @@ def sound_path( f ):
 	f = f.replace( "\\", "/" )
 	return f if f.lower().startswith( ( "sounds/", "data/" ) ) else "sounds/" + f
 
+gaits = {}		# an actor's way of moving, from its last start_walking / start_running
+
 def task_lines( task, var, actors ):
 	"""a task, as script lines"""
 	ty = task["type"]
 	rig = actors[var][2]
+	if ty == "start_running":
+		gaits[var] = "runa"
+		return [ "// start_running" ]
+	if ty == "start_walking":
+		gaits[var] = "walka"
+		return [ "// start_walking%s" % ( ( " (Daikatana's " + task["animation"] + ")" ) if task["animation"] else "" ) ]
 	if rig and ty in ( "play_animation", "set_idle_animation" ):
 		a = rig["anims"].get( task["animation"] )
 		if not a:
@@ -248,9 +278,9 @@ def task_lines( task, var, actors ):
 	if ty == "set_idle_animation":
 		return [ "%s.playCycle( ANIMCHANNEL_LEGS, \"%s\" );" % ( var, task["animation"] ) ]
 	if ty == "move_to":
-		return [ "cine_move( %s, %s );" % ( var, dest ) ]
+		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( var, "walka" ) ) ]
 	if ty == "move_and_turn":
-		return [ "cine_move( %s, %s );" % ( var, dest ), "cine_turn( %s, %g );" % ( var, yaw ) ]
+		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( var, "walka" ) ), "cine_turn( %s, %g );" % ( var, yaw ) ]
 	if ty == "turn":
 		return [ "cine_turn( %s, %g );" % ( var, yaw ) ]
 	if ty == "teleport":
@@ -261,14 +291,13 @@ def task_lines( task, var, actors ):
 		return [ "%s.remove();" % var ]
 	if ty == "clear_goals":
 		return [ "%s.stopMove();" % var ]
-	if ty in ( "start_running", "start_walking" ):
-		return [ "// %s%s" % ( ty, ( " (" + task["animation"] + ")" ) if task["animation"] else "" ) ]
 	if ty == "none":
 		return []
 	return [ "// %s (not converted)" % ty ]
 
 def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 	ns = ident( name )
+	gaits.clear()
 	actors = {}		# var -> ( dk classname, def name, our character's cinematic animations or None )
 	for shot in data["shots"]:
 		for e in shot["entities"]:
@@ -277,7 +306,12 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 				continue
 			model = actor_model( dkres, e["name"], mapname )
 			rig = rigged( dkres, e["name"], model )
-			if rig:
+			mrig = monster_rig( e["name"] )
+			if mrig:
+				defname = "cine_%s" % e["name"][8:]
+				actorDefs[defname] = mrig[0]
+				rig = { "character": e["name"][8:], "anims": dict( ( a, {} ) for a in mrig[1] ) }
+			elif rig:
 				defname = "cine_%s_%s" % ( rig[0], rig[1] )
 				actorDefs[defname] = rig
 				rig = rig[2]
