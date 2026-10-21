@@ -1,8 +1,9 @@
 // monster_slaughterskeet.script -- Daikatana's Slaughter Skeet: a flying
 // insect that crowds over you. Skeets hover close, each circling you at its
 // own height and angle, dart in to bite now and then and back to their
-// circle, and dodge aside when you aim at them (as Fallout's bloodbugs and
-// stingwings do). It flies as a drone: the game turns its thrust to where it
+// circle, and dodge aside when you hold your aim on them a moment (as
+// Fallout's bloodbugs and stingwings do), now and then: they're quick, not
+// unhittable. It flies as a drone: the game turns its thrust to where it
 // goes, it keeps its momentum, banks and bounces off walls (a hard crash
 // hurts it), and finds its way through the air to you when you're out of
 // sight.
@@ -13,6 +14,8 @@ object monster_slaughterskeet : monster_base {
 	float		circleRadius;
 	float		circleHeight;
 	float		nextBite;
+	float		nextDodge;
+	float		aimedSince;			// since when you've aimed at it, 0 if you haven't
 
 	void		state_Combat();
 	void		closeIn();
@@ -20,6 +23,8 @@ object monster_slaughterskeet : monster_base {
 	void		dodge();
 	void		bite();
 	boolean		aimedAt();
+	boolean		shouldDodge();
+	vector		roomTo( vector from, vector spot );
 };
 
 /*
@@ -37,7 +42,7 @@ void monster_slaughterskeet::state_Combat() {
 	}
 	circleRadius = 70 + sys.random( 60 );
 	circleHeight = 30 + sys.random( 50 );
-	nextBite = sys.getTime() + 1 + sys.random( 2 );
+	nextBite = sys.getTime() + 1.5 + sys.random( 2.5 );
 
 	while( 1 ) {
 		if ( !getEnemy() ) {
@@ -46,11 +51,11 @@ void monster_slaughterskeet::state_Combat() {
 		}
 		if ( !AI_ENEMY_VISIBLE || enemyRange() > 400 ) {
 			closeIn();
-		} else if ( aimedAt() ) {
+		} else if ( shouldDodge() ) {
 			dodge();
 		} else if ( sys.getTime() > nextBite ) {
 			bite();
-			nextBite = sys.getTime() + 1.5 + sys.random( 2 );
+			nextBite = sys.getTime() + 2.5 + sys.random( 2.5 );
 		} else {
 			hover();
 		}
@@ -82,6 +87,46 @@ boolean monster_slaughterskeet::aimedAt() {
 
 /*
 ================
+monster_slaughterskeet::shouldDodge
+
+aimed at a moment (a reaction's worth: quicker on hard), and not just after
+a dodge; then it dodges, more likely on hard
+================
+*/
+boolean monster_slaughterskeet::shouldDodge() {
+	if ( !aimedAt() ) {
+		aimedSince = 0;
+		return false;
+	}
+	if ( !aimedSince ) {
+		aimedSince = sys.getTime();
+	}
+	if ( sys.getTime() < nextDodge || sys.getTime() - aimedSince < 0.4 - skill * 0.1 ) {
+		return false;
+	}
+	nextDodge = sys.getTime() + 1.2 + sys.random( 1.5 ) - skill * 0.3;
+	return sys.random( 1 ) < 0.45 + skill * 0.15;
+}
+
+/*
+================
+monster_slaughterskeet::roomTo
+
+as far toward spot from from as its box goes (a narrow way's walls)
+================
+*/
+vector monster_slaughterskeet::roomTo( vector from, vector spot ) {
+	vector dir;
+
+	if ( sys.trace( from, spot, getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self ) < 1 ) {
+		dir = sys.vecNormalize( spot - from );
+		return sys.getTraceEndPos() - dir * 8;
+	}
+	return spot;
+}
+
+/*
+================
 monster_slaughterskeet::closeIn
 
 after it, through the air, until it's seen and near
@@ -106,19 +151,29 @@ void monster_slaughterskeet::closeIn() {
 ================
 monster_slaughterskeet::hover
 
-a little way round its circle over its enemy's head
+a little way round its circle over its enemy's head, as much of it as
+there's room for
 ================
 */
 void monster_slaughterskeet::hover() {
 	vector	spot;
+	vector	over;
 	float	t;
 
 	circleAngle = circleAngle + circleDir * ( 25 + sys.random( 20 ) );
 	if ( sys.random( 1 ) < 0.1 ) {
 		circleDir = -circleDir;
 	}
-	spot = getEnemyPos() + sys.angToForward( '0 1 0' * circleAngle ) * circleRadius;
-	spot_z = spot_z + circleHeight + sys.random( 16 ) - 8;
+	over = getEnemyPos();
+	over_z = over_z + circleHeight + sys.random( 16 ) - 8;
+	over = roomTo( getEnemyPos() + '0 0 16', over );
+	spot = roomTo( over, over + sys.angToForward( '0 1 0' * circleAngle ) * circleRadius );
+	if ( sys.vecLength( spot - over ) < circleRadius * 0.6 ) {
+		// a wall on this side (a narrow way): round to the other
+		circleAngle = circleAngle + 180;
+		circleDir = -circleDir;
+		spot = roomTo( over, over + sys.angToForward( '0 1 0' * circleAngle ) * circleRadius );
+	}
 
 	setFlySpeed( getFloatKey( "fly_speed" ) );
 	setFlyOffset( 0 );
@@ -126,7 +181,8 @@ void monster_slaughterskeet::hover() {
 	moveToPosition( spot );
 	t = sys.getTime() + 0.3;
 	while( sys.getTime() < t ) {
-		if ( aimedAt() ) {
+		if ( shouldDodge() ) {
+			dodge();
 			return;
 		}
 		sys.waitFrame();
@@ -152,11 +208,12 @@ void monster_slaughterskeet::dodge() {
 	if ( sys.random( 1 ) < 0.5 ) {
 		side = -side;
 	}
-	dest = getOrigin() + side * ( 80 + sys.random( 60 ) );
-	dest_z = dest_z + sys.random( 40 ) - 20;
-	circleAngle = circleAngle + circleDir * 90;
+	dest = getOrigin() + side * ( 50 + sys.random( 40 ) );
+	dest_z = dest_z + sys.random( 30 ) - 15;
+	dest = roomTo( getOrigin(), dest );
+	circleAngle = circleAngle + circleDir * 60;
 
-	setFlySpeed( getFloatKey( "fly_speed" ) * 2 );
+	setFlySpeed( getFloatKey( "fly_speed" ) * 1.5 );
 	setFlyOffset( 0 );
 	moveToPosition( dest );
 	t = sys.getTime() + 0.4;
@@ -169,22 +226,26 @@ void monster_slaughterskeet::dodge() {
 ================
 monster_slaughterskeet::bite
 
-down at it, a bite, and up to its circle again
+down at it until it's in reach, a bite, and up to its circle again
 ================
 */
 void monster_slaughterskeet::bite() {
 	float t;
 
 	setFlySpeed( getFloatKey( "fly_speed" ) * 1.5 );
-	setFlyOffset( 16 );
+	setFlyOffset( 8 );
 	faceEnemy();
 	moveToEnemy();
-	t = sys.getTime() + 1.5;
+	t = sys.getTime() + 2;
 	while( sys.getTime() < t && getEnemy() != $null_entity ) {
-		if ( enemyRange() < 56 ) {
+		if ( testMeleeAttack() ) {
 			break;
 		}
 		sys.waitFrame();
+	}
+	if ( !testMeleeAttack() ) {
+		playCycle( ANIMCHANNEL_LEGS, "flya" );
+		return;		// it couldn't get to it: round again
 	}
 	playAnim( ANIMCHANNEL_LEGS, "ataka" );
 	startSound( "snd_attack", CHAN_VOICE, false );

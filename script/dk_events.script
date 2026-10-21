@@ -136,6 +136,7 @@ scriptEvent	void		setFlyOffset( float offset );
 scriptEvent	void		enableGravity();
 scriptEvent	void		disableGravity();
 scriptEvent	void		allowMovement( float allow );
+scriptEvent	float		testMeleeAttack();		// its enemy in its melee_range (box to box), in front and seen
 scriptEvent	float		attackMelee( string damageDef );
 scriptEvent	vector		getJumpVelocity( vector pos, float upSpeed, float maxSpeed );	// a throw (setLinearVelocity) that lands it at pos
 scriptEvent	void		directDamage( entity damageTarget, string damageDef );

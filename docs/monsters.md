@@ -28,9 +28,14 @@ its health and speeds: x0.75 on easy, x1.25 on hard
 A damage def (`damage_frog_bite`) has `damage`, `damage_random` (more, at most; Daikatana's), `range` and
 `push` (how fast it knocks you back).
 
-A monster has two boxes. It moves with one (`mins`/`maxs`), and shots meet the other (the model def's
-`hit_mins`/`hit_maxs`, then its hit boxes, joint by joint). A skeet's wings reach well past the body it flies with, and
-a shot should hit them.
+A monster has two boxes, as Doom 3's clip model and render model. It moves with one (`mins`/`maxs`), and it bumps into
+others with that one too. Shots meet the other (the model def's `hit_mins`/`hit_maxs`, then its hit boxes, joint by
+joint): a skeet's wings reach well past the body it flies with, and a shot should hit them, but skeets in a narrow way
+shouldn't jostle on them. Quake 3 links an entity with one box, so the game links the small one, and a shot
+(`G_TraceShot`) also looks along its way for monsters whose models reach past their boxes.
+
+A melee attack reaches when the gap between its box and its enemy's is within its `range` (Doom 3's `TestMelee`), in
+front of it and seen; `testMeleeAttack()` asks whether it would.
 
 Their models are rigged from their animations alone by `tools/rig/creature_rig.py` (`./dk rig froginator
 slaughterskeet`): no template, so any creature. It splits the mesh into the pieces that move rigidly over the
@@ -63,8 +68,10 @@ waits for what it waits for. The game runs that thread as it thinks, before it m
   A leap is a throw: `getJumpVelocity` gives the arc that lands it there, or none if something's in its way (Doom 3's),
   and one into a wall hurts it (kills it, at one health). Its spit at range is to come, with a projectile of its own.
 - **Slaughter Skeet** (`monster_slaughterskeet.script`): skeets crowd over you, each circling at its own height,
-  angle and way round (70 to 130 away, 30 to 80 over your head), darting down to bite now and then and back to their
-  circle, and dodging aside when you aim at them (as Fallout's bloodbugs do). Out of sight or far off, they find
+  angle and way round (70 to 130 away, 30 to 80 over your head), darting down to bite now and then (once it's in reach)
+  and back to their circle, and dodging aside when you hold your aim on them a moment (as Fallout's bloodbugs do): a
+  reaction's worth (0.2 to 0.4 s), not just after a dodge, and not every time, more often on hard. In a narrow way
+  they circle as far as there's room, round the side that's open. Out of sight or far off, they find
   their way to you through the air. It flies as a drone: momentum, banking into turns, bouncing off
   walls (a hard crash hurts it).
 
@@ -85,7 +92,7 @@ The events a monster has (Doom 3's names): `setState`, `getState`; `findEnemy`, 
 `getEnemy`, `enemyRange`, `enemyRange2D`, `getEnemyPos`, `canSee`; `moveToEnemy`, `moveToPosition`,
 `moveToEntity`, `wander`, `stopMove`, `moveStatus`, `setMoveSpeed`; `faceEnemy`, `faceEntity`, `turnTo`,
 `turnToPos`, `getCurrentYaw`, `facingIdeal`; `setFlySpeed`, `setFlyOffset`, `enableGravity`, `disableGravity`,
-`allowMovement`; `getJumpVelocity`; `attackMelee`, `directDamage`; `playAnim`, `playCycle`, `animDone`, `hasAnim`; `startSound`. And
+`allowMovement`; `getJumpVelocity`; `testMeleeAttack`, `attackMelee`, `directDamage`; `playAnim`, `playCycle`, `animDone`, `hasAnim`; `startSound`. And
 an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 
 ## What's to come
