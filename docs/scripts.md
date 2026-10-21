@@ -123,6 +123,24 @@ the console says the scripts' state wasn't loaded.
   compiled code to `script/disasm.txt`.
 - A script error stops the map with the file and line, and the thread's call stack.
 
+### The debugger
+
+The game has dhewm3's script debugger server, with the protocol 2 of
+[ashalkhakov/dhewm3](https://github.com/ashalkhakov/dhewm3)'s `script-debugger-protocol`: breakpoints, step
+over, into and out (a step stays in its thread), every thread's call stack and variables (a caller's too, and a
+method's object's fields), an entity's spawn args and script object, setting a variable, going on from another
+line, stopping at script errors and warnings. Its clients are dhewm3's: UDQuakeTools' Quarry and its
+`udscript-dap`, which speak to it as they do to dhewm3.
+
+- Start the game with `+set com_enableDebuggerServer 1` (`com_dbgClientAdr`, `localhost` by default, is where the
+  client is). The server listens on UDP 27980 and finds the client on 27981, as dhewm3's does.
+- The client's source root is the game's folder (the one with `maps/` and `script/`): the scripts' files are
+  named as the game reads them, `maps/e1m1a.script`, `script/dk_main.script`.
+- While a thread is stopped the whole game waits, as in dhewm3.
+- The game starts anew with each map; the connection and the breakpoints go on to the next map
+  (`debugger.state` in the game's folder), so a breakpoint in a map's `main()` stops it as it starts.
+- macOS and Linux builds (it isn't in a Windows or QVM build).
+
 ## What differs from Doom 3
 
 - The parser is the botlib precompiler Doom 3's `idParser` grew from (`idlib/l_precomp.c`), changed as Doom 3's
