@@ -24,10 +24,18 @@ the reachabilities, jumps above all, depend on them; rebuild the worlds when the
 
 ## In the game
 
-The botlib (in mint-arena's game module) loads every world a map has. The standard one must be there for bots; the
-others are optional, and Quake 3's own maps have only theirs. Entities are linked into every world. The AAS calls work on
-the current world: `trap_AAS_SetCurrentWorld( AASWORLD_LARGE )` before a large monster's routing or movement,
-`AASWORLD_STANDARD` after it (botlib/be_aas.h). A world's traces use its own box (`AAS_PresenceTypeBoundingBox` reads
+The botlib (in mint-arena's game module) loads a map's worlds as they're needed, so a map holds only what it uses:
+
+- **Deathmatch:** the botlib and the standard world load with the map.
+- **The campaign:** they load only when something first needs them (`G_BotLibLoaded`: a bot added now, a monster's
+  path later).
+- **Bigger sizes:** a size's world loads the first time it's chosen. On e1m1a the standard world is 8.5 MB of the game
+  heap, the large 1.9, the xxl 2.5.
+
+The standard world must be there for bots; the others are optional, and Quake 3's own maps have only theirs. Entities
+are linked into every loaded world. The AAS calls work on the current world: `trap_AAS_SetCurrentWorld(
+AASWORLD_LARGE )` before a large monster's routing or movement (loading it, the first time), `AASWORLD_STANDARD` after
+it (botlib/be_aas.h). `aasworld <0|1|2>` (server command) chooses one and says where the first player is in it. A world's traces use its own box (`AAS_PresenceTypeBoundingBox` reads
 the file's).
 
 `addbot Hiro` / `addbot Mikiko` (`scripts/dk.bot`) play on every map with an AAS.
