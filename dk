@@ -753,7 +753,7 @@ cmd_script() {
 # ./dk invtest: the inventory on e1m1a, with what it should print checked
 #   (g_inventory.c, g_frob.c): an item looked at taken by use, armor worn,
 #   hurt and taken off with its points, health used, the grid filled until an
-#   item is refused
+#   item is refused, the belt filled, set and used
 cmd_invtest() {
 	local log=$OUT/test/invtest.log failed="" i fill=""
 
@@ -763,14 +763,17 @@ cmd_invtest() {
 	done
 	local IFS='|'
 	# shellcheck disable=SC2086
-	play_script invtest e1m1a "g_debugFrob 1" "wait 200" "invlist" \
+	play_script invtest e1m1a "g_debugFrob 1" "cg_drawBelt 1" "wait 200" "invlist" \
 		"spawnitem item_plasteel_armor" "wait 20" "screenshotJPEG invtest_hint" "+use" "wait 3" "-use" "wait 10" "invlist" \
 		"invquick armor" "wait 5" "hurt 40" "wait 5" "invremove" "wait 5" "invlist" \
 		"hurt 60" "spawnitem item_health_50" "wait 20" "+use" "wait 3" "-use" "wait 10" \
 		"invquick health" "wait 5" "hurt 0" \
 		"spawnitem weapon_ionblaster" "wait 20" "+use" "wait 3" "-use" "wait 10" \
 		"spawnitem ammo_ionpack" "wait 20" "+use" "wait 3" "-use" "wait 10" "invlist" \
-		"weapon 2" "wait 60" "+attack" "wait 40" "-attack" "wait 20" "invlist" \
+		"belt 2" "wait 60" "+attack" "wait 40" "-attack" "wait 20" "invlist" \
+		"hurt 60" "spawnitem item_health_50" "wait 20" "+use" "wait 3" "-use" "wait 10" \
+		"invbelt 9 item_health_50" "invbelt 5 weapon_ionblaster" "wait 60" "invlist" "belt 9" "wait 10" "hurt 0" \
+		"invbelt 2 weapon_ionblaster" "wait 5" \
 		"invdrop weapon_ionblaster" "wait 20" "invlist" ${fill#|} "spawnitem item_chromatic_armor" "wait 20" "screenshotJPEG invtest_noroom" "wait 10" "invlist" \
 		"invquick armor" "wait 5" "inventory" "wait 30" "screenshotJPEG invtest_screen" "inventory" "wait 5" \
 		"invdrop item_chromatic_armor" "wait 10" "invlist" "wait 20"
@@ -791,6 +794,14 @@ cmd_invtest() {
 	check "refused when full" 'No room for Chromatic Armor'
 	check "weapon taken" 'slot [0-9]+: weapon_ionblaster x1'
 	check "ammo in stacks" 'slot [0-9]+: ammo_ionpack x[0-9]+'
+	check "weapon on the belt by its slot" 'belt 2: weapon_ionblaster'
+	check "item put on the belt" 'belt 9: item_health_50'
+	check "weapon moved on the belt" 'belt 5: weapon_ionblaster'
+	if [ "$(grep -cE 'hurt: health (1[0-9][0-9]|[6-9][0-9]), armor 0' "$log")" -ge 2 ]; then
+		echo "ok     used from the belt"
+	else
+		echo "FAILED used from the belt"; failed="$failed|belt use"
+	fi
 	if [ "$(grep -E 'slot [0-9]+: ammo_ionpack x' "$log" | head -1 | sed 's/.* x\([0-9]*\) .*/\1/')" \
 		-gt "$(grep -E 'slot [0-9]+: ammo_ionpack x' "$log" | sed -n 2p | sed 's/.* x\([0-9]*\) .*/\1/')" ] 2>/dev/null; then
 		echo "ok     firing takes from the stacks"

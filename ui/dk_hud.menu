@@ -49,36 +49,51 @@
 		visible 1 \
 	}
 
-// a window of the weapon selector (draw_weapon_info): the window, its
-// highlight when WEAPON is the one selected, the weapon turning in it and,
-// in the box under it, its ammo. Y is the window's top, MODEL_Y and
-// AMMO_Y 8 and 50 below it: the weapon's middle 28 below, as Daikatana's.
-#define WEAPON_SLOT( WEAPON, Y, MODEL_Y, AMMO_Y ) \
-	HUD_PIC( 552, Y, 128, 128, "pics/statusbar/weapn_win" ) \
+// a window of the belt (Daikatana's weapon selector, draw_weapon_info, made
+// Deus Ex's quick-use belt): the window, its highlight when KEY's item is the
+// weapon in hand, the item turning in it and, in the box under it, its ammo
+// or count. X, Y is the window's top left; IX, IY 8 right and below it, the
+// item's box (its middle 28 below the top, as Daikatana's weapon's); CX, CY
+// 40 and 50, the count's box.
+#define BELT_SLOT( KEY, X, Y, IX, IY, CX, CY ) \
+	HUD_PIC( X, Y, 128, 128, "pics/statusbar/weapn_win" ) \
 	itemDef { \
-		rect 552 Y 128 128 \
-		ownerdraw CG_WEAPON_SELECTED \
-		special WEAPON \
+		rect X Y 128 128 \
+		ownerdraw CG_BELT_SELECTED \
+		special KEY \
 		background "pics/statusbar/selec_weapn" \
 		forecolor 1 1 1 1 \
 		decoration \
 		visible 1 \
 	} \
 	itemDef { \
-		rect 560 MODEL_Y 72 40 \
-		ownerdraw CG_WEAPON_ICON \
-		special WEAPON \
+		rect IX IY 72 40 \
+		ownerdraw CG_BELT_ITEM \
+		special KEY \
 		forecolor 1 1 1 1 \
 		decoration \
 		visible 1 \
 	} \
 	itemDef { \
-		rect 592 AMMO_Y 40 16 \
-		ownerdraw CG_WEAPON_AMMO \
-		special WEAPON \
+		rect CX CY 40 16 \
+		ownerdraw CG_BELT_COUNT \
+		special KEY \
 		font HUD_LABELS \
 		textscale HUD_SCALE \
 		forecolor 1 1 1 1 \
+		decoration \
+		visible 1 \
+	}
+
+// the key of a belt window, in its top left corner (X, Y the window's top
+// left plus 22 and 18); after the windows, which overlap
+#define BELT_KEY( LABEL, X, Y ) \
+	itemDef { \
+		rect X Y 12 12 \
+		text LABEL \
+		font HUD_LABELS \
+		textscale HUD_SCALE \
+		forecolor .81 .61 .39 1 \
 		decoration \
 		visible 1 \
 	}
@@ -127,8 +142,10 @@
 		HUD_VALUE( 452, CG_PLAYER_SCORE, HUD_NUMBERS, 0 )
 	}
 
-	// the weapon selector: six windows down the right, the weapons of keys
-	// 1 to 6, shown for cg_weaponSelectTime after a change of weapon
+	// the belt (g_inventory.c): keys 1 to 6 down the right, Daikatana's
+	// weapon windows, 7 to 0 beside them; shown for cg_weaponSelectTime after
+	// a change of weapon or a use of the belt, always with cg_drawBelt 1 and
+	// on the inventory screen
 	menuDef {
 		name "weaponselect_menu"
 		fullScreen MENU_FALSE
@@ -136,12 +153,27 @@
 		rect 0 0 640 480
 		screenPlacement PLACE_RIGHT PLACE_TOP
 
-		WEAPON_SLOT( 1, 16, 24, 66 )
-		WEAPON_SLOT( 2, 77, 85, 127 )
-		WEAPON_SLOT( 3, 138, 146, 188 )
-		WEAPON_SLOT( 4, 199, 207, 249 )
-		WEAPON_SLOT( 5, 260, 268, 310 )
-		WEAPON_SLOT( 6, 321, 329, 371 )
+		BELT_SLOT( 1, 552, 16, 560, 24, 592, 66 )
+		BELT_SLOT( 2, 552, 77, 560, 85, 592, 127 )
+		BELT_SLOT( 3, 552, 138, 560, 146, 592, 188 )
+		BELT_SLOT( 4, 552, 199, 560, 207, 592, 249 )
+		BELT_SLOT( 5, 552, 260, 560, 268, 592, 310 )
+		BELT_SLOT( 6, 552, 321, 560, 329, 592, 371 )
+		BELT_SLOT( 7, 476, 16, 484, 24, 516, 66 )
+		BELT_SLOT( 8, 476, 77, 484, 85, 516, 127 )
+		BELT_SLOT( 9, 476, 138, 484, 146, 516, 188 )
+		BELT_SLOT( 0, 476, 199, 484, 207, 516, 249 )
+
+		BELT_KEY( "1", 574, 34 )
+		BELT_KEY( "2", 574, 95 )
+		BELT_KEY( "3", 574, 156 )
+		BELT_KEY( "4", 574, 217 )
+		BELT_KEY( "5", 574, 278 )
+		BELT_KEY( "6", 574, 339 )
+		BELT_KEY( "7", 498, 34 )
+		BELT_KEY( "8", 498, 95 )
+		BELT_KEY( "9", 498, 156 )
+		BELT_KEY( "0", 498, 217 )
 	}
 
 	// centre prints (SCR_DrawCenterString): the centre font, a line at a
