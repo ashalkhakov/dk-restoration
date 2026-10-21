@@ -16,10 +16,14 @@ and animates it
 */
 object cine_actor : monster_base {
 	void		init();
+	void		state_Idle();
 };
 
 void cine_actor::init() {
 	skill = sys.strToFloat( sys.getcvar( "g_skill" ) );
+}
+
+void cine_actor::state_Idle() {
 }
 
 /*
@@ -91,6 +95,43 @@ void cine_play( entity actor, string anim ) {
 	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() ) {
 		sys.waitFrame();
 	}
+}
+
+/*
+================
+cine_playMove
+
+the actor plays an animation in place while the game carries it along what
+the animation once moved it by (Daikatana baked it in; we don't): move is
+forward and to the left of how it faced, turn degrees by the end, over secs
+================
+*/
+void cine_playMove( entity actor, string anim, vector move, float turn, float secs ) {
+	vector	ang;
+	vector	from;
+	vector	to;
+	float	t0;
+	float	f;
+
+	if ( actor == $null_entity ) {
+		return;
+	}
+	ang = actor.getAngles();
+	from = actor.getOrigin();
+	to = from + sys.angToForward( '0 1 0' * ang_y ) * move_x - sys.angToRight( '0 1 0' * ang_y ) * move_y;
+	actor.playAnim( ANIMCHANNEL_LEGS, anim );
+	t0 = sys.getTime();
+	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() ) {
+		f = ( sys.getTime() - t0 ) / secs;
+		if ( f > 1 ) {
+			f = 1;
+		}
+		actor.setOrigin( from + ( to - from ) * f );
+		actor.turnTo( ang_y + turn * f );
+		sys.waitFrame();
+	}
+	actor.setOrigin( to );
+	actor.turnTo( ang_y + turn );
 }
 
 /*

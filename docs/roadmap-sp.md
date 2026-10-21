@@ -209,9 +209,10 @@ Each step ends with something to play:
 3. **The first monsters:** Doom 3's monsters (an entity, its behaviour in script; `monsters.md`): the Froginator and
    the Slaughter Skeet first (in), then their rigged models and ragdoll deaths, paths, e1's roster, tuned. Humans
    and sidekicks, bot-like, on RTCW's AI Cast.
-4. **Scripts and cutscenes** (§4): the language is in (Doom 3's, `scripts.md`). Next: cinematic mode, RTCW's
-   spline cameras in C, DK's `.script` cinematics converted, then the `.sca` scripts and subtitles. e1's intro and
-   its scenes.
+4. **Scripts and cutscenes** (§4): the language is in (Doom 3's, `scripts.md`). Cinematic mode, RTCW's spline
+   cameras in C with keyframes, and DK's `.script` cinematics converted, actors as our rigged characters, are in
+   (`cinematics.md`; e1m1a's intro plays). Next: the cinematics that triggers start, the in-game editor, faces,
+   the `.sca` scripts and subtitles.
 5. **Sidekicks:** Superfly first, his commands and HUD.
 6. **Goals, inventory and skills** (§4): quests, the inventory and goals screens, experience and skills.
 7. **The trucks**, simulated in their cutscenes, then drivable; **Charon's boat** for episode 2.

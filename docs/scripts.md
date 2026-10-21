@@ -86,13 +86,14 @@ void item_vial::pickup( entity player ) {
 `script/dk_events.script` lists them all. Those of sys (`sys.wait()`…) are Doom 3's `idThread` events; they're
 in `g_script_thread.c`. An entity's (`$door.open()`…) are in `g_script_events.c`.
 
-- **sys:** `wait`, `waitFrame`, `waitFor` (a mover until it stops), `waitForThread`, `terminate`, `killthread`,
+- **sys:** `wait`, `waitFrame`, `waitFor` (a mover until it stops, a camera until it ends), `waitForThread`, `terminate`, `killthread`,
   `threadname`, `pause`; `print`, `println`, `say`, `error`, `warning`, `assert`; `trigger`; `setcvar`,
   `getcvar`; `random`, `getTime`, `getFrameTime`, `getTicsPerSecond`; `getEntity`, `spawn` with `setSpawnArg` and
   `SpawnString`/`Float`/`Vector`; vector math (`vecLength`, `vecNormalize`, `DotProduct`, `CrossProduct`,
   `VecToAngles`, `angToForward`/`Right`/`Up`, `sin`, `cos`, `sqrt`); `trace`, `tracePoint` (with `CONTENTS_RENDERMODEL`, as a shot: hit boxes) and the `getTrace*`
   results; strings (`strLength`, `strLeft`, `strRight`, `strSkip`, `strMid`, `strToFloat`); `music`;
-  `isMultiplayer`, `isClient`.
+  `isMultiplayer`, `isClient`; cinematics (`cinematics.md`): `setCamera`, `firstPerson`, `inCinematic`,
+  `skippingCinematic`, `fadeIn`, `fadeOut`, `fadeTo`, `startGlobalSound`, `startGlobalLoop`, `stopGlobalLoops`.
 - **an entity:** `getName`, `setName`, `remove`, `activate`, `activateTargets`, `numTargets`, `getTarget`,
   `randomTarget`; `getOrigin`/`setOrigin` (and `World`), `getAngles`/`setAngles`, `getLinearVelocity`/`set…`,
   `getSize`/`setSize`, `getMins`, `getMaxs`; `hide`, `show`, `isHidden`, `touches`, `distanceTo`,

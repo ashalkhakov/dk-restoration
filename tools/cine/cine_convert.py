@@ -15,8 +15,15 @@ For each cinematic <name> (all of them, or those named):
 									actors' threads and its sounds, as
 									Daikatana's player did
 	<out>/def/cine_actors.def		the actors: each a cinematic character
-									(scriptobject cine_actor) on its model, every
-									animation of it by its frames' names
+									(scriptobject cine_actor). One of our rigged
+									characters (Hiro, Mikiko, Superfly) is that
+									character, with the map's cinematic
+									animations moved onto its rig, in place
+									(models/rigged/<character>_<map>.iqm, by
+									tools/rig/retarget.py, ./dk cine); the
+									travel taken out of them is the game's to
+									do (cine_playMove). Any other is on
+									Daikatana's model for now.
 
 A map starts one as Daikatana's did: its worldspawn's "cinematic_intro". Our
 own versions of a cinematic or a shot go in the repository's cine/ (its
@@ -24,6 +31,7 @@ script/ and cameras/), in place of these by name (./dk assembles them).
 """
 
 import json
+import math
 import os
 import re
 import sys
@@ -55,6 +63,25 @@ CINE_PREFIX = {
 	"cine_drug1": "c_drug1_", "cine_drug2": "c_drug2_", "cine_charon": "c_char_", "c_charon": "c_char_",
 	"cine_mwguard": "c_mwguard_", "cien_hiro": "c_hiro_",
 }
+
+# our rigged characters, and their cinematic models' prefix
+RIGGED = {
+	"cine_hiro": ( "hiro", "c_hiro_" ), "cien_hiro": ( "hiro", "c_hiro_" ),
+	"cine_mikiko": ( "mikiko", "c_mikiko_" ),
+	"cine_superfly": ( "superfly", "c_super_" ), "cine_super": ( "superfly", "c_super_" ),
+}
+
+def rigged( dkres, classname, model ):
+	"""our character's cinematic animations for that model: ( character, tag,
+	the retargeting's JSON ), or None"""
+	if classname not in RIGGED or not model:
+		return None
+	char, prefix = RIGGED[classname]
+	tag = os.path.basename( model )[len( prefix ):]
+	path = os.path.join( dkres, "models", "rigged", "%s_%s.json" % ( char, tag ) )
+	if not os.path.exists( path ):
+		return None
+	return ( char, tag, json.load( open( path ) ) )
 
 def fmt( v ):
 	return " ".join( "%g" % round( x, 4 ) for x in v )
@@ -169,10 +196,17 @@ def actor_model( dkres, classname, mapname ):
 	return base if os.path.exists( os.path.join( dkres, base + ".md3" ) ) else None
 
 def write_actor_def( fp, dkres, defname, model ):
-	m = MD3( os.path.join( dkres, model + ".md3" ) )
-	fp.write( "entityDef model_%s {\n\t\"mesh\"\t\t\"%s.md3\"\n" % ( defname, model ) )
-	for a in m.animations():
-		fp.write( "\t\"anim %s\"\t\"%s 10%s\"\n" % ( a[0], a[0], " loop" if a[0].startswith( "amb" ) else "" ) )
+	if isinstance( model, tuple ):
+		# our character, with this map's cinematic animations
+		char, tag, rig = model
+		fp.write( "entityDef model_%s {\n\t\"inherit\"\t\"model_%s\"\n\t\"mesh\"\t\t\"models/rigged/%s_%s.iqm\"\n" % ( defname, char, char, tag ) )
+		for name in sorted( rig["anims"] ):
+			fp.write( "\t\"anim %s\"\t\"%s\"\n" % ( rig["anims"][name].get( "iqm_name", name ), rig["anims"][name].get( "iqm_name", name ) ) )
+	else:
+		m = MD3( os.path.join( dkres, model + ".md3" ) )
+		fp.write( "entityDef model_%s {\n\t\"mesh\"\t\t\"%s.md3\"\n" % ( defname, model ) )
+		for a in m.animations():
+			fp.write( "\t\"anim %s\"\t\"%s 10%s\"\n" % ( a[0], a[0], " loop" if a[0].startswith( "amb" ) else "" ) )
 	fp.write( "}\nentityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"model_%s\"\n"
 			  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
 			  "\t\"run_speed\"\t\"220\"\n\t\"walk_speed\"\t\"90\"\n\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n" % ( defname, defname ) )
@@ -185,8 +219,22 @@ def sound_path( f ):
 	return f if f.lower().startswith( ( "sounds/", "data/" ) ) else "sounds/" + f
 
 def task_lines( task, var, actors ):
-	"""a task, as script: (lines, whether it waits for itself)"""
+	"""a task, as script lines"""
 	ty = task["type"]
+	rig = actors[var][2]
+	if rig and ty in ( "play_animation", "set_idle_animation" ):
+		a = rig["anims"].get( task["animation"] )
+		if not a:
+			return [ "// %s: %s (no such animation of %s's)" % ( ty, task["animation"], rig["character"] ) ]
+		name = a.get( "iqm_name", task["animation"] )
+		if ty == "set_idle_animation":
+			return [ "%s.playCycle( ANIMCHANNEL_LEGS, \"%s\" );" % ( var, name ) ]
+		move, turn = a.get( "move", [ 0, 0 ] ), a.get( "turn", 0 )
+		if math.hypot( move[0], move[1] ) > 2 or abs( turn ) > 3:
+			# it moved the character: in place now, the game moves it
+			return [ "cine_playMove( %s, \"%s\", '%s 0', %g, %g );" % ( var, name, fmt( move ), round( turn, 2 ),
+																		 round( a["frames"] / float( a.get( "fps", 10 ) ), 3 ) ) ]
+		return [ "cine_play( %s, \"%s\" );" % ( var, name ) ]
 	dest = "'%s'" % fmt( task["destination"] )
 	yaw = round( task["direction"][1], 2 )
 	if ty == "spawn_entity":
@@ -217,25 +265,33 @@ def task_lines( task, var, actors ):
 
 def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 	ns = ident( name )
-	actors = {}		# var -> ( dk classname, def name )
+	actors = {}		# var -> ( dk classname, def name, our character's cinematic animations or None )
 	for shot in data["shots"]:
 		for e in shot["entities"]:
 			var = ident( e["uniqueid"] or e["name"] )
 			if var in actors:
 				continue
 			model = actor_model( dkres, e["name"], mapname )
-			defname = "cine_%s_%s" % ( re.sub( r"^(cine|monster|c)_", "", e["name"] ), mapname[:4] ) if model else None
-			if model:
+			rig = rigged( dkres, e["name"], model )
+			if rig:
+				defname = "cine_%s_%s" % ( rig[0], rig[1] )
+				actorDefs[defname] = rig
+				rig = rig[2]
+			elif model:
+				defname = "cine_%s_%s" % ( re.sub( r"^(cine|monster|c)_", "", e["name"] ), mapname[:4] )
 				actorDefs[defname] = model
-			actors[var] = ( e["name"], defname or "cine_missing" )
+			else:
+				defname = None
+			actors[var] = ( e["name"], defname or "cine_missing", rig )
 
 	out = [ "// %s.script -- Daikatana's cinematic cin/scripts/%s.script, converted by" % ( name, src ),
 			"// tools/cine/cine_convert.py. Its shots' cameras are cameras/%s_NN.camera." % name,
 			"// To change it, copy this file (or a camera) to the repository's cine/script/",
 			"// (cine/cameras/): yours takes its place.",
 			"", "namespace %s {" % ns, "" ]
-	for var, ( cls, d ) in sorted( actors.items() ):
-		out.append( "entity\t%s;\t\t// %s%s" % ( var, cls, "" if d != "cine_missing" else " (no model found)" ) )
+	for var, ( cls, d, rig ) in sorted( actors.items() ):
+		out.append( "entity\t%s;\t\t// %s%s" % ( var, cls, " (no model found)" if d == "cine_missing" else
+												  ( " (our %s)" % rig["character"] if rig else "" ) ) )
 	out += [ "float\tshot;\t\t// the shot playing: an actor's tasks of an earlier one stop", "float\tshotStart;", "" ]
 
 	shotFuncs = []

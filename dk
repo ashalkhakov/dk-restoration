@@ -15,7 +15,10 @@
 #   ./dk shots <map> [tag]     screenshots from the spawn points (HUD=1 ./dk
 #                              shots... to have the HUD, the weapon selector
 #                              and the weapon in them, and the scoreboard)
-#   ./dk rig [character...]    skeletal IQMs of the characters (hiro, mikiko)
+#   ./dk rig [name...]         skeletal IQMs of the characters and monsters
+#                              (RIG_MODELS), their defs and ragdolls
+#   ./dk rigshots [name...]    the rigged models in e1m1a, screenshots in
+#                              out/shots/rig
 #   ./dk cine [name...]        Daikatana's cinematics as cameras, scripts and
 #                              actor defs, in out/cine (ours, in cine/, take
 #                              the place of theirs by name)
@@ -262,51 +265,220 @@ step_sounds() {
 step_ui() { python3 "$ROOT/tools/ui/dkui_assets.py" "$DKRES"; }
 step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 
-# skeletal IQMs of Daikatana's characters (tools/rig/autorig.py): into the
-# extracted data, as they're made from it, their model defs into def/
-RIG_CHARACTERS="hiro mikiko superfly"
-# dead bodies lying on their backs, rigged from their poses for ragdolls:
-# name:model
-RIG_BODIES="dead:e1/m_dead"
-# creatures, rigged from their animations alone (tools/rig/creature_rig.py):
-# name:model:IQM name:bones, and their animations' rates and loops
-RIG_CREATURES="froginator:e1/m_frog:frog:16 slaughterskeet:e1/m_skeeter:skeeter:10"
+# skeletal IQMs of Daikatana's characters and monsters, into the extracted
+# data (they're made from it), their model defs into def/ and ragdolls into
+# af/ (docs/auto-rigging.md). A line a model:
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name]
+# riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
+# character, def/char_<name>.def), human (the same, a monster or another
+# character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
+# 8 by default, for what the template has no bone for), lying (a body lying
+# on its back, rigged from its poses) and creature (tools/rig/
+# creature_rig.py: its own bones, found from its animations; bones= at most).
+# The name is the monster's classname without monster_ (model_<name> in the
+# defs); the IQM is the model's file name without m_, or iqm=. The monsters'
+# animations play at 10 frames a second (fps=), their idle and their ways of
+# getting about looping; RIG_ANIMS_<name> ("<anim> <fps> [loop];...") sets
+# them one by one.
+RIG_MODELS="
+# the player characters
+hiro            player    global/m_hiro
+mikiko          player    global/m_mikiko
+superfly        player    global/m_superfly
+# dead bodies
+dead            lying     e1/m_dead
+# episode 1: Kyoto, Mishima's labs and prison
+fatworker       human     e1/m_mwfaty
+skinnyworker    human     e1/m_mwskny
+surgeon         human     e1/m_mwsurgeon
+labworker       human     e1/m_labworker
+mishimaguard    human     e1/m_mwguard
+cryotech        human     e1/m_cryotech
+prisoner        human     e1/m_priza
+prisonerb       human     e1/m_prizb
+torture1        human     e1/m_torture1
+torture2        human     e1/m_torture2
+inmater         human     e1/m_inmater
+froginator      creature  e1/m_frog              bones=16
+slaughterskeet  creature  e1/m_skeeter           bones=10
+thunderskeet    creature  e1/m_tskeet            bones=24
+venomvermin     creature  e1/m_vermin            bones=24
+sludgeminion    creature  e1/m_sludgeminion      bones=24
+ragemaster      creature  e1/m_ragemaster        bones=24
+psyclaw         creature  e1/m_psyclaw           bones=24
+battleboar      creature  e1/m_bboar             bones=24
+crox            creature  e1/m_croco             bones=24
+protopod        creature  e1/m_proto             bones=12
+cambot          creature  e1/m_cambot            bones=12
+deathsphere     creature  e1/m_dsphere           bones=16
+lasergat        creature  e1/m_lasergat          bones=8
+trackattack     creature  e1/m_trakatak          bones=8
+rockgat         creature  e1/m_gatguns           bones=8
+# episode 2: Greece
+centurion       human     e2/m_centurion
+satyr           human     e2/m_satyr
+skeleton        human     e2/m_skeleton
+thief           human     e2/m_thief
+ferryman        human     e2/m_ferryman
+harpy           human     e2/m_harpy
+cyclops         human     e2/m_cyclops
+minotaur        human     e2/m_minotaur
+kingminos       human     e2/m_kminos
+column          creature  e2/m_column            bones=24
+medusa          creature  e2/m_medusa            bones=24
+cerberus        creature  e2/m_cerberus          bones=24
+griffon         creature  e2/m_griffon           bones=24
+spider          creature  e2/m_spider            bones=24
+smallspider     creature  e2/m_sspid             bones=24
+# episode 3: Norway
+buboid          human     e3/m_buboid
+priest          human     cinematic/c_priest_e3m1  iqm=priest
+dwarf           human     e3/m_dwarf
+fletcher        human     e3/m_fletcher
+lycanthir       human     e3/m_lycanthir
+knight1         human     e3/m_knight1
+knight2         human     e3/m_knight2
+garroth         human     e3/m_gharroth
+nharre          human     e3/m_nharre
+stavros         human     e3/m_stavros
+wyndrax         human     e3/m_wyndrax
+wizard          human     e3/m_wizard
+togadude        human     e3/m_toga_dude
+togagirl        human     e3/m_toga_girl
+plague_rat      creature  e3/m_prat              bones=16
+rotworm         creature  e3/m_rotworm           bones=12
+doombat         creature  e3/m_doombat           bones=16
+dragon          creature  e3/m_dragon            bones=24
+# episode 4: San Francisco
+blackprisoner   human     e4/m_bpris
+whiteprisoner   human     e4/m_wpris
+chaingang       human     e4/m_chgang
+femgang         human     e4/m_femgang
+rocketdude      human     e4/m_rockgang
+uzigang         human     e4/m_uzi
+rocketmp        human     e4/m_rocketmp
+sealcommando    human     e4/m_scomndo
+sealcaptain     human     e4/m_sealcap
+sealgirl        human     e4/m_sgirl
+sealdiver       human     e4/m_sdiver
+labmonkey       human     e4/m_labmonkey
+kage            human     e4/m_kage
+drugdealer      human     e4/m_drug
+alien           creature  e4/m_alien             bones=24
+piperat         creature  e4/m_piperat           bones=16
+shark           creature  e4/m_shark             bones=16
+ghost           creature  e4/we_kage             bones=12
+# wildlife: fish, the seagull, and the Dopefish
+goldfish        creature  global/e_goldfish      bones=4
+greyfish        creature  global/e_greyfish      bones=4
+guppy           creature  global/e_guppy         bones=3
+guppy2          creature  global/e_guppy2        bones=3
+seagull         creature  global/d4_gull         bones=6
+dopefish        creature  global/dopefish        bones=12
+# Mikiko as Kage's (monster_mikiko), and carrying Superfly
+mikikomonster   human     global/m_smikiko
+mikikofly       creature  global/m_mikikofly     bones=32
+# characters only the cinematics have: their richest model
+casseti         human     cinematic/c_casseti_e4m1  iqm=casseti
+gusagi          human     cinematic/c_gusagi_e2m3   iqm=gusagi
+usagi           human     cinematic/c_usagi_intr    iqm=usagi
+inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
+ninja           human     cinematic/c_ninja_intr    iqm=ninja
+osaka           human     cinematic/c_osaka_intr    iqm=osaka
+tatsuo          human     cinematic/c_tatsuo_e4m4   iqm=tatsuo
+toshiro         lying     cinematic/c_tosh_intr     iqm=toshiro
+"
 RIG_ANIMS_froginator="amba 10 loop;ambb 10;ataka 10;atakb 10;atakc 10;diea 10;hita 10;jumpa 10;runa 15 loop;swima 10 loop;walka 10 loop"
 RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15 loop;hita 10;speciala 10"
-cmd_rig() {
-	local name body creature anims
-	[ $# -gt 0 ] || set -- $RIG_CHARACTERS $(for b in $RIG_BODIES $RIG_CREATURES; do echo "${b%%:*}"; done)
-	mkdir -p "$DKRES/models/rigged"
-	for name in "$@"; do
-		say "rigging $name"
-		body=""
-		creature=""
-		for b in $RIG_BODIES; do
-			[ "${b%%:*}" = "$name" ] && body=${b#*:}
-		done
-		for b in $RIG_CREATURES; do
-			[ "${b%%:*}" = "$name" ] && creature=${b#*:}
-		done
-		if [ -n "$creature" ]; then
-			anims=$(eval echo "\"\$RIG_ANIMS_$name\"")
-			set -- "${creature%%:*}" "$(echo "$creature" | cut -d: -f2)" "${creature##*:}" "$@"
-			(cd "$ROOT" && python3 tools/rig/creature_rig.py --bones "$3" --anims "$anims" "$DKRES/models/$1.md3" \
-				"$DKRES/models/rigged/$2" "$name") || die "rigging $name failed"
-			shift 3
-		elif [ -n "$body" ]; then
-			(cd "$ROOT" && python3 tools/rig/autorig.py --lying "$DKRES/models/$body.md3" "$DKRES/models/rigged/$name") \
-				|| die "rigging $name failed"
-		else
-			(cd "$ROOT" && python3 tools/rig/autorig.py "$DKRES/models/global/m_$name.md3" "$DKRES/models/rigged/$name") \
-				|| die "rigging $name failed"
-		fi
+
+# rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
+rig_model() {
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" iqm anims kv
+	iqm=$(basename "$model"); iqm=${iqm#m_}
+	shift 3
+	for kv in "$@"; do
+		case $kv in
+			bones=*) bones=${kv#bones=} ;;
+			extra=*) extra=${kv#extra=} ;;
+			fps=*) fps="--fps ${kv#fps=}" ;;
+			iqm=*) iqm=${kv#iqm=} ;;
+			*) die "$name: what is $kv?" ;;
+		esac
 	done
+	anims=$(eval echo "\"\${RIG_ANIMS_$name:-}\"")
+	local md3="$DKRES/models/$model.md3" out="$DKRES/models/rigged/$iqm"
+	cd "$ROOT"
+	case $rigger in
+		player) python3 tools/rig/autorig.py "$md3" "$out" ;;
+		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
+		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps --anims "$anims" "$md3" "$out" ;;
+		creature) python3 tools/rig/creature_rig.py --bones "$bones" --anims "$anims" "$md3" "$out" "$name" ;;
+		*) die "$name: no rigger $rigger" ;;
+	esac
+}
+
+# ./dk rig [name...]: all of RIG_MODELS by default, $JOBS at a time, each
+# one's output in dkres/models/rigged/<name>.log; then how well each fits
+# (dkres/models/rigged/results.txt)
+cmd_rig() {
+	local list name rest failed=0
+	mkdir -p "$DKRES/models/rigged"
+	list=$(printf '%s\n' "$RIG_MODELS" | sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d')
+	if [ $# -gt 0 ]; then
+		list=$(printf '%s\n' "$list" | while read -r name rest; do
+			for want in "$@"; do [ "$want" = "$name" ] && printf '%s %s\n' "$name" "$rest"; done
+		done)
+		[ -n "$list" ] || die "no such model in RIG_MODELS: $*"
+	fi
+	say "rigging $(printf '%s\n' "$list" | wc -l | tr -d ' ') models, $JOBS at a time"
+	export -f rig_model die
+	export ROOT DKRES $(compgen -v RIG_ANIMS_ || true)
+	printf '%s\n' "$list" | xargs -P "$JOBS" -L 1 bash -c '
+		if rig_model "$@" >"$DKRES/models/rigged/$1.log" 2>&1; then
+			printf "  %-16s %s\n" "$1" "$(grep -m1 "error:" "$DKRES/models/rigged/$1.log" | sed "s/^ *error: //")"
+		else
+			printf "  %-16s FAILED (dkres/models/rigged/%s.log)\n" "$1" "$1"; exit 1
+		fi' rig || failed=1
+	{
+		printf '# name rigger model vertexes frames animations bones average worst size\n'
+		printf '%s\n' "$RIG_MODELS" | sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d' | while read -r name rigger model rest; do
+			local log="$DKRES/models/rigged/$name.log"
+			[ -f "$log" ] || continue
+			awk -v n="$name" -v r="$rigger" -v m="$model" '
+				/vertexes, [0-9]+ frames/ { v = $2; f = $4 }
+				/ joints, [0-9]+ animations/ { j = $(NF - 3); a = $(NF - 1) }
+				/error:/ { avg = $2; worst = $6; size = $(NF - 1) }
+				END { print n, r, m, v, f, a, j, avg, worst, size }' "$log"
+		done
+	} >"$DKRES/models/rigged/results.txt"
+	[ $failed = 0 ] || die "some models failed to rig"
 }
 
 # Daikatana's cinematics (cin/scripts/*.script) as ours: out/cine/cameras,
 # script and def (tools/cine/cine_convert.py). The repository's cine/cameras
 # and cine/script hold our own and our edits: assembled over them, by name.
+# The characters' cinematic animations come first: each of Daikatana's
+# cinematic models of a rigged character (models/cinematic/c_<prefix><map>)
+# has its animations moved onto the character's rig, in place
+# (tools/rig/retarget.py: models/rigged/<character>_<map>.iqm and .json),
+# unless that's done already.
+CINE_CHARACTERS="hiro:c_hiro_ mikiko:c_mikiko_ superfly:c_super_"
 cmd_cine() {
+	local c name prefix f tag out
+	for c in $CINE_CHARACTERS; do
+		name=${c%%:*} prefix=${c#*:}
+		[ -e "$DKRES/models/rigged/$name.iqm" ] || continue
+		for f in "$DKRES"/models/cinematic/"$prefix"*.md3; do
+			[ -e "$f" ] || continue
+			tag=$(basename "$f" .md3)
+			tag=${tag#"$prefix"}
+			out="$DKRES/models/rigged/${name}_$tag"
+			[ "$out.json" -nt "$f" ] && [ "$out.json" -nt "$DKRES/models/rigged/$name.iqm" ] && continue
+			echo "  $name: $tag"
+			(cd "$ROOT" && python3 tools/rig/retarget.py "$name" "$f" "$out" >"$OUT/retarget_${name}_$tag.log" 2>&1) \
+				|| echo "  $name $tag: retargeting failed (see $OUT/retarget_${name}_$tag.log)"
+		done
+	done
 	rm -rf "$OUT/cine"
 	(cd "$ROOT" && python3 tools/cine/cine_convert.py "$DKRES" "$OUT/cine" "$@") || die "converting the cinematics failed"
 }
@@ -504,6 +676,42 @@ EOF
 	ls "$OUT/shots/$tag/${map}_"*.jpg
 }
 
+# ./dk rigshots [name...]: the rigged models in e1m1a, three to a shot,
+# before its spawn points (each way they face), to compare with
+# Daikatana's; out/shots/rig/
+cmd_rigshots() {
+	local map=e1m1a spots shots="" i=0 n x y z yaw turn
+	mkdir -p "$OUT/test" "$OUT/shots/rig"
+	rm -f "$OUT/test-home/$GAME/screenshots/rig_"* "$OUT/shots/rig/"*
+	[ $# -gt 0 ] || set -- $(printf '%s\n' "$RIG_MODELS" | sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d' | awk '{print $1}')
+	spots=$(python3 "$ROOT/tools/dk_spawns.py" "$OUT/maps/$map.bsp" 8)
+	while [ $# -gt 0 ]; do
+		for turn in 0 90 180 270; do
+			while read -r x y z yaw; do
+				[ $# -gt 0 ] || break 2
+				shots="$shots|setviewpos $x $y $z $(( (yaw + turn) % 360 )) 10|wait 5"
+				for n in -64 0 64; do
+					[ $# -gt 0 ] || break
+					shots="$shots|spawncharacter model_$1 \"\" 0 $n"
+					shift
+				done
+				shots="$shots|wait 40|screenshotJPEG rig_$i|wait 10"
+				i=$((i + 1))
+			done <<EOF
+$spots
+EOF
+		done
+	done
+	local IFS='|'
+	# shellcheck disable=SC2086
+	play_script rigshots "$map" "wait 200" ${shots#|}
+	unset IFS
+	mv "$OUT/test-home/$GAME/screenshots/rig_"*.jpg "$OUT/shots/rig/" 2>/dev/null \
+		|| die "no screenshots, see out/test/rigshots.log"
+	command -v magick >/dev/null && contact_sheet "$OUT/shots/rig.jpg" "$OUT"/shots/rig/rig_*.jpg
+	ls "$OUT/shots/rig/"
+}
+
 # contact_sheet <out.jpg> <pictures...>: four to a row
 contact_sheet() {
 	local sheet=$1 row="" rows="" n=0 r=0 f tmp
@@ -565,7 +773,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|cine|aas|run|shots|test|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|rigshots|cine|aas|run|shots|test|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac
