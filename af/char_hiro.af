@@ -19,8 +19,8 @@ articulatedFigure char_hiro {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -5.85, -4.36, -4.08 ), ( 5.85, 4.36, 4.08 ) )
-		origin ( 2.29, 2.69, 1.78 )
+		model box( ( -3.57, -2.63, -1.24 ), ( 3.57, 2.63, 1.24 ) )
+		origin ( -0.40, 1.89, 5.02 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure char_hiro {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 7.13, 9.09, -0.73 ), ( 7.78, 5.64, -14.14 ), 9.43 )
-		origin ( 7.46, 7.37, -7.44 )
+		model bone( ( 0.26, 3.51, 5.17 ), ( 8.60, 4.85, -4.18 ), 5.43 )
+		origin ( 4.43, 4.18, 0.50 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure char_hiro {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 7.78, 5.64, -14.14 ), ( 7.75, 5.89, -22.02 ), 5.79 )
-		origin ( 7.76, 5.76, -18.08 )
+		model bone( ( 8.60, 4.85, -4.18 ), ( 8.58, 5.68, -22.02 ), 4.69 )
+		origin ( 8.59, 5.27, -13.10 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure char_hiro {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 2.08, -1.63, 3.67 ), ( -0.99, -5.02, -7.57 ), 5.65 )
-		origin ( 0.55, -3.33, -1.95 )
+		model bone( ( -0.59, -1.00, 5.17 ), ( -1.20, -4.90, -5.97 ), 5.88 )
+		origin ( -0.89, -2.95, -0.40 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure char_hiro {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( -0.99, -5.02, -7.57 ), ( -10.08, -2.39, -22.41 ), 4.26 )
-		origin ( -5.54, -3.71, -14.99 )
+		model bone( ( -1.20, -4.90, -5.97 ), ( -7.52, -3.17, -22.41 ), 4.30 )
+		origin ( -4.36, -4.03, -14.19 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -188,7 +188,7 @@ articulatedFigure char_hiro {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( 0.05, -0.25, -0.97 ), ( -0.05, 0.25, 0.97 )
+		shafts ( 0.66, 0.11, -0.74 ), ( -0.66, -0.11, 0.74 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure char_hiro {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 27.8, 140.0, 92.8
+		limit 66.7, 140.0, 131.7
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure char_hiro {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.25, -0.28, -0.93 ), ( 0.25, 0.28, 0.93 )
+		shafts ( -0.05, -0.33, -0.94 ), ( 0.05, 0.33, 0.94 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure char_hiro {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 9.7, 140.0, 74.7
+		limit 21.8, 140.0, 86.8
 	}
 
 }

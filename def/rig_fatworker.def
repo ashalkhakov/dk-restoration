@@ -2,8 +2,8 @@
 entityDef model_fatworker {
 	"inherit"			"character_base"	// def/dk_characters.def
 	"mesh"				"models/rigged/mwfaty.iqm"
-	"mins"				"-13 -13 -24"	// standing, at the origin (pmove's)
-	"maxs"				"13 13 28"
+	"mins"				"-11 -11 -24"	// standing, at the origin (pmove's)
+	"maxs"				"11 11 28"
 	"crouch_height"		"28"		// maxs z crouched
 	"eye_height"		"24"
 	"crouch_eye_height"	"24"
@@ -50,27 +50,25 @@ entityDef model_fatworker {
 	"frame runa 7"	"footstep Rankle_r"
 
 	"anim_speed runa"	"40"
-	"anim_speed walka"	"11"
+	"anim_speed walka"	"10"
 
 
-	"hitbox Hips"	"-6.1 -10.3 -8.2 10.7 5.9 5.0 torso"
-	"hitbox Lupleg"	"3.1 2.6 -4.2 9.3 5.2 2.4 legs"
-	"hitbox Lankle_r"	"-9.7 -7.5 -5.8 5.8 0.0 2.0 legs"
-	"hitbox Rupleg"	"5.0 -3.6 -2.8 20.4 6.0 4.2 legs"
-	"hitbox Rloleg"	"1.8 -4.7 -3.1 13.5 2.1 7.4 legs"
-	"hitbox Rankle_r"	"-2.1 -2.7 -5.8 3.0 7.1 0.1 legs"
-	"hitbox Waist"	"-7.8 -4.4 -5.0 3.4 8.2 9.4 torso"
-	"hitbox Chest"	"-1.0 -4.4 -4.4 9.2 1.9 4.0 torso"
+	"hitbox Lupleg"	"5.1 -0.4 -6.2 8.5 3.5 4.2 legs"
+	"hitbox Lloleg"	"-0.5 -4.8 -5.2 10.9 2.0 6.5 legs"
+	"hitbox Lankle_r"	"0.1 -1.3 -1.5 4.4 4.2 8.6 legs"
+	"hitbox Rupleg"	"1.8 -6.8 -5.0 13.3 3.4 6.0 legs"
+	"hitbox Rloleg"	"-0.0 -3.2 -2.9 11.3 5.8 6.4 legs"
+	"hitbox Rankle_r"	"0.1 -2.3 -4.4 4.7 7.6 1.7 legs"
+	"hitbox Waist"	"-7.7 -10.5 -11.6 5.9 5.7 3.1 torso"
+	"hitbox Chest"	"0.6 -4.4 -4.3 10.8 1.4 4.3 torso"
 	"hitbox Loneck"	"-0.6 -6.0 -1.8 8.0 3.4 5.2 head"
 	"hitbox Head"	"-0.1 -3.2 -0.1 7.4 5.7 6.7 head"
 	"hitbox Luparm"	"-1.3 -2.0 -3.3 5.4 3.7 2.6 arms"
-	"hitbox Lloarm"	"2.2 -2.7 -3.0 5.2 0.5 2.5 arms"
-	"hitbox Lhand"	"0.1 -3.7 -0.8 11.7 0.4 5.2 arms"
-	"hitbox Ruparm"	"1.6 -5.1 -3.3 8.7 6.6 5.4 arms"
-	"hitbox Rloarm"	"1.7 -3.5 -2.2 6.7 2.3 2.5 arms"
-	"hitbox Rhand"	"-0.6 -2.8 -8.8 12.5 4.7 2.1 arms"
-	"hitbox Rhand_1"	"-0.9 -0.8 1.9 1.6 1.8 3.8 arms"
-	"hitbox Hips_1"	"0.2 -6.5 -5.1 8.4 8.2 0.4 torso"
+	"hitbox Lloarm"	"1.5 -2.5 -3.6 5.2 1.0 1.7 arms"
+	"hitbox Lhand"	"2.8 -2.5 -2.4 10.3 0.7 3.4 arms"
+	"hitbox Ruparm"	"1.7 -5.0 -3.3 8.7 6.6 5.3 arms"
+	"hitbox Rloarm"	"1.7 -3.6 -2.2 8.4 2.6 2.4 arms"
+	"hitbox Rhand"	"0.7 -1.7 -8.8 12.2 5.5 0.6 arms"
 
 	"damage_scale head"	"2"
 	"damage_scale arms"	"0.75"

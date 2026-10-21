@@ -19,8 +19,8 @@ articulatedFigure monster_lycanthir {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -12.06, -4.07, -4.01 ), ( 12.06, 4.07, 4.01 ) )
-		origin ( -9.28, 6.74, -1.19 )
+		model box( ( -6.54, -3.33, -3.99 ), ( 6.54, 3.33, 3.99 ) )
+		origin ( -2.79, 5.87, -1.16 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +31,8 @@ articulatedFigure monster_lycanthir {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -9.16, -7.59, -7.28 ), ( 9.16, 7.59, 7.28 ) )
-		origin ( -9.07, 2.40, 11.84 )
+		model box( ( -9.16, -7.49, -6.50 ), ( 9.16, 7.49, 6.50 ) )
+		origin ( -9.07, 2.52, 12.76 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure monster_lycanthir {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -3.48, 16.96, 12.81 ), ( 8.41, 20.21, -2.71 ), 6.91 )
-		origin ( 2.47, 18.58, 5.05 )
+		model bone( ( -3.48, 16.96, 12.81 ), ( 8.04, 20.70, -2.80 ), 6.81 )
+		origin ( 2.28, 18.83, 5.01 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_lycanthir {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 2.26, 15.88, -0.50 ), ( -4.12, 8.44, -9.85 ), 9.29 )
-		origin ( -0.93, 12.16, -5.17 )
+		model bone( ( -9.46, 9.09, 1.66 ), ( -2.55, 12.05, -8.05 ), 24.37 )
+		origin ( -6.01, 10.57, -3.20 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_lycanthir {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -4.12, 8.44, -9.85 ), ( 1.21, 16.32, -22.23 ), 7.62 )
-		origin ( -1.45, 12.38, -16.04 )
+		model bone( ( -2.55, 12.05, -8.05 ), ( -0.53, 15.68, -22.23 ), 5.97 )
+		origin ( -1.54, 13.87, -15.14 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_lycanthir {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -8.08, -9.08, 0.33 ), ( -20.06, -3.33, -7.83 ), 8.38 )
-		origin ( -14.07, -6.20, -3.75 )
+		model bone( ( -9.18, -2.91, 1.66 ), ( -12.52, -4.93, -8.05 ), 12.56 )
+		origin ( -10.85, -3.92, -3.20 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_lycanthir {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( -20.06, -3.33, -7.83 ), ( -21.54, -8.14, -22.17 ), 5.49 )
-		origin ( -20.80, -5.74, -15.00 )
+		model bone( ( -12.52, -4.93, -8.05 ), ( -22.69, -7.40, -22.17 ), 10.14 )
+		origin ( -17.60, -6.16, -15.11 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -188,7 +188,7 @@ articulatedFigure monster_lycanthir {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.47, -0.55, -0.69 ), ( 0.47, 0.55, 0.69 )
+		shafts ( 0.56, 0.24, -0.79 ), ( -0.56, -0.24, 0.79 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_lycanthir {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -9.3, 140.0, 55.7
+		limit 60.4, 140.0, 125.4
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_lycanthir {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.77, 0.37, -0.52 ), ( 0.77, -0.37, 0.52 )
+		shafts ( -0.32, -0.19, -0.93 ), ( 0.32, 0.19, 0.93 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_lycanthir {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -30.8, 140.0, 34.2
+		limit 6.0, 140.0, 71.0
 	}
 
 }

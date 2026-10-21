@@ -19,8 +19,8 @@ articulatedFigure monster_uzigang {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.57, -5.33, -5.32 ), ( 3.57, 5.33, 5.32 ) )
-		origin ( 0.52, -0.05, 9.02 )
+		model box( ( -3.50, -4.66, -3.22 ), ( 3.50, 4.66, 3.22 ) )
+		origin ( 4.08, -6.90, 15.54 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +31,8 @@ articulatedFigure monster_uzigang {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -3.48, -3.67, -2.88 ), ( 3.48, 3.67, 2.88 ) )
-		origin ( 1.88, -8.36, 18.12 )
+		model box( ( -2.97, -2.52, -1.81 ), ( 2.97, 2.52, 1.81 ) )
+		origin ( 1.27, -7.85, 19.39 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +43,8 @@ articulatedFigure monster_uzigang {
 	body "head" {
 		joint "Loneck"
 		mod orientation
-		model box( ( -4.64, -6.42, -5.31 ), ( 4.64, 6.42, 5.31 ) )
-		origin ( 2.19, -5.32, 28.18 )
+		model box( ( -4.64, -6.42, -6.41 ), ( 4.64, 6.42, 6.41 ) )
+		origin ( 2.19, -5.32, 26.88 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +55,8 @@ articulatedFigure monster_uzigang {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 3.07, 0.21, 22.32 ), ( 1.33, 6.99, 23.53 ), 8.98 )
-		origin ( 2.20, 3.60, 22.93 )
+		model bone( ( 3.32, 0.04, 21.84 ), ( 1.98, 7.67, 21.21 ), 11.12 )
+		origin ( 2.65, 3.85, 21.53 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure monster_uzigang {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 1.33, 6.99, 23.53 ), ( -0.16, 12.42, 19.29 ), 7.65 )
-		origin ( 0.58, 9.70, 21.41 )
+		model bone( ( 1.98, 7.67, 21.21 ), ( 0.35, 9.84, 17.00 ), 17.99 )
+		origin ( 1.16, 8.76, 19.11 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_uzigang {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 0.57, 4.59, 18.31 ), ( -0.51, -0.26, -6.09 ), 14.31 )
-		origin ( 0.03, 2.16, 6.11 )
+		model bone( ( 3.32, -3.31, 15.18 ), ( 5.67, 2.42, -4.84 ), 13.67 )
+		origin ( 4.49, -0.44, 5.17 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_uzigang {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -0.51, -0.26, -6.09 ), ( 5.83, 5.26, -21.88 ), 13.02 )
-		origin ( 2.66, 2.50, -13.98 )
+		model bone( ( 5.67, 2.42, -4.84 ), ( 2.76, 0.24, -21.88 ), 10.61 )
+		origin ( 4.21, 1.33, -13.36 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_uzigang {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 4.13, -10.67, 18.39 ), ( 0.66, -8.10, -6.09 ), 10.47 )
-		origin ( 2.39, -9.39, 6.15 )
+		model bone( ( 0.83, -7.80, 15.18 ), ( 10.29, -8.19, 3.20 ), 7.02 )
+		origin ( 5.56, -8.00, 9.19 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_uzigang {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 0.66, -8.10, -6.09 ), ( 0.63, -5.39, -21.84 ), 5.46 )
-		origin ( 0.64, -6.75, -13.97 )
+		model bone( ( 10.29, -8.19, 3.20 ), ( 4.00, -8.50, -21.84 ), 3.00 )
+		origin ( 7.14, -8.35, -9.32 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -170,7 +170,7 @@ articulatedFigure monster_uzigang {
 		body1 "Luparm"
 		body2 "chest"
 		anchor joint( "Luparm" )
-		shafts ( -0.24, 0.95, 0.17 ), ( 0.24, -0.95, -0.17 )
+		shafts ( -0.17, 0.98, -0.08 ), ( 0.17, -0.98, 0.08 )
 		friction 0.20
 		coneLimit ( 0.00, 0.37, -0.93 ), 170
 	}
@@ -181,14 +181,14 @@ articulatedFigure monster_uzigang {
 		anchor joint( "Lloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -104.8, 150.0, -34.8
+		limit 94.9, 150.0, 24.9
 	}
 
 	universalJoint "Lhip" {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.04, -0.19, -0.98 ), ( 0.04, 0.19, 0.98 )
+		shafts ( 0.11, 0.27, -0.96 ), ( -0.11, -0.27, 0.96 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_uzigang {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 22.5, 140.0, 87.5
+		limit 31.7, 140.0, 96.7
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_uzigang {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.14, 0.10, -0.98 ), ( 0.14, -0.10, 0.98 )
+		shafts ( 0.62, -0.03, -0.78 ), ( -0.62, 0.03, 0.78 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_uzigang {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 16.9, 140.0, 81.9
+		limit 63.3, 140.0, 128.3
 	}
 
 }

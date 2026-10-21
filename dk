@@ -437,7 +437,7 @@ cmd_rig() {
 	export ROOT DKRES $(compgen -v RIG_ANIMS_ || true)
 	printf '%s\n' "$list" | xargs -P "$JOBS" -L 1 bash -c '
 		if rig_model "$@" >"$DKRES/models/rigged/$1.log" 2>&1; then
-			printf "  %-16s %s\n" "$1" "$(grep -m1 "error:" "$DKRES/models/rigged/$1.log" | sed "s/^ *error: //")"
+			printf "  %-16s %s\n" "$1" "$(grep "error:" "$DKRES/models/rigged/$1.log" | tail -1 | sed "s/^ *error: //")"
 		else
 			printf "  %-16s FAILED (dkres/models/rigged/%s.log)\n" "$1" "$1"; exit 1
 		fi' rig || failed=1

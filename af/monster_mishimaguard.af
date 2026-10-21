@@ -19,8 +19,8 @@ articulatedFigure monster_mishimaguard {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.42, -4.55, -3.47 ), ( 3.42, 4.55, 3.47 ) )
-		origin ( -1.45, -3.47, 5.83 )
+		model box( ( -3.22, -1.47, -1.82 ), ( 3.22, 1.47, 1.82 ) )
+		origin ( -0.82, -3.48, 7.84 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +55,8 @@ articulatedFigure monster_mishimaguard {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( -2.21, -0.78, 23.01 ), ( -0.85, 1.68, 14.46 ), 10.20 )
-		origin ( -1.53, 0.45, 18.73 )
+		model bone( ( -2.21, -0.78, 23.01 ), ( -1.02, 1.67, 14.46 ), 11.34 )
+		origin ( -1.61, 0.44, 18.73 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure monster_mishimaguard {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -0.85, 1.68, 14.46 ), ( 1.30, 5.00, 18.07 ), 12.06 )
-		origin ( 0.23, 3.34, 16.27 )
+		model bone( ( -1.02, 1.67, 14.46 ), ( 0.33, 6.12, 16.35 ), 12.87 )
+		origin ( -0.35, 3.90, 15.40 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_mishimaguard {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -1.63, 4.33, 6.77 ), ( -3.95, 6.62, -11.49 ), 8.49 )
-		origin ( -2.79, 5.47, -2.36 )
+		model bone( ( -1.52, 0.45, 4.74 ), ( 0.64, 4.07, -8.85 ), 5.52 )
+		origin ( -0.44, 2.26, -2.06 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_mishimaguard {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -3.95, 6.62, -11.49 ), ( -0.83, 5.15, -22.30 ), 9.31 )
-		origin ( -2.39, 5.88, -16.89 )
+		model bone( ( 0.64, 4.07, -8.85 ), ( -0.99, 4.04, -22.30 ), 5.19 )
+		origin ( -0.18, 4.05, -15.57 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_mishimaguard {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -0.14, -0.75, -0.35 ), ( -0.84, -6.78, -9.10 ), 19.43 )
-		origin ( -0.49, -3.76, -4.72 )
+		model bone( ( -0.62, -4.56, 4.74 ), ( -2.57, -5.02, -6.28 ), 3.21 )
+		origin ( -1.59, -4.79, -0.77 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_mishimaguard {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( -0.84, -6.78, -9.10 ), ( -4.69, -5.34, -21.62 ), 4.03 )
-		origin ( -2.76, -6.06, -15.36 )
+		model bone( ( -2.57, -5.02, -6.28 ), ( -4.43, -5.59, -21.62 ), 5.05 )
+		origin ( -3.50, -5.31, -13.95 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -170,7 +170,7 @@ articulatedFigure monster_mishimaguard {
 		body1 "Luparm"
 		body2 "chest"
 		anchor joint( "Luparm" )
-		shafts ( 0.15, 0.27, -0.95 ), ( -0.15, -0.27, 0.95 )
+		shafts ( 0.13, 0.27, -0.95 ), ( -0.13, -0.27, 0.95 )
 		friction 0.20
 		coneLimit ( 0.00, 0.37, -0.93 ), 170
 	}
@@ -181,14 +181,14 @@ articulatedFigure monster_mishimaguard {
 		anchor joint( "Lloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 169.0, 150.0, 99.0
+		limit 167.9, 150.0, 97.9
 	}
 
 	universalJoint "Lhip" {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.13, 0.12, -0.98 ), ( 0.13, -0.12, 0.98 )
+		shafts ( 0.15, 0.25, -0.96 ), ( -0.15, -0.25, 0.96 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_mishimaguard {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 17.8, 140.0, 82.8
+		limit 34.0, 140.0, 99.0
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_mishimaguard {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.07, -0.57, -0.82 ), ( 0.07, 0.57, 0.82 )
+		shafts ( -0.17, -0.04, -0.98 ), ( 0.17, 0.04, 0.98 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_mishimaguard {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 20.4, 140.0, 85.4
+		limit 15.0, 140.0, 80.0
 	}
 
 }

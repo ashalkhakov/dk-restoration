@@ -2,7 +2,7 @@
 entityDef model_garroth {
 	"inherit"			"character_base"	// def/dk_characters.def
 	"mesh"				"models/rigged/gharroth.iqm"
-	"mins"				"-27 -27 -26"	// standing, at the origin (pmove's)
+	"mins"				"-27 -27 -25"	// standing, at the origin (pmove's)
 	"maxs"				"27 27 77"
 	"crouch_height"		"77"		// maxs z crouched
 	"eye_height"		"68"
@@ -26,28 +26,29 @@ entityDef model_garroth {
 	"frame walka 0"	"footstep Rankle_r 0.4"
 	"frame walka 10"	"footstep Lankle_r 0.4"
 
-	"anim_speed runa"	"75"
-	"anim_speed walka"	"32"
+	"anim_speed runa"	"76"
+	"anim_speed walka"	"33"
 
 
-	"hitbox Hips"	"-1.5 -8.0 -15.3 20.5 8.7 3.8 torso"
-	"hitbox Lupleg"	"-1.2 -6.6 -2.3 25.0 14.6 26.2 legs"
-	"hitbox Lloleg"	"2.1 -10.6 -2.6 18.0 2.5 8.8 legs"
-	"hitbox Lankle_r"	"0.9 -10.8 -7.4 11.7 4.9 5.0 legs"
-	"hitbox Rupleg"	"14.3 -15.0 -11.3 43.6 18.7 14.2 legs"
-	"hitbox Rloleg"	"2.6 1.6 -0.2 16.6 12.7 10.4 legs"
-	"hitbox Rankle_r"	"-1.7 -6.4 -8.3 10.7 9.2 5.2 legs"
-	"hitbox Waist"	"10.6 -3.6 -1.9 20.8 7.2 7.3 torso"
-	"hitbox Chest"	"-8.3 -7.6 -8.7 8.8 13.9 9.0 torso"
-	"hitbox Loneck"	"-6.7 -13.0 -0.6 3.9 10.4 12.9 head"
-	"hitbox Head"	"2.7 -0.7 20.0 9.8 4.8 40.9 head"
-	"hitbox Luparm"	"-2.2 -7.5 -2.3 8.8 10.7 4.2 arms"
-	"hitbox Lloarm"	"1.2 -9.1 -4.9 8.9 4.0 5.2 arms"
-	"hitbox Lhand"	"-0.4 -6.9 -2.6 8.9 4.3 4.8 arms"
-	"hitbox Ruparm"	"1.6 -3.7 -50.3 24.5 6.7 8.0 arms"
-	"hitbox Rloarm"	"-3.4 -6.6 -4.8 22.8 1.0 25.2 arms"
-	"hitbox Rhand"	"-9.4 -1.6 -5.4 8.3 6.3 4.8 arms"
-	"hitbox Hips_1"	"-3.5 -11.7 -6.2 4.5 -0.3 4.0 torso"
+	"hitbox Hips"	"-5.2 -7.9 -10.3 12.7 11.9 4.7 torso"
+	"hitbox Lupleg"	"1.8 -5.8 -4.6 31.2 9.8 5.0 legs"
+	"hitbox Lloleg"	"0.5 -5.9 -19.7 32.9 9.0 12.9 legs"
+	"hitbox Lankle_r"	"-6.6 -10.3 -17.2 1.6 3.3 -4.7 legs"
+	"hitbox Rupleg"	"3.4 -4.3 -8.1 20.7 17.3 4.4 legs"
+	"hitbox Rloleg"	"2.5 -3.4 -3.2 10.2 -2.3 7.7 legs"
+	"hitbox Rankle_r"	"-3.0 -6.6 -5.9 8.4 7.3 9.7 legs"
+	"hitbox Waist"	"10.6 -3.7 -1.4 20.7 7.1 8.6 torso"
+	"hitbox Chest"	"-7.8 -6.2 -2.0 10.0 10.5 10.3 torso"
+	"hitbox Loneck"	"-8.5 -12.2 -0.5 4.7 10.9 12.8 head"
+	"hitbox Head"	"4.2 -0.9 19.4 10.7 4.6 40.3 head"
+	"hitbox Luparm"	"-5.0 -8.4 -2.4 8.8 5.0 4.5 arms"
+	"hitbox Lloarm"	"0.4 -9.0 -3.9 9.5 3.9 5.3 arms"
+	"hitbox Lhand"	"-2.1 -2.9 -3.7 9.0 4.0 3.2 arms"
+	"hitbox Ruparm"	"1.4 -3.5 -49.0 27.8 6.7 8.0 arms"
+	"hitbox Rloarm"	"-2.4 -4.0 -4.2 19.9 2.1 22.9 arms"
+	"hitbox Rhand"	"-9.8 -0.7 -7.6 11.0 8.6 4.4 arms"
+	"hitbox Rankle_r_1"	"-18.8 -11.5 2.8 -6.0 2.1 14.9 legs"
+	"hitbox Luparm_1"	"22.9 -9.9 -23.6 45.1 26.7 -4.6 arms"
 
 	"damage_scale head"	"2"
 	"damage_scale arms"	"0.75"

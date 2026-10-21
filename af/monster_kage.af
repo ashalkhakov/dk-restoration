@@ -19,8 +19,8 @@ articulatedFigure monster_kage {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -5.94, -4.92, -6.24 ), ( 5.94, 4.92, 6.24 ) )
-		origin ( 8.62, 0.45, -1.49 )
+		model box( ( -4.48, -4.66, -4.32 ), ( 4.48, 4.66, 4.32 ) )
+		origin ( 6.90, 0.14, 0.77 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +31,8 @@ articulatedFigure monster_kage {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -9.84, -10.11, -11.92 ), ( 9.84, 10.11, 11.92 ) )
-		origin ( 2.66, 1.59, 7.41 )
+		model box( ( -9.39, -6.70, -10.35 ), ( 9.39, 6.70, 10.35 ) )
+		origin ( 2.12, 1.32, 9.18 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +43,8 @@ articulatedFigure monster_kage {
 	body "head" {
 		joint "Loneck"
 		mod orientation
-		model box( ( -8.45, -6.11, -7.13 ), ( 8.45, 6.11, 7.13 ) )
-		origin ( 1.24, -0.08, 24.30 )
+		model box( ( -7.24, -6.11, -5.74 ), ( 7.24, 6.11, 5.74 ) )
+		origin ( 2.66, -0.08, 25.93 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +55,8 @@ articulatedFigure monster_kage {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 9.60, 15.45, 20.02 ), ( 10.37, 20.89, 19.28 ), 8.57 )
-		origin ( 9.99, 18.17, 19.65 )
+		model bone( ( 10.76, 15.48, 20.41 ), ( 10.19, 30.08, 22.41 ), 24.68 )
+		origin ( 10.47, 22.78, 21.41 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure monster_kage {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 10.37, 20.89, 19.28 ), ( 9.64, 31.01, 23.26 ), 2.00 )
-		origin ( 10.01, 25.95, 21.27 )
+		model bone( ( 10.19, 30.08, 22.41 ), ( 8.93, 30.57, 23.83 ), 2.00 )
+		origin ( 9.56, 30.32, 23.12 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_kage {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 5.01, 3.70, 6.51 ), ( 2.13, 2.18, -12.36 ), 13.88 )
-		origin ( 3.57, 2.94, -2.93 )
+		model bone( ( 4.97, 3.89, 4.21 ), ( 10.59, 5.37, -8.07 ), 12.80 )
+		origin ( 7.78, 4.63, -1.93 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_kage {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 2.13, 2.18, -12.36 ), ( -6.45, 2.07, -22.42 ), 12.75 )
-		origin ( -2.16, 2.13, -17.39 )
+		model bone( ( 10.59, 5.37, -8.07 ), ( -8.24, 9.61, -22.42 ), 8.50 )
+		origin ( 1.18, 7.49, -15.24 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +115,8 @@ articulatedFigure monster_kage {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( 9.28, -22.91, 11.62 ), ( 11.05, -8.42, -11.55 ), 15.98 )
-		origin ( 10.16, -15.66, 0.04 )
+		model bone( ( 9.28, -22.91, 11.62 ), ( 9.28, -22.91, -3.96 ), 21.19 )
+		origin ( 9.28, -22.91, 3.83 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_kage {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 14.91, -7.44, 5.05 ), ( 11.19, -8.27, -12.36 ), 14.07 )
-		origin ( 13.05, -7.85, -3.65 )
+		model bone( ( 12.02, -4.97, 4.21 ), ( 16.39, -6.25, -10.26 ), 14.65 )
+		origin ( 14.21, -5.61, -3.03 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_kage {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 11.19, -8.27, -12.36 ), ( 17.09, -5.77, -22.05 ), 10.68 )
-		origin ( 14.14, -7.02, -17.20 )
+		model bone( ( 16.39, -6.25, -10.26 ), ( -0.48, -7.71, -23.44 ), 18.87 )
+		origin ( 7.95, -6.98, -16.85 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -170,7 +170,7 @@ articulatedFigure monster_kage {
 		body1 "Luparm"
 		body2 "chest"
 		anchor joint( "Luparm" )
-		shafts ( 0.14, 0.98, -0.13 ), ( -0.14, -0.98, 0.13 )
+		shafts ( -0.04, 0.99, 0.14 ), ( 0.04, -0.99, -0.14 )
 		friction 0.20
 		coneLimit ( 0.00, 0.37, -0.93 ), 170
 	}
@@ -181,14 +181,14 @@ articulatedFigure monster_kage {
 		anchor joint( "Lloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -153.6, 150.0, 136.4
+		limit -144.0, 150.0, -74.0
 	}
 
 	universalJoint "Lhip" {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.15, -0.08, -0.99 ), ( 0.15, 0.08, 0.99 )
+		shafts ( 0.41, 0.11, -0.90 ), ( -0.41, -0.11, 0.90 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_kage {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 16.3, 140.0, 81.3
+		limit 49.6, 140.0, 114.6
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_kage {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.21, -0.05, -0.98 ), ( 0.21, 0.05, 0.98 )
+		shafts ( 0.29, -0.08, -0.95 ), ( -0.29, 0.08, 0.95 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_kage {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 12.9, 140.0, 77.9
+		limit 41.8, 140.0, 106.8
 	}
 
 }

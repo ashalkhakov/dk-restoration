@@ -13,8 +13,9 @@ rigged so, one skeletal model each that does everything, in game and in the cine
 ./dk rigshots kage harpy # them in e1m1a, three to a screenshot (out/shots/rig/)
 ```
 
-A character takes about 10 to 20 seconds in plain Python (numpy isn't needed); the batch of 97 models about two and a
-half minutes, 12 at a time.
+A character takes about 10 to 20 seconds in plain Python (numpy isn't needed), a humanoid more than twice that (it's
+rigged with its legs placed and fitted, then again the better way); the batch of 97 models about four minutes, 12 at
+a time.
 
 ## How it works
 
@@ -31,6 +32,20 @@ implements.
      without a vertex there)
    - the shoulders, from the body's width there
    - the hands, at the arms' outermost points (the right one at the gun hardpoint)
+   - the legs, along each leg's own line: a character's first frame is often a stance, not an A- or T-pose (Hiro's:
+     legs apart, one forward and both bent), so a leg's joints aren't at heights. The hips level with the pelvis, in
+     toward the feet as Doom 3's legs splay (half as far out as the ankles), not by the side's vertexes at the
+     crotch's height, where the hanging hands are (the fat worker's hip was in his hand, and the walk IK dragged his
+     body out). Each knee where its leg bends, 30% to 60% of the way down: the slabs of the leg that stand farthest
+     forward of the line from hip to ankle (the kneecap; lower, a coat's hem or a boot's top stands out), and there
+     the middle of the leg's outline where the mesh is cut, not the cap. Each ankle on its shin's line: the middles of
+     the shin's outline higher up, clear of the foot, carried down to the ankle's height (a low-poly shin has hardly a
+     vertex between the ankle and the knee, and a slanted shin over the foot is behind its ankle). The motion then
+     leaves them there. Where the animations do bend the knees (the skinny worker's), the motion knows them better:
+     every humanoid is rigged both ways, its legs placed so and as the motion fits them (the rigger as it was), and
+     keeps the one that carries Daikatana's frames better (`legs placed` or `legs fitted` in its log). 31 of the 59
+     keep the placed legs, Hiro, Mikiko and Superfly among them; none fits worse than before, and on average they fit
+     0.38 units off, 0.47 before.
 2. **Segments.** Each vertex starts on the nearest bone. Each bone's rigid motion is then fitted to every frame (Horn's
    quaternion method), and each vertex moves to the neighbouring bone whose motion carries it best. A term for nearness
    keeps parts that move together (chest and neck) from trading vertices at random. A vertex its bone carries badly
@@ -77,9 +92,9 @@ surface gets a triangle wound like its neighbours.
 
 | Character | Vertexes | Frames | Animations | Average error | Worst vertex | Height |
 | --- | --- | --- | --- | --- | --- | --- |
-| Hiro | 726 | 1394 | 82 | 0.19 | 9 | 54 |
-| Mikiko | 637 | 1259 | 78 | 0.25 | 8 | 58 |
-| Superfly | 709 | 1263 | 77 | 0.36 | 9 | 54 |
+| Hiro | 726 | 1394 | 82 | 0.18 | 8 | 54 |
+| Mikiko | 637 | 1259 | 78 | 0.19 | 8 | 58 |
+| Superfly | 709 | 1263 | 77 | 0.38 | 10 | 54 |
 
 The error is how far each skinned vertex lands from Daikatana's, over all frames. In game the rigged and original models
 look the same frame for frame (`cg_drawSkeleton 1` shows the joints, 2 without the mesh; `def/char_hiro_md3.def` plays
@@ -160,21 +175,21 @@ The error is how far the skinned vertexes land from Daikatana's over every frame
 
 | Model | Rigger | From | Vertexes | Frames | Animations | Joints | Average error | Worst | Size | Extra bones, hardpoints |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| hiro | player | global/m_hiro | 726 | 1394 | 82 | 24 | 0.192 | 8.67 | 54 | WEAPON_ATTACHER on Rhand, FLAG_ATTACHER on Chest |
-| mikiko | player | global/m_mikiko | 637 | 1259 | 78 | 23 | 0.254 | 8.00 | 58 | WEAPON_ATTACHER on Rhand, FLAG_ATTACHER on Chest |
-| superfly | player | global/m_superfly | 709 | 1263 | 77 | 21 | 0.363 | 8.58 | 54 | FLAG_ATTACHER on Chest, WEAPON_ATTACHER on Rhand |
-| dead | lying | e1/m_dead | 239 | 10 | 1 | 19 | 0.478 | 15.58 | 60 |  |
-| fatworker | human | e1/m_mwfaty | 449 | 793 | 36 | 21 | 0.323 | 8.28 | 53 | 2 extra |
+| hiro | player | global/m_hiro | 726 | 1394 | 82 | 24 | 0.182 | 8.46 | 54 | WEAPON_ATTACHER on Rhand, FLAG_ATTACHER on Chest |
+| mikiko | player | global/m_mikiko | 637 | 1259 | 78 | 23 | 0.192 | 7.67 | 58 | WEAPON_ATTACHER on Rhand, FLAG_ATTACHER on Chest |
+| superfly | player | global/m_superfly | 709 | 1263 | 77 | 21 | 0.376 | 9.86 | 54 | FLAG_ATTACHER on Chest, WEAPON_ATTACHER on Rhand |
+| dead | lying | e1/m_dead | 239 | 10 | 1 | 19 | 0.664 | 23.39 | 60 |  |
+| fatworker | human | e1/m_mwfaty | 449 | 793 | 36 | 19 | 0.330 | 7.60 | 53 | 2 extra |
 | skinnyworker | human | e1/m_mwskny | 473 | 1123 | 73 | 23 | 0.250 | 7.74 | 57 | 4 extra |
-| surgeon | human | e1/m_mwsurgeon | 372 | 646 | 44 | 20 | 0.269 | 8.58 | 57 | 1 extra |
-| labworker | human | e1/m_labworker | 603 | 231 | 11 | 22 | 0.279 | 7.68 | 61 | 3 extra |
-| mishimaguard | human | e1/m_mwguard | 431 | 374 | 33 | 24 | 0.203 | 7.11 | 57 | 3 extra; hp_head on Loneck, hr_muzzle on Waist |
-| cryotech | human | e1/m_cryotech | 688 | 539 | 30 | 28 | 0.404 | 71.15 | 60 | 8 extra; hr_muzzle on Lupleg_2 |
-| prisoner | human | e1/m_priza | 503 | 280 | 14 | 27 | 0.248 | 11.27 | 61 | 8 extra |
-| prisonerb | human | e1/m_prizb | 523 | 296 | 19 | 19 | 0.203 | 4.88 | 59 |  |
-| torture1 | human | e1/m_torture1 | 241 | 81 | 4 | 19 | 0.355 | 5.15 | 59 |  |
-| torture2 | human | e1/m_torture2 | 298 | 29 | 1 | 21 | 0.456 | 7.74 | 58 | 1 extra; trans66 on Lloleg |
-| inmater | human | e1/m_inmater | 803 | 231 | 10 | 28 | 0.176 | 10.08 | 86 | 8 extra; hr_muzzle on Lhand |
+| surgeon | human | e1/m_mwsurgeon | 372 | 646 | 44 | 20 | 0.280 | 8.58 | 57 | 1 extra |
+| labworker | human | e1/m_labworker | 603 | 231 | 11 | 22 | 0.285 | 7.68 | 61 | 3 extra |
+| mishimaguard | human | e1/m_mwguard | 431 | 374 | 33 | 23 | 0.222 | 6.11 | 57 | 3 extra; hp_head on Loneck, hr_muzzle on Waist |
+| cryotech | human | e1/m_cryotech | 688 | 539 | 30 | 28 | 0.411 | 47.63 | 60 | 8 extra; hr_muzzle on Rupleg_2 |
+| prisoner | human | e1/m_priza | 503 | 280 | 14 | 27 | 0.253 | 11.27 | 61 | 8 extra |
+| prisonerb | human | e1/m_prizb | 523 | 296 | 19 | 19 | 0.205 | 4.88 | 59 | 2 extra |
+| torture1 | human | e1/m_torture1 | 241 | 81 | 4 | 19 | 0.363 | 5.15 | 59 |  |
+| torture2 | human | e1/m_torture2 | 298 | 29 | 1 | 21 | 0.460 | 7.74 | 58 | 1 extra; trans66 on Lloleg |
+| inmater | human | e1/m_inmater | 803 | 231 | 10 | 28 | 0.201 | 9.38 | 86 | 8 extra; hr_muzzle on Lhand |
 | froginator | creature | e1/m_frog | 465 | 190 | 11 | 17 | 0.223 | 35.60 | 31 | Head |
 | slaughterskeet | creature | e1/m_skeeter | 334 | 170 | 8 | 7 | 0.333 | 8.14 | 45 | Head |
 | thunderskeet | creature | e1/m_tskeet | 485 | 102 | 6 | 11 | 1.414 | 25.08 | 277 | Head |
@@ -190,52 +205,52 @@ The error is how far the skinned vertexes land from Daikatana's over every frame
 | lasergat | creature | e1/m_lasergat | 432 | 19 | 5 | 18 | 0.003 | 0.02 | 24 | hr_muzzle1 on Lwingb3b, hr_muzzle2 on Head; Head |
 | trackattack | creature | e1/m_trakatak | 393 | 6 | 1 | 12 | 0.004 | 0.04 | 33 | hr_muzzle1 on Headb1, hr_muzzle2 on Body; Head |
 | rockgat | creature | e1/m_gatguns | 164 | 12 | 2 | 10 | 0.020 | 0.17 | 53 | Head |
-| centurion | human | e2/m_centurion | 535 | 172 | 9 | 24 | 0.756 | 27.44 | 76 | 5 extra |
-| satyr | human | e2/m_satyr | 503 | 291 | 11 | 24 | 0.296 | 6.60 | 59 | 5 extra |
-| skeleton | human | e2/m_skeleton | 311 | 319 | 18 | 19 | 0.404 | 41.57 | 54 |  |
-| thief | human | e2/m_thief | 445 | 246 | 10 | 25 | 0.236 | 11.29 | 34 | 6 extra |
-| ferryman | human | e2/m_ferryman | 452 | 256 | 11 | 19 | 0.160 | 7.83 | 63 |  |
-| harpy | human | e2/m_harpy | 559 | 342 | 13 | 25 | 0.562 | 27.42 | 52 | 6 extra |
-| cyclops | human | e2/m_cyclops | 472 | 305 | 11 | 23 | 0.481 | 10.84 | 79 | 4 extra |
-| minotaur | human | e2/m_minotaur | 2538 | 183 | 6 | 27 | 0.649 | 11.34 | 95 | 8 extra |
-| kingminos | human | e2/m_kminos | 265 | 210 | 7 | 20 | 0.235 | 9.58 | 48 | 1 extra |
+| centurion | human | e2/m_centurion | 535 | 172 | 9 | 24 | 0.760 | 27.44 | 76 | 5 extra |
+| satyr | human | e2/m_satyr | 503 | 291 | 11 | 24 | 0.312 | 8.71 | 59 | 5 extra |
+| skeleton | human | e2/m_skeleton | 311 | 319 | 18 | 21 | 0.471 | 53.33 | 54 | 2 extra |
+| thief | human | e2/m_thief | 445 | 246 | 10 | 25 | 0.238 | 11.29 | 34 | 6 extra |
+| ferryman | human | e2/m_ferryman | 452 | 256 | 11 | 19 | 0.233 | 19.05 | 63 |  |
+| harpy | human | e2/m_harpy | 559 | 342 | 13 | 24 | 0.578 | 27.42 | 52 | 6 extra |
+| cyclops | human | e2/m_cyclops | 472 | 305 | 11 | 20 | 0.701 | 62.25 | 79 | 4 extra |
+| minotaur | human | e2/m_minotaur | 2538 | 183 | 6 | 27 | 0.654 | 83.78 | 95 | 8 extra |
+| kingminos | human | e2/m_kminos | 265 | 210 | 7 | 20 | 0.256 | 8.52 | 48 | 1 extra |
 | column | creature | e2/m_column | 487 | 216 | 11 | 15 | 0.373 | 10.42 | 79 | Head |
 | medusa | creature | e2/m_medusa | 603 | 251 | 10 | 20 | 0.854 | 21.31 | 192 | eye2 on Head4, eye1 on Head4; Head |
 | cerberus | creature | e2/m_cerberus | 575 | 196 | 10 | 20 | 0.464 | 10.25 | 76 | Head |
 | griffon | creature | e2/m_griffon | 530 | 333 | 16 | 16 | 1.154 | 61.21 | 173 | Head |
 | spider | creature | e2/m_spider | 412 | 149 | 8 | 20 | 0.806 | 17.41 | 114 | Head |
 | smallspider | creature | e2/m_sspid | 538 | 177 | 9 | 22 | 0.831 | 15.17 | 114 | Head |
-| buboid | human | e3/m_buboid | 524 | 361 | 13 | 19 | 0.266 | 7.69 | 50 |  |
-| priest | human | cinematic/c_priest_e3m1 | 443 | 320 | 13 | 19 | 0.117 | 5.08 | 57 |  |
-| dwarf | human | e3/m_dwarf | 525 | 292 | 12 | 27 | 0.244 | 12.43 | 43 | 8 extra |
-| fletcher | human | e3/m_fletcher | 595 | 279 | 10 | 20 | 0.273 | 49.70 | 72 | 1 extra |
-| lycanthir | human | e3/m_lycanthir | 478 | 341 | 15 | 19 | 0.625 | 51.98 | 54 |  |
-| knight1 | human | e3/m_knight1 | 524 | 285 | 10 | 21 | 0.284 | 13.26 | 54 | hr_muzzle1 on Rhand, hr_muzzle2 on Rhand |
-| knight2 | human | e3/m_knight2 | 448 | 245 | 10 | 21 | 0.250 | 11.16 | 63 | hr_muzzle1 on Rloarm, hr_muzzle2 on Rloarm |
-| garroth | human | e3/m_gharroth | 549 | 254 | 11 | 20 | 0.661 | 32.77 | 101 | 1 extra |
-| nharre | human | e3/m_nharre | 661 | 242 | 8 | 27 | 0.347 | 20.80 | 56 | 8 extra |
-| stavros | human | e3/m_stavros | 607 | 136 | 5 | 24 | 0.463 | 15.24 | 64 | 5 extra |
-| wyndrax | human | e3/m_wyndrax | 839 | 294 | 15 | 27 | 0.411 | 43.21 | 59 | 8 extra |
-| wizard | human | e3/m_wizard | 510 | 325 | 13 | 21 | 0.690 | 21.76 | 86 | 2 extra |
+| buboid | human | e3/m_buboid | 524 | 361 | 13 | 19 | 0.342 | 64.57 | 50 |  |
+| priest | human | cinematic/c_priest_e3m1 | 443 | 320 | 13 | 19 | 0.123 | 5.08 | 57 |  |
+| dwarf | human | e3/m_dwarf | 525 | 292 | 12 | 27 | 0.279 | 14.28 | 43 | 8 extra |
+| fletcher | human | e3/m_fletcher | 595 | 279 | 10 | 19 | 0.312 | 15.72 | 72 | 1 extra |
+| lycanthir | human | e3/m_lycanthir | 478 | 341 | 15 | 20 | 0.443 | 13.74 | 54 | 1 extra |
+| knight1 | human | e3/m_knight1 | 524 | 285 | 10 | 21 | 0.272 | 13.26 | 54 | hr_muzzle1 on Rhand, hr_muzzle2 on Rhand |
+| knight2 | human | e3/m_knight2 | 448 | 245 | 10 | 21 | 0.229 | 11.27 | 63 | hr_muzzle1 on Rloarm, hr_muzzle2 on Rloarm |
+| garroth | human | e3/m_gharroth | 549 | 254 | 11 | 21 | 0.991 | 51.73 | 101 | 1 extra |
+| nharre | human | e3/m_nharre | 661 | 242 | 8 | 27 | 0.357 | 20.80 | 56 | 8 extra |
+| stavros | human | e3/m_stavros | 607 | 136 | 5 | 24 | 0.478 | 15.24 | 64 | 5 extra |
+| wyndrax | human | e3/m_wyndrax | 839 | 294 | 15 | 27 | 0.446 | 43.21 | 59 | 8 extra |
+| wizard | human | e3/m_wizard | 510 | 325 | 13 | 21 | 1.067 | 85.10 | 86 | 2 extra |
 | togadude | human | e3/m_toga_dude | 378 | 1 | 1 | 19 | 0.000 | 0.00 | 38 |  |
 | togagirl | human | e3/m_toga_girl | 422 | 1 | 1 | 19 | 0.000 | 0.00 | 54 |  |
 | plague_rat | creature | e3/m_prat | 284 | 238 | 13 | 15 | 0.319 | 4.63 | 55 |  |
 | rotworm | creature | e3/m_rotworm | 258 | 151 | 8 | 13 | 0.254 | 4.17 | 30 | Head |
 | doombat | creature | e3/m_doombat | 384 | 80 | 6 | 17 | 0.635 | 10.99 | 48 | Head |
 | dragon | creature | e3/m_dragon | 1265 | 164 | 6 | 25 | 3.188 | 54.13 | 527 | hr_muzzle on Head2; Head |
-| blackprisoner | human | e4/m_bpris | 441 | 439 | 15 | 19 | 0.525 | 9.53 | 70 |  |
-| whiteprisoner | human | e4/m_wpris | 437 | 391 | 13 | 19 | 0.510 | 9.53 | 70 |  |
-| chaingang | human | e4/m_chgang | 564 | 525 | 24 | 21 | 0.431 | 13.91 | 63 | 1 extra; hr_muzzle on Rupleg |
-| femgang | human | e4/m_femgang | 539 | 211 | 10 | 21 | 0.154 | 4.14 | 54 | 2 extra |
-| rocketdude | human | e4/m_rockgang | 524 | 300 | 11 | 22 | 0.298 | 12.19 | 65 | 2 extra; hr_muzzle on Rhand_1 |
-| uzigang | human | e4/m_uzi | 553 | 245 | 11 | 19 | 0.228 | 8.26 | 58 |  |
-| rocketmp | human | e4/m_rocketmp | 525 | 192 | 9 | 23 | 0.152 | 5.14 | 62 | 2 extra; hr_muzzle1 on Loneck, hr_muzzle2 on Loneck |
-| sealcommando | human | e4/m_scomndo | 588 | 265 | 10 | 21 | 0.217 | 4.80 | 58 | hr_muzzle1 on Rhand, hr_muzzle2 on Lloarm |
-| sealcaptain | human | e4/m_sealcap | 700 | 250 | 10 | 20 | 0.239 | 8.07 | 63 | hr_muzzle1 on Lhand |
-| sealgirl | human | e4/m_sgirl | 481 | 263 | 10 | 20 | 0.358 | 12.06 | 53 | hr_muzzle1 on Lloarm |
-| sealdiver | human | e4/m_sdiver | 588 | 244 | 11 | 20 | 0.167 | 8.05 | 53 | 1 extra |
-| labmonkey | human | e4/m_labmonkey | 473 | 386 | 16 | 23 | 0.430 | 14.38 | 39 | 4 extra |
-| kage | human | e4/m_kage | 845 | 347 | 16 | 31 | 0.492 | 37.96 | 58 | 8 extra; sword1 on Rupleg, sword2 on Lloarm, eye1 on Loneck, eye2 on Loneck |
+| blackprisoner | human | e4/m_bpris | 441 | 439 | 15 | 22 | 0.407 | 5.36 | 70 | 3 extra |
+| whiteprisoner | human | e4/m_wpris | 437 | 391 | 13 | 19 | 0.487 | 5.47 | 70 |  |
+| chaingang | human | e4/m_chgang | 564 | 525 | 24 | 24 | 0.392 | 16.20 | 63 | 1 extra; hr_muzzle on Rupleg |
+| femgang | human | e4/m_femgang | 539 | 211 | 10 | 19 | 0.141 | 4.00 | 54 | 2 extra |
+| rocketdude | human | e4/m_rockgang | 524 | 300 | 11 | 22 | 0.364 | 24.09 | 65 | 2 extra; hr_muzzle on Rhand_1 |
+| uzigang | human | e4/m_uzi | 553 | 245 | 11 | 21 | 0.303 | 8.66 | 58 | 2 extra |
+| rocketmp | human | e4/m_rocketmp | 525 | 192 | 9 | 21 | 0.573 | 32.90 | 62 | 2 extra; hr_muzzle1 on Loneck, hr_muzzle2 on Loneck |
+| sealcommando | human | e4/m_scomndo | 588 | 265 | 10 | 21 | 0.216 | 4.73 | 58 | hr_muzzle1 on Rloarm, hr_muzzle2 on Lloarm |
+| sealcaptain | human | e4/m_sealcap | 700 | 250 | 10 | 20 | 0.246 | 8.07 | 63 | 1 extra; hr_muzzle1 on Lhand |
+| sealgirl | human | e4/m_sgirl | 481 | 263 | 10 | 20 | 0.654 | 50.82 | 53 | hr_muzzle1 on Lloarm |
+| sealdiver | human | e4/m_sdiver | 588 | 244 | 11 | 20 | 0.254 | 29.97 | 53 | 1 extra |
+| labmonkey | human | e4/m_labmonkey | 473 | 386 | 16 | 23 | 0.482 | 23.22 | 39 | 4 extra |
+| kage | human | e4/m_kage | 845 | 347 | 16 | 31 | 0.480 | 35.74 | 58 | 8 extra; sword1 on Rupleg, sword2 on Lloarm, eye1 on Loneck, eye2 on Loneck |
 | drugdealer | human | e4/m_drug | 369 | 1 | 1 | 19 | 0.000 | 0.00 | 56 |  |
 | alien | creature | e4/m_alien | 429 | 114 | 6 | 10 | 0.547 | 12.03 | 88 | Head |
 | piperat | creature | e4/m_piperat | 287 | 238 | 13 | 13 | 0.346 | 4.63 | 55 |  |
@@ -247,16 +262,16 @@ The error is how far the skinned vertexes land from Daikatana's over every frame
 | guppy2 | creature | global/e_guppy2 | 13 | 41 | 3 | 2 | 0.294 | 2.36 | 9 |  |
 | seagull | creature | e4/d4_gull | 67 | 80 | 2 | 4 | 0.764 | 8.60 | 51 |  |
 | dopefish | creature | global/dopefish | 245 | 74 | 7 | 13 | 0.238 | 3.71 | 45 | Head |
-| mikikomonster | human | global/m_smikiko | 694 | 154 | 8 | 25 | 0.252 | 6.79 | 58 | eye2 on Head, eye1 on Head, sword1 on Rloarm, sword2 on Loneck |
+| mikikomonster | human | global/m_smikiko | 694 | 154 | 8 | 25 | 0.246 | 6.79 | 58 | eye2 on Head, eye1 on Head, sword1 on Rloarm, sword2 on Loneck |
 | mikikofly | creature | global/m_mikikofly | 1349 | 241 | 12 | 27 | 0.249 | 19.75 | 54 | hp_gun on Headb4, ctf_flag on Headb3, hp_gun2 on Headb3c, ctf_flag2 on Headb1; Head |
-| casseti | human | cinematic/c_casseti_e4m1 | 458 | 271 | 8 | 23 | 0.205 | 6.74 | 58 | 4 extra |
-| gusagi | human | cinematic/c_gusagi_e2m3 | 551 | 643 | 24 | 21 | 0.625 | 27.35 | 47 | 2 extra |
-| usagi | human | cinematic/c_usagi_intr | 554 | 550 | 23 | 21 | 0.796 | 27.35 | 47 | 2 extra |
-| inshiro | human | cinematic/c_inshiro_intr | 634 | 297 | 10 | 19 | 0.737 | 23.61 | 50 |  |
-| ninja | human | cinematic/c_ninja_intr | 345 | 248 | 14 | 20 | 0.763 | 27.31 | 41 | 1 extra |
-| osaka | human | cinematic/c_osaka_intr | 523 | 140 | 6 | 19 | 0.107 | 3.36 | 58 |  |
-| tatsuo | human | cinematic/c_tatsuo_e4m4 | 638 | 338 | 11 | 19 | 0.185 | 49.49 | 61 |  |
-| toshiro | lying | cinematic/c_tosh_intr | 366 | 515 | 24 | 19 | 0.562 | 25.78 | 47 |  |
+| casseti | human | cinematic/c_casseti_e4m1 | 458 | 271 | 8 | 23 | 0.217 | 7.05 | 58 | 4 extra |
+| gusagi | human | cinematic/c_gusagi_e2m3 | 551 | 643 | 24 | 20 | 0.828 | 27.35 | 47 | 2 extra |
+| usagi | human | cinematic/c_usagi_intr | 554 | 550 | 23 | 20 | 0.967 | 30.23 | 47 | 2 extra |
+| inshiro | human | cinematic/c_inshiro_intr | 634 | 297 | 10 | 19 | 0.749 | 23.61 | 50 |  |
+| ninja | human | cinematic/c_ninja_intr | 345 | 248 | 14 | 24 | 0.712 | 27.31 | 41 | 1 extra |
+| osaka | human | cinematic/c_osaka_intr | 523 | 140 | 6 | 19 | 0.108 | 3.36 | 58 |  |
+| tatsuo | human | cinematic/c_tatsuo_e4m4 | 638 | 338 | 11 | 19 | 0.186 | 49.49 | 61 |  |
+| toshiro | lying | cinematic/c_tosh_intr | 366 | 515 | 24 | 19 | 1.139 | 42.78 | 47 |  |
 
 The one-frame models (the toga people in e3, the drug dealer) have no motion to fit: their joints are the template's
 placed in the mesh, each vertex on the nearest bone, so they can be posed and go limp but their error says nothing.

@@ -19,8 +19,8 @@ articulatedFigure monster_sealcommando {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.39, -3.23, -2.59 ), ( 3.39, 3.23, 2.59 ) )
-		origin ( 0.90, 4.91, 3.06 )
+		model box( ( -3.39, -5.54, -3.01 ), ( 3.39, 5.54, 3.01 ) )
+		origin ( 0.90, 2.63, 3.61 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +55,8 @@ articulatedFigure monster_sealcommando {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 1.67, 11.85, 22.93 ), ( 2.74, 17.48, 14.77 ), 5.81 )
-		origin ( 2.20, 14.67, 18.85 )
+		model bone( ( 1.67, 11.84, 22.94 ), ( 2.74, 17.48, 14.77 ), 5.79 )
+		origin ( 2.20, 14.66, 18.86 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_sealcommando {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 3.31, 9.12, 2.44 ), ( -1.08, 16.09, -10.33 ), 6.95 )
-		origin ( 1.11, 12.61, -3.95 )
+		model bone( ( 1.46, 11.74, 3.87 ), ( -0.01, 15.89, -7.54 ), 8.70 )
+		origin ( 0.72, 13.81, -1.83 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_sealcommando {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -1.08, 16.09, -10.33 ), ( 0.93, 18.98, -21.97 ), 8.27 )
-		origin ( -0.08, 17.54, -16.15 )
+		model bone( ( -0.01, 15.89, -7.54 ), ( -1.76, 19.44, -22.00 ), 7.39 )
+		origin ( -0.89, 17.66, -14.77 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -103,8 +103,8 @@ articulatedFigure monster_sealcommando {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( -4.78, -0.54, 22.82 ), ( -7.39, -3.28, 13.00 ), 5.67 )
-		origin ( -6.09, -1.91, 17.91 )
+		model bone( ( -4.78, -0.53, 22.80 ), ( -7.24, -2.88, 13.37 ), 5.53 )
+		origin ( -6.01, -1.71, 18.08 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +115,8 @@ articulatedFigure monster_sealcommando {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -7.39, -3.28, 13.00 ), ( -6.53, -7.15, 3.86 ), 10.11 )
-		origin ( -6.96, -5.22, 8.43 )
+		model bone( ( -7.24, -2.88, 13.37 ), ( -4.37, -8.27, 2.43 ), 7.44 )
+		origin ( -5.81, -5.57, 7.90 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_sealcommando {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -0.40, 0.33, -0.38 ), ( -2.74, -4.54, -13.59 ), 6.76 )
-		origin ( -1.57, -2.10, -6.98 )
+		model bone( ( -1.21, -1.81, 3.87 ), ( -0.72, -5.05, -6.58 ), 6.63 )
+		origin ( -0.96, -3.43, -1.36 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_sealcommando {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( -2.74, -4.54, -13.59 ), ( 1.46, -10.31, -21.83 ), 9.41 )
-		origin ( -0.64, -7.42, -17.71 )
+		model bone( ( -0.72, -5.05, -6.58 ), ( -1.09, -9.01, -21.92 ), 7.07 )
+		origin ( -0.91, -7.03, -14.25 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -188,7 +188,7 @@ articulatedFigure monster_sealcommando {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.29, 0.46, -0.84 ), ( 0.29, -0.46, 0.84 )
+		shafts ( -0.12, 0.34, -0.93 ), ( 0.12, -0.34, 0.93 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,14 +199,14 @@ articulatedFigure monster_sealcommando {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 6.0, 140.0, 71.0
+		limit 17.7, 140.0, 82.7
 	}
 
 	universalJoint "Rshoulder" {
 		body1 "Ruparm"
 		body2 "chest"
 		anchor joint( "Ruparm" )
-		shafts ( -0.25, -0.26, -0.93 ), ( 0.25, 0.26, 0.93 )
+		shafts ( -0.25, -0.23, -0.94 ), ( 0.25, 0.23, 0.94 )
 		friction 0.20
 		coneLimit ( 0.00, -0.37, -0.93 ), 170
 	}
@@ -217,14 +217,14 @@ articulatedFigure monster_sealcommando {
 		anchor joint( "Rloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 145.1, 150.0, 75.1
+		limit 145.4, 150.0, 75.4
 	}
 
 	universalJoint "Rhip" {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.16, -0.34, -0.93 ), ( 0.16, 0.34, 0.93 )
+		shafts ( 0.05, -0.30, -0.95 ), ( -0.05, 0.30, 0.95 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_sealcommando {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 14.9, 140.0, 79.9
+		limit 27.7, 140.0, 92.7
 	}
 
 }

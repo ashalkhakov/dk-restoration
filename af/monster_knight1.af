@@ -19,8 +19,8 @@ articulatedFigure monster_knight1 {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.65, -5.19, -3.70 ), ( 3.65, 5.19, 3.70 ) )
-		origin ( 3.47, 3.21, 3.45 )
+		model box( ( -3.65, -2.00, -3.63 ), ( 3.65, 2.00, 3.63 ) )
+		origin ( 3.47, 2.34, 3.52 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +31,8 @@ articulatedFigure monster_knight1 {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -4.48, -4.36, -6.12 ), ( 4.48, 4.36, 6.12 ) )
-		origin ( 3.59, 1.61, 14.95 )
+		model box( ( -4.48, -4.18, -6.10 ), ( 4.48, 4.18, 6.10 ) )
+		origin ( 3.59, 1.51, 14.97 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure monster_knight1 {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( 3.62, 10.56, 14.69 ), ( 3.42, 12.04, -0.23 ), 6.08 )
-		origin ( 3.52, 11.30, 7.23 )
+		model bone( ( 3.62, 10.56, 14.69 ), ( 2.99, 10.99, -0.15 ), 5.96 )
+		origin ( 3.30, 10.78, 7.27 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_knight1 {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( 3.13, 4.34, 3.34 ), ( 2.47, 6.70, -8.42 ), 6.28 )
-		origin ( 2.80, 5.52, -2.54 )
+		model bone( ( 2.67, 5.14, 5.58 ), ( 2.49, 7.13, -8.02 ), 5.77 )
+		origin ( 2.58, 6.14, -1.22 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_knight1 {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 2.47, 6.70, -8.42 ), ( -0.23, 8.96, -22.11 ), 6.09 )
-		origin ( 1.12, 7.83, -15.26 )
+		model bone( ( 2.49, 7.13, -8.02 ), ( -0.03, 8.95, -22.11 ), 5.99 )
+		origin ( 1.23, 8.04, -15.07 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_knight1 {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 3.10, -1.62, 4.07 ), ( 4.66, -4.41, -8.21 ), 5.55 )
-		origin ( 3.88, -3.02, -2.07 )
+		model bone( ( 2.95, -2.11, 5.58 ), ( 7.08, -3.65, -5.87 ), 7.46 )
+		origin ( 5.02, -2.88, -0.14 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_knight1 {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 4.66, -4.41, -8.21 ), ( 5.28, -6.17, -22.19 ), 6.97 )
-		origin ( 4.97, -5.29, -15.20 )
+		model bone( ( 7.08, -3.65, -5.87 ), ( 12.55, -5.54, -22.19 ), 10.87 )
+		origin ( 9.82, -4.59, -14.03 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -188,7 +188,7 @@ articulatedFigure monster_knight1 {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.06, 0.20, -0.98 ), ( 0.06, -0.20, 0.98 )
+		shafts ( -0.01, 0.15, -0.99 ), ( 0.01, -0.15, 0.99 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_knight1 {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 21.8, 140.0, 86.8
+		limit 24.2, 140.0, 89.2
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_knight1 {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( 0.12, -0.22, -0.97 ), ( -0.12, 0.22, 0.97 )
+		shafts ( 0.34, -0.13, -0.93 ), ( -0.34, 0.13, 0.93 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_knight1 {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 32.2, 140.0, 97.2
+		limit 44.9, 140.0, 109.9
 	}
 
 }

@@ -393,7 +393,55 @@ def place_template( rest, tris, headVerts, gunHand = None, headPoint = None ):
 
 	def mean( vs ):
 		return vscale( ( sum( v[0] for v in vs ), sum( v[1] for v in vs ), sum( v[2] for v in vs ) ), 1.0 / len( vs ) )
+	def section_middle( side, z, near = None ):
+		"""the middle of the side's outline where the mesh is cut at the
+		height (each piece of it by its length), near a place if given; None
+		if nothing's there"""
+		sx = sy = sl = 0.0
+		for t in tris:
+			pts = []
+			for a_, b_ in ( ( t[0], t[1] ), ( t[1], t[2] ), ( t[2], t[0] ) ):
+				pa, pb = rest[a_], rest[b_]
+				if ( pa[2] - z ) * ( pb[2] - z ) < 0:
+					u = ( z - pa[2] ) / ( pb[2] - pa[2] )
+					pts.append( ( pa[0] + u * ( pb[0] - pa[0] ), pa[1] + u * ( pb[1] - pa[1] ) ) )
+			if len( pts ) != 2:
+				continue
+			mx, my = 0.5 * ( pts[0][0] + pts[1][0] ), 0.5 * ( pts[0][1] + pts[1][1] )
+			if ( my - y0 ) * side <= 0 or ( near and math.hypot( mx - near[0], my - near[1] ) > 0.1 * H ):
+				continue
+			l = math.hypot( pts[0][0] - pts[1][0], pts[0][1] - pts[1][1] )
+			sx, sy, sl = sx + mx * l, sy + my * l, sl + l
+		return ( sx / sl, sy / sl, z ) if sl > 0 else None
+
 	def leg( side, z ):
+		if not TO_MODEL and LEGS == "placed":
+			# the ankle is the shin's middle just over the foot (the foot's
+			# reaches forward to the toes); higher, the leg goes from the
+			# ankle in toward the pelvis, as Doom 3's legs splay (the hip half
+			# as far out as the ankle, and over the pelvis front to back). At
+			# the crotch's height the hanging hands are as far out as the
+			# thighs (the fat worker's), and an average of the side would put
+			# the hip in the hand
+			if z <= zmin + 0.15 * H:
+				# along the shin down to the ankle's height (a leg in a
+				# stance slants: the shin's middle over the foot is behind
+				# the ankle): the line through the middles of its outline
+				# higher up, clear of the foot (a low-poly shin has hardly a
+				# vertex between the ankle and the knee, its outline does)
+				a, b = section_middle( side, zmin + 0.12 * H ), section_middle( side, zmin + 0.2 * H )
+				if a and b:
+					u = ( z - a[2] ) / ( b[2] - a[2] )
+					return ( a[0] + u * ( b[0] - a[0] ), a[1] + u * ( b[1] - a[1] ), z )
+			shin = [ v for v in rest if ( v[1] - y0 ) * side > 0 and zmin + 0.09 * H < v[2] < zmin + 0.15 * H ]
+			# a low-poly shin may have no vertex there (the fat worker's):
+			# then from the ankle on the shin's line
+			a = mean( shin ) if shin else ( leg( side, zmin + 0.08 * H ) if z > zmin + 0.15 * H else None )
+			if a:
+				if z <= zmin + 0.15 * H:
+					return ( a[0], a[1], z )
+				u = max( 0.0, min( 1.0, ( z - zmin ) / max( 1e-3, zCrotch - zmin ) ) )
+				return ( a[0] + u * ( x0 - a[0] ), y0 + ( 1.0 - 0.48 * u ) * ( a[1] - y0 ), z )
 		vs = [ v for v in rest if ( v[1] - y0 ) * side > 0 and abs( v[2] - z ) < 0.05 * H ]
 		if not vs:
 			return ( x0, y0 + side * 0.1 * H, z )
@@ -407,6 +455,42 @@ def place_template( rest, tris, headVerts, gunHand = None, headPoint = None ):
 		far = sorted( vs, key = lambda v: -( v[1] - y0 ) * side )[:max( 3, len( vs ) // 15 )]
 		return mean( far )
 
+	def knee( side, hip, ankle ):
+		"""where the leg bends: a character's first frame is often a stance,
+		not an A- or T-pose (legs apart, one forward and bent), so the knee
+		isn't at a height. Along the leg from the hip to the ankle, the side's
+		vertexes under the crotch go in thin slabs (a low-poly leg is rings);
+		the knee is the middle of the slabs in the leg's middle (30 to 60% of
+		the way down: lower, a coat's hem or a boot's top stands out) that
+		stand farthest forward of the straight line between them (the
+		kneecap: knees point forward), else 45% of the way down (Daikatana's
+		shins are long)"""
+		d = vsub( ankle, hip )
+		L2 = vdot( d, d )
+		if L2 < 1e-6:
+			return None
+		slabs = {}
+		for v in rest:
+			if ( v[1] - y0 ) * side > 0 and zmin + 0.08 * H < v[2] < zCrotch:
+				t = vdot( vsub( v, hip ), d ) / L2
+				if 0.3 < t < 0.6:
+					slabs.setdefault( int( t * 20 ), [] ).append( v )
+		ahead = []
+		for sv in slabs.values():
+			if len( sv ) < 4:
+				continue
+			c = mean( sv )
+			t = vdot( vsub( c, hip ), d ) / L2
+			ahead.append( ( c[0] - ( hip[0] + t * d[0] ), sv ) )
+		top = max( [ a for a, sv in ahead ] + [ 0.0 ] )
+		if top < 0.02 * H:
+			return vadd( hip, vscale( d, 0.45 ) )
+		# the knee's height (its rings above and below the cap), and there the
+		# middle of the leg, not the cap: the mesh cut at that height, the
+		# middle of the outline about it (each piece of it by its length)
+		cap = mean( [ v for a, sv in ahead if a >= 0.8 * top for v in sv ] )
+		return section_middle( side, cap[2], cap ) or cap
+
 	pos = {}
 	pos["origin"] = ( x0, y0, zmin )
 	pos["Hips"] = ( x0, y0, zCrotch + 0.06 * H )
@@ -419,6 +503,13 @@ def place_template( rest, tris, headVerts, gunHand = None, headPoint = None ):
 		pos[s_ + "upleg"] = leg( side, zCrotch + 0.02 * H )
 		pos[s_ + "loleg"] = leg( side, zmin + 0.5 * ( zCrotch - zmin ) )
 		pos[s_ + "ankle_r"] = leg( side, zmin + 0.08 * H )
+		if not TO_MODEL and LEGS == "placed":
+			# the hip level with the pelvis, the knee where the leg bends
+			h = pos[s_ + "upleg"]
+			pos[s_ + "upleg"] = ( h[0], h[1], pos["Hips"][2] )
+			k = knee( side, pos[s_ + "upleg"], pos[s_ + "ankle_r"] )
+			if k:
+				pos[s_ + "loleg"] = k
 		sh = ( x0, y0 + side * shoulderY, zShoulder )
 		hd = gunHand if ( side < 0 and gunHand ) else hand( side )
 		pos[s_ + "uparm"] = sh
@@ -499,6 +590,8 @@ def hair_chain( rest, headVerts, head ):
 	return chain, hairIdx
 
 EXTRA_BONES = 0		# --extra: at most this many bones for what the template doesn't carry
+LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
+WRITE = True		# False: only how well it fits
 EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
 EXTRA_MIN = 8		# vertexes: a smaller part stays on its bone
 
@@ -749,6 +842,7 @@ def main( md3Path, outBase ):
 	headPoint = next( ( vscale( vadd( vadd( hp.frames[0][0], hp.frames[0][1] ), hp.frames[0][2] ), 1.0 / 3 )
 					   for hp in hps if hp.name == "hp_head" ), None )
 	joints, hairIdx = place_template( rest, tris, headVerts, gunHand, headPoint )
+	placed = [ j["pos"] for j in joints ]
 	J = { j["name"]: i for i, j in enumerate( joints ) }
 	pins = load_pins( os.path.basename( outBase ), body, verts, J )
 	for j in joints:
@@ -939,10 +1033,28 @@ def main( md3Path, outBase ):
 				x = ( x[0], x[1], p0[2] )
 		elif name.endswith( "ankle_r" ):
 			x = ( x[0], x[1], p0[2] )
+		elif name.endswith( "upleg" ) and not TO_MODEL and LEGS == "placed":
+			# a hip stays on its side (the motion pinned Hiro's right one
+			# across his middle): how far out is the legs' placing's
+			x = ( x[0], p0[1], x[2] )
 		move = vsub( x, p0 )
 		if vlen( move ) > JOINT_MOVE * H:
 			x = vadd( p0, vscale( move, JOINT_MOVE * H / vlen( move ) ) )
 		joints[b]["pos"] = x
+	# the legs where the placing put them: the motion pins a hip's height
+	# badly (Hiro's came out 7 apart, one under his crotch) and hardly a
+	# knee's (Daikatana's animations hardly bend them). The hips level with
+	# the pelvis, the knees where the legs bend, the ankles on the shins' line.
+	# Where the animations do bend the knees (the skinny worker's), the
+	# motion knows better: LEGS "fitted" leaves the legs to it (main() is run
+	# both ways, the better kept)
+	if not TO_MODEL and LEGS == "placed":
+		for s_ in ( "L", "R" ):
+			hip, knee_ = J[s_ + "upleg"], J[s_ + "loleg"]
+			x = joints[hip]["pos"]
+			joints[hip]["pos"] = ( x[0], x[1], joints[J["Hips"]]["pos"][2] )
+			joints[knee_]["pos"] = placed[knee_]
+			joints[J[s_ + "ankle_r"]]["pos"] = placed[J[s_ + "ankle_r"]]
 	# Body sits on the hips, the root at the floor under it
 	joints[J["Body"]]["pos"] = joints[J["Hips"]]["pos"]
 	zmin = min( v[2] for v in rest )
@@ -1086,6 +1198,8 @@ def main( md3Path, outBase ):
 				joints[b]["name"], joints[o]["name"], w, tuple( round( c ) for c in rest[i] ) ) )
 	print( "  error: %.3f units on average, %.2f at most (the character is %.0f tall)" % ( total / count, maxErr,
 		max( v[2] for v in rest ) - zmin ) )
+	if not WRITE:
+		return total / count
 
 	# the skin table: every vertex's bones, and how well they carry it
 	with open( outBase + "_skin.txt", "w" ) as fp:
@@ -1106,6 +1220,7 @@ def main( md3Path, outBase ):
 	motion[J["origin"]] = { f: ( IDENT, ( 0, 0, 0 ) ) for f in range( F ) }
 
 	write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase )
+	return total / count
 
 def gamePath( path ):
 	"""The path the game sees: from the data folder (dkres) on."""
@@ -1686,4 +1801,17 @@ if __name__ == "__main__":
 	if len( args ) != 2:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], args[1] )
+	if TO_MODEL:
+		main( args[0], args[1] )
+	else:
+		# the legs both ways, placed in the mesh and fitted to the motion:
+		# whichever carries the frames better
+		WRITE = False
+		errs = {}
+		for LEGS in ( "fitted", "placed" ):
+			print( "legs %s:" % LEGS )
+			errs[LEGS] = main( args[0], args[1] )
+		LEGS = min( errs, key = errs.get )
+		WRITE = True
+		print( "legs %s (%s), rigging:" % ( LEGS, ", ".join( "%s %.3f" % kv for kv in sorted( errs.items() ) ) ) )
+		main( args[0], args[1] )

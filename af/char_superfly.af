@@ -79,8 +79,8 @@ articulatedFigure char_superfly {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -7.17, 2.67, 1.82 ), ( -5.67, 6.33, -10.29 ), 9.02 )
-		origin ( -6.42, 4.50, -4.23 )
+		model bone( ( -6.29, 3.65, -0.20 ), ( -5.67, 7.35, -8.45 ), 5.78 )
+		origin ( -5.98, 5.50, -4.33 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure char_superfly {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -5.67, 6.33, -10.29 ), ( -15.61, 10.37, -22.12 ), 5.78 )
-		origin ( -10.64, 8.35, -16.21 )
+		model bone( ( -5.67, 7.35, -8.45 ), ( -16.32, 9.09, -22.12 ), 7.35 )
+		origin ( -11.00, 8.22, -15.29 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure char_superfly {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 3.86, -6.09, -3.98 ), ( 2.45, -9.63, -13.79 ), 8.89 )
-		origin ( 3.15, -7.86, -8.89 )
+		model bone( ( 2.55, -4.53, -0.20 ), ( 3.62, -4.70, -8.81 ), 7.19 )
+		origin ( 3.09, -4.61, -4.51 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure char_superfly {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 2.45, -9.63, -13.79 ), ( 1.83, -7.44, -21.89 ), 5.08 )
-		origin ( 2.14, -8.53, -17.84 )
+		model bone( ( 3.62, -4.70, -8.81 ), ( 2.24, -7.25, -21.89 ), 5.09 )
+		origin ( 2.93, -5.97, -15.35 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -188,7 +188,7 @@ articulatedFigure char_superfly {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( 0.12, 0.29, -0.95 ), ( -0.12, -0.29, 0.95 )
+		shafts ( 0.07, 0.41, -0.91 ), ( -0.07, -0.41, 0.91 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure char_superfly {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 32.0, 140.0, 97.0
+		limit 29.3, 140.0, 94.3
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure char_superfly {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( -0.13, -0.34, -0.93 ), ( 0.13, 0.34, 0.93 )
+		shafts ( 0.12, -0.02, -0.99 ), ( -0.12, 0.02, 0.99 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure char_superfly {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 16.8, 140.0, 81.8
+		limit 32.1, 140.0, 97.1
 	}
 
 }

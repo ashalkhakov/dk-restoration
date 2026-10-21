@@ -31,8 +31,8 @@ articulatedFigure monster_kingminos {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -4.04, -5.33, -5.16 ), ( 4.04, 5.33, 5.16 ) )
-		origin ( -6.62, -6.34, 9.63 )
+		model box( ( -5.08, -5.33, -5.63 ), ( 5.08, 5.33, 5.63 ) )
+		origin ( -7.84, -6.34, 9.08 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +55,8 @@ articulatedFigure monster_kingminos {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( -5.87, -0.73, 15.59 ), ( -10.55, 4.93, 7.99 ), 8.85 )
-		origin ( -8.21, 2.10, 11.79 )
+		model bone( ( -5.93, -0.71, 15.60 ), ( -8.33, 2.55, 10.39 ), 9.23 )
+		origin ( -7.13, 0.92, 13.00 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure monster_kingminos {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -10.55, 4.93, 7.99 ), ( -12.25, 10.38, 9.48 ), 7.52 )
-		origin ( -11.40, 7.66, 8.74 )
+		model bone( ( -8.33, 2.55, 10.39 ), ( -12.22, 11.05, 8.02 ), 11.52 )
+		origin ( -10.28, 6.80, 9.21 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_kingminos {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -10.74, 3.75, -2.87 ), ( 4.39, 4.81, -13.64 ), 12.27 )
-		origin ( -3.18, 4.28, -8.25 )
+		model bone( ( -8.38, -1.00, 0.12 ), ( 4.57, 1.26, -6.10 ), 12.69 )
+		origin ( -1.90, 0.13, -2.99 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_kingminos {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 4.39, 4.81, -13.64 ), ( 4.10, 5.57, -22.20 ), 15.57 )
-		origin ( 4.24, 5.19, -17.92 )
+		model bone( ( 4.57, 1.26, -6.10 ), ( 1.72, 4.69, -22.20 ), 11.99 )
+		origin ( 3.14, 2.98, -14.15 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +115,8 @@ articulatedFigure monster_kingminos {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -2.57, -13.60, 10.43 ), ( 8.98, -15.39, 2.56 ), 6.50 )
-		origin ( 3.21, -14.50, 6.50 )
+		model bone( ( -2.57, -13.60, 10.43 ), ( 9.28, -15.29, 2.77 ), 6.75 )
+		origin ( 3.35, -14.45, 6.60 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_kingminos {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -12.85, -6.02, -1.87 ), ( -0.80, -7.99, -13.64 ), 20.43 )
-		origin ( -6.83, -7.01, -7.75 )
+		model bone( ( -0.34, -9.77, 0.12 ), ( 5.81, -13.40, -5.92 ), 3.08 )
+		origin ( 2.74, -11.59, -2.90 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_kingminos {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( -0.80, -7.99, -13.64 ), ( 5.41, -4.82, -22.12 ), 17.14 )
-		origin ( 2.31, -6.41, -17.88 )
+		model bone( ( 5.81, -13.40, -5.92 ), ( 2.00, -9.69, -22.50 ), 10.31 )
+		origin ( 3.91, -11.55, -14.21 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -170,7 +170,7 @@ articulatedFigure monster_kingminos {
 		body1 "Luparm"
 		body2 "chest"
 		anchor joint( "Luparm" )
-		shafts ( -0.44, 0.54, -0.72 ), ( 0.44, -0.54, 0.72 )
+		shafts ( -0.36, 0.49, -0.79 ), ( 0.36, -0.49, 0.79 )
 		friction 0.20
 		coneLimit ( 0.00, 0.37, -0.93 ), 170
 	}
@@ -181,14 +181,14 @@ articulatedFigure monster_kingminos {
 		anchor joint( "Lloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 128.3, 150.0, 58.3
+		limit 135.2, 150.0, 65.2
 	}
 
 	universalJoint "Lhip" {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( 0.81, 0.06, -0.58 ), ( -0.81, -0.06, 0.58 )
+		shafts ( 0.89, 0.16, -0.43 ), ( -0.89, -0.16, 0.43 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_kingminos {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 79.6, 140.0, 144.6
+		limit 89.3, 140.0, 154.3
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_kingminos {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( 0.71, -0.12, -0.69 ), ( -0.71, 0.12, 0.69 )
+		shafts ( 0.66, -0.39, -0.65 ), ( -0.66, 0.39, 0.65 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_kingminos {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 70.7, 140.0, 135.7
+		limit 70.5, 140.0, 135.5
 	}
 
 }
