@@ -149,8 +149,10 @@ the pins are only numbers and names, so they're committed.
   multiplayer, each client simulates the dead players itself (`cg_ragdoll.c`). The ragdoll starts from the pose
   and velocity the player had, collides with the world and the movers, and is passed to the corpse the body queue
   leaves behind. `cg_ragdoll 0` turns it off. `cg_drawRagdolls 1` draws the bodies, the joints and the contacts.
-  `damage <amount>` (a cheat) hurts you without gibbing you, to test it. Not done yet: the bodies don't collide
-  with each other (self collision), shots don't push ragdolls, and the server doesn't run figures. Server-side
-  figures wait for the networking that can send their bodies; they will serve the SP monsters.
+  `damage <amount>` (a cheat) hurts you without gibbing you, to test it. The server runs figures too: a `misc_character` that dies goes limp on the server
+  (`g_ragdoll.c`, Doom 3's `idActor::StartRagdoll`), sent to the clients in its entity snapshot
+  (`bg_snapshot.c`), and hits push it (`g_ragdollPush`). `damage <amount> <entity | aim>` kills one, and
+  `spawncharacter` prints its number. Not done yet: the bodies don't collide with each other (self collision),
+  and a client-side ragdoll isn't pushed by shots.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.

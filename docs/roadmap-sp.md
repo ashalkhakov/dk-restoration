@@ -43,6 +43,17 @@ the engine). That fits Quake 3's players, items and missiles. It doesn't fit a r
 wheels, or a monster's animation channels, IK and sidekick status. Doom 3 lets each entity class write its own
 state (`WriteToSnapshot`/`ReadFromSnapshot`, `idBitMsgDelta` against what the client last acknowledged).
 
+**Done (first form).** `entityState_t` ends in 16 snapshot words (512 bits). An entity's class writes its own state
+there as a bit message (`bitMsg_t`, Doom 3's `idBitMsg`, in `bg_snapshot.c`); the first byte says what it is. The
+engine already delta-codes array fields word by word, so the engine is unchanged, and an entity at rest sends
+nothing. The first user is the server's ragdolls (`g_ragdoll.c`): a `misc_character` that dies goes limp on the
+server. Its first body's origin goes in `pos` and every body's orientation goes in the words, 30 bits a body. That
+is enough, since the figure's joint mods are orientation only. Clients pose the model from that, interpolating
+between snapshots (`CG_ServerRagdoll`). Hits push the corpse (`g_ragdollPush`).
+
+**Still to do.** Doom 3's entity events, and a bigger variable-length state for what doesn't fit in 512 bits (the
+plan below), when monsters or vehicles need it.
+
 **Plan.** Keep `entityState_t` as the header every entity has, so Quake 3's entities keep working. Add Doom 3's
 per-entity state after it:
 
@@ -118,7 +129,8 @@ Each step ends with something to play:
 
 ## Decisions
 
-- **RTCW's single-player source** (iortcw, GPL): download it as the base for steps 2–4. It isn't on this machine.
+- **RTCW's single-player source:** iortcw (GPLv3) is cloned next to the repositories, at `../iortcw`, as the base
+  for steps 2–4.
 - **q3rally's source:** download it as a handling reference for step 7, or skip it.
 - **Converting DK's data** (`AIData.csv`, monster frame CSVs, `.sca`, `.script`, `.nod`) from the user's paks into
   defs and scripts. These are tools, like the map and model converters, and the results aren't shipped.
