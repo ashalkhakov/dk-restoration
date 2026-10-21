@@ -7,6 +7,12 @@
 // goes, it keeps its momentum, banks and bounces off walls (a hard crash
 // hurts it), and finds its way through the air to you when you're out of
 // sight.
+//
+// Daikatana's were always in the air; these land, as insects do. Left to
+// itself, a skeet perches on a wall or a ceiling (or the floor) near it, its
+// wings raised, and waits there: it takes off when you come near, aim at it
+// or hurt one near it, an ambush. Now and then in a fight it rests on a wall
+// a moment, off again when you aim at it.
 
 object monster_slaughterskeet : monster_base {
 	float		circleAngle;		// where it is around you
@@ -16,7 +22,11 @@ object monster_slaughterskeet : monster_base {
 	float		nextBite;
 	float		nextDodge;
 	float		aimedSince;			// since when you've aimed at it, 0 if you haven't
+	float		nextPerch;
+	vector		perchPos;			// where findPerch found to land, and what it faces
+	vector		perchNormal;
 
+	void		state_Idle();
 	void		state_Combat();
 	void		closeIn();
 	void		hover();
@@ -25,7 +35,164 @@ object monster_slaughterskeet : monster_base {
 	boolean		aimedAt();
 	boolean		shouldDodge();
 	vector		roomTo( vector from, vector spot );
+	boolean		findPerch( vector from, float range );
+	boolean		perchThere();
+	void		rest();
+	boolean		spooked();
 };
+
+/*
+================
+monster_slaughterskeet::findPerch
+
+a wall or a ceiling within range of from, a look in a dozen ways (up the
+most); the floor if there's nothing else
+================
+*/
+boolean monster_slaughterskeet::findPerch( vector from, float range ) {
+	float	i;
+	float	frac;
+	vector	dir;
+	vector	n;
+	boolean	floor;
+
+	floor = false;
+	for ( i = 0; i < 12; i++ ) {
+		if ( i < 4 ) {
+			dir = sys.angToForward( '-1 0 0' * ( 50 + sys.random( 40 ) ) + '0 1 0' * sys.random( 360 ) );
+		} else {
+			dir = sys.angToForward( '1 0 0' * ( sys.random( 60 ) - 30 ) + '0 1 0' * sys.random( 360 ) );
+		}
+		frac = sys.tracePoint( from, from + dir * range, MASK_SOLID, self );
+		if ( frac < 1 && frac * range > 24 ) {
+			n = sys.getTraceNormal();
+			if ( n_z < 0.7 ) {
+				perchPos = sys.getTraceEndPos();
+				perchNormal = n;
+				return true;
+			}
+			if ( !floor ) {
+				floor = true;
+				perchPos = sys.getTraceEndPos();
+				perchNormal = n;
+			}
+		}
+	}
+	return floor;
+}
+
+/*
+================
+monster_slaughterskeet::perchThere
+
+flies to perchPos and lands on it, its wings raised; false if it couldn't
+================
+*/
+boolean monster_slaughterskeet::perchThere() {
+	vector	near;
+	float	t;
+
+	near = perchPos + perchNormal * 24;
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+	setFlyOffset( 0 );
+	moveToPosition( near );
+	t = sys.getTime() + 4;
+	while( sys.getTime() < t && moveStatus() == MOVE_STATUS_MOVING ) {
+		sys.waitFrame();
+	}
+	if ( sys.vecLength( getOrigin() - near ) > 40 || !perch( perchPos, perchNormal ) ) {
+		return false;
+	}
+	playCycle( ANIMCHANNEL_LEGS, "perch" );
+	return true;
+}
+
+/*
+================
+monster_slaughterskeet::spooked
+
+perched, whether its enemy has come near, aims at it, or hurt it
+================
+*/
+boolean monster_slaughterskeet::spooked() {
+	if ( AI_PAIN || enemyRange() < 300 ) {
+		return true;
+	}
+	return shouldDodge();
+}
+
+/*
+================
+monster_slaughterskeet::state_Idle
+
+perched near where it is, waiting; off at whoever comes near, aims at it or
+hurts it (an ambush)
+================
+*/
+void monster_slaughterskeet::state_Idle() {
+	entity	enemy;
+	float	t;
+
+	stopMove();
+	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	t = sys.getTime() + 1 + sys.random( 2 );
+	while( 1 ) {
+		enemy = findEnemy( true );
+		if ( enemy ) {
+			setEnemy( enemy );
+			if ( !isPerched() ) {
+				sightEnemy();
+				return;
+			}
+			// waits, perched, until it's spooked
+			while( getEnemy() != $null_entity && !spooked() ) {
+				sys.wait( 0.1 );
+			}
+			sightEnemy();
+			return;
+		}
+		if ( AI_PAIN && getEnemy() != $null_entity ) {
+			sightEnemy();
+			return;
+		}
+		if ( !isPerched() && sys.getTime() > t ) {
+			if ( !( findPerch( getOrigin(), 400 ) && perchThere() ) ) {
+				stopMove();
+				playCycle( ANIMCHANNEL_LEGS, "amba" );
+				t = sys.getTime() + 2 + sys.random( 3 );
+			}
+		}
+		idleAnims();
+		sys.wait( 0.1 );
+	}
+}
+
+/*
+================
+monster_slaughterskeet::rest
+
+a moment on a wall near, in a fight: off again when it's aimed at, or after
+a second or three
+================
+*/
+void monster_slaughterskeet::rest() {
+	float t;
+
+	nextPerch = sys.getTime() + 8 + sys.random( 8 );
+	if ( !findPerch( getOrigin(), 200 ) || perchNormal_z > 0.7 || !perchThere() ) {
+		playCycle( ANIMCHANNEL_LEGS, "flya" );
+		return;
+	}
+	t = sys.getTime() + 1 + sys.random( 2 );
+	while( sys.getTime() < t && getEnemy() != $null_entity ) {
+		if ( AI_PAIN || enemyRange() < 60 || shouldDodge() ) {
+			break;
+		}
+		sys.waitFrame();
+	}
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+	dodge();
+}
 
 /*
 ================
@@ -43,6 +210,7 @@ void monster_slaughterskeet::state_Combat() {
 	circleRadius = 70 + sys.random( 60 );
 	circleHeight = 30 + sys.random( 50 );
 	nextBite = sys.getTime() + 1.5 + sys.random( 2.5 );
+	nextPerch = sys.getTime() + 5 + sys.random( 8 );
 
 	while( 1 ) {
 		if ( !getEnemy() ) {
@@ -53,6 +221,8 @@ void monster_slaughterskeet::state_Combat() {
 			closeIn();
 		} else if ( shouldDodge() ) {
 			dodge();
+		} else if ( sys.getTime() > nextPerch ) {
+			rest();
 		} else if ( sys.getTime() > nextBite ) {
 			bite();
 			nextBite = sys.getTime() + 2.5 + sys.random( 2.5 );

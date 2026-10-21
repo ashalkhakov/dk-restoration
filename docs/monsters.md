@@ -71,7 +71,15 @@ waits for what it waits for. The game runs that thread as it thinks, before it m
   angle and way round (70 to 130 away, 30 to 80 over your head), darting down to bite now and then (once it's in reach)
   and back to their circle, and dodging aside when you hold your aim on them a moment (as Fallout's bloodbugs do): a
   reaction's worth (0.2 to 0.4 s), not just after a dodge, and not every time, more often on hard. In a narrow way
-  they circle as far as there's room, round the side that's open. Out of sight or far off, they find
+  they circle as far as there's room, round the side that's open.
+
+  Daikatana's were always in the air; these land, as insects do. Left alone, a skeet perches on a wall or a ceiling
+  near it (the floor if there's nothing else), its wings raised, and waits: it sees all round from there, and takes
+  off at you when you come within 300, aim at it or hurt it, an ambush. Now and then in a fight it rests on a wall a
+  moment, off again when you aim at it. `perch( pos, normal )` lands a flyer: its belly to the surface, its head up a
+  wall (turned a little to one side) or as it faced, its boxes turned with it; told to move, it pushes off.
+  `isPerched()` asks. Its perched pose is the rig's `perch` animation: Daikatana never made one, so the rigger
+  picks the frame of its idling and flying where its wings reach out least (raised over its back). Out of sight or far off, they find
   their way to you through the air. It flies as a drone: momentum, banking into turns, bouncing off
   walls (a hard crash hurts it).
 
@@ -92,7 +100,7 @@ The events a monster has (Doom 3's names): `setState`, `getState`; `findEnemy`, 
 `getEnemy`, `enemyRange`, `enemyRange2D`, `getEnemyPos`, `canSee`; `moveToEnemy`, `moveToPosition`,
 `moveToEntity`, `wander`, `stopMove`, `moveStatus`, `setMoveSpeed`; `faceEnemy`, `faceEntity`, `turnTo`,
 `turnToPos`, `getCurrentYaw`, `facingIdeal`; `setFlySpeed`, `setFlyOffset`, `enableGravity`, `disableGravity`,
-`allowMovement`; `getJumpVelocity`; `testMeleeAttack`, `attackMelee`, `directDamage`; `playAnim`, `playCycle`, `animDone`, `hasAnim`; `startSound`. And
+`allowMovement`; `perch`, `isPerched`; `getJumpVelocity`; `testMeleeAttack`, `attackMelee`, `directDamage`; `playAnim`, `playCycle`, `animDone`, `hasAnim`; `startSound`. And
 an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 
 ## What's to come

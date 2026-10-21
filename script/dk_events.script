@@ -133,6 +133,8 @@ scriptEvent	float		getCurrentYaw();
 scriptEvent	float		facingIdeal();
 scriptEvent	void		setFlySpeed( float speed );
 scriptEvent	void		setFlyOffset( float offset );
+scriptEvent	float		perch( vector pos, vector normal );	// a flyer lands at pos on what faces normal; false if there's no room. Told to move, it takes off
+scriptEvent	float		isPerched();
 scriptEvent	void		enableGravity();
 scriptEvent	void		disableGravity();
 scriptEvent	void		allowMovement( float allow );

@@ -526,6 +526,29 @@ def boxes( joints, assign, anims, spec, frames ):
 	hhi = max( frames[f][i][2] for f in fs for i in range( N ) )
 	return ( -half, -half, zlo ), ( half, half, zhi ), ( -reach, -reach, hlo ), ( reach, reach, hhi )
 
+def perch_frame( joints, assign, anims, frames ):
+	"""A winged creature's frame with its wings raised over its back, as an
+	insect holds them landed: the one in its idling and flying (not its dying,
+	nor a special one, a skeet's hatching curled up) whose wings reach out
+	least to its sides. Daikatana's always flap, it never landed. None if it
+	has no wings"""
+	N = len( assign )
+	wing = [ i for i in range( N ) if "wing" in joints[assign[i]]["name"].lower() ]
+	body = [ i for i in range( N ) if i not in set( wing ) ]
+	if not wing or not body:
+		return None
+	best = None
+	for a in anims:
+		if a[0].lower().startswith( ( "die", "special" ) ):
+			continue
+		for f in range( a[1], a[1] + a[2] ):
+			c = centroid( [ frames[f][i] for i in body ] )
+			spread = sum( math.hypot( frames[f][i][0] - c[0], frames[f][i][1] - c[1] ) for i in wing ) / len( wing )
+			if best is None or spread < best[0]:
+				best = ( spread, f, a[0] )
+	print( "  perch: frame %d (%s), its wings %.1f out to its sides" % ( best[1], best[2], best[0] ) )
+	return best[1]
+
 def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot, frames ):
 	N = len( rest )
 	mins, maxs, hitMins, hitMaxs = boxes( joints, assign, anims, spec, frames )
@@ -544,6 +567,9 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot, fra
 		seen.add( a[0] )
 		fps, loop = spec.get( a[0], ( DEFAULT_FPS, False ) )
 		lines.append( "\t\"anim %s\"\t\t\"%s %g%s\"" % ( a[0], a[0], fps, " loop" if loop else "" ) )
+	perch = perch_frame( joints, assign, anims, frames )
+	if perch is not None:
+		lines.append( "\t\"anim perch\"\t\t\"%d 1 1 loop\"\t// landed, its wings raised: the frame they reach out least" % perch )
 	lines.append( "" )
 	for j, joint in enumerate( joints ):
 		if not joint["zone"]:
