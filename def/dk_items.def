@@ -1,133 +1,172 @@
-// Daikatana's pickups, as mint-arena entity defs (Doom 3 style).
-//
-// Each one inherits the Quake 3 item that plays its role in deathmatch and
-// gives it Daikatana's name and look. The converter keeps the classnames;
-// where the model changes with the episode (armor), the map's "model" key
-// gives the episode's. Physics: items are rigid bodies colliding as hulls of
-// their models; "mass", "density", "bouncyness", "friction", "nophysics".
+// Daikatana's pickups, as mint-arena entity defs (Doom 3 style): what each
+// gives ("inv_*", see bg_defs.c), its look and its sounds. The converter
+// keeps the classnames; where the model changes with the episode (armor), the
+// map's "model" key gives the episode's. Physics: items are rigid bodies
+// colliding as hulls of their models; "mass", "density", "bouncyness",
+// "friction", "nophysics".
 
 // health
 
 entityDef item_health_25 {
-	"inherit"		"item_health"
+	"spawnclass"	"item"
+	"inv_health"	"25"
 	"inv_name"		"Health"
+	"model"			"models/e1/a1_hlth.md3"
+	"icon"			"icons/iconh_yellow"
+	"snd_acquire"	"sounds/global/a_hpick.wav"
 }
 
 entityDef item_health_50 {
-	"inherit"		"item_health_large"
+	"spawnclass"	"item"
+	"inv_health"	"50"
 	"inv_name"		"Health"
+	"model"			"models/e1/a1_hlth2.md3"
+	"icon"			"icons/iconh_red"
+	"snd_acquire"	"sounds/global/a_hpick.wav"
 }
 
 entityDef item_goldensoul {
-	"inherit"		"item_health_mega"
+	"spawnclass"	"item"
+	"inv_health"	"100"
 	"inv_name"		"Golden Soul"
-	"model2"		""
+	"model"			"models/global/a_gsoul.md3"
+	"icon"			"icons/iconh_mega"
+	"snd_acquire"	"sounds/global/a_gspick.wav"
+	"sounds"		"sounds/global/a_gswait.wav"
 }
 
-// armor: the model is the episode's
+// armor: the model is the episode's; light armor gives 50, heavy 100
 
 entityDef item_plasteel_armor {
-	"inherit"		"item_armor_combat"
+	"spawnclass"	"item"
+	"inv_armor"		"50"
 	"inv_name"		"Plasteel Armor"
+	"model"			"models/e1/a1_ar1.md3"
+	"icon"			"icons/iconr_yellow"
+	"snd_acquire"	"sounds/global/armorpickup1.wav"
 }
 
 entityDef item_chromatic_armor {
-	"inherit"		"item_armor_body"
+	"spawnclass"	"item"
+	"inv_armor"		"100"
 	"inv_name"		"Chromatic Armor"
+	"model"			"models/e1/a1_ar2.md3"
+	"icon"			"icons/iconr_red"
+	"snd_acquire"	"sounds/global/armorpickup2.wav"
 }
 
 entityDef item_silver_armor {
-	"inherit"		"item_armor_combat"
+	"inherit"		"item_plasteel_armor"
 	"inv_name"		"Silver Armor"
 }
 
 entityDef item_chainmail_armor {
-	"inherit"		"item_armor_combat"
+	"inherit"		"item_plasteel_armor"
 	"inv_name"		"Chainmail Armor"
 }
 
 entityDef item_kevlar_armor {
-	"inherit"		"item_armor_combat"
+	"inherit"		"item_plasteel_armor"
 	"inv_name"		"Kevlar Armor"
 }
 
 entityDef item_gold_armor {
-	"inherit"		"item_armor_body"
+	"inherit"		"item_chromatic_armor"
 	"inv_name"		"Gold Armor"
 }
 
 entityDef item_black_adamant_armor {
-	"inherit"		"item_armor_body"
+	"inherit"		"item_chromatic_armor"
 	"inv_name"		"Black Adamant Armor"
 }
 
 entityDef item_ebonite_armor {
-	"inherit"		"item_armor_body"
+	"inherit"		"item_chromatic_armor"
 	"inv_name"		"Ebonite Armor"
 }
 
 // artifacts: Daikatana's permanent boosts are timed powerups for now
 
 entityDef item_wraithorb {
-	"inherit"		"item_invis"
+	"spawnclass"	"item"
+	"inv_powerup"	"invis"
+	"time"			"30"
 	"inv_name"		"Wraith Orb"
-	"model2"		""
+	"model"			"models/global/a_wraithorb.md3"
+	"icon"			"icons/invis"
+	"snd_acquire"	"sounds/artifacts/wraithorbpickup.wav"
+	"sounds"		"sounds/artifacts/wraithorbwait.wav"
 }
 
 entityDef item_power_boost {
-	"inherit"		"item_quad"
+	"spawnclass"	"item"
+	"inv_powerup"	"quad"
+	"time"			"30"
 	"inv_name"		"Power Boost"
 	"model"			"models/global/a_pwrb.md3"
-	"model2"		""
+	"icon"			"icons/quad"
+	"snd_acquire"	"sound/items/quaddamage.wav"
+	"sounds"		"sound/items/damage2.wav sound/items/damage3.wav"
 }
 
 entityDef item_attack_boost {
-	"inherit"		"item_haste"
+	"spawnclass"	"item"
+	"inv_powerup"	"haste"
+	"time"			"30"
 	"inv_name"		"Attack Boost"
 	"model"			"models/global/a_atkb.md3"
-	"model2"		""
+	"icon"			"icons/haste"
+	"snd_acquire"	"sound/items/haste.wav"
 }
 
 entityDef item_speed_boost {
-	"inherit"		"item_haste"
+	"inherit"		"item_attack_boost"
 	"inv_name"		"Speed Boost"
 	"model"			"models/global/a_spdb.md3"
-	"model2"		""
 }
 
 entityDef item_acro_boost {
-	"inherit"		"item_haste"
+	"inherit"		"item_attack_boost"
 	"inv_name"		"Acro Boost"
 	"model"			"models/global/a_acrb.md3"
-	"model2"		""
 }
 
 entityDef item_vita_boost {
-	"inherit"		"item_regen"
+	"spawnclass"	"item"
+	"inv_powerup"	"regen"
+	"time"			"30"
 	"inv_name"		"Vita Boost"
 	"model"			"models/global/a_vtlb.md3"
-	"model2"		""
+	"icon"			"icons/regen"
+	"snd_acquire"	"sound/items/regeneration.wav"
+	"sounds"		"sound/items/regen.wav"
 }
 
 entityDef item_megashield {
-	"inherit"		"item_enviro"
+	"spawnclass"	"item"
+	"inv_powerup"	"battlesuit"
+	"time"			"30"
 	"inv_name"		"Mega Shield"
 	"model"			"models/global/a_mshield.md3"
-	"model2"		""
+	"icon"			"icons/envirosuit"
+	"snd_acquire"	"sound/items/protect.wav"
+	"sounds"		"sound/items/airout.wav sound/items/protect3.wav"
 }
 
 entityDef item_invincibility {
-	"inherit"		"item_enviro"
+	"inherit"		"item_megashield"
 	"inv_name"		"Invincibility"
 	"model"			"models/global/a_invincibility.md3"
-	"model2"		""
 }
 
 entityDef item_antidote {
-	"inherit"		"holdable_medkit"
+	"spawnclass"	"item"
+	"inv_holdable"	"medkit"
 	"inv_name"		"Antidote"
 	"model"			"models/global/a_antidote.md3"
-	"model2"		""
+	"icon"			"icons/medkit"
+	"snd_acquire"	"sound/items/holdable.wav"
+	"sounds"		"sound/items/use_medkit.wav"
 }
 
 // the campaign's inventory items (Doom 3's "inv_item"): kept, not used up on
