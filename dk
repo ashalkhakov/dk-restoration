@@ -16,6 +16,9 @@
 #                              shots... to have the HUD, the weapon selector
 #                              and the weapon in them, and the scoreboard)
 #   ./dk rig [character...]    skeletal IQMs of the characters (hiro, mikiko)
+#   ./dk cine [name...]        Daikatana's cinematics as cameras, scripts and
+#                              actor defs, in out/cine (ours, in cine/, take
+#                              the place of theirs by name)
 #   ./dk aas [map...]          bot navigation: an AAS world per creature size
 #                              (./dk build bspc first)
 #   ./dk test [map...]         load each map, check the log, take a screenshot
@@ -300,6 +303,14 @@ cmd_rig() {
 	done
 }
 
+# Daikatana's cinematics (cin/scripts/*.script) as ours: out/cine/cameras,
+# script and def (tools/cine/cine_convert.py). The repository's cine/cameras
+# and cine/script hold our own and our edits: assembled over them, by name.
+cmd_cine() {
+	rm -rf "$OUT/cine"
+	(cd "$ROOT" && python3 tools/cine/cine_convert.py "$DKRES" "$OUT/cine" "$@") || die "converting the cinematics failed"
+}
+
 cmd_extract() {
 	local step
 	[ $# -gt 0 ] || die "name the steps: paks envs textures skins models sounds ui levelshots, or all"
@@ -376,7 +387,29 @@ assemble() {
 	put "$OUT/maps" "$mod/maps"
 	put "$ROOT/effects" "$mod/effects"
 	put "$ROOT/characters" "$mod/characters"
-	put "$ROOT/def" "$mod/def"
+	# the defs: this repository's and the converted cinematics' actors
+	rm -rf "$mod/def"
+	mkdir -p "$mod/def"
+	for f in "$ROOT"/def/* "$OUT"/cine/def/*; do
+		[ -e "$f" ] && put "$f" "$mod/def/$(basename "$f")"
+	done
+	# the cinematics: the converted ones, then ours by the same names in their
+	# place; cine/cine.script includes them all
+	rm -rf "$mod/cameras" "$mod/cine"
+	mkdir -p "$mod/cameras" "$mod/cine"
+	for f in "$OUT"/cine/cameras/*.camera "$ROOT"/cine/cameras/*.camera; do
+		[ -e "$f" ] && put "$f" "$mod/cameras/$(basename "$f")"
+	done
+	for f in "$OUT"/cine/script/*.script "$ROOT"/cine/script/*.script; do
+		[ -e "$f" ] && put "$f" "$mod/cine/$(basename "$f")"
+	done
+	{
+		echo "// the cinematics, assembled by ./dk: the converted ones and ours"
+		for f in "$mod"/cine/*.script; do
+			[ -e "$f" ] && [ "$(basename "$f")" != cine.script ] && echo "#include \"cine/$(basename "$f")\""
+		done
+	} >"$mod/cine/cine.script.new"
+	mv "$mod/cine/cine.script.new" "$mod/cine/cine.script"
 	put "$ROOT/script" "$mod/script"
 	put "$ROOT/af" "$mod/af"
 	put "$ROOT/sound" "$mod/sound"
@@ -532,7 +565,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|aas|run|shots|test|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|cine|aas|run|shots|test|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac

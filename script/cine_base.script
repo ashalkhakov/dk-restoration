@@ -1,0 +1,175 @@
+// cine_base.script -- what cinematics use: the converted ones
+// (tools/cine/cine_convert.py, Daikatana's) and ours. A cinematic is a
+// namespace whose play() puts the view on its cameras one after another
+// (sys.setCamera), each shot starting its actors' threads and its sounds.
+//
+// While a cinematic is skipped (sys.skippingCinematic()), waits end at once
+// and the actors' moves, turns and animations here end where they would.
+
+/*
+================
+cine_actor
+
+a cinematic's character: no mind of its own, its cinematic's script moves
+and animates it
+================
+*/
+object cine_actor : monster_base {
+	void		init();
+};
+
+void cine_actor::init() {
+	skill = sys.strToFloat( sys.getcvar( "g_skill" ) );
+}
+
+/*
+================
+cine_camera
+
+a camera playing cameras/<name>.camera, for sys.setCamera; the last one made
+goes (it has been cut from)
+================
+*/
+entity	cine_lastCamera;
+
+entity cine_camera( string name ) {
+	entity cam;
+
+	sys.setSpawnArg( "camera", name );
+	cam = sys.spawn( "func_cameraspline" );
+	if ( cine_lastCamera != $null_entity ) {
+		cine_lastCamera.remove();		// (the view goes to the new one this frame)
+	}
+	cine_lastCamera = cam;
+	return cam;
+}
+
+/*
+================
+cine_spawn
+
+an actor of that def, there, facing yaw, named
+================
+*/
+entity cine_spawn( string def, vector origin, float yaw, string name ) {
+	entity actor;
+
+	sys.setSpawnArg( "origin", "" + origin );
+	sys.setSpawnArg( "angle", "" + yaw );
+	actor = sys.spawn( def );
+	if ( actor != $null_entity ) {
+		actor.setName( name );
+	}
+	return actor;
+}
+
+/*
+================
+cine_until
+
+waits until then
+================
+*/
+void cine_until( float t ) {
+	if ( t > sys.getTime() ) {
+		sys.wait( t - sys.getTime() );
+	}
+}
+
+/*
+================
+cine_play
+
+the actor plays the animation through
+================
+*/
+void cine_play( entity actor, string anim ) {
+	if ( actor == $null_entity ) {
+		return;
+	}
+	actor.playAnim( ANIMCHANNEL_LEGS, anim );
+	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() ) {
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+cine_move
+
+the actor walks there
+================
+*/
+void cine_move( entity actor, vector dest ) {
+	if ( actor == $null_entity ) {
+		return;
+	}
+	actor.moveToPosition( dest );
+	while( actor.moveStatus() == MOVE_STATUS_MOVING ) {
+		if ( sys.skippingCinematic() ) {
+			actor.stopMove();
+			actor.setOrigin( dest );
+			return;
+		}
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+cine_turn
+
+the actor turns to face yaw
+================
+*/
+void cine_turn( entity actor, float yaw ) {
+	if ( actor == $null_entity ) {
+		return;
+	}
+	actor.turnTo( yaw );
+	while( !actor.facingIdeal() ) {
+		if ( sys.skippingCinematic() ) {
+			actor.setAngles( '0 1 0' * yaw );
+			return;
+		}
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+cine_use
+
+the actor uses the entity of that name (a door, a button)
+================
+*/
+void cine_use( string name, entity actor ) {
+	entity ent;
+
+	ent = sys.getEntity( name );
+	if ( ent != $null_entity ) {
+		ent.activate( actor );
+	}
+}
+
+/*
+================
+cine_begin / cine_end
+
+a cinematic starts black (its first shot fades it in, if it means to), and
+ends with the players' own eyes back, its loops stopped and the screen clear
+================
+*/
+void cine_begin() {
+	cine_lastCamera = $null_entity;
+}
+
+void cine_end() {
+	sys.stopGlobalLoops();
+	sys.firstPerson();
+	sys.fadeTo( '0 0 0', 0, 0 );
+	if ( cine_lastCamera != $null_entity ) {
+		cine_lastCamera.remove();
+		cine_lastCamera = $null_entity;
+	}
+}

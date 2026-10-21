@@ -8,6 +8,11 @@
 #include "script/ai/monster_froginator.script"
 #include "script/ai/monster_slaughterskeet.script"
 
+// cinematics: the helpers, then each (cine/cine.script includes them: the
+// converted ones and ours, assembled by ./dk)
+#include "script/cine_base.script"
+#include "cine/cine.script"
+
 /*
 ================
 dk_main

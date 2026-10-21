@@ -20,6 +20,9 @@ scriptEvent	float		skippingCinematic();
 scriptEvent	void		fadeIn( vector color, float time );
 scriptEvent	void		fadeOut( vector color, float time );
 scriptEvent	void		fadeTo( vector color, float alpha, float time );
+scriptEvent	void		startGlobalSound( string sound );	// a sound every player hears, from no place (a cinematic's)
+scriptEvent	void		startGlobalLoop( string sound );	// looping, until stopGlobalLoops()
+scriptEvent	void		stopGlobalLoops();
 scriptEvent	void		print( string text );
 scriptEvent	void		println( string text );
 scriptEvent	void		say( string text );
