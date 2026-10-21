@@ -1,8 +1,9 @@
 // Daikatana's episode 1 monsters, as Doom 3 style monsters (mint-arena
 // g_monster.c): a model def, the monster def (Daikatana's AIData.csv values
-// at medium skill) and the damage defs of its attacks. What they do is their
-// scripts' (script/ai/). The models are the md3s for now; their rigged IQMs
-// (models/rigged/) take their place with the same animation names.
+// at medium skill, but one hit kills them) and the damage defs of their
+// attacks. What they do is their scripts' (script/ai/). These model defs are
+// the md3s'; ./dk rig makes the rigged ones (def/rig_*.def, models/rigged/),
+// which take their place with the same animation names, and ragdolls.
 
 // the Froginator: a hopping melee frog, amphibious
 
@@ -25,7 +26,7 @@ entityDef monster_froginator {
 	"spawnclass"	"monster"
 	"model"			"model_froginator"
 	"scriptobject"	"monster_froginator"
-	"health"		"30"
+	"health"		"1"				// one hit: small, fast and hard to see (Daikatana's 30)
 	"mins"			"-8 -8 -12"
 	"maxs"			"8 8 12"
 	"modelscale"	"0.65"
@@ -36,7 +37,7 @@ entityDef monster_froginator {
 	"sight_range"	"1500"
 	"melee_range"	"24"			// past its box: Daikatana's 60 from its middle
 	"jump_up"		"270"			// a leap's upward speed
-	"impact_speed"	"300"			// a leap into a wall at more hurts it
+	"impact_speed"	"400"			// a leap into a wall at more hurts it (kills it, at one health)
 	"impact_damage"	"6"				// per 100 u/s more
 	"impact_bounce"	"0.5"
 	"snd_sight"		"frog_sight"
@@ -72,7 +73,7 @@ entityDef monster_slaughterskeet {
 	"spawnclass"	"monster"
 	"model"			"model_slaughterskeet"
 	"scriptobject"	"monster_slaughterskeet"
-	"health"		"50"
+	"health"		"1"				// one hit (Daikatana's 50)
 	"mins"			"-16 -16 0"
 	"maxs"			"16 16 8"
 	"fly"			"1"
@@ -84,7 +85,7 @@ entityDef monster_slaughterskeet {
 	"fov"			"215"
 	"sight_range"	"1800"
 	"melee_range"	"16"
-	"impact_speed"	"250"			// crashing hurts it, a drone's way
+	"impact_speed"	"350"			// crashing harder kills it, a drone's way
 	"impact_damage"	"4"
 	"impact_bounce"	"0.6"
 	"snd_sight"		"skeet_sight"

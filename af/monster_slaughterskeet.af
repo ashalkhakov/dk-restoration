@@ -1,0 +1,136 @@
+// made by tools/rig/creature_rig.py: the slaughterskeet's ragdoll, Doom 3's articulated figure
+// (made in the model's bind pose; joint() names the IQM's joints)
+articulatedFigure monster_slaughterskeet {
+	settings {
+		model "model_slaughterskeet"
+		friction 0.01, 0.01, 0.8, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		minMoveTime -1
+		maxMoveTime -1
+		totalMass -1
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -3.61, -1.43, -2.59 ), ( 3.61, 1.43, 2.59 ) )
+		origin ( 0.05, -0.01, 3.20 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head" {
+		joint "Head"
+		mod orientation
+		model box( ( -1.36, -1.36, -1.36 ), ( 1.36, 1.36, 1.36 ) )
+		origin ( 3.03, 1.16, 1.63 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "headb1" {
+		joint "Headb1"
+		mod orientation
+		model box( ( -2.16, -1.36, -2.08 ), ( 2.16, 1.36, 2.08 ) )
+		origin ( 4.52, -0.06, 4.27 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing1" {
+		joint "Lwing1"
+		mod orientation
+		model box( ( -3.21, -8.11, -1.36 ), ( 3.21, 8.11, 1.36 ) )
+		origin ( 0.52, 13.16, 3.60 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rwing1" {
+		joint "Rwing1"
+		mod orientation
+		model box( ( -3.20, -8.15, -1.36 ), ( 3.20, 8.15, 1.36 ) )
+		origin ( -0.08, -13.09, 3.58 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tail1" {
+		joint "Tail1"
+		mod orientation
+		model box( ( -3.47, -1.36, -1.71 ), ( 3.47, 1.36, 1.71 ) )
+		origin ( -6.78, 0.11, 3.38 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	universalJoint "Head" {
+		body1 "head"
+		body2 "body"
+		anchor joint( "Head" )
+		shafts ( 0.97, 0.20, -0.11 ), ( -0.97, -0.20, 0.11 )
+		friction 0.20
+		coneLimit ( 0.97, 0.20, -0.11 ), 45
+	}
+
+	universalJoint "Headb1" {
+		body1 "headb1"
+		body2 "body"
+		anchor joint( "Headb1" )
+		shafts ( 0.70, -0.35, 0.62 ), ( -0.70, 0.35, -0.62 )
+		friction 0.20
+		coneLimit ( 0.70, -0.35, 0.62 ), 45
+	}
+
+	universalJoint "Lwing1" {
+		body1 "lwing1"
+		body2 "body"
+		anchor joint( "Lwing1" )
+		shafts ( 0.67, 0.63, 0.39 ), ( -0.67, -0.63, -0.39 )
+		friction 0.20
+		coneLimit ( 0.67, 0.63, 0.39 ), 30
+	}
+
+	universalJoint "Rwing1" {
+		body1 "rwing1"
+		body2 "body"
+		anchor joint( "Rwing1" )
+		shafts ( 0.21, -0.86, 0.47 ), ( -0.21, 0.86, -0.47 )
+		friction 0.20
+		coneLimit ( 0.21, -0.86, 0.47 ), 30
+	}
+
+	universalJoint "Tail1" {
+		body1 "tail1"
+		body2 "body"
+		anchor joint( "Tail1" )
+		shafts ( -0.97, 0.11, 0.22 ), ( 0.97, -0.11, -0.22 )
+		friction 0.20
+		coneLimit ( -0.97, 0.11, 0.22 ), 80
+	}
+
+}

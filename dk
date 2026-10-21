@@ -265,17 +265,32 @@ RIG_CHARACTERS="hiro mikiko superfly"
 # dead bodies lying on their backs, rigged from their poses for ragdolls:
 # name:model
 RIG_BODIES="dead:e1/m_dead"
+# creatures, rigged from their animations alone (tools/rig/creature_rig.py):
+# name:model:IQM name:bones, and their animations' rates and loops
+RIG_CREATURES="froginator:e1/m_frog:frog:16 slaughterskeet:e1/m_skeeter:skeeter:10"
+RIG_ANIMS_froginator="amba 10 loop;ambb 10;ataka 10;atakb 10;atakc 10;diea 10;hita 10;jumpa 10;runa 15 loop;swima 10 loop;walka 10 loop"
+RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15 loop;hita 10;speciala 10"
 cmd_rig() {
-	local name body
-	[ $# -gt 0 ] || set -- $RIG_CHARACTERS $(for b in $RIG_BODIES; do echo "${b%%:*}"; done)
+	local name body creature anims
+	[ $# -gt 0 ] || set -- $RIG_CHARACTERS $(for b in $RIG_BODIES $RIG_CREATURES; do echo "${b%%:*}"; done)
 	mkdir -p "$DKRES/models/rigged"
 	for name in "$@"; do
 		say "rigging $name"
 		body=""
+		creature=""
 		for b in $RIG_BODIES; do
 			[ "${b%%:*}" = "$name" ] && body=${b#*:}
 		done
-		if [ -n "$body" ]; then
+		for b in $RIG_CREATURES; do
+			[ "${b%%:*}" = "$name" ] && creature=${b#*:}
+		done
+		if [ -n "$creature" ]; then
+			anims=$(eval echo "\"\$RIG_ANIMS_$name\"")
+			set -- "${creature%%:*}" "$(echo "$creature" | cut -d: -f2)" "${creature##*:}" "$@"
+			(cd "$ROOT" && python3 tools/rig/creature_rig.py --bones "$3" --anims "$anims" "$DKRES/models/$1.md3" \
+				"$DKRES/models/rigged/$2" "$name") || die "rigging $name failed"
+			shift 3
+		elif [ -n "$body" ]; then
 			(cd "$ROOT" && python3 tools/rig/autorig.py --lying "$DKRES/models/$body.md3" "$DKRES/models/rigged/$name") \
 				|| die "rigging $name failed"
 		else

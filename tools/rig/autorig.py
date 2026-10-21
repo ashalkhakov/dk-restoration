@@ -1040,7 +1040,12 @@ def ragdoll_af( name, joints, rest, assign ):
 	lines += [ "}", "" ]
 	return "\n".join( lines )
 
-def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase ):
+def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping = None, fps = None ):
+	"""The skeletal IQM: joints, the skin, every frame a pose, the animations
+	named by the frames' names (looping: those that loop, fps their rate).
+	Returns the animations and the joints' rest rotations."""
+	looping = looping or LOOPING
+	fps = fps or ANIM_FPS
 	N, F = len( verts ), m.numFrames
 	nj = len( joints )
 
@@ -1194,7 +1199,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	ofs_tris = place( b"".join( struct.pack( "<3I", *t ) for t in tris ) )
 	ofs_joints = place( b"".join( struct.pack( "<Ii3f4f3f", jointText[j], joints[j]["parentIndex"], *restLocal[j][0], *restLocal[j][1], 1, 1, 1 ) for j in range( nj ) ) )
 	ofs_poses = place( b"".join( struct.pack( "<iI10f10f", joints[j]["parentIndex"], 0x3ff, *chans[j][1], *chans[j][2] ) for j in range( nj ) ) )
-	ofs_anims = place( b"".join( struct.pack( "<IIIfI", animText[k], a[1], a[2], ANIM_FPS, 1 if LOOPING.match( a[0] ) else 0 ) for k, a in enumerate( anims ) ) )
+	ofs_anims = place( b"".join( struct.pack( "<IIIfI", animText[k], a[1], a[2], fps, 1 if looping.match( a[0] ) else 0 ) for k, a in enumerate( anims ) ) )
 	ofs_frames = place( bytes( framedata ) )
 	xs = [ p[0] for p in positions ]; ys = [ p[1] for p in positions ]; zs = [ p[2] for p in positions ]
 	bounds = ( min( xs ) - 8, min( ys ) - 8, min( zs ) - 4, max( xs ) + 8, max( ys ) + 8, max( zs ) + 4 )
@@ -1217,6 +1222,11 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	with open( outBase + ".iqm", "wb" ) as fp:
 		fp.write( out )
 	print( "  wrote %s.iqm: %d joints, %d animations" % ( outBase, nj, len( anims ) ) )
+	return anims, restRot
+
+def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase ):
+	N = len( verts )
+	anims, restRot = write_iqm( m, body, verts, rest, joints, motion, weights, outBase )
 
 	# the model def: animations and hitboxes fitted to each bone's vertexes
 	name = os.path.basename( outBase )

@@ -21,14 +21,20 @@ numbers, Daikatana's `AIData.csv` at medium skill:
   a skeet's crash) bounces it off with that much of its speed and hurts it `impact_damage` per 100 u/s more;
 - `snd_*`: its sound shaders (`sound/dk_monsters_e1.sndshd`), for its script's `startSound()`.
 
-In the campaign, Daikatana's skill scales its health and speeds: x0.75 on easy, x1.25 on hard
+Both die to one hit (health 1): they're small, fast and hard to see. In the campaign, Daikatana's skill scales
+its health and speeds: x0.75 on easy, x1.25 on hard
 (`"skill_scale" "0"` keeps them).
 
 A damage def (`damage_frog_bite`) has `damage`, `damage_random` (more, at most; Daikatana's) and `range`.
 
-The models are the md3s for now, their animations named as their frames are (`"anim runa" "runa 15 loop"`). Rigged
-IQMs keep those names and take their place in the model defs; a model def with a ragdoll (`af/`) makes its
-monster go limp when it dies.
+Their models are rigged from their animations alone by `tools/rig/creature_rig.py` (`./dk rig froginator
+slaughterskeet`): no template, so any creature. It splits the mesh into the pieces that move rigidly over the
+frames, merges those that move alike (to a budget of bones), links them into a skeleton from the body out, puts
+each joint where the two pieces' motions agree, and names the bones by where they are (Body, Head, Tail, L/R
+fore and hind limbs, wings). It writes the IQM, a model def (`def/rig_*.def`, in place of the md3's in
+`dk_monsters_e1.def`, the same animation names) and a ragdoll (`af/monster_*.af`), so a monster goes limp when it
+dies. The frog's tongue stretches tenfold to spit, which a rigid bone can't: it only slides out (joint scale is to
+come).
 
 ## Its script
 
@@ -60,4 +66,5 @@ an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 ## What's to come
 
 Paths (it goes straight at you now: AAS routes are next), the frog's spit, the skeet hatching from a protopod,
-pain reactions on the other monsters, their rigged models and ragdolls.
+their getting noticed (an effect that makes them stand out), leaps as the frog's way to move and hit, the skeet's
+real flight (paths through the air).
