@@ -99,7 +99,7 @@
 			name "face"
 			rect 226 352 128 128
 			ownerdraw CG_PLAYER_FACE
-			text "hud/dk/face_%m_%c"	// see scripts/dk_hud.shader
+			ownerDrawParam "hud/dk/face_%m_%c"	// see scripts/dk_hud.shader
 			forecolor 1 1 1 1
 			decoration
 			visible 1
@@ -159,6 +159,39 @@
 			font CENTER_FONT
 			textscale CENTER_SCALE
 			forecolor 1 1 1 1
+			decoration
+			visible 1
+		}
+	}
+
+	// what use does to what's looked at (g_frob.c): "[E] Take Plasteel
+	// Armor", red when there's no room for it in the inventory
+	menuDef {
+		name "frob_menu"
+		fullScreen MENU_FALSE
+		visible MENU_TRUE
+		rect 0 0 640 480
+		screenPlacement PLACE_CENTER PLACE_CENTER
+
+		itemDef {
+			rect 120 300 400 20
+			ownerdraw CG_FROB_HINT
+			ownerdrawflag CG_SHOW_FROB_ROOM
+			ownerDrawParam "[%k] %a %n"
+			font "fonts/dk/int_font_bright" 18
+			textscale .375
+			forecolor .81 .61 .39 1
+			decoration
+			visible 1
+		}
+		itemDef {
+			rect 120 300 400 20
+			ownerdraw CG_FROB_HINT
+			ownerdrawflag CG_SHOW_FROB_NOROOM
+			ownerDrawParam "[%k] %a %n"
+			font "fonts/dk/int_font_bright" 18
+			textscale .375
+			forecolor .9 .2 .15 1
 			decoration
 			visible 1
 		}

@@ -188,3 +188,15 @@ dk/console
 		clampmap ui/assets/dk/console.tga
 	}
 }
+
+// what a player looks at and can take or use, lit up over its model (g_frob.c,
+// cg_ents.c): The Dark Mod's frob highlight, a pulsing shell
+frobHighlight
+{
+	deformVertexes wave 100 sin 0.5 0 0 0
+	{
+		map $whiteimage
+		blendFunc GL_ONE GL_ONE
+		rgbGen wave sin 0.12 0.08 0 0.8
+	}
+}

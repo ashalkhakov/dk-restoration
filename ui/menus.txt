@@ -7,4 +7,5 @@
 	loadMenu { "ui/dk_panels.menu" }
 	loadMenu { "ui/dk_connect.menu" }
 	loadMenu { "ui/dk_error.menu" }
+	loadMenu { "ui/dk_inventory.menu" }
 }

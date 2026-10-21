@@ -25,6 +25,9 @@
 #   ./dk aas [map...]          bot navigation: an AAS world per creature size
 #                              (./dk build bspc first)
 #   ./dk test [map...]         load each map, check the log, take a screenshot
+#   ./dk invtest               the inventory: take, wear, hurt, use, fill, drop
+#   ./dk script <map> <cmd>... console commands on a map, the log printed
+#                              (HUD=1, BOTS=1)
 #   ./dk install [dir]         copy the mod into a Quake 3 folder
 #
 # Settings for this machine go in dk.local (see dk.local.example).
@@ -643,7 +646,7 @@ play_script() {
 	mkdir -p "$home/$GAME"
 	printf '%s\n' "$@" quit >"$home/$GAME/dk_$name.cfg"
 	(play "$home" +set r_fullscreen 0 +set r_mode -1 +set r_customwidth 960 +set r_customheight 600 \
-		+set s_initsound 0 +set bot_enable 0 +set cg_draw2D "${HUD:-0}" +set cg_drawGun "${HUD:-0}" \
+		+set s_initsound 0 +set bot_enable "${BOTS:-0}" +set g_gametype "${GAMETYPE:-0}" +set cg_draw2D "${HUD:-0}" +set cg_drawGun "${HUD:-0}" \
 		+devmap "$map" +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
 }
 
@@ -735,6 +738,69 @@ contact_sheet() {
 	echo "all: ${sheet#$ROOT/}"
 }
 
+# ./dk script <map> <command>...: runs console commands on a map in the test
+#   home, one a line, and prints what the game printed (out/test/script.log).
+#   HUD=1 keeps the HUD, BOTS=1 lets bots play, GAMETYPE=3 is the campaign.
+cmd_script() {
+	[ $# -ge 2 ] || die "usage: ./dk script <map> <command>..."
+	local map=$1
+	shift
+	mkdir -p "$OUT/test"
+	play_script script "$map" "$@"
+	grep -v '^\^3WARNING\|doesn.t have a spawn function' "$OUT/test/script.log" | tail -60
+}
+
+# ./dk invtest: the inventory on e1m1a, with what it should print checked
+#   (g_inventory.c, g_frob.c): an item looked at taken by use, armor worn,
+#   hurt and taken off with its points, health used, the grid filled until an
+#   item is refused
+cmd_invtest() {
+	local log=$OUT/test/invtest.log failed="" i fill=""
+
+	mkdir -p "$OUT/test"
+	for i in 1 2 3 4 5 6 7 8 9 10; do
+		fill="$fill|spawnitem item_chromatic_armor|wait 10|+use|wait 3|-use|wait 5"
+	done
+	local IFS='|'
+	# shellcheck disable=SC2086
+	play_script invtest e1m1a "g_debugFrob 1" "wait 200" "invlist" \
+		"spawnitem item_plasteel_armor" "wait 20" "screenshotJPEG invtest_hint" "+use" "wait 3" "-use" "wait 10" "invlist" \
+		"invquick armor" "wait 5" "hurt 40" "wait 5" "invremove" "wait 5" "invlist" \
+		"hurt 60" "spawnitem item_health_50" "wait 20" "+use" "wait 3" "-use" "wait 10" \
+		"invquick health" "wait 5" "hurt 0" \
+		"spawnitem weapon_ionblaster" "wait 20" "+use" "wait 3" "-use" "wait 10" \
+		"spawnitem ammo_ionpack" "wait 20" "+use" "wait 3" "-use" "wait 10" "invlist" \
+		"weapon 2" "wait 60" "+attack" "wait 40" "-attack" "wait 20" "invlist" \
+		"invdrop weapon_ionblaster" "wait 20" "invlist" ${fill#|} "spawnitem item_chromatic_armor" "wait 20" "screenshotJPEG invtest_noroom" "wait 10" "invlist" \
+		"invquick armor" "wait 5" "inventory" "wait 30" "screenshotJPEG invtest_screen" "inventory" "wait 5" \
+		"invdrop item_chromatic_armor" "wait 10" "invlist" "wait 20"
+	unset IFS
+
+	check() {
+		if grep -Eq "$2" "$log"; then
+			printf 'ok     %s\n' "$1"
+		else
+			printf 'FAILED %s (no "%s" in out/test/invtest.log)\n' "$1" "$2"
+			failed="$failed|$1"
+		fi
+	}
+	check "taken by use" 'slot [0-9]+: item_plasteel_armor x1 value 200'
+	check "worn armor absorbs" 'hurt: health [0-9]+, armor 170'
+	check "taken off with its points" 'slot [0-9]+: item_plasteel_armor x1 value 170'
+	check "health used" 'hurt: health (1[0-9][0-9]|[6-9][0-9]), armor 0'
+	check "refused when full" 'No room for Chromatic Armor'
+	check "weapon taken" 'slot [0-9]+: weapon_ionblaster x1'
+	check "ammo in stacks" 'slot [0-9]+: ammo_ionpack x[0-9]+'
+	if [ "$(grep -E 'slot [0-9]+: ammo_ionpack x' "$log" | head -1 | sed 's/.* x\([0-9]*\) .*/\1/')" \
+		-gt "$(grep -E 'slot [0-9]+: ammo_ionpack x' "$log" | sed -n 2p | sed 's/.* x\([0-9]*\) .*/\1/')" ] 2>/dev/null; then
+		echo "ok     firing takes from the stacks"
+	else
+		echo "FAILED firing takes from the stacks"; failed="$failed|firing"
+	fi
+	grep -E "$TEST_ERRORS" "$log" | head -5
+	[ -z "$failed" ] || die "invtest failed"
+}
+
 # what makes a map fail its test
 TEST_ERRORS='ERROR|Server crashed|unsupported format|Less than 8 bit|couldn.t open music|MAX_[A-Z_]* exceeded'
 
@@ -773,7 +839,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|rigshots|cine|aas|run|shots|test|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|rigshots|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac

@@ -9,6 +9,7 @@
 
 // what players start with
 entityDef player {
+	"inv_grid"				"10 6"			// the inventory, in cells (g_inventory.c)
 	"weapon"				"weapon_disruptor"
 }
 
@@ -72,6 +73,7 @@ in deathmatch it lasts until death (as here).
 
 entityDef weapon_gashands {
 	"spawnclass"			"item"
+	"inv_size"				"2 1"
 	"inv_weapon"			"weapon_gashands"
 	"inv_name"				"Ultimate Gas Hands"
 	"model"					"models/e1/a_gashand.md3"
@@ -123,6 +125,7 @@ ION BLASTER (slot 2): bolts that bounce off walls
 entityDef weapon_ionblaster {
 	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
+	"inv_size"				"3 1"
 	"inv_weapon"			"weapon_ionblaster"
 	"inv_ammo"				"40"
 	"inv_name"				"Ion Blaster"
@@ -186,6 +189,8 @@ entityDef damage_ion_water {
 
 entityDef ammo_ionpack {
 	"spawnclass"			"item"
+	"inv_size"				"1 1"
+	"inv_stack"				"100"
 	"ammo_type"				"weapon_ionblaster"
 	"inv_ammo"				"40"
 	"inv_name"				"Ion Pack"
@@ -205,6 +210,7 @@ with alt fire (Daikatana's button), or by themselves after a minute
 entityDef weapon_c4viz {
 	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
+	"inv_size"				"2 2"
 	"inv_weapon"			"weapon_c4viz"
 	"inv_ammo"				"8"
 	"inv_name"				"C4 Vizatergo"
@@ -267,6 +273,8 @@ entityDef damage_c4_splash {
 
 entityDef ammo_c4 {
 	"spawnclass"			"item"
+	"inv_size"				"1 1"
+	"inv_stack"				"10"
 	"ammo_type"				"weapon_c4viz"
 	"inv_ammo"				"4"
 	"inv_name"				"C4 Charges"
@@ -285,6 +293,7 @@ row, ten pellets each
 entityDef weapon_shotcycler {
 	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
+	"inv_size"				"4 2"
 	"inv_weapon"			"weapon_shotcycler"
 	"inv_ammo"				"30"
 	"inv_name"				"Shotcycler-6"
@@ -336,6 +345,8 @@ entityDef damage_shotcycler {
 
 entityDef ammo_shells {
 	"spawnclass"			"item"
+	"inv_size"				"1 1"
+	"inv_stack"				"50"
 	"ammo_type"				"weapon_shotcycler"
 	"inv_ammo"				"20"
 	"inv_name"				"Shells"
@@ -354,6 +365,7 @@ SIDEWINDER (slot 5): rockets
 entityDef weapon_sidewinder {
 	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's rifle (client.cpp)
 	"spawnclass"			"item"
+	"inv_size"				"4 2"
 	"inv_weapon"			"weapon_sidewinder"
 	"inv_ammo"				"16"
 	"inv_name"				"Sidewinder"
@@ -413,6 +425,8 @@ entityDef damage_sidewinder_splash {
 
 entityDef ammo_rockets {
 	"spawnclass"			"item"
+	"inv_size"				"1 1"
+	"inv_stack"				"20"
 	"ammo_type"				"weapon_sidewinder"
 	"inv_ammo"				"8"
 	"inv_name"				"Rockets"
@@ -431,6 +445,7 @@ SHOCKWAVE (slot 6): a slow sphere that blasts all around it
 entityDef weapon_shockwave {
 	"player_anim_suffix"		"b"				// the player's animations with it, Daikatana's shoulder weapon (client.cpp)
 	"spawnclass"			"item"
+	"inv_size"				"3 2"
 	"inv_weapon"			"weapon_shockwave"
 	"inv_ammo"				"4"
 	"inv_name"				"Shockwave"
@@ -489,6 +504,8 @@ entityDef damage_shockwave_splash {
 
 entityDef ammo_shocksphere {
 	"spawnclass"			"item"
+	"inv_size"				"1 1"
+	"inv_stack"				"10"
 	"ammo_type"				"weapon_shockwave"
 	"inv_ammo"				"2"
 	"inv_name"				"Shock Spheres"

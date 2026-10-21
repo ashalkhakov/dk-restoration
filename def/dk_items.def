@@ -11,6 +11,7 @@ entityDef item_health_25 {
 	"spawnclass"	"item"
 	"inv_health"	"25"
 	"inv_name"		"Health"
+	"inv_desc"		"Heals 25."
 	"model"			"models/e1/a1_hlth.md3"
 	"icon"			"icons/iconh_yellow"
 	"snd_acquire"	"sounds/global/a_hpick.wav"
@@ -19,7 +20,8 @@ entityDef item_health_25 {
 entityDef item_health_50 {
 	"spawnclass"	"item"
 	"inv_health"	"50"
-	"inv_name"		"Health"
+	"inv_name"		"Large Health"
+	"inv_desc"		"Heals 50."
 	"model"			"models/e1/a1_hlth2.md3"
 	"icon"			"icons/iconh_red"
 	"snd_acquire"	"sounds/global/a_hpick.wav"
@@ -29,18 +31,25 @@ entityDef item_goldensoul {
 	"spawnclass"	"item"
 	"inv_health"	"100"
 	"inv_name"		"Golden Soul"
+	"inv_desc"		"Heals 100, past your health's limit."
 	"model"			"models/global/a_gsoul.md3"
 	"icon"			"icons/iconh_mega"
 	"snd_acquire"	"sounds/global/a_gspick.wav"
 	"sounds"		"sounds/global/a_gswait.wav"
 }
 
-// armor: the model is the episode's; light armor gives 50, heavy 100
+// armor: suits, worn one at a time from the inventory (g_inventory.c). Each
+// has its points ("inv_armor") and takes its share of the damage
+// ("armor_absorb"), Daikatana's (artifacts.cpp); a suit keeps what's left of
+// its points when taken off or dropped. The model is the episode's.
 
 entityDef item_plasteel_armor {
 	"spawnclass"	"item"
-	"inv_armor"		"50"
+	"inv_armor"		"200"
+	"armor_absorb"	"0.75"
+	"inv_size"		"2 3"
 	"inv_name"		"Plasteel Armor"
+	"inv_desc"		"Light armor plates. Takes three quarters of the damage."
 	"model"			"models/e1/a1_ar1.md3"
 	"icon"			"icons/iconr_yellow"
 	"snd_acquire"	"sounds/global/armorpickup1.wav"
@@ -49,7 +58,10 @@ entityDef item_plasteel_armor {
 entityDef item_chromatic_armor {
 	"spawnclass"	"item"
 	"inv_armor"		"100"
+	"armor_absorb"	"0.5"
+	"inv_size"		"2 3"
 	"inv_name"		"Chromatic Armor"
+	"inv_desc"		"A chromed suit. Takes half of the damage."
 	"model"			"models/e1/a1_ar2.md3"
 	"icon"			"icons/iconr_red"
 	"snd_acquire"	"sounds/global/armorpickup2.wav"
@@ -58,31 +70,43 @@ entityDef item_chromatic_armor {
 entityDef item_silver_armor {
 	"inherit"		"item_plasteel_armor"
 	"inv_name"		"Silver Armor"
+	"inv_armor"		"150"
+	"armor_absorb"	"0.65"
 }
 
 entityDef item_chainmail_armor {
 	"inherit"		"item_plasteel_armor"
 	"inv_name"		"Chainmail Armor"
+	"inv_armor"		"125"
+	"armor_absorb"	"0.5"
 }
 
 entityDef item_kevlar_armor {
 	"inherit"		"item_plasteel_armor"
 	"inv_name"		"Kevlar Armor"
+	"inv_armor"		"100"
+	"armor_absorb"	"0.4"
 }
 
 entityDef item_gold_armor {
 	"inherit"		"item_chromatic_armor"
 	"inv_name"		"Gold Armor"
+	"inv_armor"		"200"
+	"armor_absorb"	"0.75"
 }
 
 entityDef item_black_adamant_armor {
 	"inherit"		"item_chromatic_armor"
 	"inv_name"		"Black Adamant Armor"
+	"inv_armor"		"250"
+	"armor_absorb"	"0.8"
 }
 
 entityDef item_ebonite_armor {
 	"inherit"		"item_chromatic_armor"
 	"inv_name"		"Ebonite Armor"
+	"inv_armor"		"200"
+	"armor_absorb"	"0.75"
 }
 
 // artifacts: Daikatana's permanent boosts are timed powerups for now

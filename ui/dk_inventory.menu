@@ -1,0 +1,99 @@
+#include "ui/menudef.h"
+#include "ui/dk_defs.h"
+
+// The inventory screen (ui_inventory.c, g_inventory.c): the grid of what the
+// player carries, packed by the game; the selected item's name, what it is
+// and what it does; the armor worn; buttons for what can be done with the
+// selected item. A click selects, a double click or enter uses, the arrows
+// move through the items. The game goes on behind it; escape or the
+// inventory key closes it.
+
+// a button shown when FLAGS say it applies to the selected item
+#define DK_INV_BUTTON( X, Y, LABEL, COMMAND, FLAGS ) \
+	itemDef { \
+		rect X Y 105 20 \
+		style WINDOW_STYLE_SHADER \
+		background "ui/assets/dk/buttons/medium_up" \
+		ownerdrawflag FLAGS \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		type ITEM_TYPE_BUTTON \
+		rect X Y 105 20 \
+		text LABEL \
+		textalign ITEM_ALIGN_CENTER \
+		textalignx 52 \
+		textaligny 15 \
+		textscale DK_TS \
+		forecolor DK_GOLD \
+		ownerdrawflag FLAGS \
+		visible 1 \
+		action { play DK_SND_PRESS ; uiScript InvCommand COMMAND } \
+	}
+
+// an owner draw's text, in the menus' font
+#define DK_INV_TEXT( X, Y, W, H, OWNERDRAW, SCALE, COLOR ) \
+	itemDef { \
+		rect X Y W H \
+		type ITEM_TYPE_OWNERDRAW \
+		ownerdraw OWNERDRAW \
+		textscale SCALE \
+		forecolor COLOR \
+		decoration \
+		visible 1 \
+	}
+
+{
+	menuDef {
+		name "inventory"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 40 40 560 400
+		focusColor DK_BRIGHT
+		onOpen { play "sounds/menus/enter menu_001.wav" }
+		onEsc { uiScript closeingame }
+
+		// the panel
+		itemDef {
+			rect 0 0 560 400
+			style WINDOW_STYLE_FILLED
+			backcolor 0 0 0 .78
+			border WINDOW_BORDER_FULL
+			bordersize 1
+			bordercolor .81 .61 .39 .6
+			decoration
+			visible 1
+		}
+		DK_LABEL_BRIGHT( 20, 12, "INVENTORY" )
+
+		// the grid, ten by six cells of 34
+		itemDef {
+			name "grid"
+			rect 20 40 340 204
+			type ITEM_TYPE_OWNERDRAW
+			ownerdraw UI_INV_GRID
+			textscale DK_TS_SMALL
+			forecolor DK_BRIGHT
+			visible 1
+		}
+		DK_INV_TEXT( 20, 250, 340, 16, UI_INV_ROOM, DK_TS_SMALL, DK_GOLD )
+
+		// the selected item
+		DK_INV_TEXT( 380, 40, 170, 18, UI_INV_SELNAME, DK_TS, DK_BRIGHT )
+		DK_INV_TEXT( 380, 62, 170, 16, UI_INV_SELINFO, DK_TS_SMALL, DK_GOLD )
+		DK_INV_TEXT( 380, 84, 170, 110, UI_INV_SELDESC, DK_TS_SMALL, DK_GOLD )
+
+		DK_INV_BUTTON( 380, 200, "Use", invuse, UI_SHOW_INV_USABLE )
+		DK_INV_BUTTON( 380, 200, "Wear", invwear, UI_SHOW_INV_WEARABLE )
+		DK_INV_BUTTON( 380, 224, "Drop", invdrop, UI_SHOW_INV_DROPPABLE )
+
+		// the armor worn
+		DK_LABEL( 20, 286, "Armor worn" )
+		DK_INV_TEXT( 20, 306, 340, 48, UI_INV_WORN, DK_TS_SMALL, DK_GOLD )
+		DK_INV_BUTTON( 380, 306, "Take off", invremove, UI_SHOW_INV_WORN )
+		DK_INV_BUTTON( 380, 330, "Drop it", invdropworn, UI_SHOW_INV_WORN )
+
+		DK_BUTTON_MEDIUM( 435, 370, "Close", uiScript closeingame )
+	}
+}
