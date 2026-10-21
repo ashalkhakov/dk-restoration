@@ -270,6 +270,15 @@ to come apart from its body.
 - **Small heads.** The Centurion, the Harpy, the thief, the lab monkey, the Lycanthir and Gharroth keep fewer than 15
   vertexes on `Head`; their heads move with the neck or the chest. Toshiro lies in his coffin (`lying`) and his head is
   on `Loneck`.
+- **Dead knees.** A low-poly leg is rings of vertexes at the hip, the knee and the ankle, so the shin has none of its
+  own: the cyclops, the lab worker, the fat and the skinny workers, the priest, the SEAL girl and torture1 have a
+  `Lloleg` or `Rloleg` with fewer than four vertexes. It moves with the thigh, the ankle bone carries the shin and the
+  foot, and the joints' local translations swing a few units as they walk (bones stretch). The skinned mesh is still
+  Daikatana's (the fat worker's walk, skinned from its IQM as the renderer does, is 0.24 units off on average, Hiro's
+  0.23), but the skeleton doesn't bend where the legs do, which the walk IK and retargeting need. Turning each bone
+  about its joint wherever its parent carries it (so bones keep their length) made the fit 1.5 to 5 units off, as the
+  joints are only roughly placed: solving the joints and the bones' turns together (a constrained SSDR) is what's
+  needed.
 - Some hardpoints land on surprising bones (Kage's `sword1` on a thigh, the chain gang's muzzle on a thigh): the bone
   whose motion carries the triangle best, which is where Daikatana's frames have it.
 
