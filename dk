@@ -113,7 +113,7 @@ cmake_args() {
 	[ -n "$CMAKE_BUILD_TYPE" ] && args="-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE"
 	case $1 in
 		spearmint) args="$args $SPEARMINT_CMAKE_ARGS" ;;
-		mint-arena) args="$args -DUSE_SCRIPTED_UI=ON -DUSE_BASEGAME_MP_HUD=ON $MINT_ARENA_CMAKE_ARGS" ;;
+		mint-arena) args="$args -DUSE_BASEGAME_MP_HUD=ON $MINT_ARENA_CMAKE_ARGS" ;;
 	esac
 	printf '%s' "$args"
 }
