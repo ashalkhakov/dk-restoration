@@ -5,6 +5,23 @@
 // Positions are Daikatana's (dk_menu_*.cpp), less the panel corner (80, 90).
 
 {
+	// Single player: Daikatana's new game (dk_menu_newgame.cpp), its
+	// difficulty, Hiro's pictures over it; the campaign (g_gametype 3) from
+	// the first map, carrying nothing (g_persistant 0)
+	menuDef {
+		DK_PANEL( dk_singleplayer )
+
+		DK_LABEL_BRIGHT( 140, 30, "Select Difficulty:" )
+
+		DK_PIC( 8, 60, 96, 192, "pics/menu/skill_0" )
+		DK_PIC( 138, 60, 96, 192, "pics/menu/skill_1" )
+		DK_PIC( 268, 60, 96, 192, "pics/menu/skill_2" )
+
+		DK_BUTTON_MEDIUM( 2, 260, "Ronin", setcvar g_skill 0 ; DK_NEW_GAME )
+		DK_BUTTON_MEDIUM( 132, 260, "Samurai", setcvar g_skill 1 ; DK_NEW_GAME )
+		DK_BUTTON_MEDIUM( 262, 260, "Shogun", setcvar g_skill 2 ; DK_NEW_GAME )
+	}
+
 	// Multiplayer: who you are and where to play
 	menuDef {
 		DK_PANEL( dk_multiplayer )

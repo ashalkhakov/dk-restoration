@@ -1,17 +1,19 @@
-// Game types the menus offer (description, g_gametype)
+// Game types the menus offer (description, g_gametype: mint-arena's
+// gametype_t, 3 the campaign, which the single player plaque starts)
 gametypes {
   { "Deathmatch" 0 }
   { "Tournament" 1 }
-  { "Team Deathmatch" 3 }
-  { "Capture the Flag" 4 }
+  { "Team Deathmatch" 4 }
+  { "Capture the Flag" 5 }
 }
 
 joingametypes {
   { "All" -1 }
   { "Deathmatch" 0 }
   { "Tournament" 1 }
-  { "Team Deathmatch" 3 }
-  { "Capture the Flag" 4 }
+  { "Campaign" 3 }
+  { "Team Deathmatch" 4 }
+  { "Capture the Flag" 5 }
 }
 
 // the map list comes from scripts/*.arena

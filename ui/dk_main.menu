@@ -32,7 +32,7 @@
 
 		DK_PIC( 0, 0, 640, 480, "ui/assets/dk/background" )
 
-		DK_PLAQUE_OFF( plaque_singleplay, 67, 8.350, "ui/dk/plaque_singleplay" )
+		DK_PLAQUE( plaque_singleplay, 67, 8.350, "ui/dk/plaque_singleplay", DK_CLOSE_PANELS ; open dk_singleplayer )
 		DK_PLAQUE( plaque_multi, 95, 7.185, "ui/dk/plaque_multi", DK_CLOSE_PANELS ; open dk_multiplayer )
 		DK_PLAQUE_OFF( plaque_loadgame, 122, 6.020, "ui/dk/plaque_loadgame" )
 		DK_PLAQUE_OFF( plaque_savegame, 150, 4.855, "ui/dk/plaque_savegame" )

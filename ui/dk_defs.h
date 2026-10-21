@@ -23,9 +23,12 @@
 #define DK_SND_ROTATE_BACK	"sounds/menus/600ms rotate descend_001.wav"
 
 // close every panel, before one opens
-#define DK_CLOSE_PANELS		close dk_multiplayer ; close dk_join ; close dk_host ; close dk_sound ; \
+#define DK_CLOSE_PANELS		close dk_singleplayer ; close dk_multiplayer ; close dk_join ; close dk_host ; close dk_sound ; \
 							close dk_video ; close dk_mouse ; close dk_keyboard ; close dk_options ; \
 							close dk_credits ; close dk_quit
+
+// a new campaign (g_skill set before it): Daikatana's first map
+#define DK_NEW_GAME			setcvar g_gametype 3 ; setcvar g_spawnTarget "" ; setcvar g_persistant 0 ; exec "map e1m1a"
 
 // the plaques of the column on the right: Daikatana's 3D buttons. Each is
 // models/interface/ib_button in Daikatana's menu view at (35 -3.3 Z), turned
