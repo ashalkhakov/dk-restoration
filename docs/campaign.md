@@ -8,8 +8,15 @@ sidekicks and cutscenes come later (see `roadmap-sp.md`).
 ## Playing it
 
 From the menu: **Single Player**, then a difficulty: Ronin, Samurai or Shogun (`g_skill` 0, 1, 2). It starts
-at `e1m1a`. **Load Game** in the main menu, and **Load Game** and **Save Game** in the menu during a game, use
-the quick save or one of four slots.
+at `e1m1a`. **Load Game** in the main menu, and **Load Game** and **Save Game** in the menu during a game, list
+the saved games as Daikatana does, newest first, with the selected one's map picture, episode and map, health,
+armor, secrets, time and date. Saving takes a name, the map's by default; picking a save saves over it.
+
+The panels are `ui/dk_panels.menu`; the list is the listbox feeder `FEEDER_SAVEGAMES` (column 0 the name, 1 the
+date), the selected save's details the owner draws `UI_SAVE_SHOT`, `UI_SAVE_TITLE`, `UI_SAVE_INFO` and
+`UI_SAVE_GEMS`, its buttons shown by `UI_SHOW_SAVE_SELECTED`, and they act through `uiScript LoadSaves`,
+`SaveName`, `LoadSave`, `SaveGame` (as the cvar `ui_saveName`) and `DeleteSave` (`ui_saves.c`). What they
+show is the save header's `saveInfo_t` (`bg_public.h`).
 
 From the console:
 

@@ -640,14 +640,15 @@ cmd_install() {
 # runs a script in the engine, its own home so it doesn't touch yours:
 # play_script <name> <map> <commands...>; map "-" for the main menu
 play_script() {
-	local name=$1 map=$2 home=$OUT/test-home
+	local name=$1 map=$2 home=$OUT/test-home devmap=()
 	shift 2
+	[ "$map" = - ] || devmap=(+devmap "$map")
 	assemble "$home" link
 	mkdir -p "$home/$GAME"
 	printf '%s\n' "$@" quit >"$home/$GAME/dk_$name.cfg"
 	(play "$home" +set r_fullscreen 0 +set r_mode -1 +set r_customwidth 960 +set r_customheight 600 \
 		+set s_initsound 0 +set bot_enable "${BOTS:-0}" +set g_gametype "${GAMETYPE:-0}" +set cg_draw2D "${HUD:-0}" +set cg_drawGun "${HUD:-0}" \
-		$([ "$map" = - ] || echo +devmap "$map") +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
+		${devmap[@]+"${devmap[@]}"} +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
 }
 
 cmd_shots() {

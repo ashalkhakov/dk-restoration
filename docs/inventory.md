@@ -109,3 +109,7 @@ highlight is the `frobHighlight` shader (`scripts/dk_ui.shader`).
   Dark Mod's `xdata` readables, with a tab of their own.
 - Weight, as Fallout 4 and Stalker have, beside the grid or instead of it (`inv_weight`).
 - Moving items in the grid by hand, if players want it (the cells are in the playerState already).
+- Damage worked out from everything, as Fallout 4 does: the attacker's weapon and skills, the target's armor
+  and skills, the kind of damage, distance and the part hit. One function both sides' defs feed (the weapon's
+  damage and damage type, `armor_absorb` and resistances by damage type, the skills of `roadmap-sp.md`) in place
+  of `CheckArmor`'s single absorb, so players and monsters go through the same sum.

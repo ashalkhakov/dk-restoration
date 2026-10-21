@@ -5,6 +5,83 @@
 // Positions are Daikatana's (dk_menu_*.cpp), less the panel corner (80, 90).
 
 
+
+// the save and load panels' list of saves (FEEDER_SAVEGAMES): the name and
+// when it was saved, to the minute; DOUBLECLICK what a double click does
+#define DK_SAVE_LIST( X, Y, W, H, DOUBLECLICK ) \
+	itemDef { \
+		name savelist \
+		rect X Y W H \
+		type ITEM_TYPE_LISTBOX \
+		style WINDOW_STYLE_EMPTY \
+		elementwidth W \
+		elementheight 16 \
+		textscale DK_TS_SMALL \
+		elementtype LISTBOX_TEXT \
+		feeder FEEDER_SAVEGAMES \
+		border 1 \
+		bordersize 2 \
+		bordercolor .5 .1 .1 1 \
+		forecolor DK_GOLD \
+		outlinecolor DK_SELECT \
+		visible 1 \
+		columns 2	2 120 14		124 110 16 \
+		doubleClick { DOUBLECLICK } \
+	}
+
+// the selected save: its map's picture beside the list, its episode and
+// map at Y, and how the player was at INFO_Y, under it
+#define DK_SAVE_DETAILS( X, Y, INFO_Y ) \
+	itemDef { \
+		rect 285 35 120 100 \
+		ownerdraw UI_SAVE_SHOT \
+		border 1 \
+		bordersize 1 \
+		bordercolor .5 .1 .1 1 \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		rect X Y 380 16 \
+		ownerdraw UI_SAVE_TITLE \
+		textscale DK_TS \
+		forecolor DK_BRIGHT \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		rect X INFO_Y 380 80 \
+		ownerdraw UI_SAVE_INFO \
+		textscale DK_TS_SMALL \
+		forecolor DK_GOLD \
+		decoration \
+		visible 1 \
+	}
+
+// a button shown when FLAGS hold
+#define DK_SAVE_BUTTON( X, Y, LABEL, FLAGS, ACTIONS ) \
+	itemDef { \
+		rect X Y 105 20 \
+		style WINDOW_STYLE_SHADER \
+		background "ui/assets/dk/buttons/medium_up" \
+		ownerdrawflag FLAGS \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		type ITEM_TYPE_BUTTON \
+		rect X Y 105 20 \
+		text LABEL \
+		textalign ITEM_ALIGN_CENTER \
+		textalignx 52 \
+		textaligny 15 \
+		textscale DK_TS \
+		forecolor DK_GOLD \
+		ownerdrawflag FLAGS \
+		visible 1 \
+		action { play DK_SND_PRESS ; ACTIONS } \
+	}
+
 // a key binding row, a page's title and an arrow, in a page's group and
 // shown with it
 #define DK_KEY_BIND( PAGE, VISIBLE, X, Y, LABEL, COMMAND ) \
@@ -65,28 +142,42 @@
 		DK_BUTTON_MEDIUM( 262, 260, "Shogun", setcvar g_skill 2 ; DK_NEW_GAME )
 	}
 
-	// Load and save: the campaign's saved games (save/<name>.svg, the game's
-	// loadgame and savegame); a save costs a Save Gem, as in Daikatana
+	// Load Game: Daikatana's list of saves (dk_menu_loadgame.cpp), newest
+	// first, and the selected one's map, how the player was, when it was
+	// saved (ui_saves.c)
 	menuDef {
 		DK_PANEL( dk_loadgame )
+		onOpen { uiScript LoadSaves }
 
-		DK_LABEL_BRIGHT( 20, 20, "Load a saved game:" )
-		DK_BUTTON_LONG( 20, 55, "Quick Save", exec "loadgame quick" )
-		DK_BUTTON_LONG( 20, 85, "Slot 1", exec "loadgame slot1" )
-		DK_BUTTON_LONG( 20, 115, "Slot 2", exec "loadgame slot2" )
-		DK_BUTTON_LONG( 20, 145, "Slot 3", exec "loadgame slot3" )
-		DK_BUTTON_LONG( 20, 175, "Slot 4", exec "loadgame slot4" )
+		DK_LABEL_BRIGHT( 20, 10, "Load a saved game:" )
+		DK_SAVE_LIST( 20, 35, 250, 150, uiScript LoadSave )
+		DK_SAVE_DETAILS( 20, 195, 212 )
+
+		DK_SAVE_BUTTON( 285, 155, "Load", UI_SHOW_SAVE_SELECTED, uiScript LoadSave )
+		DK_SAVE_BUTTON( 285, 180, "Delete", UI_SHOW_SAVE_SELECTED, uiScript DeleteSave )
 	}
 
+	// Save Game: the same list; a name, the map's by default, a save picked
+	// to save over it (dk_menu_savegame.cpp)
 	menuDef {
 		DK_PANEL( dk_savegame )
+		onOpen { uiScript LoadSaves ; uiScript SaveName }
 
-		DK_LABEL_BRIGHT( 20, 20, "Save the game (a Save Gem each):" )
-		DK_BUTTON_LONG( 20, 55, "Quick Save", exec "savegame quick" ; DK_CLOSE_PANELS ; uiScript closeingame )
-		DK_BUTTON_LONG( 20, 85, "Slot 1", exec "savegame slot1" ; DK_CLOSE_PANELS ; uiScript closeingame )
-		DK_BUTTON_LONG( 20, 115, "Slot 2", exec "savegame slot2" ; DK_CLOSE_PANELS ; uiScript closeingame )
-		DK_BUTTON_LONG( 20, 145, "Slot 3", exec "savegame slot3" ; DK_CLOSE_PANELS ; uiScript closeingame )
-		DK_BUTTON_LONG( 20, 175, "Slot 4", exec "savegame slot4" ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_LABEL_BRIGHT( 20, 10, "Save the game (a Save Gem each):" )
+		DK_SAVE_LIST( 20, 35, 250, 150, uiScript SaveGame ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_SAVE_DETAILS( 20, 195, 212 )
+
+		DK_LABEL( 20, 308, "Name:" )
+		DK_FIELD( 80, 306, "ui_saveName", 32 )
+		DK_BUTTON_MEDIUM( 285, 306, "Save", uiScript SaveGame ; DK_CLOSE_PANELS ; uiScript closeingame )
+		itemDef {
+			rect 20 332 250 16
+			ownerdraw UI_SAVE_GEMS
+			textscale DK_TS_SMALL
+			forecolor DK_GOLD
+			decoration
+			visible 1
+		}
 	}
 
 	// Multiplayer: who you are and where to play

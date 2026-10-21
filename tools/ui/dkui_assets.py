@@ -132,8 +132,11 @@ def write_buttons(dkres):
         magick(src, "-crop", "%dx%d+%d+%d" % (widths[c], height, xs[c], ys[c]), "+repage",
                "-alpha", "set", "-fill", "none", "-opaque", TRANSPARENT, "-define", "tga:alpha", dst)
 
-        # a toenail gets its arrow on it, as Daikatana's list arrows have
+        # a toenail gets its arrow on it, as Daikatana's list arrows have;
+        # the bare one is kept for the scroll bar's thumb
         way, _, state = name.partition("_")
+        if name == "up_off":
+            magick(dst, "-define", "tga:alpha", os.path.join(outdir, "toenail.tga"))
         if way in ARROW_GLYPHS:
             font = "int_font_bright" if state == "on" else "int_font"
             fh, fwidths, fxs, fys = read_dkf(os.path.join(dkres, "fonts", font + ".dkf"))
@@ -191,7 +194,7 @@ def write_fixed_assets(dkres):
     # the scroll bar track and thumb: the slider's bar and the plain "off" toenail
     magick(os.path.join(buttons, "slider_bar.tga"), "-rotate", "90", "-define", "tga:alpha",
            os.path.join(assets, "scrollbar.tga"))
-    magick(os.path.join(buttons, "up_off.tga"), "-define", "tga:alpha", os.path.join(assets, "scrollbar_thumb.tga"))
+    magick(os.path.join(buttons, "toenail.tga"), "-define", "tga:alpha", os.path.join(assets, "scrollbar_thumb.tga"))
     magick(os.path.join(dkres, "pics", "interface", "cursor_01.tga"), "-define", "tga:alpha",
            os.path.join(assets, "dk", "cursor.tga"))
     print("fixed assets ->", assets)
