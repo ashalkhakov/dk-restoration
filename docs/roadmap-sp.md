@@ -92,22 +92,23 @@ objectives, AF physics. Quake 2 and DK are a reference for how Daikatana behaves
 | Levels of several maps | Quake 2 units on RTCW's changelevel | Keep each map of a level when leaving it (Quake 2's level files) so you can go back. Carry the player, sidekicks and inventory across; cross-level flags. |
 | Triggers and movers | DK's set on Quake 3's | changelevel, counter, relay, secret, crosslevel, script, sidekick, inventory removal; doors, trains with rotation, explosive walls, `func_monitor`, etc. As defs where possible. |
 | Inventory and keys | Doom 3's `idInventory` | Items and keys are defs. `keyname` locks with use-once and unlock. The item sack, inventory and objectives are script menus. |
-| Objectives | Doom 3 (PDA) / RTCW (notebook) | DK has none: add them, as defs set by scripts, shown in a script menu. |
+| Objectives | Doom 3 (PDA) / RTCW (notebook) | DK has none: add them, as quests of goals in defs, set by scripts, shown in a script menu. See §4. |
 | Monsters | RTCW AI Cast | AAS movement, sight and hearing, attacks, and scripted actions. Each DK monster is a def (stats from `AIData.csv`, animations, attacks) plus C where it needs its own behaviour. Ragdoll deaths. |
 | Sidekicks | AI Cast | Follow, stay, attack, back off, come, get; pick up their own items; HUD status (script). Level exits that need them. |
 | Scripts | Doom 3's script system (done; see `scripts.md`) | Straight-line code in threads, map scripts, script objects, scriptable items. DK's `.sca` converted to Doom 3 scripts; actions mapped to events (animate, moveto, face, say, use, attack, spawn…). |
-| Cutscenes | Doom 3 cinematic mode + RTCW camera splines | DK's `.script` shots converted to camera paths with actors. Letterbox, skip, and fades in scripts. |
+| Cutscenes | Doom 3 cinematic mode + RTCW camera splines | DK's `.script` shots converted to camera paths with actors. Letterbox, skip, and fades in scripts. See §4. |
 | Dialogue and subtitles | Doom 3 sound shaders | Subtitles per line (DK names them by sound), shown by the HUD script; sidekick banter on nodes, as areas or triggers. |
-| XP | DK's rules | Five stats in the persistent player state, level-up menu in script, stat tables in defs. |
+| XP and skills | DK's XP, System Shock 2's spending | Experience buys points to invest in skills (DK's five stats first), in defs and a script menu. See §4. |
 | Coop | DK's coop on the above | Character select (Hiro, Mikiko, Superfly), shared progress, per-player inventory, respawn at checkpoints. |
 
 **Rebalancing.** Monsters should be fun to fight, not DK's hit-scan swarms. Their stats, ranges, reaction times and
 attack rates live in defs. Each monster gets Doom 3-style telegraphs (wind-ups, sounds) and a test map. Episode 1 is
 tuned first.
 
-## 3. Vehicles: the dump trucks
+## 3. Vehicles: the dump trucks and Charon's boat
 
-The trucks drive in cutscenes, simulated rather than animated, and could be drivable later.
+The trucks drive in cutscenes, simulated rather than animated, and could be drivable later. In episode 2, Charon
+ferries you across the Styx: his boat floats and he poles it, simulated too (DK's `ferryman.cpp` moved it on a path).
 
 - **Doom 3** builds vehicles as articulated figures: `idAFEntity_VehicleSimple`, and the four-wheeled kinds with
   `idAFConstraint_Suspension` and `HingeSteering`. We have the AF port now, so a truck is a chassis body, wheel
@@ -116,7 +117,85 @@ The trucks drive in cutscenes, simulated rather than animated, and could be driv
 - **q3rally** (GPL) is an arcade car built for Quake 3, with a predicted client and its own spring physics. Its
   feel and HUD are worth reading, but its physics would duplicate the AF's.
 
-**Recommendation:** Doom 3's AF vehicles. Read q3rally for handling if driving needs it.
+**Recommendation:** Doom 3's AF vehicles (`idAFEntity_VehicleFourWheels`; `VehicleSimple` for a quick one). Read
+q3rally for handling if driving needs it.
+
+**The boat.** Doom 3 has no buoyancy (its physics have no liquids), so it is ours: an AF (or one rigid body) whose
+bodies feel buoyancy where they're under the water's surface (the submerged part of each body's box times the water's
+density, at its middle) and drag in the water, so it bobs, tilts as people stand in it and drifts. Charon is an actor
+standing in it, his pole pushing it (a force at the stern) along a path a script gives him, so his animation and the
+boat's motion agree. The player rides it as on a mover: what stands on it moves with it.
+
+## 4. The next four systems
+
+What Daikatana did, and how we make each work here, from code in Quake 3's line or Doom 3.
+
+### Cutscenes and camera control
+
+DK played three kinds: camera-shot cinematics (`cin/scripts/*.script`, binary, made in its cinematic editor: shots
+with spline cameras, actors with animations and moves, sounds and fades), AI scripts (`cin/aiscripts/*.sca`) and
+full-motion video.
+
+- **Cinematic mode: Doom 3's.** `sys.setCamera( camera )` puts every player's view on a camera entity and
+  `sys.firstPerson()` gives it back, as `idGameLocal::SetCamera` does. Meanwhile the player is frozen and unhurt,
+  the HUD hides and the screen is letterboxed (a cgame and HUD-script flag), and a key skips: the game runs on
+  quickly to the cutscene's end (Doom 3's `skipCinematic`). Fades are script events (`fadeIn`/`fadeOut`), drawn by
+  the HUD.
+- **Cameras: RTCW's splines, ported to C.** RTCW's `idCameraDef` (Quake 3's spline library) gives a camera's
+  position and its target as splines, fixed points or interpolated ones over time, plus FOV. It's the closest match
+  to DK's spline shots, and plain math. A `func_cameraspline` entity (a camera def, or keys) is evaluated by the
+  server and the client alike: the server sends which camera and when it started (an entity event), and the client
+  evaluates it each frame for a smooth view, as RTCW's client did. Doom 3's `idCameraAnim` (md5camera, baked
+  frames) can come later, if a cutscene is made in a modeller.
+- **DK's cinematics: converted.** A tool reads `cin/scripts/*.script` and writes, for each, camera defs (its shots)
+  and a Doom 3 script that runs them: spawns the actors, plays their animations, moves and turns them, plays the
+  sounds and lines (with subtitles), cuts and fades, as DK's player did. Maps start them as DK's maps did, through
+  the converted entities. The converter is a tool; its output isn't shipped.
+- **AI scripts** (`.sca`): converted to Doom 3 scripts too, with their actions as events on characters.
+- **Made to be edited.** The story may change, so the cinematics are sources we edit, not a build product:
+  - everything is text: cameras in RTCW's `.camera` format (it reads and writes text), each cutscene a plain Doom 3
+    script with a function per shot, actors and lines by name;
+  - the converted cutscenes aren't committed (they're DK's data), but our changes are: a cutscene or a single shot of
+    ours, in the repository, takes the place of the converted one by name, so reconverting keeps them; new cutscenes
+    are ours entirely;
+  - in the game (cheats on): play a cutscene from any time, step shot by shot, show the camera paths, fly a camera
+    and drop its points, and save them back to its `.camera` file. RTCW edited its cameras in Radiant; this is the
+    same job, where the actors and the level are.
+
+### Characters going about their day
+
+DK's people mostly stand and play idles, or follow `.sca` scripts. For a town or a lab that feels lived in:
+
+- **Combat and following: RTCW's AI Cast** for humans and sidekicks (AAS movement, sight and hearing, cover,
+  attacks, follow), as planned. It is bot-like, which is what the user wants for them.
+- **Routines: Doom 3's path entities and script states**, and a schedule on top. Doom 3's scientists walk
+  `path_corner`s and play animations at `path_anim`s, waiting at `path_wait`, all in script. We add Fallout's
+  sandbox idea: a character has a routine, a list of jobs (go there, use this, sit, talk to someone, wander a
+  room), each a script function, chosen by time and conditions. Jobs are entities in the map (a bench, a machine,
+  a spot) that say which animations to play there. Alarmed or attacked, it drops the routine for AI Cast's combat
+  or flight.
+- **Barks and conversations:** sound shaders and subtitles, triggered by jobs (two characters at a talk spot).
+
+### Vehicles
+
+As §3: the trucks as Doom 3 AF vehicles, the boat with buoyancy of our own. Both need the server-side figures
+of §1 to be seen alike by every player.
+
+### Goals, inventory and skills
+
+Linear, with goals, like System Shock 2, and an inventory, like Fallout 4.
+
+- **Inventory: Doom 3's `idInventory`**, with DK's items as defs (done as the item sack). Add a carry limit if it
+  helps, and an inventory screen in script: items, keys, quest items, each with a description and a model.
+- **Goals: quests of goals in defs.** Doom 3 shows objectives (`idObjective`, in the PDA) and RTCW's notebook
+  lists them; neither has stages. A quest def lists its goals; scripts call `setGoal`, `completeGoal`,
+  `failGoal`; the HUD announces changes and the goals screen (script) shows the current ones and those done.
+  Saved with the game, carried across maps.
+- **Experience and skills.** DK gave experience for kills and found things, and raised five stats (power, attack,
+  speed, acro, vita) at each level. Here, as in System Shock 2, experience buys points that the player invests:
+  skill defs, each with ranks, a cost per rank, and what a rank changes (damage, rate of fire, run speed, jump,
+  health, carry limit, and later the weapon skills or sidekick commands). The game applies them as modifiers where
+  those numbers are read; the skills screen is a script menu. DK's five stats are the first five skills.
 
 ## Order
 
@@ -130,11 +209,13 @@ Each step ends with something to play:
 3. **The first monsters:** Doom 3's monsters (an entity, its behaviour in script; `monsters.md`): the Froginator and
    the Slaughter Skeet first (in), then their rigged models and ragdoll deaths, paths, e1's roster, tuned. Humans
    and sidekicks, bot-like, on RTCW's AI Cast.
-4. **Scripts and cutscenes:** the language is in (Doom 3's, `scripts.md`). Then `.sca` and `.script` converted to
-   it, cinematic mode, subtitles. e1's intro and its scenes.
+4. **Scripts and cutscenes** (§4): the language is in (Doom 3's, `scripts.md`). Next: cinematic mode, RTCW's
+   spline cameras in C, DK's `.script` cinematics converted, then the `.sca` scripts and subtitles. e1's intro and
+   its scenes.
 5. **Sidekicks:** Superfly first, his commands and HUD.
-6. **XP and the HUD and menus** for inventory, objectives and stats.
-7. **The trucks**, simulated in their cutscenes, then drivable.
+6. **Goals, inventory and skills** (§4): quests, the inventory and goals screens, experience and skills.
+7. **The trucks**, simulated in their cutscenes, then drivable; **Charon's boat** for episode 2.
+   Characters' routines come with the first map that needs them lived in.
 8. **Coop.**
 9. Episodes 2–4: monsters, scripts, tuning.
 
