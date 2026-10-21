@@ -17,10 +17,14 @@ How (a small form of skinning decomposition, Le & Deng's SSDR):
     frames better (two weights a vertex).
  5. Daikatana's hardpoints (hp_gun, ctf_flag: a triangle each) become rigid
     attachment joints, as Doom 3's *_ATTACHER joints.
+With --lying, the model lies on its back, its head toward -x (as Daikatana's
+dead bodies: their frames are poses, not animations): it's rigged stood up,
+head up and facing +x, and everything written is turned back to lying.
 The joints' rest frames are the mesh's first frame; every frame of the MD3
 becomes a pose, its animations (named by the frame names) the IQM's.
 
 	python3 tools/rig/autorig.py dkres/models/global/m_hiro.md3 dkres/models/rigged/hiro
+	python3 tools/rig/autorig.py --lying dkres/models/e1/m_dead.md3 dkres/models/rigged/dead
 writes dkres/models/rigged/hiro.iqm and def/char_hiro.def (the model def,
 with hitboxes fitted to the bones) and prints how far the skinned frames
 are from the original ones. ./dk rig runs it for the characters.
@@ -362,6 +366,21 @@ def place_template( rest, tris, headVerts, gunHand = None ):
 	print( "  neck %.1f, shoulders %.1f (%.1f wide), crotch %.1f, feet %.1f" % ( zNeck, zShoulder, 2 * shoulderY, zCrotch, zmin ) )
 	return joints, hairIdx
 
+# --lying: model space from the space rigged in (stood up: x' = z, y' = y,
+# z' = -x, the head up and the face forward); None standing
+TO_MODEL = None
+
+def stand_up( v ):
+	return ( v[2], v[1], -v[0] )
+
+def lie_down( v ):
+	return ( -v[2], v[1], v[0] )
+
+LIE_DOWN = [ [ 0.0, 0.0, -1.0 ], [ 0.0, 1.0, 0.0 ], [ 1.0, 0.0, 0.0 ] ]	# lie_down as a matrix
+
+def to_model( v ):
+	return TO_MODEL( v ) if TO_MODEL else v
+
 # Daikatana plays its characters' animations at 20 frames a second
 # (FRAMETIME_FPS20: client_init.cpp, bot.cpp, Sidekick.cpp)
 ANIM_FPS = 20.0
@@ -493,6 +512,9 @@ def load_pins( name, body, verts, J ):
 
 def main( md3Path, outBase ):
 	m = MD3( md3Path )
+	if TO_MODEL:
+		for sf in m.surfaces:
+			sf.frames = [ [ stand_up( v ) for v in frame ] for frame in sf.frames ]
 	# the body: every surface but the hardpoints
 	body = [ s for s in m.surfaces if s.name not in HARDPOINTS ]
 	hps = [ s for s in m.surfaces if s.name in HARDPOINTS ]
@@ -883,12 +905,21 @@ def ragdoll_af( name, joints, rest, assign ):
 	P = lambda n: joints[J[n]]["pos"]
 	def pts( names ):
 		return [ rest[i] for i in range( len( rest ) ) if joints[assign[i]]["name"] in names ]
+	H = max( v[2] for v in rest ) - min( v[2] for v in rest )
 	def box( names, shrink = 0.85 ):
 		ps = pts( names )
+		if len( ps ) < 8:
+			# a bone with few vertexes of its own (a pelvis skinned to the
+			# thighs): the body about its joint
+			c = P( names[0] )
+			ps = [ v for v in rest if vlen( vsub( v, c ) ) < 0.1 * H ]
 		lo = [ min( p[k] for p in ps ) for k in range( 3 ) ]
 		hi = [ max( p[k] for p in ps ) for k in range( 3 ) ]
 		c = [ 0.5 * ( lo[k] + hi[k] ) for k in range( 3 ) ]
 		h = [ max( 1.0, 0.5 * ( hi[k] - lo[k] ) * shrink ) for k in range( 3 ) ]
+		if len( pts( names ) ) < 8:
+			# a pelvis at least (thick, wide, tall, of the height)
+			h = [ max( h[0], 0.06 * H ), max( h[1], 0.08 * H ), max( h[2], 0.05 * H ) ]
 		return c, h
 	def width( names, a, b ):
 		d = vsub( b, a )
@@ -900,6 +931,8 @@ def ragdoll_af( name, joints, rest, assign ):
 		ds.sort()
 		return max( 2.0, 2 * 0.9 * ds[int( 0.7 * ( len( ds ) - 1 ) )] ) if ds else 3.0
 	def vec( v ):
+		return "( %.2f, %.2f, %.2f )" % tuple( to_model( v ) )
+	def raw( v ):
 		return "( %.2f, %.2f, %.2f )" % tuple( v )
 	def end_of( names, a, b ):
 		"""where the limb's vertexes reach past b along a->b"""
@@ -927,6 +960,8 @@ def ragdoll_af( name, joints, rest, assign ):
 			  "	}", "" ]
 	def body_box( bname, joint, names, mod = "orientation" ):
 		c, h = box( names )
+		if TO_MODEL:
+			h = [ abs( x ) for x in to_model( h ) ]		# the box's extents turned with it
 		lines.extend( [ "	body \"%s\" {" % bname,
 						"		joint \"%s\"" % joint,
 						"		mod %s" % mod,
@@ -975,7 +1010,8 @@ def ragdoll_af( name, joints, rest, assign ):
 						"	}", "" ] )
 	def hinge( cname, body1, body2, anchor, axis, straight, forward, bend, friction = 0.2 ):
 		"""body1 turns about axis from straight to bend degrees towards forward"""
-		axis = vnorm( axis )
+		# in model space: the game takes the limit's reference from the axis
+		axis, straight, forward = to_model( vnorm( axis ) ), to_model( straight ), to_model( forward )
 		flat = lambda v: vnorm( vsub( v, vscale( axis, vdot( v, axis ) ) ) )
 		straight = flat( straight )
 		sign = 1.0 if vdot( rodrigues( straight, axis, 0.1 ), forward ) > vdot( straight, forward ) else -1.0
@@ -987,7 +1023,7 @@ def ragdoll_af( name, joints, rest, assign ):
 						"		body1 \"%s\"" % body1,
 						"		body2 \"%s\"" % body2,
 						"		anchor joint( \"%s\" )" % anchor,
-						"		axis %s" % vec( axis ),
+						"		axis %s" % raw( axis ),
 						"		friction %.2f" % friction,
 						"		limit %.1f, %.1f, %.1f" % ( a0, bend + 10, a2 ),
 						"	}", "" ] )
@@ -1046,7 +1082,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 			r, o = world( j, f )
 			pi = joints[j]["parentIndex"]
 			if pi < 0:
-				row.append( ( o, mat_to_quat( r ) ) )
+				row.append( ( to_model( o ), mat_to_quat( mmul( LIE_DOWN, r ) if TO_MODEL else r ) ) )
 				continue
 			pr, po = world( pi, f )
 			prt = mtrans( pr )
@@ -1061,7 +1097,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		pi = joints[j]["parentIndex"]
 		p = joints[j]["pos"]
 		if pi < 0:
-			restLocal.append( ( p, mat_to_quat( restRot[j] ) ) )
+			restLocal.append( ( to_model( p ), mat_to_quat( mmul( LIE_DOWN, restRot[j] ) if TO_MODEL else restRot[j] ) ) )
 			continue
 		prt = mtrans( restRot[pi] )
 		restLocal.append( ( mvec( prt, vsub( p, joints[pi]["pos"] ) ), mat_to_quat( mmul( prt, restRot[j] ) ) ) )
@@ -1080,11 +1116,11 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 				vnormals[k] = vadd( vnormals[k], n )
 		for vi in range( s.numVerts ):
 			g = vbase + vi
-			positions.append( rest[g] )
+			positions.append( to_model( rest[g] ) )
 			n = vnorm( vnormals[vi] )
-			normals.append( n if vlen( n ) > 0 else ( 0, 0, 1 ) )
+			normals.append( to_model( n ) if vlen( n ) > 0 else ( 0, 0, 1 ) )
 			texcoords.append( s.st[vi] )
-			t = vnorm( vcross( n, ( 0, 0, 1 ) ) ) if abs( n[2] ) < 0.9 else ( 1.0, 0.0, 0.0 )
+			t = to_model( vnorm( vcross( n, ( 0, 0, 1 ) ) ) if abs( n[2] ) < 0.9 else ( 1.0, 0.0, 0.0 ) )
 			tangents.append( ( t[0], t[1], t[2], 1.0 ) )
 			b, o, w = weights[g]
 			wb = int( round( w * 255 ) )
@@ -1199,6 +1235,12 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 		return half, min( p[2] for p in pts ), max( p[2] for p in pts )
 	half, bottom, top = pose_extent( [ "amb", "aamb" ] )
 	_, _, crouchTop = pose_extent( [ "camb", "acamb" ] )
+	if TO_MODEL:
+		# lying: the box about the body as it lies
+		lying = [ to_model( v ) for v in rest ]
+		half = max( max( abs( v[0] ), abs( v[1] ) ) for v in lying )
+		bottom, top = min( v[2] for v in lying ), max( v[2] for v in lying )
+		crouchTop = top
 	tall = top - bottom
 	eye = top - 0.09 * tall			# Doom 3's player: eyes 68 of 74
 	crouchEye = crouchTop - 0.09 * tall
@@ -1354,7 +1396,11 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	print( "  wrote %s" % defPath )
 
 if __name__ == "__main__":
-	if len( sys.argv ) != 3:
+	args = sys.argv[1:]
+	if args and args[0] == "--lying":
+		TO_MODEL = lie_down
+		args = args[1:]
+	if len( args ) != 2:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( sys.argv[1], sys.argv[2] )
+	main( args[0], args[1] )

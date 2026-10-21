@@ -262,14 +262,26 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters (tools/rig/autorig.py): into the
 # extracted data, as they're made from it, their model defs into def/
 RIG_CHARACTERS="hiro mikiko superfly"
+# dead bodies lying on their backs, rigged from their poses for ragdolls:
+# name:model
+RIG_BODIES="dead:e1/m_dead"
 cmd_rig() {
-	local name
-	[ $# -gt 0 ] || set -- $RIG_CHARACTERS
+	local name body
+	[ $# -gt 0 ] || set -- $RIG_CHARACTERS $(for b in $RIG_BODIES; do echo "${b%%:*}"; done)
 	mkdir -p "$DKRES/models/rigged"
 	for name in "$@"; do
 		say "rigging $name"
-		(cd "$ROOT" && python3 tools/rig/autorig.py "$DKRES/models/global/m_$name.md3" "$DKRES/models/rigged/$name") \
-			|| die "rigging $name failed"
+		body=""
+		for b in $RIG_BODIES; do
+			[ "${b%%:*}" = "$name" ] && body=${b#*:}
+		done
+		if [ -n "$body" ]; then
+			(cd "$ROOT" && python3 tools/rig/autorig.py --lying "$DKRES/models/$body.md3" "$DKRES/models/rigged/$name") \
+				|| die "rigging $name failed"
+		else
+			(cd "$ROOT" && python3 tools/rig/autorig.py "$DKRES/models/global/m_$name.md3" "$DKRES/models/rigged/$name") \
+				|| die "rigging $name failed"
+		fi
 	done
 }
 

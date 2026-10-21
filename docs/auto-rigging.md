@@ -156,5 +156,14 @@ the pins are only numbers and names, so they're committed.
   joint holds together: each body traces against the others' trace models. A body that hits something hard thuds
   (`snd_bounce`, `dk_bodyhit`); the server's ragdolls send it as an entity event. Not done yet: a client-side
   ragdoll isn't pushed by shots.
+- **Dead bodies.** Daikatana's dead bodies (`deadguy`, `models/e1/m_dead`) are one mesh in 10 lying poses, its
+  frames. `autorig.py --lying` rigs such a body stood up (head up, facing +x, so the template fits). It turns
+  everything it writes back to lying: the mesh, the root joints, and the ragdoll's points, directions and boxes.
+  The poses differ enough for the bones to be fitted from them. `./dk rig` rigs the bodies of `RIG_BODIES`
+  (`dead`). The converter makes each `deadguy` deco a `misc_character` of `model_dead` with `ragdoll 1`.
+  The deco's `frame` is the pose the character starts in, and its `scale` is the `modelscale`. The
+  character goes limp as soon as it spawns, a server ragdoll, and settles on what's under it: e1m1a's bodies on
+  their coffins. Articulated figures take the model's scale (`BG_AFLoad`): the bodies and joints are that much
+  bigger, and the pose goes back to the model's size for the renderer, which draws it scaled.
 - **Licensing.** Doom 3's retail animations and meshes can't be shipped. Matching its skeleton is for tooling and for
   animations of our own or freely licensed ones.
