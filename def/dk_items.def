@@ -129,3 +129,49 @@ entityDef item_antidote {
 	"model"			"models/global/a_antidote.md3"
 	"model2"		""
 }
+
+// the campaign's inventory items (Doom 3's "inv_item"): kept, not used up on
+// pickup; "inv_max" the most one carries. Daikatana's keys open what names
+// them as its "keyname" (a func_button, a trigger_changelevel...).
+
+entityDef item_savegem {
+	"spawnclass"	"item"
+	"inv_item"		"1"
+	"inv_name"		"Save Gem"
+	"inv_max"		"3"			// Daikatana's: no more than three
+	"model"			"models/global/a_savegem.md3"
+	"snd_acquire"	"sounds/artifacts/savegem_pickup.wav"
+	"nophysics"		"1"
+}
+
+entityDef item_key_base {
+	"spawnclass"	"item"
+	"inv_item"		"1"
+	"inv_max"		"1"
+	"snd_acquire"	"sounds/global/a_specialitem.wav"
+	"nophysics"		"1"
+}
+
+entityDef item_control_card_red {
+	"inherit"		"item_key_base"
+	"inv_name"		"Red Control Card"
+	"model"			"models/e4/a4_clcbl.md3"
+}
+
+entityDef item_control_card_blue {
+	"inherit"		"item_key_base"
+	"inv_name"		"Blue Control Card"
+	"model"			"models/e4/a4_clcbl.md3"
+}
+
+entityDef item_control_card_yellow {
+	"inherit"		"item_key_base"
+	"inv_name"		"Yellow Control Card"
+	"model"			"models/e4/a4_clcyl.md3"
+}
+
+entityDef item_control_card_green {
+	"inherit"		"item_key_base"
+	"inv_name"		"Green Control Card"
+	"model"			"models/e4/a4_clcgr.md3"
+}
