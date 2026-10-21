@@ -4,7 +4,8 @@
 - fonts: each .dkf bitmap font becomes fonts/dk/<name>.tga plus the glyph table
   fonts/dk/<name>_<height>.dat that Spearmint loads for registerFont.
 - widgets: every glyph of the int_buttons font (button faces, arrows, slider,
-  edit fields) becomes ui/assets/dk/buttons/<glyph>.tga.
+  edit fields) becomes ui/assets/dk/buttons/<glyph>.tga; the arrow toenails
+  get int_font's arrow on them.
 - background: the six 256x256 tiles of the menu backdrop become one
   640x480 ui/assets/dk/background.tga, cut the way Daikatana draws them.
 - console: the console's six tiles (pics/loadscreens/con_0..5) become one
@@ -43,6 +44,10 @@ BUTTON_GLYPHS = {
     "right_disabled": 0x17, "right_off": 0x18, "right_on": 0x19,
     "back_disabled": 0x20, "back_up": 0x21, "back_down": 0x22,
 }
+
+# the arrows Daikatana prints over the toenails (l__language.h ARROW_*), in
+# int_font, int_font_bright for the lit one
+ARROW_GLYPHS = {"up": 0x81, "down": 0x8D, "left": 0x80, "right": 0x8E}
 
 GLYPH_INFO = struct.Struct("<7i4fi32s")	# Spearmint 0.2 glyphInfo_t
 
@@ -126,6 +131,18 @@ def write_buttons(dkres):
         dst = os.path.join(outdir, name + ".tga")
         magick(src, "-crop", "%dx%d+%d+%d" % (widths[c], height, xs[c], ys[c]), "+repage",
                "-alpha", "set", "-fill", "none", "-opaque", TRANSPARENT, "-define", "tga:alpha", dst)
+
+        # a toenail gets its arrow on it, as Daikatana's list arrows have
+        way, _, state = name.partition("_")
+        if way in ARROW_GLYPHS:
+            font = "int_font_bright" if state == "on" else "int_font"
+            fh, fwidths, fxs, fys = read_dkf(os.path.join(dkres, "fonts", font + ".dkf"))
+            g = ARROW_GLYPHS[way]
+            if fwidths[g]:
+                magick(dst, "(", os.path.join(dkres, "fonts", font + ".font.bmp"),
+                       "-crop", "%dx%d+%d+%d" % (fwidths[g], fh, fxs[g], fys[g]), "+repage",
+                       "-alpha", "set", "-fill", "none", "-opaque", TRANSPARENT, ")",
+                       "-gravity", "center", "-composite", "-define", "tga:alpha", dst)
     print("buttons ->", outdir)
 
 

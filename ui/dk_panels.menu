@@ -4,6 +4,49 @@
 // The panels that open on the left of the main menu, one per plaque.
 // Positions are Daikatana's (dk_menu_*.cpp), less the panel corner (80, 90).
 
+
+// a key binding row, a page's title and an arrow, in a page's group and
+// shown with it
+#define DK_KEY_BIND( PAGE, VISIBLE, X, Y, LABEL, COMMAND ) \
+	itemDef { \
+		type ITEM_TYPE_BIND \
+		group PAGE \
+		text LABEL \
+		cvar COMMAND \
+		rect X Y 195 16 \
+		textaligny 13 \
+		textscale DK_TS_SMALL \
+		forecolor DK_GOLD \
+		visible VISIBLE \
+	}
+#define DK_KEY_TITLE( PAGE, VISIBLE, X, Y, TEXT ) \
+	itemDef { \
+		group PAGE \
+		rect X Y 300 18 \
+		text TEXT \
+		textaligny 14 \
+		textscale DK_TS \
+		forecolor DK_BRIGHT \
+		decoration \
+		visible VISIBLE \
+	}
+#define DK_KEY_ARROW( PAGE, VISIBLE, X, Y, FACE, ACTIONS ) \
+	itemDef { \
+		group PAGE \
+		rect X Y 20 20 \
+		style WINDOW_STYLE_SHADER \
+		background FACE \
+		decoration \
+		visible VISIBLE \
+	} \
+	itemDef { \
+		type ITEM_TYPE_BUTTON \
+		group PAGE \
+		rect X Y 20 20 \
+		visible VISIBLE \
+		action { play DK_SND_PRESS ; ACTIONS } \
+	}
+
 {
 	// Single player: Daikatana's new game (dk_menu_newgame.cpp), its
 	// difficulty, Hiro's pictures over it; the campaign (g_gametype 3) from
@@ -196,41 +239,68 @@
 		DK_BIND( 20, 104, "Prev Weapon", "weapprev" )
 	}
 
-	// Keyboard: Daikatana's command list, in two columns
+	// Keyboard: Daikatana's command list (dk_menu_keyboard.cpp), a page at a
+	// time, its arrows turning the pages (one shown, the others hidden); each
+	// page's items are its group
 	menuDef {
 		DK_PANEL( dk_keyboard )
+		onOpen { hide kb1 ; hide kb2 ; hide kb3 ; show kb1 }
 
 		DK_LABEL_BRIGHT( 24, 20, "Click or Enter to set, Backspace to clear" )
 
-		DK_BIND( 10, 48, "Forward", "+forward" )
-		DK_BIND( 10, 66, "Backward", "+back" )
-		DK_BIND( 10, 84, "Step Left", "+moveleft" )
-		DK_BIND( 10, 102, "Step Right", "+moveright" )
-		DK_BIND( 10, 120, "Attack", "+attack" )
-		DK_BIND( 10, 138, "Jump", "+moveup" )
-		DK_BIND( 10, 156, "Use/Operate", "+button2" )
-		DK_BIND( 10, 174, "Crouch", "+movedown" )
-		DK_BIND( 10, 192, "Next Weapon", "weapnext" )
-		DK_BIND( 10, 210, "Prev Weapon", "weapprev" )
-		DK_BIND( 10, 228, "Turn Left", "+left" )
-		DK_BIND( 10, 246, "Turn Right", "+right" )
-		DK_BIND( 10, 264, "Run", "+speed" )
-		DK_BIND( 10, 282, "Sidestep", "+strafe" )
+		// page 1: moving and looking
+		DK_KEY_TITLE( kb1, 1, 24, 40, "Moving and looking  (1 of 3)" )
+		DK_KEY_BIND( kb1, 1, 10, 64, "Forward", "+forward" )
+		DK_KEY_BIND( kb1, 1, 10, 82, "Backward", "+back" )
+		DK_KEY_BIND( kb1, 1, 10, 100, "Step Left", "+moveleft" )
+		DK_KEY_BIND( kb1, 1, 10, 118, "Step Right", "+moveright" )
+		DK_KEY_BIND( kb1, 1, 10, 136, "Jump", "+moveup" )
+		DK_KEY_BIND( kb1, 1, 10, 154, "Crouch", "+movedown" )
+		DK_KEY_BIND( kb1, 1, 10, 172, "Run", "+speed" )
+		DK_KEY_BIND( kb1, 1, 10, 190, "Sidestep", "+strafe" )
+		DK_KEY_BIND( kb1, 1, 210, 64, "Turn Left", "+left" )
+		DK_KEY_BIND( kb1, 1, 210, 82, "Turn Right", "+right" )
+		DK_KEY_BIND( kb1, 1, 210, 100, "Look Up", "+lookup" )
+		DK_KEY_BIND( kb1, 1, 210, 118, "Look Down", "+lookdown" )
+		DK_KEY_BIND( kb1, 1, 210, 136, "Center View", "centerview" )
+		DK_KEY_BIND( kb1, 1, 210, 154, "MouseLook", "+mlook" )
+		DK_KEY_BIND( kb1, 1, 210, 172, "Zoom", "+zoom" )
+		DK_KEY_ARROW( kb1, 1, 290, 310, "ui/assets/dk/buttons/up_disabled", play DK_SND_HOVER )
+		DK_KEY_ARROW( kb1, 1, 320, 310, "ui/assets/dk/buttons/down_off", hide kb1 ; hide kb2 ; hide kb3 ; show kb2 )
 
-		DK_BIND( 210, 48, "Look Up", "+lookup" )
-		DK_BIND( 210, 66, "Look Down", "+lookdown" )
-		DK_BIND( 210, 84, "Center View", "centerview" )
-		DK_BIND( 210, 102, "MouseLook", "+mlook" )
-		DK_BIND( 210, 120, "Zoom", "+zoom" )
-		DK_BIND( 210, 138, "Talk", "messagemode" )
-		DK_BIND( 210, 156, "Talk to team", "messagemode2" )
-		DK_BIND( 210, 174, "Scoreboard", "+scores" )
-		DK_BIND( 210, 192, "Weapon 1", "weapon 1" )
-		DK_BIND( 210, 210, "Weapon 2", "weapon 2" )
-		DK_BIND( 210, 228, "Weapon 3", "weapon 3" )
-		DK_BIND( 210, 246, "Weapon 4", "weapon 4" )
-		DK_BIND( 210, 264, "Weapon 5", "weapon 5" )
-		DK_BIND( 210, 282, "Weapon 6", "weapon 6" )
+		// page 2: fighting and carrying
+		DK_KEY_TITLE( kb2, 0, 24, 40, "Fighting and carrying  (2 of 3)" )
+		DK_KEY_BIND( kb2, 0, 10, 64, "Attack", "+attack" )
+		DK_KEY_BIND( kb2, 0, 10, 82, "Alt Attack", "+altattack" )
+		DK_KEY_BIND( kb2, 0, 10, 100, "Use/Operate", "+use" )
+		DK_KEY_BIND( kb2, 0, 10, 118, "Reload", "+reload" )
+		DK_KEY_BIND( kb2, 0, 10, 136, "Next Weapon", "weapnext" )
+		DK_KEY_BIND( kb2, 0, 10, 154, "Prev Weapon", "weapprev" )
+		DK_KEY_BIND( kb2, 0, 10, 172, "Inventory", "inventory" )
+		DK_KEY_BIND( kb2, 0, 10, 190, "Use Health", "invquick health" )
+		DK_KEY_BIND( kb2, 0, 210, 64, "Belt 1", "belt 1" )
+		DK_KEY_BIND( kb2, 0, 210, 82, "Belt 2", "belt 2" )
+		DK_KEY_BIND( kb2, 0, 210, 100, "Belt 3", "belt 3" )
+		DK_KEY_BIND( kb2, 0, 210, 118, "Belt 4", "belt 4" )
+		DK_KEY_BIND( kb2, 0, 210, 136, "Belt 5", "belt 5" )
+		DK_KEY_BIND( kb2, 0, 210, 154, "Belt 6", "belt 6" )
+		DK_KEY_BIND( kb2, 0, 210, 172, "Belt 7", "belt 7" )
+		DK_KEY_BIND( kb2, 0, 210, 190, "Belt 8", "belt 8" )
+		DK_KEY_BIND( kb2, 0, 210, 208, "Belt 9", "belt 9" )
+		DK_KEY_BIND( kb2, 0, 210, 226, "Belt 0", "belt 0" )
+		DK_KEY_ARROW( kb2, 0, 290, 310, "ui/assets/dk/buttons/up_off", hide kb1 ; hide kb2 ; hide kb3 ; show kb1 )
+		DK_KEY_ARROW( kb2, 0, 320, 310, "ui/assets/dk/buttons/down_off", hide kb1 ; hide kb2 ; hide kb3 ; show kb3 )
+
+		// page 3: talking and the screen
+		DK_KEY_TITLE( kb3, 0, 24, 40, "Talking and the screen  (3 of 3)" )
+		DK_KEY_BIND( kb3, 0, 10, 64, "Talk", "messagemode" )
+		DK_KEY_BIND( kb3, 0, 10, 82, "Talk to Team", "messagemode2" )
+		DK_KEY_BIND( kb3, 0, 10, 100, "Scoreboard", "+scores" )
+		DK_KEY_BIND( kb3, 0, 210, 64, "Screen Bigger", "sizeup" )
+		DK_KEY_BIND( kb3, 0, 210, 82, "Screen Smaller", "sizedown" )
+		DK_KEY_BIND( kb3, 0, 210, 100, "Screenshot", "screenshotJPEG" )
+		DK_KEY_ARROW( kb3, 0, 290, 310, "ui/assets/dk/buttons/up_off", hide kb1 ; hide kb2 ; hide kb3 ; show kb2 )
+		DK_KEY_ARROW( kb3, 0, 320, 310, "ui/assets/dk/buttons/down_disabled", play DK_SND_HOVER )
 
 		DK_BUTTON_MEDIUM( 24, 310, "Defaults", exec "exec default.cfg" )
 	}
