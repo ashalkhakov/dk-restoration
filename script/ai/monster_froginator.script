@@ -1,22 +1,26 @@
-// monster_froginator.script -- Daikatana's Froginator: it hops after you,
-// bites up close and, on hard, leaps at you from afar (its spit at range is
-// to come, with a projectile of its own). A leap is a throw:
-// the game flies it on its arc, and one into a wall hurts it.
+// monster_froginator.script -- Daikatana's Froginator: it gets about by
+// leaping. It hops after you, two or three hundred units a hop, a moment
+// crouched between; near enough, it leaps at where you'll be, and a leap that
+// meets you hurts and knocks you back. Up close it bites. A leap is a throw:
+// the game flies it on its arc, and one into a wall hurts it (kills it, at
+// one health). In water it swims. Its spit at range is to come, with a
+// projectile of its own.
 
 object monster_froginator : monster_base {
 	void		state_Combat();
-	void		chase();
-	void		leap();
+	void		hop();
+	void		leapAt();
+	void		swim();
 	void		attack();
 	void		pain();
+	void		crouch();
+	boolean		throwTo( vector dest, float up, float maxSpeed, string anim );
+	vector		floorUnder( vector pos );
 };
 
 /*
 ================
 monster_froginator::state_Combat
-
-Daikatana's frog: every tenth of a second, up close an attack now and then,
-else after you
 ================
 */
 void monster_froginator::state_Combat() {
@@ -31,10 +35,16 @@ void monster_froginator::state_Combat() {
 			pain();
 		}
 		dist = enemyRange();
-		if ( AI_ONGROUND && dist < 80 && AI_ENEMY_VISIBLE ) {
+		if ( AI_IN_WATER ) {
+			swim();
+		} else if ( !AI_ONGROUND ) {
+			sys.waitFrame();
+		} else if ( dist < 70 && AI_ENEMY_VISIBLE ) {
 			attack();
+		} else if ( dist < getFloatKey( "leap_range" ) && AI_ENEMY_VISIBLE ) {
+			leapAt();
 		} else {
-			chase();
+			hop();
 		}
 		sys.waitFrame();
 	}
@@ -42,77 +52,148 @@ void monster_froginator::state_Combat() {
 
 /*
 ================
-monster_froginator::chase
+monster_froginator::floorUnder
 
-runs at it, ten seconds at most: a leap when it's a way off (hard), an attack
-when it's close
+where its box stands, under pos (pos if there's no floor near)
 ================
 */
-void monster_froginator::chase() {
-	float	dist;
-	float	until;
-
-	until = sys.getTime() + 10;
-	if ( AI_IN_WATER ) {
-		playCycle( ANIMCHANNEL_LEGS, "swima" );
-	} else {
-		playCycle( ANIMCHANNEL_LEGS, "runa" );
+vector monster_froginator::floorUnder( vector pos ) {
+	if ( sys.trace( pos + '0 0 48', pos - '0 0 160', getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self ) < 1 ) {
+		return sys.getTraceEndPos();
 	}
-	moveToEnemy();
-	while( sys.getTime() < until ) {
-		if ( !getEnemy() || AI_PAIN ) {
-			return;
-		}
-		dist = enemyRange();
-		if ( skill >= 2 && AI_ONGROUND && !AI_IN_WATER && AI_ENEMY_VISIBLE && dist > 200 && dist < 500 && sys.random( 1 ) > 0.5 ) {
-			leap();
-			return;
-		}
-		if ( dist < 60 && AI_ENEMY_VISIBLE ) {
-			attack();
-			return;
-		}
-		sys.wait( 0.1 );
-	}
-	stopMove();
+	return pos;
 }
 
 /*
 ================
-monster_froginator::leap
+monster_froginator::throwTo
 
-thrown at it: farther the farther it is, Daikatana's speeds
+thrown to land at dest, as its animation goes; then in the air until it
+lands, three seconds at most. false, and it stays put, if something's in the
+way of its arc
 ================
 */
-void monster_froginator::leap() {
-	vector	dir;
+boolean monster_froginator::throwTo( vector dest, float up, float maxSpeed, string anim ) {
 	vector	vel;
-	float	dist;
 	float	t;
 
-	stopMove();
-	faceEnemy();
-	dir = getEnemyPos() - getOrigin();
-	dir_z = 0;
-	dist = sys.vecLength( dir );
-	dir = sys.vecNormalize( dir );
-	vel = dir * ( getFloatKey( "run_speed" ) * ( dist / 500 ) * 2.35 );
-	vel_z = getFloatKey( "jump_up" );
-
-	playAnim( ANIMCHANNEL_LEGS, "atakc" );
+	vel = getJumpVelocity( dest, up, maxSpeed );
+	if ( vel == '0 0 0' ) {
+		return false;
+	}
+	turnToPos( dest );
+	playAnim( ANIMCHANNEL_LEGS, anim );
 	startSound( "snd_leap", CHAN_VOICE, false );
 	setLinearVelocity( vel );
 
-	// in the air until it lands, two seconds at most
-	t = sys.getTime() + 2;
+	t = sys.getTime() + 3;
 	sys.waitFrame();
 	while( !AI_ONGROUND && sys.getTime() < t ) {
 		if ( AI_IMPACT ) {
 			startSound( "snd_impact", CHAN_BODY, false );
 		}
+		if ( AI_LEAP_HIT ) {
+			startSound( "snd_attack", CHAN_VOICE, false );
+		}
 		sys.waitFrame();
 	}
 	startSound( "snd_land", CHAN_BODY, false );
+	return true;
+}
+
+/*
+================
+monster_froginator::crouch
+
+a moment on the ground between leaps: longer on easy
+================
+*/
+void monster_froginator::crouch() {
+	float t;
+
+	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	t = sys.getTime() + ( 0.45 - skill * 0.1 ) + sys.random( 0.3 );
+	while( sys.getTime() < t ) {
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_froginator::hop
+
+a hop toward it, a little to one side or the other, as far as there's room
+================
+*/
+void monster_froginator::hop() {
+	vector	dir;
+	vector	dest;
+	vector	start;
+	float	len;
+	float	frac;
+
+	start = getOrigin();
+	dir = getEnemyPos() - start;
+	dir_z = 0;
+	dir = sys.vecNormalize( dir + sys.angToRight( '0 1 0' * getCurrentYaw() ) * ( sys.random( 0.6 ) - 0.3 ) * sys.vecLength( dir ) );
+	len = getFloatKey( "hop_min" ) + sys.random( getFloatKey( "hop_max" ) - getFloatKey( "hop_min" ) );
+	if ( len > enemyRange2D() ) {
+		len = enemyRange2D();
+	}
+
+	// short of what's in the way (not you: it means to land on you)
+	frac = sys.trace( start + '0 0 32', start + '0 0 32' + dir * len, getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self );
+	if ( frac * len >= 48 ) {
+		dest = floorUnder( start + dir * ( frac * len - 16 ) );
+		if ( throwTo( dest, getFloatKey( "hop_up" ), getFloatKey( "hop_speed" ), "jumpa" ) ) {
+			crouch();
+			return;
+		}
+	}
+	// no room for a hop: on foot a moment, around what's in the way
+	playCycle( ANIMCHANNEL_LEGS, "runa" );
+	moveToEnemy();
+	sys.wait( 0.5 );
+	stopMove();
+}
+
+/*
+================
+monster_froginator::leapAt
+
+at it, where it'll be when it gets there
+================
+*/
+void monster_froginator::leapAt() {
+	entity	enemy;
+	vector	at;
+	vector	dest;
+	float	flight;
+
+	enemy = getEnemy();
+	at = enemy.getOrigin();
+	flight = enemyRange2D() / getFloatKey( "leap_speed" );
+	dest = at + enemy.getLinearVelocity() * flight;
+	dest_z = at_z;
+	if ( throwTo( dest, getFloatKey( "jump_up" ), getFloatKey( "leap_speed" ), "atakc" ) ) {
+		crouch();
+	} else {
+		hop();
+	}
+}
+
+/*
+================
+monster_froginator::swim
+
+after it through the water, a second at a time
+================
+*/
+void monster_froginator::swim() {
+	playCycle( ANIMCHANNEL_LEGS, "swima" );
+	moveToEnemy();
+	sys.wait( 1 );
+	stopMove();
 }
 
 /*

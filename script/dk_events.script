@@ -137,6 +137,7 @@ scriptEvent	void		enableGravity();
 scriptEvent	void		disableGravity();
 scriptEvent	void		allowMovement( float allow );
 scriptEvent	float		attackMelee( string damageDef );
+scriptEvent	vector		getJumpVelocity( vector pos, float upSpeed, float maxSpeed );	// a throw (setLinearVelocity) that lands it at pos
 scriptEvent	void		directDamage( entity damageTarget, string damageDef );
 scriptEvent	float		playAnim( float channel, string animName );
 scriptEvent	float		playCycle( float channel, string animName );

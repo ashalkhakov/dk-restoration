@@ -17,6 +17,7 @@ object monster_base {
 	boolean		AI_BLOCKED;			// its move got nowhere
 	boolean		AI_IMPACT;			// it hit the world hard
 	boolean		AI_IN_WATER;
+	boolean		AI_LEAP_HIT;		// its leap met someone since its last think
 
 	float		skill;				// 0 easy, 1 medium, 2 hard (g_skill)
 	float		idleTime;

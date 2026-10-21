@@ -90,7 +90,7 @@ in `g_script_thread.c`. An entity's (`$door.open()`…) are in `g_script_events.
   `threadname`, `pause`; `print`, `println`, `say`, `error`, `warning`, `assert`; `trigger`; `setcvar`,
   `getcvar`; `random`, `getTime`, `getFrameTime`, `getTicsPerSecond`; `getEntity`, `spawn` with `setSpawnArg` and
   `SpawnString`/`Float`/`Vector`; vector math (`vecLength`, `vecNormalize`, `DotProduct`, `CrossProduct`,
-  `VecToAngles`, `angToForward`/`Right`/`Up`, `sin`, `cos`, `sqrt`); `trace`, `tracePoint` and the `getTrace*`
+  `VecToAngles`, `angToForward`/`Right`/`Up`, `sin`, `cos`, `sqrt`); `trace`, `tracePoint` (with `CONTENTS_RENDERMODEL`, as a shot: hit boxes) and the `getTrace*`
   results; strings (`strLength`, `strLeft`, `strRight`, `strSkip`, `strMid`, `strToFloat`); `music`;
   `isMultiplayer`, `isClient`.
 - **an entity:** `getName`, `setName`, `remove`, `activate`, `activateTargets`, `numTargets`, `getTarget`,

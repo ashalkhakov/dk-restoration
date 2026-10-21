@@ -9,6 +9,8 @@
 
 entityDef model_froginator {
 	"mesh"			"models/e1/m_frog.md3"
+	"mins"			"-12 -12 -18"	// Daikatana's box, at the model's size (AIData.csv's / 0.65)
+	"maxs"			"12 12 18"
 	"anim amba"		"amba 10 loop"
 	"anim ambb"		"ambb 10"
 	"anim ataka"	"ataka 10"		// spit
@@ -27,8 +29,6 @@ entityDef monster_froginator {
 	"model"			"model_froginator"
 	"scriptobject"	"monster_froginator"
 	"health"		"1"				// one hit: small, fast and hard to see (Daikatana's 30)
-	"mins"			"-8 -8 -12"
-	"maxs"			"8 8 12"
 	"modelscale"	"0.65"
 	"run_speed"		"220"
 	"walk_speed"	"45"
@@ -36,7 +36,14 @@ entityDef monster_froginator {
 	"fov"			"270"
 	"sight_range"	"1500"
 	"melee_range"	"24"			// past its box: Daikatana's 60 from its middle
+	"hop_min"		"200"			// a hop's length: how it gets about, crouching a moment between
+	"hop_max"		"300"
+	"hop_up"		"220"			// a hop's upward speed
+	"hop_speed"		"500"			// across, at most
+	"leap_range"	"350"			// nearer, it leaps at where you'll be
 	"jump_up"		"270"			// a leap's upward speed
+	"leap_speed"	"600"			// across, at most
+	"leap_damage"	"damage_frog_leap"	// a leap that meets you
 	"impact_speed"	"400"			// a leap into a wall at more hurts it (kills it, at one health)
 	"impact_damage"	"6"				// per 100 u/s more
 	"impact_bounce"	"0.5"
@@ -49,6 +56,11 @@ entityDef monster_froginator {
 	"snd_death"		"frog_death"
 }
 
+entityDef damage_frog_leap {
+	"damage"		"6"
+	"damage_random"	"4"
+	"push"			"250"			// knocks you back that fast
+}
 entityDef damage_frog_bite {
 	"damage"		"4"
 	"damage_random"	"2"
@@ -59,6 +71,8 @@ entityDef damage_frog_bite {
 
 entityDef model_slaughterskeet {
 	"mesh"			"models/e1/m_skeeter.md3"
+	"mins"			"-16 -16 0"		// Daikatana's box
+	"maxs"			"16 16 8"
 	"anim amba"		"amba 10 loop"
 	"anim ambb"		"ambb 10"
 	"anim ataka"	"ataka 10"
@@ -74,8 +88,6 @@ entityDef monster_slaughterskeet {
 	"model"			"model_slaughterskeet"
 	"scriptobject"	"monster_slaughterskeet"
 	"health"		"1"				// one hit (Daikatana's 50)
-	"mins"			"-16 -16 0"
-	"maxs"			"16 16 8"
 	"fly"			"1"
 	"fly_speed"		"150"			// Daikatana's 200, slowed by skill (0.75 at medium)
 	"fly_accel"		"900"			// how fast its thrust changes its velocity: nimble, it dodges

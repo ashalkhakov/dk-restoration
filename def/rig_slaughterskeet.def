@@ -1,6 +1,10 @@
 // made by tools/rig/creature_rig.py from models/e1/m_skeeter.md3: the rigged model, in place of the md3's
 entityDef model_slaughterskeet {
 	"mesh"			"models/rigged/skeeter.iqm"
+	"mins"			"-11 -11 0"	// the box it moves with: all but its wings, idling
+	"maxs"			"11 11 7"
+	"hit_mins"		"-23 -23 0"	// the box shots meet: all of it, whichever way it faces
+	"hit_maxs"		"23 23 13"
 
 	"anim amba"		"amba 10 loop"
 	"anim ambb"		"ambb 10"

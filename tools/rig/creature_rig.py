@@ -452,7 +452,7 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64 ):
 	looping = re.compile( "^(%s)$" % "|".join( re.escape( a ) for a, ( fps, loop ) in spec.items() if loop ) if any( l for f, l in spec.values() ) else "^$" )
 	anims, restRot = A.write_iqm( m, body, verts, rest, joints, jmotion, weights, outBase, looping, DEFAULT_FPS )
 
-	write_def( m, name, outBase, joints, rest, jassign, anims, spec, restRot )
+	write_def( m, name, outBase, joints, rest, jassign, anims, spec, restRot, frames )
 	write_af( name, joints, rest, jassign, S )
 
 def zone_of( name ):
@@ -506,11 +506,36 @@ def name_bones( ps, parentOf, root, mids, rest, restLo, restHi ):
 		label( top, 1, "" )
 	return names
 
-def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot ):
+def boxes( joints, assign, anims, spec, frames ):
+	"""Its boxes: the one it moves with, of all but its wings as it idles
+	(its first looping animation; a frog's legs kick out far behind it as it
+	swims, which a box that can't turn would make room for whichever way it
+	faced), square (Quake 3's boxes don't turn); and the one shots meet, of all
+	of it over all it does that loops (idling and moving), as far as it reaches
+	whichever way it faces."""
+	loops = [ a for a in anims if spec.get( a[0], ( 0, False ) )[1] ] or anims[:1]
+	idle = range( loops[0][1], loops[0][1] + loops[0][2] )
+	fs = sorted( set( f for a in loops for f in range( a[1], a[1] + a[2] ) ) )
+	N = len( assign )
+	body = [ i for i in range( N ) if "wing" not in joints[assign[i]]["name"].lower() ]
+	half = max( max( abs( frames[f][i][0] ), abs( frames[f][i][1] ) ) for f in idle for i in body )
+	zlo = min( frames[f][i][2] for f in idle for i in body )
+	zhi = max( frames[f][i][2] for f in idle for i in body )
+	reach = max( math.sqrt( frames[f][i][0] ** 2 + frames[f][i][1] ** 2 ) for f in fs for i in range( N ) )
+	hlo = min( frames[f][i][2] for f in fs for i in range( N ) )
+	hhi = max( frames[f][i][2] for f in fs for i in range( N ) )
+	return ( -half, -half, zlo ), ( half, half, zhi ), ( -reach, -reach, hlo ), ( reach, reach, hhi )
+
+def write_def( m, name, outBase, joints, rest, assign, anims, spec, restRot, frames ):
 	N = len( rest )
+	mins, maxs, hitMins, hitMaxs = boxes( joints, assign, anims, spec, frames )
 	lines = [ "// made by tools/rig/creature_rig.py from %s: the rigged model, in place of the md3's" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
 			  "\t\"mesh\"\t\t\t\"%s.iqm\"" % A.gamePath( outBase ),
+			  "\t\"mins\"\t\t\t\"%.0f %.0f %.0f\"\t// the box it moves with: all but its wings, idling" % mins,
+			  "\t\"maxs\"\t\t\t\"%.0f %.0f %.0f\"" % maxs,
+			  "\t\"hit_mins\"\t\t\"%.0f %.0f %.0f\"\t// the box shots meet: all of it, whichever way it faces" % hitMins,
+			  "\t\"hit_maxs\"\t\t\"%.0f %.0f %.0f\"" % hitMaxs,
 			  "" ]
 	seen = set()
 	for a in anims:
