@@ -124,8 +124,9 @@ Each step ends with something to play:
 
 1. **Entity snapshots** (§1). Server-side ragdolls for a test monster (`misc_character` dying) prove them. AF self
    collision goes in here too.
-2. **The SP gametype's frame:** save and load, levels of several maps with the player carried across, DK's triggers
-   and movers, keys and the inventory. Played through e1m1a–c with no monsters.
+2. **The SP gametype's frame (done; see `campaign.md`):** the campaign gametype, the single player menu, levels
+   of several maps with the player carried across, DK's triggers and walls, keys and the inventory, and saved
+   games with save gems. Tested from e1m1a into e1m1b, and saving and loading in e1m1b; no monsters yet.
 3. **The first monsters:** AI Cast ported, one easy and one ranged e1 monster as defs, ragdoll deaths. Then e1's
    roster, tuned.
 4. **Scripts and cutscenes:** `.sca` and `.script` converted, cinematic mode, subtitles. e1's intro and its scenes.

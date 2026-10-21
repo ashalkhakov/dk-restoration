@@ -34,7 +34,7 @@
 
 		DK_PLAQUE( plaque_singleplay, 67, 8.350, "ui/dk/plaque_singleplay", DK_CLOSE_PANELS ; open dk_singleplayer )
 		DK_PLAQUE( plaque_multi, 95, 7.185, "ui/dk/plaque_multi", DK_CLOSE_PANELS ; open dk_multiplayer )
-		DK_PLAQUE_OFF( plaque_loadgame, 122, 6.020, "ui/dk/plaque_loadgame" )
+		DK_PLAQUE( plaque_loadgame, 122, 6.020, "ui/dk/plaque_loadgame", DK_CLOSE_PANELS ; open dk_loadgame )
 		DK_PLAQUE_OFF( plaque_savegame, 150, 4.855, "ui/dk/plaque_savegame" )
 		DK_PLAQUE( plaque_sound, 177, 3.690, "ui/dk/plaque_sound", DK_CLOSE_PANELS ; open dk_sound )
 		DK_PLAQUE( plaque_video, 205, 2.525, "ui/dk/plaque_video", DK_CLOSE_PANELS ; open dk_video )

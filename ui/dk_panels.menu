@@ -22,6 +22,30 @@
 		DK_BUTTON_MEDIUM( 262, 260, "Shogun", setcvar g_skill 2 ; DK_NEW_GAME )
 	}
 
+	// Load and save: the campaign's saved games (save/<name>.svg, the game's
+	// loadgame and savegame); a save costs a Save Gem, as in Daikatana
+	menuDef {
+		DK_PANEL( dk_loadgame )
+
+		DK_LABEL_BRIGHT( 20, 20, "Load a saved game:" )
+		DK_BUTTON_LONG( 20, 55, "Quick Save", exec "loadgame quick" )
+		DK_BUTTON_LONG( 20, 85, "Slot 1", exec "loadgame slot1" )
+		DK_BUTTON_LONG( 20, 115, "Slot 2", exec "loadgame slot2" )
+		DK_BUTTON_LONG( 20, 145, "Slot 3", exec "loadgame slot3" )
+		DK_BUTTON_LONG( 20, 175, "Slot 4", exec "loadgame slot4" )
+	}
+
+	menuDef {
+		DK_PANEL( dk_savegame )
+
+		DK_LABEL_BRIGHT( 20, 20, "Save the game (a Save Gem each):" )
+		DK_BUTTON_LONG( 20, 55, "Quick Save", exec "savegame quick" ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_BUTTON_LONG( 20, 85, "Slot 1", exec "savegame slot1" ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_BUTTON_LONG( 20, 115, "Slot 2", exec "savegame slot2" ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_BUTTON_LONG( 20, 145, "Slot 3", exec "savegame slot3" ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_BUTTON_LONG( 20, 175, "Slot 4", exec "savegame slot4" ; DK_CLOSE_PANELS ; uiScript closeingame )
+	}
+
 	// Multiplayer: who you are and where to play
 	menuDef {
 		DK_PANEL( dk_multiplayer )
