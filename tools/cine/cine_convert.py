@@ -55,6 +55,32 @@ MONSTER_MODELS = {
 	"monster_gharroth":		"models/e3/m_gharroth",
 }
 
+# their walk and run speeds (Daikatana's AIData.csv): they walk at these, their
+# legs' animation keeping up (the game plays it faster)
+MONSTER_SPEEDS = {
+	"fatworker": ( 35, 74 ), "skinnyworker": ( 35, 150 ), "buboid": ( 65, 80 ),
+	"rocketdude": ( 53, 250 ), "uzigang": ( 45, 250 ), "gharroth": ( 80, 250 ),
+}
+
+def def_anim_speeds( path ):
+	"""a model def's walk and run speeds over the ground (its "anim_speed
+	walka", "runa"), or None for those it hasn't"""
+	if not os.path.exists( path ):
+		return ( None, None )
+	text = open( path ).read()
+	speeds = []
+	for anim in ( "walka", "runa" ):
+		m = re.search( r'"anim_speed %s"\s+"([0-9.]+)"' % anim, text )
+		speeds.append( float( m.group( 1 ) ) if m else None )
+	return tuple( speeds )
+
+def actor_entity_def( fp, defname, model, speeds ):
+	walk, run = speeds
+	fp.write( "entityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"%s\"\n"
+			  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
+			  "\t\"run_speed\"\t\"%g\"\n\t\"walk_speed\"\t\"%g\"\n\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n"
+			  % ( defname, model, run or 220, walk or 90 ) )
+
 # a cinematic character's model: its prefix, then the first four letters of
 # the map's name (Daikatana's cinematic_character_init)
 CINE_PREFIX = {
@@ -213,10 +239,8 @@ def actor_model( dkres, classname, mapname ):
 
 def write_actor_def( fp, dkres, defname, model ):
 	if isinstance( model, str ) and model.startswith( "model_" ):
-		# a rigged monster, as it is
-		fp.write( "entityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"%s\"\n"
-				  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
-				  "\t\"run_speed\"\t\"220\"\n\t\"walk_speed\"\t\"90\"\n\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n" % ( defname, model ) )
+		# a rigged monster, as it is, at Daikatana's speeds
+		actor_entity_def( fp, defname, model, MONSTER_SPEEDS.get( defname[5:], ( None, None ) ) )
 		return
 	if isinstance( model, tuple ):
 		# our character, with this map's cinematic animations
@@ -233,9 +257,10 @@ def write_actor_def( fp, dkres, defname, model ):
 			if " " in a[0] or not a[0].strip():
 				continue
 			fp.write( "\t\"anim %s\"\t\"%s 10%s\"\n" % ( a[0], a[0], " loop" if a[0].startswith( "amb" ) else "" ) )
-	fp.write( "}\nentityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"model_%s\"\n"
-			  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
-			  "\t\"run_speed\"\t\"220\"\n\t\"walk_speed\"\t\"90\"\n\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n" % ( defname, defname ) )
+	fp.write( "}\n" )
+	# our character at its own walk's and run's speeds; Daikatana's model at the defaults
+	speeds = def_anim_speeds( os.path.join( "def", "char_%s.def" % model[0] ) ) if isinstance( model, tuple ) else ( None, None )
+	actor_entity_def( fp, defname, "model_" + defname, speeds )
 
 # ---------------------------------------------------------------------------
 # the script
