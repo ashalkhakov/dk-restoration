@@ -150,28 +150,29 @@
 		onOpen { uiScript LoadSaves }
 
 		DK_LABEL_BRIGHT( 20, 10, "Load a saved game:" )
-		DK_SAVE_LIST( 20, 35, 250, 150, uiScript LoadSave )
-		DK_SAVE_DETAILS( 20, 195, 212 )
+		DK_SAVE_LIST( 20, 35, 250, 130, uiScript LoadSave )
+		DK_SAVE_DETAILS( 20, 172, 188 )
 
 		DK_SAVE_BUTTON( 285, 155, "Load", UI_SHOW_SAVE_SELECTED, uiScript LoadSave )
 		DK_SAVE_BUTTON( 285, 180, "Delete", UI_SHOW_SAVE_SELECTED, uiScript DeleteSave )
 	}
 
 	// Save Game: the same list; a name, the map's by default, a save picked
-	// to save over it (dk_menu_savegame.cpp)
+	// to save over it (dk_menu_savegame.cpp). Everything ends above 325, the
+	// bottom of Daikatana's panel area (SCREEN_TOP + SCREEN_HEIGHT)
 	menuDef {
 		DK_PANEL( dk_savegame )
 		onOpen { uiScript LoadSaves ; uiScript SaveName }
 
 		DK_LABEL_BRIGHT( 20, 10, "Save the game (a Save Gem each):" )
-		DK_SAVE_LIST( 20, 35, 250, 150, uiScript SaveGame ; DK_CLOSE_PANELS ; uiScript closeingame )
-		DK_SAVE_DETAILS( 20, 195, 212 )
+		DK_SAVE_LIST( 20, 35, 250, 130, uiScript SaveGame ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_SAVE_DETAILS( 20, 172, 188 )
 
-		DK_LABEL( 20, 308, "Name:" )
-		DK_FIELD( 80, 306, "ui_saveName", 32 )
-		DK_BUTTON_MEDIUM( 285, 306, "Save", uiScript SaveGame ; DK_CLOSE_PANELS ; uiScript closeingame )
+		DK_LABEL( 20, 268, "Name:" )
+		DK_FIELD( 80, 266, "ui_saveName", 32 )
+		DK_BUTTON_MEDIUM( 285, 266, "Save", uiScript SaveGame ; DK_CLOSE_PANELS ; uiScript closeingame )
 		itemDef {
-			rect 20 332 250 16
+			rect 20 290 250 16
 			ownerdraw UI_SAVE_GEMS
 			textscale DK_TS_SMALL
 			forecolor DK_GOLD
