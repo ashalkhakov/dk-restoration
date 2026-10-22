@@ -701,37 +701,56 @@ EOF
 # ./dk lightmaps [map...]: each map's lightmaps baked again by q3map2, from
 #   Daikatana's own lights (tools/maps/bsp_lights.py): its light entities,
 #   their caps as fades, LIGHT_DEFAULT_CAP for those without; its faces'
-#   surface lights; its sky as q3map2's sky light. External lightmaps in
+#   surface lights; its sky as q3map2's sky light; see-through faces cast
+#   no shadow. Baked twice the same way, all of it and the light entities'
+#   direct light alone, the one less the other: the game draws that part
+#   with dynamic lights (cg_staticLightScale), the lightmaps keep the rest
+#   (worldspawn "_bounceLightmaps"). External lightmaps in
 #   out/maps/<map>/lm_*.tga. Baked again after the map is converted again;
 #   the light grids (./dk bakegrids) after these.
 LIGHT_CAP_SCALE=${LIGHT_CAP_SCALE:-1.25}
 LIGHT_DEFAULT_CAP=${LIGHT_DEFAULT_CAP:-55}
-LIGHT_SKY_SCALE=${LIGHT_SKY_SCALE:-1}
-LIGHT_OPTIONS=${LIGHT_OPTIONS:--bounce 2 -samples 2 -filter -samplesize 8 -external -lightmapsize 1024}
-cmd_lightmaps() {
-	local map q3map2 home=$OUT/test-home work=$OUT/lightmaps scripts status start
-	q3map2=$(tool netradiant/q3map2)
-	[ $# -gt 0 ] || set -- $(default_maps)
-	assemble "$home" link
+LIGHT_SKY_SCALE=${LIGHT_SKY_SCALE:-0.5}
+LIGHT_OPTIONS=${LIGHT_OPTIONS:--bounce 2 -bouncescale 2 -samples 2 -filter -samplesize 8 -external -lightmapsize 1024}
+
+# light_pass <bake|bake-direct> <map> <out.bsp> <q3map2 options...>: one bake
+# of out/lightmaps/<map>.game.bsp
+light_pass() {
+	local mode=$1 map=$2 out=$3 home=$OUT/test-home scripts status
+	shift 3
 	scripts=$home/$GAME/scripts
+	python3 "$ROOT/tools/maps/bsp_lights.py" "$mode" "$OUT/lightmaps/$map.game.bsp" "$DKRES/maps/$map.bsp" "$out" \
+		"$scripts/zz_lightbake.shader" "$LIGHT_CAP_SCALE" "$LIGHT_DEFAULT_CAP" "$LIGHT_SKY_SCALE" >/dev/null || return 1
+	# q3map2 reads the shaders shaderlist.txt names, only
+	(cd "$scripts" && ls -- *.shader | sed 's/\.shader$//') >"$scripts/shaderlist.txt"
+	rm -rf "${out%.bsp}"
+	"$(tool netradiant/q3map2)" -game quake3 -fs_basepath "$home" -fs_game "$GAME" -light -threads "$JOBS" -nocollapse "$@" \
+		"$out" >"${out%.bsp}.log" 2>&1
+	status=$?
+	rm -f "$scripts/zz_lightbake.shader" "$scripts/shaderlist.txt"
+	return $status
+}
+
+cmd_lightmaps() {
+	local map work=$OUT/lightmaps start direct
+	tool netradiant/q3map2 >/dev/null
+	[ $# -gt 0 ] || set -- $(default_maps)
+	assemble "$OUT/test-home" link
 	mkdir -p "$work"
+	# the direct light alone: the same, without bouncing
+	direct=$(printf '%s' "$LIGHT_OPTIONS" | sed -E 's/-bounce [0-9]+//; s/-fastbounce//')
 	for map in "$@"; do
 		printf 'lightmaps %-8s ' "$map"
 		[ -f "$DKRES/maps/$map.bsp" ] && [ -f "$OUT/maps/$map.bsp" ] || { echo "not converted"; continue; }
 		cp "$OUT/maps/$map.bsp" "$work/$map.game.bsp"
-		python3 "$ROOT/tools/maps/bsp_lights.py" bake "$work/$map.game.bsp" "$DKRES/maps/$map.bsp" "$work/$map.bsp" \
-			"$scripts/zz_lightbake.shader" "$LIGHT_CAP_SCALE" "$LIGHT_DEFAULT_CAP" "$LIGHT_SKY_SCALE" >/dev/null
-		# q3map2 reads the shaders shaderlist.txt names, only
-		(cd "$scripts" && ls -- *.shader | sed 's/\.shader$//') >"$scripts/shaderlist.txt"
-		rm -rf "${work:?}/$map"
 		start=$(date +%s)
 		# shellcheck disable=SC2086
-		"$q3map2" -game quake3 -fs_basepath "$home" -fs_game "$GAME" -light -threads "$JOBS" $LIGHT_OPTIONS \
-			"$work/$map.bsp" >"$work/$map.log" 2>&1
-		status=$?
-		rm -f "$scripts/zz_lightbake.shader" "$scripts/shaderlist.txt"
-		[ $status = 0 ] || { echo "FAILED, see out/lightmaps/$map.log"; continue; }
-		python3 "$ROOT/tools/maps/bsp_lights.py" restore "$work/$map.game.bsp" "$work/$map.bsp"
+		light_pass bake "$map" "$work/$map.bsp" $LIGHT_OPTIONS || { echo "FAILED, see out/lightmaps/$map.log"; continue; }
+		# shellcheck disable=SC2086
+		light_pass bake-direct "$map" "$work/$map-direct.bsp" $direct || { echo "FAILED, see out/lightmaps/$map-direct.log"; continue; }
+		python3 "$ROOT/tools/maps/bsp_lights.py" subtract "$work/$map.bsp" "$work/$map-direct.bsp" "$work/$map" "$work/$map-direct" \
+			|| { echo "FAILED"; continue; }
+		python3 "$ROOT/tools/maps/bsp_lights.py" restore "$work/$map.game.bsp" "$work/$map.bsp" bounce
 		cp "$work/$map.bsp" "$OUT/maps/$map.bsp"
 		rm -rf "${OUT:?}/maps/$map"
 		[ -d "$work/$map" ] && cp -R "$work/$map" "$OUT/maps/$map"
