@@ -139,6 +139,61 @@ entity cine_spawn( string def, vector origin, float yaw, string name ) {
 
 /*
 ================
+cine_enter
+
+Daikatana's spawning of a character in a cinematic: its one actor (the
+cinematic's, for that character, from its first entrance on) put there and
+shown, "who" (Daikatana's entity) its owner until another's entrance
+================
+*/
+entity cine_enter( entity actor, string def, vector origin, float yaw, string name, string who ) {
+	if ( actor == $null_entity ) {
+		actor = cine_spawn( def, origin, yaw, name );
+	} else {
+		actor.show();
+		actor.setOrigin( origin );
+		actor.setAngles( '0 1 0' * yaw );
+		actor.turnTo( yaw );
+		cine_anchor( actor, origin, yaw );
+		if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
+			actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
+		}
+	}
+	if ( actor != $null_entity ) {
+		actor.setKey( "cine_owner", who );
+	}
+	return actor;
+}
+
+/*
+================
+cine_exit
+
+Daikatana's removal: the actor hidden, if it's still that entity's (not
+another's that has entered since)
+================
+*/
+void cine_exit( entity actor, string who ) {
+	if ( actor != $null_entity && actor.getKey( "cine_owner" ) == who ) {
+		actor.hide();
+	}
+}
+
+/*
+================
+cine_remove
+
+the actor gone, if it's there
+================
+*/
+void cine_remove( entity actor ) {
+	if ( actor != $null_entity ) {
+		actor.remove();
+	}
+}
+
+/*
+================
 cine_until
 
 waits until then
@@ -158,12 +213,15 @@ the actor plays the animation through
 ================
 */
 void cine_play( entity actor, string anim ) {
+	string	who;
+
 	if ( actor == $null_entity ) {
 		return;
 	}
+	who = actor.getKey( "cine_owner" );
 	cine_toAnchor( actor );
 	actor.playAnim( ANIMCHANNEL_LEGS, anim );
-	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() ) {
+	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() && actor.getKey( "cine_owner" ) == who ) {
 		sys.waitFrame();
 	}
 }
@@ -185,10 +243,12 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 	vector	to;
 	float	t0;
 	float	f;
+	string	who;
 
 	if ( actor == $null_entity ) {
 		return;
 	}
+	who = actor.getKey( "cine_owner" );
 	cine_toAnchor( actor );
 	ang = actor.getAngles();
 	from = actor.getOrigin();
@@ -203,6 +263,9 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 		actor.setOrigin( from + ( to - from ) * f );
 		actor.turnTo( ang_y + turn * f );
 		sys.waitFrame();
+		if ( actor.getKey( "cine_owner" ) != who ) {
+			return;		// another has entered as this actor
+		}
 	}
 	actor.setOrigin( to );
 	actor.turnTo( ang_y + turn );
@@ -226,10 +289,12 @@ void cine_move( entity actor, vector dest, string gait ) {
 	float	dist;
 	float	t0;
 	float	f;
+	string	who;
 
 	if ( actor == $null_entity ) {
 		return;
 	}
+	who = actor.getKey( "cine_owner" );
 	cine_toAnchor( actor );
 	if ( gait == "runa" ) {
 		speed = actor.getFloatKey( "run_speed" );
@@ -258,6 +323,9 @@ void cine_move( entity actor, vector dest, string gait ) {
 			at_z = actor.getOrigin() * '0 0 1';		// (on the floor, as gravity has it)
 			actor.setOrigin( at );
 			sys.waitFrame();
+			if ( actor.getKey( "cine_owner" ) != who ) {
+				return;		// another has entered as this actor
+			}
 		}
 	}
 	at = from + dir;
@@ -277,12 +345,15 @@ the actor turns to face yaw
 ================
 */
 void cine_turn( entity actor, float yaw ) {
+	string	who;
+
 	if ( actor == $null_entity ) {
 		return;
 	}
+	who = actor.getKey( "cine_owner" );
 	actor.setKey( "cine_anchorYaw", "" + yaw );
 	actor.turnTo( yaw );
-	while( !actor.facingIdeal() ) {
+	while( !actor.facingIdeal() && actor.getKey( "cine_owner" ) == who ) {
 		if ( sys.skippingCinematic() ) {
 			actor.setAngles( '0 1 0' * yaw );
 			return;

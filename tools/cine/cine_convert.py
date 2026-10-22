@@ -75,12 +75,20 @@ def def_anim_speeds( path ):
 		speeds.append( float( m.group( 1 ) ) if m else None )
 	return tuple( speeds )
 
+# a cinematic's walk: Daikatana's actors walked about 35 a second (Hiro and
+# Toshiro out of the dojo, shots 27 and 28 of the intro), their walks drawn
+# at 10 frames a second for slower: the game plays the legs up to
+# legs_rate_max faster to keep up
+CINE_WALK = 35
+CINE_LEGS_RATE_MAX = 8
+
 def actor_entity_def( fp, defname, model, speeds ):
 	walk, run = speeds
 	fp.write( "entityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"%s\"\n"
 			  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
-			  "\t\"run_speed\"\t\"%g\"\n\t\"walk_speed\"\t\"%g\"\n\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n"
-			  % ( defname, model, run or 220, walk or 90 ) )
+			  "\t\"run_speed\"\t\"%g\"\n\t\"walk_speed\"\t\"%g\"\n\t\"legs_rate_max\"\t\"%g\"\n"
+			  "\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n"
+			  % ( defname, model, run or 220, walk or CINE_WALK, CINE_LEGS_RATE_MAX ) )
 
 # a cinematic character's model: its prefix, then the first four letters of
 # the map's name (Daikatana's cinematic_character_init)
@@ -298,15 +306,16 @@ def sound_path( f ):
 
 gaits = {}		# an actor's way of moving, from its last start_walking / start_running
 
-def task_lines( task, var, actors ):
-	"""a task, as script lines"""
+def task_lines( task, dkvar, actors, var, owner ):
+	"""a task of Daikatana's entity dkvar, as script lines, for its actor var
+	(that of owner, the entity that spawned it)"""
 	ty = task["type"]
-	rig = actors[var][2]
+	rig = actors[dkvar][2]
 	if ty == "start_running":
-		gaits[var] = "runa"
+		gaits[dkvar] = "runa"
 		return [ "// start_running" ]
 	if ty == "start_walking":
-		gaits[var] = "walka"
+		gaits[dkvar] = "walka"
 		return [ "// start_walking%s" % ( ( " (Daikatana's " + task["animation"] + ")" ) if task["animation"] else "" ) ]
 	if rig and ty in ( "play_animation", "set_idle_animation" ):
 		a = rig["anims"].get( task["animation"] )
@@ -324,15 +333,15 @@ def task_lines( task, var, actors ):
 	dest = "'%s'" % fmt( task["destination"] )
 	yaw = round( task["direction"][1], 2 )
 	if ty == "spawn_entity":
-		return [ "%s = cine_spawn( \"%s\", %s, %g, \"%s\" );" % ( var, actors[var][1], dest, yaw, var ) ]
+		return [ "%s = cine_enter( %s, \"%s\", %s, %g, \"%s\", \"%s\" );" % ( var, var, actors[dkvar][1], dest, yaw, var, dkvar ) ]
 	if ty == "play_animation":
 		return [ "cine_play( %s, \"%s\" );" % ( var, task["animation"] ) ]
 	if ty == "set_idle_animation":
 		return [ "cine_idle( %s, \"%s\" );" % ( var, task["animation"] ) ]
 	if ty == "move_to":
-		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( var, "walka" ) ) ]
+		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( dkvar, "walka" ) ) ]
 	if ty == "move_and_turn":
-		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( var, "walka" ) ), "cine_turn( %s, %g );" % ( var, yaw ) ]
+		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( dkvar, "walka" ) ), "cine_turn( %s, %g );" % ( var, yaw ) ]
 	if ty == "turn":
 		return [ "cine_turn( %s, %g );" % ( var, yaw ) ]
 	if ty == "teleport":
@@ -340,12 +349,74 @@ def task_lines( task, var, actors ):
 	if ty == "trigger_brush_use":
 		return [ "cine_use( \"%s\", %s );" % ( task["use_entity"], var ) ]
 	if ty == "remove_entity":
-		return [ "%s.remove();" % var ]
+		return [ "cine_exit( %s, \"%s\" );" % ( var, owner ) ]
 	if ty == "clear_goals":
 		return [ "%s.stopMove();" % var ]
 	if ty == "none":
 		return []
 	return [ "// %s (not converted)" % ty ]
+
+def actor_slots( data, actors ):
+	"""Daikatana's entities -> our actors: an actor a character (a def), its
+	entities one after another taking it, so it's one Hiro, one Toshiro in
+	the whole cinematic; a second only for an entity that acts while another
+	of the same character is still about (two ninjas fighting). An entity is
+	about from its spawning's shot to its removal's (the end, without one);
+	a shot that only removes it doesn't count, the next one entering takes
+	the actor from it then."""
+	end = len( data["shots"] )
+	acts, removed, spawned = {}, {}, {}		# var -> shots it does something in; its removal's shot; its spawning's
+	for si, shot in enumerate( data["shots"] ):
+		for e in shot["entities"]:
+			var = ident( e["uniqueid"] or e["name"] )
+			types = set( t["type"] for t in e["tasks"] )
+			if "spawn_entity" in types:
+				spawned.setdefault( var, si )
+			if "remove_entity" in types:
+				removed[var] = si
+			if types - { "remove_entity", "none" }:
+				acts.setdefault( var, [] ).append( si )
+	span = {}
+	for var in actors:
+		a = acts.get( var, [ 0 ] )
+		r = removed.get( var )
+		if r is None:
+			last = end
+		elif r in a:
+			last = r
+		else:
+			last = max( a[-1], r - 1 )
+		span[var] = [ a[0], last ]
+	# one never spawned (Daikatana's intro has oka1 spawned, then osa1 acting
+	# and removed) is the one of its character spawned last before it: its
+	# actor, its removal that one's
+	owners = dict( ( v, v ) for v in actors )
+	for var in actors:
+		if var in spawned or var not in acts:
+			continue
+		before = [ v for v in spawned if actors[v][1] == actors[var][1] and spawned[v] <= acts[var][0] ]
+		if before:
+			owners[var] = max( before, key = lambda v: spawned[v] )
+			o = span[owners[var]]
+			o[1] = max( o[1], span[var][1] )
+	slots, taken = {}, {}		# taken: def -> [ ( slot, last shot ) ]
+	for var in sorted( span, key = lambda v: ( span[v][0], v ) ):
+		if owners[var] != var:
+			continue
+		d = actors[var][1]
+		base = ident( re.sub( r"^cine_", "", d ) )
+		have = taken.setdefault( d, [] )
+		for i, ( slot, last ) in enumerate( have ):
+			if last < span[var][0]:
+				have[i] = ( slot, span[var][1] )
+				break
+		else:
+			slot = base if not have else "%s_%d" % ( base, len( have ) + 1 )
+			have.append( ( slot, span[var][1] ) )
+		slots[var] = slot
+	for var in actors:
+		slots[var] = slots[owners[var]]
+	return slots, owners
 
 def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 	ns = ident( name )
@@ -374,14 +445,17 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 				defname = None
 			actors[var] = ( e["name"], defname or "cine_missing", rig )
 
+	slots, owners = actor_slots( data, actors )
 	out = [ "// %s.script -- Daikatana's cinematic cin/scripts/%s.script, converted by" % ( name, src ),
 			"// tools/cine/cine_convert.py. Its shots' cameras are cameras/%s_NN.camera." % name,
 			"// To change it, copy this file (or a camera) to the repository's cine/script/",
 			"// (cine/cameras/): yours takes its place.",
 			"", "namespace %s {" % ns, "" ]
-	for var, ( cls, d, rig ) in sorted( actors.items() ):
-		out.append( "entity\t%s;\t\t// %s%s" % ( var, cls, " (no model found)" if d == "cine_missing" else
-												  ( " (our %s)" % rig["character"] if rig else "" ) ) )
+	for slot in sorted( set( slots.values() ) ):
+		dks = sorted( v for v in slots if slots[v] == slot )
+		cls, d, rig = actors[dks[0]]
+		out.append( "entity\t%s;\t\t// %s%s: Daikatana's %s" % ( slot, cls, " (no model found)" if d == "cine_missing" else
+												  ( " (our %s)" % rig["character"] if rig else "" ), ", ".join( dks ) ) )
 	out += [ "float\tshot;\t\t// the shot playing: an actor's tasks of an earlier one stop", "float\tshotStart;", "" ]
 
 	shotFuncs = []
@@ -392,16 +466,22 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 		for e in shot["entities"]:
 			var = ident( e["uniqueid"] or e["name"] )
 			body = []
+			# after a wait, the shot may have changed: then it's not this shot's
+			# to do; but an actor this shot removes goes even so (Daikatana's
+			# tasks ran on into the next shot), or it stays as a clone of the
+			# one the next shot spawns
+			removes = any( t["type"] == "remove_entity" for t in e["tasks"] )
+			guard = ( "if ( shot != %d ) { cine_exit( %s, \"%s\" ); return; }" % ( num, slots[var], owners[var] ) if removes
+					  else "if ( shot != %d ) { return; }" % num )
 			for task in e["tasks"]:
-				lines = task_lines( task, var, actors )
+				lines = task_lines( task, var, actors, slots[var], owners[var] )
 				if not lines:
 					continue
-				# after a wait, the shot may have changed: then it's not this shot's to do
 				if task["time"] >= 0:
 					body.append( "cine_until( shotStart + %g );" % round( task["time"], 3 ) )
-					body.append( "if ( shot != %d ) { return; }" % num )
+					body.append( guard )
 				elif body and body[-1].startswith( ( "cine_play", "cine_move", "cine_turn" ) ):
-					body.append( "if ( shot != %d ) { return; }" % num )
+					body.append( guard )
 				body += lines
 			if not any( not l.startswith( ( "//", "if" ) ) for l in body ):
 				continue
@@ -443,8 +523,8 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 			 "\tfloat first;", "", "\tfirst = sys.strToFloat( sys.getcvar( \"cine_firstShot\" ) );", "\tcine_start();" ]
 	out += [ "\tif ( first <= %d ) { %s(); }" % ( i + 1, f ) for i, f in enumerate( shotFuncs ) ]
 	out += [ "\tcine_finish();" ]
-	for var in sorted( actors ):
-		out.append( "\tif ( %s != $null_entity ) { %s.remove(); }" % ( var, var ) )
+	for slot in sorted( set( slots.values() ) ):
+		out.append( "\tcine_remove( %s );" % slot )
 	out += [ "}", "", "}", "" ]
 	with open( path, "w" ) as fp:
 		fp.write( "\n".join( out ) )

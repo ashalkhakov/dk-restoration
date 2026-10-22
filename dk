@@ -488,6 +488,29 @@ cmd_rig() {
 		done
 	} >"$DKRES/models/rigged/results.txt"
 	[ $failed = 0 ] || die "some models failed to rig"
+	rig_outfits
+}
+
+# OUTFITS: a character's other outfit, rigged on its own (RIG_MODELS), on the
+# character's rig: one IQM with both, the outfit's animations too
+# (tools/rig/outfit.py: models/rigged/<character>_outfits.iqm, a .skin each);
+# the character's def and the outfit's on it, each in its skin. A line:
+#   character  outfit  prefix (its surfaces' names in the IQM)
+# (none yet: Hiro's gi on Hiro's rig shears where the two rigs' joints are
+# apart; it needs the gi rigged on Hiro's joints first)
+OUTFITS="
+"
+rig_outfits() {
+	local char outfit prefix def
+	printf '%s\n' "$OUTFITS" | sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d' | while read -r char outfit prefix; do
+		def=$ROOT/def/char_$char.def
+		[ -f "$def" ] || def=$ROOT/def/rig_$char.def
+		(cd "$ROOT" && python3 tools/rig/outfit.py --defs "$def" "def/rig_$outfit.def" "$DKRES/models/rigged/$char.iqm" \
+			"$DKRES/models/rigged/$outfit.iqm" "$prefix" "$DKRES/models/rigged/${char}_outfits") \
+			>"$DKRES/models/rigged/${char}_outfits.log" 2>&1 \
+			|| die "$char in $outfit failed (dkres/models/rigged/${char}_outfits.log)"
+		printf '  %-16s %s\n' "$char+$outfit" "$(tail -1 "$DKRES/models/rigged/${char}_outfits.log" | sed 's/^ *//')"
+	done
 }
 
 # Daikatana's cinematics (cin/scripts/*.script) as ours: out/cine/cameras,

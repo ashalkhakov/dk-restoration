@@ -257,6 +257,48 @@ def hardpoint_joints( hps, joints, motion, bones, F, sample ):
 					  { f: rigid_fit( s.frames[0], s.frames[f] ) for f in range( F ) } ) )
 	return out
 
+def extent( pts ):
+	return vlen( vsub( tuple( max( p[k] for p in pts ) for k in range( 3 ) ), tuple( min( p[k] for p in pts ) for k in range( 3 ) ) ) )
+
+def is_prop( s ):
+	"""A prop: a surface Daikatana hides in some frames by squashing it to a
+	point (Usagi's Daikatana, carried in some shots, not in others), not a
+	part of the body"""
+	sizes = [ extent( f ) for f in s.frames ]
+	return s.numVerts > 3 and max( sizes ) > 1 and min( sizes ) < 0.1 * max( sizes )
+
+# a prop's joint's scale a frame (0.01 where it's hidden): joint -> { frame: scale }
+PROP_SCALE = {}
+
+def prop_joints( props, joints, motion, bones, F ):
+	"""The props as joints of their own: rest the frame each is biggest in,
+	moved and scaled to each frame as a whole (a rigid fit and a uniform
+	scale, Umeyama's), on the bone that keeps nearest it. Returns ( joint,
+	its motion, its scale a frame, its vertexes' rest places )"""
+	out = []
+	for s in props:
+		sizes = [ extent( f ) for f in s.frames ]
+		rf = max( range( F ), key = lambda f: sizes[f] )
+		rest = s.frames[rf]
+		c = vscale( tuple( sum( p[k] for p in rest ) for k in range( 3 ) ), 1.0 / len( rest ) )
+		seen = [ f for f in range( F ) if sizes[f] > 0.5 * sizes[rf] ]
+		def dist( b ):
+			p = joints[b]["pos"]
+			return sum( vlen( vsub( xform( motion[b][f], p ), vscale( tuple( sum( q[k] for q in s.frames[f] ) for k in range( 3 ) ),
+																		 1.0 / len( rest ) ) ) ) for f in seen )
+		parent = min( bones, key = dist )
+		jm, js = {}, {}
+		for f in range( F ):
+			r, t = rigid_fit( rest, s.frames[f] )
+			cd = vscale( tuple( sum( q[k] for q in s.frames[f] ) for k in range( 3 ) ), 1.0 / len( rest ) )
+			num = sum( vdot( mvec( r, vsub( a, c ) ), vsub( b, cd ) ) for a, b in zip( rest, s.frames[f] ) )
+			den = sum( vdot( vsub( a, c ), vsub( a, c ) ) for a in rest )
+			js[f] = max( 0.01, num / den if den > 0 else 1.0 )
+			jm[f] = ( r, vsub( cd, mvec( r, c ) ) )		# the centre to the frame's
+		out.append( ( { "name": s.name, "parent": joints[parent]["name"], "parentIndex": parent, "zone": None, "pos": c },
+					  jm, js, rest ) )
+	return out
+
 # a monster's or another character's animations: Daikatana plays them at 10
 # frames a second (a server frame each); those that loop, its idle and its
 # ways of getting about. A spec ("<anim> <fps> [loop];...") overrides.
@@ -827,9 +869,10 @@ def main( md3Path, outBase ):
 	if TO_MODEL:
 		for sf in m.surfaces:
 			sf.frames = [ [ stand_up( v ) for v in frame ] for frame in sf.frames ]
-	# the body: every surface but the hardpoints
-	body = [ s for s in m.surfaces if not is_hardpoint( s ) ]
+	# the body: every surface but the hardpoints and the props
+	body = [ s for s in m.surfaces if not is_hardpoint( s ) and not is_prop( s ) ]
 	hps = [ s for s in m.surfaces if is_hardpoint( s ) ]
+	props = [ s for s in m.surfaces if not is_hardpoint( s ) and is_prop( s ) ]
 	verts = []		# [ ( surface index, vertex index ) ]
 	for si, s in enumerate( body ):
 		verts += [ ( si, vi ) for vi in range( s.numVerts ) ]
@@ -1233,6 +1276,20 @@ def main( md3Path, outBase ):
 		print( "  hardpoint %s on %s" % ( joint["name"], joint["parent"] ) )
 	motion[J["origin"]] = { f: ( IDENT, ( 0, 0, 0 ) ) for f in range( F ) }
 
+	# 6. props as joints of their own, their vertexes all theirs
+	for joint, jm, js, prest in prop_joints( props, joints, motion, bones, F ):
+		joints.append( joint )
+		j = len( joints ) - 1
+		motion[j], PROP_SCALE[j] = jm, js
+		si = len( body )
+		body.append( next( sf for sf in props if sf.name == joint["name"] ) )
+		for vi in range( body[-1].numVerts ):
+			verts.append( ( si, vi ) )
+			rest.append( prest[vi] )
+			weights.append( ( j, j, 1.0 ) )
+			assign.append( j )
+		print( "  prop %s on %s, hidden in %d frames" % ( joint["name"], joint["parent"], sum( 1 for v in js.values() if v < 0.1 ) ) )
+
 	write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase )
 	return total / count
 
@@ -1538,7 +1595,7 @@ def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping =
 	# poses, quantised per channel
 	chans = []
 	for j in range( nj ):
-		vals = [ list( locals_[f][j][0] ) + list( locals_[f][j][1] ) + [ 1.0, 1.0, 1.0 ] for f in range( F ) ]
+		vals = [ list( locals_[f][j][0] ) + list( locals_[f][j][1] ) + [ PROP_SCALE.get( j, {} ).get( f, 1.0 ) ] * 3 for f in range( F ) ]
 		offs, scales = [], []
 		for c in range( 10 ):
 			col = [ v[c] for v in vals ]

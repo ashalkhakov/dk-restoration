@@ -1,0 +1,3372 @@
+// intro.script -- the intro, ours: first converted from Daikatana's
+// cinematic cin/scripts/intro.script by tools/cine/cine_convert.py, edited
+// by hand since (one actor a character, Hiro's gi on his own rig...). Its
+// shots' cameras are cameras/intro_NN.camera. Daikatana's as converted, to
+// compare: ./dk cine intro, out/cine/script/intro.script (this one takes its
+// place in the game).
+
+namespace intro {
+
+entity	fatworker;		// monster_fatworker (our fatworker): Daikatana's fat1, fatdrive
+entity	hirogi;		// cine_hiro (our hirogi): Daikatana's hiro1, hiro2, hiro3, hiroally, hirodead, hirofight, hirolongtalk, tm
+entity	inshiro;		// cine_inshiro (our inshiro): Daikatana's insh1, inshfight
+entity	ninja;		// cine_ninja (our ninja): Daikatana's ninrun
+entity	ninja_2;		// cine_ninja (our ninja): Daikatana's ninja, punch
+entity	ninja_3;		// cine_ninja (our ninja): Daikatana's ninjasword
+entity	osaka;		// cine_osaka (our osaka): Daikatana's oka1, osa1
+entity	skinnyworker;		// monster_skinnyworker (our skinnyworker): Daikatana's skin1, skinydrive
+entity	toshiro;		// cine_toshiro (our toshiro): Daikatana's tat1, tosh1, toshally, toshdie, toshfight, toshlongtalk
+entity	usagi;		// cine_usagi (our usagi): Daikatana's inshvolc, usag1, usagbuild, usagsafe
+float	shot;		// the shot playing: an actor's tasks of an earlier one stop
+float	shotStart;
+
+void shot1() {
+	entity cam;
+
+	cam = cine_camera( "intro_01" );
+	shot = 1;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot2() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-3488.38 -3356.88 -736.279', 0.06, "hirogi", "hiro1" );
+	cine_until( shotStart + 7.5 );
+	if ( shot != 2 ) { return; }
+	cine_play( hirogi, "ambathnk" );
+	cine_until( shotStart + 10 );
+	if ( shot != 2 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot2() {
+	entity cam;
+
+	cam = cine_camera( "intro_02" );
+	shot = 2;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot2();
+	sys.startGlobalSound( "sounds/global/e_lightningc.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot3() {
+	cine_until( shotStart + 1 );
+	if ( shot != 3 ) { return; }
+	cine_play( hirogi, "thnkamba" );
+	if ( shot != 3 ) { return; }
+	cine_play( hirogi, "ambappb" );
+	cine_until( shotStart + 7 );
+	if ( shot != 3 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot3() {
+	entity cam;
+
+	cam = cine_camera( "intro_03" );
+	shot = 3;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot3();
+	sys.wait( 0.3 );
+	sys.startGlobalSound( "sounds/e1/we_dgloveamba.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot4() {
+	cine_play( hirogi, "pbsa" );
+	cine_until( shotStart + 1 );
+	if ( shot != 4 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot4() {
+	entity cam;
+
+	cam = cine_camera( "intro_04" );
+	shot = 4;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot4();
+	sys.startGlobalSound( "sounds/hiro/breathe2.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot5() {
+	cine_play( hirogi, "pbsaa" );
+	cine_until( shotStart + 0.4 );
+	if ( shot != 5 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot5() {
+	entity cam;
+
+	cam = cine_camera( "intro_05" );
+	shot = 5;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot5();
+	sys.startGlobalSound( "sounds/global/we_swordwhooshd.wav" );
+	sys.startGlobalSound( "sounds/hiro/jump1.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot6() {
+	cine_play( hirogi, "pbsab" );
+	cine_until( shotStart + 1 );
+	if ( shot != 6 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot6() {
+	entity cam;
+
+	cam = cine_camera( "intro_06" );
+	shot = 6;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot6();
+	sys.startGlobalSound( "sounds/global/we_swordwhooshf.wav" );
+	sys.startGlobalSound( "sounds/hiro/jump10.wav" );
+	sys.startGlobalSound( "sounds/global/e_lightninge.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot7() {
+	cine_until( shotStart + 0.02 );
+	if ( shot != 7 ) { return; }
+	cine_play( hirogi, "pbsb" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 7 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot7() {
+	entity cam;
+
+	cam = cine_camera( "intro_07" );
+	shot = 7;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot7();
+	sys.startGlobalSound( "sounds/hiro/jump4.wav" );
+	sys.wait( 0.8 );
+	sys.startGlobalSound( "sounds/hiro/grunt7.wav" );
+	sys.startGlobalSound( "sounds/global/we_swordwhoosha.wav" );
+	sys.startGlobalSound( "sounds/hiro/jump1.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot8() {
+	cine_play( hirogi, "ambappa" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 8 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot8() {
+	entity cam;
+
+	cam = cine_camera( "intro_08" );
+	shot = 8;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot8();
+	sys.startGlobalSound( "sounds/hiro/breathe2.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot9() {
+	cine_play( hirogi, "pasa" );
+}
+
+void shot9() {
+	entity cam;
+
+	cam = cine_camera( "intro_09" );
+	shot = 9;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot9();
+	sys.startGlobalSound( "sounds/hiro/jump10.wav" );
+	sys.startGlobalSound( "sounds/global/we_swordwhoosha.wav" );
+	sys.wait( 0.1 );
+	sys.startGlobalSound( "sounds/hiro/grunt10.wav" );
+	sys.wait( 0.4 );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshf.wav" );
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/hiro/jump11.wav" );
+	sys.startGlobalSound( "sounds/global/we_swordwhoosha.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot10() {
+	cine_play( hirogi, "pasa" );
+}
+
+void shot10() {
+	entity cam;
+
+	cam = cine_camera( "intro_10" );
+	shot = 10;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot10();
+	sys.startGlobalSound( "sounds/global/we_swordwhooshb.wav" );
+	sys.startGlobalSound( "sounds/hiro/jump11.wav" );
+	sys.startGlobalSound( "sounds/hiro/grunt9.wav" );
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshe.wav" );
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshb.wav" );
+	sys.startGlobalSound( "sounds/hiro/jump10.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot11() {
+	cine_play( hirogi, "ppaamba" );
+	if ( shot != 11 ) { return; }
+	cine_play( hirogi, "ambappb" );
+	if ( shot != 11 ) { return; }
+	cine_play( hirogi, "pbsa" );
+	cine_until( shotStart + 5 );
+	if ( shot != 11 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot11() {
+	entity cam;
+
+	cam = cine_camera( "intro_11" );
+	shot = 11;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot11();
+	sys.wait( 4 );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshc.wav" );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshd.wav" );
+	sys.startGlobalSound( "sounds/hiro/grunt8.wav" );
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshf.wav" );
+	sys.startGlobalSound( "sounds/global/we_swordwhooshe.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/global/b_002.wav" );
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_auto_01.mp3" );
+	sys.waitFor( cam );
+}
+
+void shot12() {
+	entity cam;
+
+	cam = cine_camera( "intro_12" );
+	shot = 12;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot13() {
+	cine_play( hirogi, "ambbb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 13 ) { return; }
+	cine_play( hirogi, "lftlook" );
+	cine_until( shotStart + 4 );
+	if ( shot != 13 ) { return; }
+	cine_play( hirogi, "ambba" );
+	cine_until( shotStart + 5 );
+	if ( shot != 13 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot13() {
+	entity cam;
+
+	cam = cine_camera( "intro_13" );
+	shot = 13;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot13();
+	sys.waitFor( cam );
+}
+
+void hiro1_shot14() {
+	cine_play( hirogi, "ambba" );
+	cine_until( shotStart + 2 );
+	if ( shot != 14 ) { return; }
+	cine_play( hirogi, "lksad" );
+	cine_until( shotStart + 5 );
+	if ( shot != 14 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot14() {
+	entity cam;
+
+	cam = cine_camera( "intro_14" );
+	shot = 14;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot14();
+	sys.wait( 5 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_04.mp3" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot15() {
+	cine_play( hirogi, "lksadb" );
+	cine_until( shotStart + 2.5 );
+	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	cine_play( hirogi, "lksadc" );
+	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	cine_play( hirogi, "lksadc" );
+	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	cine_play( hirogi, "lksadc" );
+	cine_until( shotStart + 6 );
+	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	hirogi.stopMove();
+	cine_until( shotStart + 6 );
+	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	cine_exit( hirogi, "hiro1" );
+}
+
+void shot15() {
+	entity cam;
+
+	cam = cine_camera( "intro_15" );
+	shot = 15;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot15();
+	sys.waitFor( cam );
+}
+
+void hiro2_shot16() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-3644.38 -3294 -737.54', 101.41, "hirogi", "hiro2" );
+	hirogi.playCycle( ANIMCHANNEL_LEGS, "ambba" );
+	cine_move( hirogi, '-3675.25 -3172.5 -759.36', "walka" );
+	if ( shot != 16 ) { return; }
+	cine_use( "dojodoor1", hirogi );
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 8 );
+	if ( shot != 16 ) { return; }
+	hirogi.stopMove();
+}
+
+void tat1_shot16() {
+	toshiro = cine_enter( toshiro, "cine_toshiro", '-3685.75 -3051.62 -739.014', -90.05, "toshiro", "tat1" );
+	cine_play( toshiro, "tka" );
+}
+
+void shot16() {
+	entity cam;
+
+	cam = cine_camera( "intro_16" );
+	shot = 16;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot16();
+	thread tat1_shot16();
+	sys.startGlobalSound( "sounds/global/b_009.wav" );
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_auto_04.mp3" );
+	sys.wait( 4 );
+	sys.startGlobalSound( "sounds/doors/e1/gdoorstop.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/global/e_lightningf.wav" );
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_05.mp3" );
+	sys.waitFor( cam );
+}
+
+void hiro2_shot17() {
+	cine_move( hirogi, '-3679.88 -3109.5 -759.384', "walka" );
+	if ( shot != 17 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 17 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot17() {
+	entity cam;
+
+	cam = cine_camera( "intro_17" );
+	shot = 17;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot17();
+	sys.waitFor( cam );
+}
+
+void tat1_shot18() {
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 2 );
+	if ( shot != 18 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 4 );
+	if ( shot != 18 ) { return; }
+	cine_play( toshiro, "tkb" );
+	cine_until( shotStart + 6 );
+	if ( shot != 18 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 8 );
+	if ( shot != 18 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot18() {
+	entity cam;
+
+	cam = cine_camera( "intro_18" );
+	shot = 18;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread tat1_shot18();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_01.mp3" );
+	sys.waitFor( cam );
+}
+
+void tat1_shot19() {
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 2 );
+	if ( shot != 19 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 3.3 );
+	if ( shot != 19 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot19() {
+	entity cam;
+
+	cam = cine_camera( "intro_19" );
+	shot = 19;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread tat1_shot19();
+	sys.wait( 1.5 );
+	sys.startGlobalSound( "sounds/global/e_lightningm.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro2_shot20() {
+	cine_play( hirogi, "tkc" );
+	if ( shot != 20 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 3 );
+	if ( shot != 20 ) { return; }
+	cine_play( hirogi, "tkb" );
+	if ( shot != 20 ) { return; }
+	cine_play( hirogi, "tka" );
+	if ( shot != 20 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 7 );
+	if ( shot != 20 ) { return; }
+	hirogi.stopMove();
+}
+
+void tat1_shot20() {
+	cine_until( shotStart + 7 );
+	if ( shot != 20 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot20() {
+	entity cam;
+
+	cam = cine_camera( "intro_20" );
+	shot = 20;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot20();
+	thread tat1_shot20();
+	sys.wait( 0.1 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_06.mp3" );
+	sys.waitFor( cam );
+}
+
+void tat1_shot21() {
+	cine_play( toshiro, "cough" );
+	if ( shot != 21 ) { return; }
+	cine_play( toshiro, "coughb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 21 ) { return; }
+	cine_play( toshiro, "coughb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 21 ) { return; }
+	cine_play( toshiro, "coughc" );
+	if ( shot != 21 ) { return; }
+	cine_play( toshiro, "tkb" );
+	cine_until( shotStart + 7 );
+	if ( shot != 21 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot21() {
+	entity cam;
+
+	cam = cine_camera( "intro_21" );
+	shot = 21;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread tat1_shot21();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_02.mp3" );
+	sys.wait( 1.5 );
+	sys.startGlobalSound( "sounds/global/e_lightningf.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro2_shot22() {
+	cine_play( hirogi, "tkc" );
+	if ( shot != 22 ) { return; }
+	cine_play( hirogi, "tkd" );
+	cine_until( shotStart + 3 );
+	if ( shot != 22 ) { return; }
+	hirogi.stopMove();
+}
+
+void tat1_shot22() {
+	cine_until( shotStart + 3 );
+	if ( shot != 22 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot22() {
+	entity cam;
+
+	cam = cine_camera( "intro_22" );
+	shot = 22;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot22();
+	thread tat1_shot22();
+	sys.wait( 0.1 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_07.mp3" );
+	sys.waitFor( cam );
+}
+
+void tat1_shot23() {
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 23 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 23 ) { return; }
+	cine_play( toshiro, "tkb" );
+	if ( shot != 23 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 5 );
+	if ( shot != 23 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 23 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 23 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 8.5 );
+	if ( shot != 23 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot23() {
+	entity cam;
+
+	cam = cine_camera( "intro_23" );
+	shot = 23;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread tat1_shot23();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_03.mp3" );
+	sys.waitFor( cam );
+}
+
+void hiro2_shot24() {
+	cine_until( shotStart + 1 );
+	if ( shot != 24 ) { return; }
+	cine_play( hirogi, "tke" );
+	if ( shot != 24 ) { return; }
+	// play_animation:  (no such animation of hirogi's)
+	cine_until( shotStart + 3 );
+	if ( shot != 24 ) { return; }
+	hirogi.stopMove();
+}
+
+void tat1_shot24() {
+	cine_until( shotStart + 2 );
+	if ( shot != 24 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot24() {
+	entity cam;
+
+	cam = cine_camera( "intro_24" );
+	shot = 24;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot24();
+	thread tat1_shot24();
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_08.mp3" );
+	sys.waitFor( cam );
+}
+
+void hiro2_shot25() {
+	cine_until( shotStart + 4 );
+	if ( shot != 25 ) { return; }
+	cine_play( hirogi, "tkea" );
+	cine_until( shotStart + 5.5 );
+	if ( shot != 25 ) { return; }
+	cine_play( hirogi, "tkeb" );
+	cine_until( shotStart + 7 );
+	if ( shot != 25 ) { return; }
+	hirogi.stopMove();
+}
+
+void tat1_shot25() {
+	cine_play( toshiro, "tkb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 25 ) { return; }
+	cine_play( toshiro, "tkd" );
+	cine_until( shotStart + 4 );
+	if ( shot != 25 ) { return; }
+	cine_play( toshiro, "tkda" );
+	cine_until( shotStart + 7 );
+	if ( shot != 25 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot25() {
+	entity cam;
+
+	cam = cine_camera( "intro_25" );
+	shot = 25;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot25();
+	thread tat1_shot25();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_04.mp3" );
+	sys.wait( 4 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_09.mp3" );
+	sys.waitFor( cam );
+}
+
+void hiro2_shot26() {
+	cine_until( shotStart + 7 );
+	if ( shot != 26 ) { cine_exit( hirogi, "hiro2" ); return; }
+	cine_exit( hirogi, "hiro2" );
+}
+
+void tat1_shot26() {
+	cine_play( toshiro, "tkf" );
+	cine_until( shotStart + 1.4 );
+	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 2.8 );
+	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 7 );
+	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	cine_exit( toshiro, "tat1" );
+}
+
+void shot26() {
+	entity cam;
+
+	cam = cine_camera( "intro_26" );
+	shot = 26;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro2_shot26();
+	thread tat1_shot26();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_05.mp3" );
+	sys.wait( 1.5 );
+	sys.startGlobalSound( "sounds/global/e_lightningj.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro3_shot27() {
+	cine_until( shotStart + 0.1 );
+	if ( shot != 27 ) { return; }
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-3657.5 -3050.12 -737.489', 5.22, "hirogi", "hiro3" );
+	cine_move( hirogi, '-3110.12 -3033.88 -759.87', "walka" );
+	if ( shot != 27 ) { return; }
+	cine_move( hirogi, '-3018.25 -2990.62 -758.749', "walka" );
+	if ( shot != 27 ) { return; }
+	cine_play( hirogi, "ambb" );
+}
+
+void tosh1_shot27() {
+	toshiro = cine_enter( toshiro, "cine_toshiro", '-3660.75 -3006.12 -738.692', 5.22, "toshiro", "tosh1" );
+	cine_move( toshiro, '-3114.12 -2992 -760.181', "walka" );
+	if ( shot != 27 ) { return; }
+	cine_move( toshiro, '-3008.88 -2866.38 -761.146', "walka" );
+	if ( shot != 27 ) { return; }
+	cine_play( toshiro, "tka" );
+}
+
+void shot27() {
+	entity cam;
+
+	cam = cine_camera( "intro_27" );
+	shot = 27;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro3_shot27();
+	thread tosh1_shot27();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_06_a.mp3" );
+	sys.waitFor( cam );
+}
+
+void shot28() {
+	entity cam;
+
+	cam = cine_camera( "intro_28" );
+	shot = 28;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/global/e_lightningq.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro3_shot29() {
+	cine_until( shotStart + 6 );
+	if ( shot != 29 ) { cine_exit( hirogi, "hiro3" ); return; }
+	cine_exit( hirogi, "hiro3" );
+}
+
+void tosh1_shot29() {
+	cine_until( shotStart + 6 );
+	if ( shot != 29 ) { cine_exit( toshiro, "tosh1" ); return; }
+	cine_exit( toshiro, "tosh1" );
+}
+
+void shot29() {
+	entity cam;
+
+	cam = cine_camera( "intro_29" );
+	shot = 29;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro3_shot29();
+	thread tosh1_shot29();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_06_b.mp3" );
+	sys.waitFor( cam );
+}
+
+void oka1_shot30() {
+	osaka = cine_enter( osaka, "cine_osaka", '289.625 -1125 -194.612', 89.38, "osaka", "oka1" );
+	cine_until( shotStart + 2 );
+	if ( shot != 30 ) { return; }
+	cine_play( osaka, "c_amba" );
+	cine_until( shotStart + 4 );
+	if ( shot != 30 ) { return; }
+	cine_play( osaka, "c_amba" );
+	cine_until( shotStart + 7.5 );
+	if ( shot != 30 ) { return; }
+	osaka.stopMove();
+}
+
+void usag1_shot30() {
+	usagi = cine_enter( usagi, "cine_usagi", '291.625 -897.875 -227.215', -90.01, "usagi", "usag1" );
+	cine_move( usagi, '291.625 -1031.25 -263.035', "walka" );
+	if ( shot != 30 ) { return; }
+	cine_play( usagi, "ambathnk" );
+	cine_until( shotStart + 7.5 );
+	if ( shot != 30 ) { return; }
+	usagi.stopMove();
+}
+
+void shot30() {
+	entity cam;
+
+	cam = cine_camera( "intro_30" );
+	shot = 30;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread oka1_shot30();
+	thread usag1_shot30();
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_07.mp3" );
+	sys.waitFor( cam );
+}
+
+void osa1_shot31() {
+	cine_play( osaka, "c_stndtka" );
+	if ( shot != 31 ) { return; }
+	cine_play( osaka, "c_stndtkb" );
+	if ( shot != 31 ) { return; }
+	cine_play( osaka, "c_stndtkd" );
+	if ( shot != 31 ) { return; }
+	cine_play( osaka, "c_stndtke" );
+	cine_until( shotStart + 6 );
+	if ( shot != 31 ) { return; }
+	osaka.stopMove();
+}
+
+void usag1_shot31() {
+	cine_until( shotStart + 6 );
+	if ( shot != 31 ) { return; }
+	usagi.stopMove();
+}
+
+void shot31() {
+	entity cam;
+
+	cam = cine_camera( "intro_31" );
+	shot = 31;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread osa1_shot31();
+	thread usag1_shot31();
+	sys.waitFor( cam );
+}
+
+void osa1_shot32() {
+	cine_play( osaka, "c_stndtkb" );
+	if ( shot != 32 ) { return; }
+	cine_play( osaka, "c_stndtkd" );
+	if ( shot != 32 ) { return; }
+	cine_play( osaka, "c_stndtkb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 32 ) { return; }
+	osaka.stopMove();
+}
+
+void shot32() {
+	entity cam;
+
+	cam = cine_camera( "intro_32" );
+	shot = 32;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread osa1_shot32();
+	sys.waitFor( cam );
+}
+
+void osa1_shot33() {
+	cine_play( osaka, "c_stndtke" );
+	if ( shot != 33 ) { return; }
+	cine_play( osaka, "c_stndtkd" );
+	if ( shot != 33 ) { return; }
+	cine_play( osaka, "c_stndtkb" );
+	cine_until( shotStart + 4 );
+	if ( shot != 33 ) { return; }
+	osaka.stopMove();
+}
+
+void usag1_shot33() {
+	cine_until( shotStart + 3 );
+	if ( shot != 33 ) { return; }
+	cine_play( usagi, "tha" );
+	if ( shot != 33 ) { return; }
+	// play_animation: amba (no such animation of usagi's)
+	cine_until( shotStart + 4 );
+	if ( shot != 33 ) { return; }
+	usagi.stopMove();
+}
+
+void shot33() {
+	entity cam;
+
+	cam = cine_camera( "intro_33" );
+	shot = 33;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread osa1_shot33();
+	thread usag1_shot33();
+	sys.waitFor( cam );
+}
+
+void usag1_shot34() {
+	cine_until( shotStart + 0.7 );
+	if ( shot != 34 ) { return; }
+	cine_play( usagi, "nodd" );
+	if ( shot != 34 ) { return; }
+	// play_animation: amba (no such animation of usagi's)
+	cine_until( shotStart + 3 );
+	if ( shot != 34 ) { return; }
+	usagi.stopMove();
+}
+
+void shot34() {
+	entity cam;
+
+	cam = cine_camera( "intro_34" );
+	shot = 34;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usag1_shot34();
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_08.mp3" );
+	sys.waitFor( cam );
+}
+
+void osa1_shot35() {
+	cine_play( osaka, "c_stndtka" );
+	if ( shot != 35 ) { return; }
+	cine_play( osaka, "c_stndtkb" );
+	if ( shot != 35 ) { return; }
+	cine_play( osaka, "c_stndtkd" );
+	if ( shot != 35 ) { return; }
+	cine_play( osaka, "c_ambd" );
+	cine_until( shotStart + 5 );
+	if ( shot != 35 ) { return; }
+	osaka.stopMove();
+}
+
+void usag1_shot35() {
+	cine_until( shotStart + 3 );
+	if ( shot != 35 ) { return; }
+	cine_play( usagi, "thnkamba" );
+	cine_until( shotStart + 5 );
+	if ( shot != 35 ) { return; }
+	usagi.stopMove();
+}
+
+void shot35() {
+	entity cam;
+
+	cam = cine_camera( "intro_35" );
+	shot = 35;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread osa1_shot35();
+	thread usag1_shot35();
+	sys.waitFor( cam );
+}
+
+void usag1_shot36() {
+	cine_until( shotStart + 1 );
+	if ( shot != 36 ) { return; }
+	cine_play( usagi, "ambb" );
+	cine_until( shotStart + 2.5 );
+	if ( shot != 36 ) { return; }
+	usagi.stopMove();
+}
+
+void shot36() {
+	entity cam;
+
+	cam = cine_camera( "intro_36" );
+	shot = 36;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usag1_shot36();
+	sys.waitFor( cam );
+}
+
+void osa1_shot37() {
+	cine_play( osaka, "c_amba" );
+	cine_until( shotStart + 4 );
+	if ( shot != 37 ) { cine_exit( osaka, "oka1" ); return; }
+	cine_exit( osaka, "oka1" );
+}
+
+void usag1_shot37() {
+	cine_turn( usagi, 89.46 );
+	if ( shot != 37 ) { cine_exit( usagi, "usag1" ); return; }
+	cine_move( usagi, '282.375 -855 -248.085', "walka" );
+	cine_until( shotStart + 4 );
+	if ( shot != 37 ) { cine_exit( usagi, "usag1" ); return; }
+	cine_exit( usagi, "usag1" );
+}
+
+void shot37() {
+	entity cam;
+
+	cam = cine_camera( "intro_37" );
+	shot = 37;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread osa1_shot37();
+	thread usag1_shot37();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot38() {
+	usagi = cine_enter( usagi, "cine_usagi", '-3407.5 -1478.62 -672.086', 1.58, "usagi", "usagbuild" );
+	cine_play( usagi, "frgd" );
+	cine_until( shotStart + 1 );
+	if ( shot != 38 ) { return; }
+	cine_play( usagi, "frgb" );
+	if ( shot != 38 ) { return; }
+	cine_play( usagi, "frgc" );
+	cine_until( shotStart + 3 );
+	if ( shot != 38 ) { return; }
+	usagi.stopMove();
+}
+
+void shot38() {
+	entity cam;
+
+	cam = cine_camera( "intro_38" );
+	shot = 38;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot38();
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_10.mp3" );
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot39() {
+	cine_until( shotStart + 0.1 );
+	if ( shot != 39 ) { return; }
+	cine_play( usagi, "frgd" );
+	cine_until( shotStart + 1 );
+	if ( shot != 39 ) { return; }
+	usagi.stopMove();
+}
+
+void shot39() {
+	entity cam;
+
+	cam = cine_camera( "intro_39" );
+	shot = 39;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot39();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot40() {
+	cine_play( usagi, "frgb" );
+	if ( shot != 40 ) { return; }
+	cine_play( usagi, "frgb" );
+	if ( shot != 40 ) { return; }
+	cine_play( usagi, "frgb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 40 ) { return; }
+	usagi.stopMove();
+}
+
+void shot40() {
+	entity cam;
+
+	cam = cine_camera( "intro_40" );
+	shot = 40;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot40();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot41() {
+	cine_until( shotStart + 0.1 );
+	if ( shot != 41 ) { return; }
+	cine_play( usagi, "frgd" );
+	cine_until( shotStart + 1 );
+	if ( shot != 41 ) { return; }
+	usagi.stopMove();
+}
+
+void shot41() {
+	entity cam;
+
+	cam = cine_camera( "intro_41" );
+	shot = 41;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot41();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot42() {
+	cine_until( shotStart + 0.1 );
+	if ( shot != 42 ) { return; }
+	cine_play( usagi, "frgd" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 42 ) { return; }
+	usagi.stopMove();
+}
+
+void shot42() {
+	entity cam;
+
+	cam = cine_camera( "intro_42" );
+	shot = 42;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot42();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot43() {
+	cine_until( shotStart + 0.2 );
+	if ( shot != 43 ) { return; }
+	cine_play( usagi, "frgsb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 43 ) { return; }
+	usagi.stopMove();
+}
+
+void shot43() {
+	entity cam;
+
+	cam = cine_camera( "intro_43" );
+	shot = 43;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot43();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot44() {
+	cine_play( usagi, "frgsc" );
+	cine_until( shotStart + 2 );
+	if ( shot != 44 ) { return; }
+	usagi.stopMove();
+}
+
+void shot44() {
+	entity cam;
+
+	cam = cine_camera( "intro_44" );
+	shot = 44;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot44();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot45() {
+	cine_play( usagi, "frgsd" );
+	cine_until( shotStart + 2 );
+	if ( shot != 45 ) { return; }
+	usagi.stopMove();
+}
+
+void shot45() {
+	entity cam;
+
+	cam = cine_camera( "intro_45" );
+	shot = 45;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot45();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot46() {
+	cine_play( usagi, "frgsa" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 46 ) { return; }
+	usagi.stopMove();
+}
+
+void shot46() {
+	entity cam;
+
+	cam = cine_camera( "intro_46" );
+	shot = 46;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot46();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot47() {
+	cine_play( usagi, "frgsc" );
+}
+
+void shot47() {
+	entity cam;
+
+	cam = cine_camera( "intro_47" );
+	shot = 47;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot47();
+	sys.waitFor( cam );
+}
+
+void usagbuild_shot48() {
+	cine_play( usagi, "frgse" );
+	cine_until( shotStart + 3 );
+	if ( shot != 48 ) { cine_exit( usagi, "usagbuild" ); return; }
+	cine_exit( usagi, "usagbuild" );
+}
+
+void shot48() {
+	entity cam;
+
+	cam = cine_camera( "intro_48" );
+	shot = 48;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread usagbuild_shot48();
+	sys.waitFor( cam );
+}
+
+void hiroally_shot49() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-2672 -1591.62 -736.628', -74.4, "hirogi", "hiroally" );
+	cine_until( shotStart + 0.7 );
+	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	cine_move( hirogi, '-2651.62 -1707 -761.195', "walka" );
+	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	cine_turn( hirogi, -17.69 );
+	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 6 );
+	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	cine_exit( hirogi, "hiroally" );
+}
+
+void toshally_shot49() {
+	toshiro = cine_enter( toshiro, "cine_toshiro", '-2639.88 -1582.38 -739.053', -74.4, "toshiro", "toshally" );
+	cine_move( toshiro, '-2595.62 -1705.75 -759.826', "walka" );
+	if ( shot != 49 ) { return; }
+	cine_turn( toshiro, 177.7 );
+	if ( shot != 49 ) { return; }
+	cine_play( toshiro, "tka" );
+}
+
+void shot49() {
+	entity cam;
+
+	cam = cine_camera( "intro_49" );
+	shot = 49;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiroally_shot49();
+	thread toshally_shot49();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_11.mp3" );
+	sys.startGlobalSound( "sounds/global/e_lightningh.wav" );
+	sys.waitFor( cam );
+}
+
+void toshally_shot50() {
+	cine_play( toshiro, "tka" );
+	if ( shot != 50 ) { cine_exit( toshiro, "toshally" ); return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 50 ) { cine_exit( toshiro, "toshally" ); return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 4 );
+	if ( shot != 50 ) { cine_exit( toshiro, "toshally" ); return; }
+	cine_exit( toshiro, "toshally" );
+}
+
+void shot50() {
+	entity cam;
+
+	cam = cine_camera( "intro_50" );
+	shot = 50;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshally_shot50();
+	sys.waitFor( cam );
+}
+
+void insh1_shot51() {
+	inshiro = cine_enter( inshiro, "cine_inshiro", '-1816.62 489.875 -716.635', 93.07, "inshiro", "insh1" );
+	// play_animation: ambb (no such animation of inshiro's)
+	cine_until( shotStart + 1 );
+	if ( shot != 51 ) { return; }
+	cine_play( inshiro, "tkb" );
+	if ( shot != 51 ) { return; }
+	// play_animation: ambb (no such animation of inshiro's)
+}
+
+void usagsafe_shot51() {
+	usagi = cine_enter( usagi, "cine_usagi", '-1813.38 665.75 -716.526', -89.63, "usagi", "usagsafe" );
+	cine_move( usagi, '-1809.88 601.625 -740.846', "walka" );
+	if ( shot != 51 ) { return; }
+	cine_play( usagi, "sfa" );
+}
+
+void shot51() {
+	entity cam;
+
+	cam = cine_camera( "intro_51" );
+	shot = 51;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread insh1_shot51();
+	thread usagsafe_shot51();
+	sys.waitFor( cam );
+}
+
+void shot52() {
+	entity cam;
+
+	cam = cine_camera( "intro_52" );
+	shot = 52;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.waitFor( cam );
+}
+
+void insh1_shot53() {
+	cine_play( inshiro, "nodd" );
+	cine_until( shotStart + 3 );
+	if ( shot != 53 ) { cine_exit( inshiro, "insh1" ); return; }
+	cine_exit( inshiro, "insh1" );
+}
+
+void usagsafe_shot53() {
+	cine_until( shotStart + 3 );
+	if ( shot != 53 ) { cine_exit( usagi, "usagsafe" ); return; }
+	cine_exit( usagi, "usagsafe" );
+}
+
+void shot53() {
+	entity cam;
+
+	cam = cine_camera( "intro_53" );
+	shot = 53;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread insh1_shot53();
+	thread usagsafe_shot53();
+	sys.waitFor( cam );
+}
+
+void inshfight_shot54() {
+	inshiro = cine_enter( inshiro, "cine_inshiro", '1817.88 -3280.25 -523.106', -79.8, "inshiro", "inshfight" );
+}
+
+void ninrun_shot54() {
+	ninja = cine_enter( ninja, "cine_ninja", '1822.75 -3318.25 -522.029', -89.25, "ninja", "ninrun" );
+}
+
+void shot54() {
+	entity cam;
+
+	cam = cine_camera( "intro_54" );
+	shot = 54;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshfight_shot54();
+	thread ninrun_shot54();
+	sys.wait( 0.3 );
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_12.mp3" );
+	sys.waitFor( cam );
+}
+
+void inshfight_shot55() {
+	cine_play( inshiro, "sfa" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 55 ) { return; }
+	inshiro.stopMove();
+}
+
+void ninrun_shot55() {
+	cine_play( ninja, "sfa" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 55 ) { return; }
+	ninja.stopMove();
+}
+
+void shot55() {
+	entity cam;
+
+	cam = cine_camera( "intro_55" );
+	shot = 55;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshfight_shot55();
+	thread ninrun_shot55();
+	sys.waitFor( cam );
+}
+
+void inshfight_shot56() {
+	cine_until( shotStart + 0.1 );
+	if ( shot != 56 ) { return; }
+	cine_play( inshiro, "sfa" );
+	if ( shot != 56 ) { return; }
+	cine_play( inshiro, "sfb" );
+}
+
+void ninrun_shot56() {
+	cine_until( shotStart + 0.1 );
+	if ( shot != 56 ) { return; }
+	cine_play( ninja, "sfa" );
+	if ( shot != 56 ) { return; }
+	cine_play( ninja, "sfb" );
+}
+
+void shot56() {
+	entity cam;
+
+	cam = cine_camera( "intro_56" );
+	shot = 56;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshfight_shot56();
+	thread ninrun_shot56();
+	sys.waitFor( cam );
+}
+
+void shot57() {
+	entity cam;
+
+	cam = cine_camera( "intro_57" );
+	shot = 57;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.waitFor( cam );
+}
+
+void shot58() {
+	entity cam;
+
+	cam = cine_camera( "intro_58" );
+	shot = 58;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_13.mp3" );
+	sys.waitFor( cam );
+}
+
+void inshfight_shot59() {
+	cine_play( inshiro, "sfamb" );
+	if ( shot != 59 ) { return; }
+	cine_play( inshiro, "sambc" );
+	if ( shot != 59 ) { return; }
+	// play_animation: amba (no such animation of inshiro's)
+	cine_until( shotStart + 3 );
+	if ( shot != 59 ) { return; }
+	inshiro.stopMove();
+}
+
+void shot59() {
+	entity cam;
+
+	cam = cine_camera( "intro_59" );
+	shot = 59;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshfight_shot59();
+	sys.waitFor( cam );
+}
+
+void inshvolc_shot60() {
+	usagi = cine_enter( usagi, "cine_usagi", '-551.25 872.375 742.24', 3.39, "usagi", "inshvolc" );
+	cine_play( usagi, "frgsc" );
+	cine_until( shotStart + 5 );
+	if ( shot != 60 ) { return; }
+	cine_play( usagi, "frgsc" );
+}
+
+void shot60() {
+	entity cam;
+
+	cam = cine_camera( "intro_60" );
+	shot = 60;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshvolc_shot60();
+	sys.waitFor( cam );
+}
+
+void inshvolc_shot61() {
+	cine_until( shotStart + 1.5 );
+	if ( shot != 61 ) { return; }
+	cine_play( usagi, "sambd" );
+}
+
+void shot61() {
+	entity cam;
+
+	cam = cine_camera( "intro_61" );
+	shot = 61;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshvolc_shot61();
+	sys.waitFor( cam );
+}
+
+void shot62() {
+	entity cam;
+
+	cam = cine_camera( "intro_62" );
+	shot = 62;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.waitFor( cam );
+}
+
+void inshvolc_shot63() {
+	cine_play( usagi, "frgse" );
+	cine_until( shotStart + 2 );
+	if ( shot != 63 ) { cine_exit( usagi, "inshvolc" ); return; }
+	cine_exit( usagi, "inshvolc" );
+}
+
+void shot63() {
+	entity cam;
+
+	cam = cine_camera( "intro_63" );
+	shot = 63;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread inshvolc_shot63();
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot64() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-2653.25 -1730.25 -737.014', 12.04, "hirogi", "hirolongtalk" );
+	cine_until( shotStart + 0.8 );
+	if ( shot != 64 ) { return; }
+	cine_play( hirogi, "tkea" );
+	if ( shot != 64 ) { return; }
+	cine_play( hirogi, "tkeb" );
+	cine_until( shotStart + 3.7 );
+	if ( shot != 64 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot64() {
+	toshiro = cine_enter( toshiro, "cine_toshiro", '-2588.12 -1712.12 -736.782', -159.6, "toshiro", "toshlongtalk" );
+	cine_play( toshiro, "tkb" );
+}
+
+void shot64() {
+	entity cam;
+
+	cam = cine_camera( "intro_64" );
+	shot = 64;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot64();
+	thread toshlongtalk_shot64();
+	sys.startGlobalSound( "sounds/global/e_lightningd.wav" );
+	sys.wait( 0.8 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_10.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot65() {
+	cine_play( toshiro, "tkb" );
+	if ( shot != 65 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 3 );
+	if ( shot != 65 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot65() {
+	entity cam;
+
+	cam = cine_camera( "intro_65" );
+	shot = 65;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot65();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_14_a.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot66() {
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 66 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 6 );
+	if ( shot != 66 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 10.2 );
+	if ( shot != 66 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot66() {
+	cine_play( toshiro, "tkc" );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 66 ) { return; }
+	// play_animation: amba (no such animation of toshiro's)
+	cine_until( shotStart + 5 );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 6 );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 66 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 10.2 );
+	if ( shot != 66 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot66() {
+	entity cam;
+
+	cam = cine_camera( "intro_66" );
+	shot = 66;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot66();
+	thread toshlongtalk_shot66();
+	sys.startGlobalSound( "sounds/global/e_lightningf.wav" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot67() {
+	cine_play( toshiro, "tkb" );
+	if ( shot != 67 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 3 );
+	if ( shot != 67 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 67 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 67 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 67 ) { return; }
+	cine_play( toshiro, "tka" );
+}
+
+void shot67() {
+	entity cam;
+
+	cam = cine_camera( "intro_67" );
+	shot = 67;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot67();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_14_b.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot68() {
+	cine_play( toshiro, "tkb" );
+	if ( shot != 68 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 2.2 );
+	if ( shot != 68 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot68() {
+	entity cam;
+
+	cam = cine_camera( "intro_68" );
+	shot = 68;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot68();
+	sys.startGlobalSound( "sounds/global/e_lightningg.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot69() {
+	cine_play( hirogi, "tka" );
+	if ( shot != 69 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 3.5 );
+	if ( shot != 69 ) { return; }
+	cine_play( hirogi, "tke" );
+	if ( shot != 69 ) { return; }
+	cine_play( hirogi, "tkea" );
+	cine_until( shotStart + 5 );
+	if ( shot != 69 ) { return; }
+	cine_play( hirogi, "tkeb" );
+	if ( shot != 69 ) { return; }
+	cine_play( hirogi, "tkea" );
+	cine_until( shotStart + 8.5 );
+	if ( shot != 69 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot69() {
+	entity cam;
+
+	cam = cine_camera( "intro_69" );
+	shot = 69;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot69();
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_11.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot70() {
+	cine_play( toshiro, "tke" );
+	cine_until( shotStart + 1.3 );
+	if ( shot != 70 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot70() {
+	entity cam;
+
+	cam = cine_camera( "intro_70" );
+	shot = 70;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot70();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_15_a.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot71() {
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 2 );
+	if ( shot != 71 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 6 );
+	if ( shot != 71 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 9.5 );
+	if ( shot != 71 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot71() {
+	cine_play( toshiro, "tkc" );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tkg" );
+	cine_until( shotStart + 6 );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 71 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 9.5 );
+	if ( shot != 71 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot71() {
+	entity cam;
+
+	cam = cine_camera( "intro_71" );
+	shot = 71;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot71();
+	thread toshlongtalk_shot71();
+	sys.startGlobalSound( "sounds/global/e_lightningi.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot72() {
+	cine_until( shotStart + 5.5 );
+	if ( shot != 72 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot72() {
+	cine_play( toshiro, "tkg" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 72 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 3.5 );
+	if ( shot != 72 ) { return; }
+	cine_play( toshiro, "tkb" );
+	if ( shot != 72 ) { return; }
+	// play_animation: amba (no such animation of toshiro's)
+	cine_until( shotStart + 5.5 );
+	if ( shot != 72 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot72() {
+	entity cam;
+
+	cam = cine_camera( "intro_72" );
+	shot = 72;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot72();
+	thread toshlongtalk_shot72();
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot73() {
+	cine_play( hirogi, "tke" );
+	cine_until( shotStart + 10 );
+	if ( shot != 73 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot73() {
+	cine_play( toshiro, "tka" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 73 ) { return; }
+	// play_animation: amba (no such animation of toshiro's)
+	cine_play( toshiro, "tka" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 73 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 10 );
+	if ( shot != 73 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot73() {
+	entity cam;
+
+	cam = cine_camera( "intro_73" );
+	shot = 73;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot73();
+	thread toshlongtalk_shot73();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_15_c.mp3" );
+	sys.startGlobalSound( "sounds/global/e_lightninga.wav" );
+	sys.wait( 5 );
+	sys.startGlobalSound( "sounds/global/e_lightningp.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot74() {
+	cine_play( hirogi, "tkea" );
+	cine_until( shotStart + 1.7 );
+	if ( shot != 74 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot74() {
+	cine_until( shotStart + 1.7 );
+	if ( shot != 74 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot74() {
+	entity cam;
+
+	cam = cine_camera( "intro_74" );
+	shot = 74;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot74();
+	thread toshlongtalk_shot74();
+	sys.startGlobalSound( "sounds/global/e_lightningd.wav" );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_12.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot75() {
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 75 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 9 );
+	if ( shot != 75 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 11 );
+	if ( shot != 75 ) { return; }
+	cine_play( hirogi, "ambb" );
+}
+
+void toshlongtalk_shot75() {
+	cine_play( toshiro, "tkg" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tki" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 8 );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tkb" );
+	if ( shot != 75 ) { return; }
+	cine_play( toshiro, "tkh" );
+}
+
+void shot75() {
+	entity cam;
+
+	cam = cine_camera( "intro_75" );
+	shot = 75;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot75();
+	thread toshlongtalk_shot75();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_16_a.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot76() {
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 76 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 9 );
+	if ( shot != 76 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 11 );
+	if ( shot != 76 ) { return; }
+	cine_play( hirogi, "ambb" );
+}
+
+void toshlongtalk_shot76() {
+	cine_play( toshiro, "tkg" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 8 );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tkb" );
+	if ( shot != 76 ) { return; }
+	cine_play( toshiro, "tkh" );
+}
+
+void shot76() {
+	entity cam;
+
+	cam = cine_camera( "intro_76" );
+	shot = 76;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot76();
+	thread toshlongtalk_shot76();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_16_b.mp3" );
+	sys.startGlobalSound( "sounds/global/e_lightningp.wav" );
+	sys.wait( 9 );
+	sys.startGlobalSound( "sounds/global/e_lightningk.wav" );
+	sys.waitFor( cam );
+}
+
+void shot77() {
+	entity cam;
+
+	cam = cine_camera( "intro_77" );
+	shot = 77;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/global/e_warpenda.wav" );
+	sys.startGlobalSound( "sounds/global/we_afterburner.wav" );
+	sys.waitFor( cam );
+}
+
+void shot78() {
+	entity cam;
+
+	cam = cine_camera( "intro_78" );
+	shot = 78;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/global/e_warpenda.wav" );
+	sys.startGlobalSound( "sounds/global/we_afterburner.wav" );
+	sys.waitFor( cam );
+}
+
+void shot79() {
+	entity cam;
+
+	cam = cine_camera( "intro_79" );
+	shot = 79;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/global/e_warpenda.wav" );
+	sys.startGlobalSound( "sounds/global/we_afterburner.wav" );
+	sys.waitFor( cam );
+}
+
+void shot80() {
+	entity cam;
+
+	cam = cine_camera( "intro_80" );
+	shot = 80;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/global/e_warpenda.wav" );
+	sys.startGlobalSound( "sounds/global/we_afterburner.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot81() {
+	cine_until( shotStart + 5.5 );
+	if ( shot != 81 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	hirogi.stopMove();
+	cine_until( shotStart + 5.5 );
+	if ( shot != 81 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	cine_exit( hirogi, "hirolongtalk" );
+}
+
+void toshlongtalk_shot81() {
+	cine_play( toshiro, "tkb" );
+	if ( shot != 81 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 5.5 );
+	if ( shot != 81 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	toshiro.stopMove();
+	cine_until( shotStart + 5.5 );
+	if ( shot != 81 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	cine_exit( toshiro, "toshlongtalk" );
+}
+
+void shot81() {
+	entity cam;
+
+	cam = cine_camera( "intro_81" );
+	shot = 81;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot81();
+	thread toshlongtalk_shot81();
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot82() {
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 82 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 9 );
+	if ( shot != 82 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 11 );
+	if ( shot != 82 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 10 );
+	if ( shot != 82 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot82() {
+	cine_play( toshiro, "tkg" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 7 );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 82 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 10 );
+	if ( shot != 82 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot82() {
+	entity cam;
+
+	cam = cine_camera( "intro_82" );
+	shot = 82;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot82();
+	thread toshlongtalk_shot82();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_16_c.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot83() {
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 83 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 9 );
+	if ( shot != 83 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 11 );
+	if ( shot != 83 ) { return; }
+	cine_play( hirogi, "ambb" );
+	cine_until( shotStart + 17.8 );
+	if ( shot != 83 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot83() {
+	cine_play( toshiro, "tkg" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tki" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 8 );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkg" );
+	cine_until( shotStart + 11 );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tki" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 14 );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkb" );
+	cine_until( shotStart + 16 );
+	if ( shot != 83 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 17.8 );
+	if ( shot != 83 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot83() {
+	entity cam;
+
+	cam = cine_camera( "intro_83" );
+	shot = 83;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot83();
+	thread toshlongtalk_shot83();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_16_e.mp3" );
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/global/e_lightningq.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot84() {
+	cine_until( shotStart + 5.5 );
+	if ( shot != 84 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot84() {
+	cine_play( toshiro, "tkb" );
+	if ( shot != 84 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 5.5 );
+	if ( shot != 84 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot84() {
+	entity cam;
+
+	cam = cine_camera( "intro_84" );
+	shot = 84;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot84();
+	thread toshlongtalk_shot84();
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot85() {
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 11 );
+	if ( shot != 85 ) { return; }
+	cine_play( hirogi, "tka" );
+	if ( shot != 85 ) { return; }
+	cine_play( hirogi, "tka" );
+	if ( shot != 85 ) { return; }
+	cine_play( hirogi, "tka" );
+	if ( shot != 85 ) { return; }
+	cine_play( hirogi, "tkb" );
+	cine_until( shotStart + 15.5 );
+	if ( shot != 85 ) { return; }
+	hirogi.stopMove();
+}
+
+void toshlongtalk_shot85() {
+	cine_play( toshiro, "tkg" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tki" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 8 );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 85 ) { return; }
+	cine_play( toshiro, "tki" );
+	cine_until( shotStart + 15.5 );
+	if ( shot != 85 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot85() {
+	entity cam;
+
+	cam = cine_camera( "intro_85" );
+	shot = 85;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot85();
+	thread toshlongtalk_shot85();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_16_f.mp3" );
+	sys.wait( 11 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_13.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot86() {
+	cine_play( toshiro, "tkg" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 86 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 2.3 );
+	if ( shot != 86 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 2.6 );
+	if ( shot != 86 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 86 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 6 );
+	if ( shot != 86 ) { return; }
+	cine_play( toshiro, "tkb" );
+	if ( shot != 86 ) { return; }
+	// play_animation: amba (no such animation of toshiro's)
+	cine_until( shotStart + 8.9 );
+	if ( shot != 86 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot86() {
+	entity cam;
+
+	cam = cine_camera( "intro_86" );
+	shot = 86;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot86();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_17.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot87() {
+	cine_until( shotStart + 0.5 );
+	if ( shot != 87 ) { return; }
+	cine_play( hirogi, "tkb" );
+	if ( shot != 87 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 3 );
+	if ( shot != 87 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot87() {
+	entity cam;
+
+	cam = cine_camera( "intro_87" );
+	shot = 87;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot87();
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_14.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot88() {
+	cine_play( toshiro, "tkc" );
+	cine_until( shotStart + 2 );
+	if ( shot != 88 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot88() {
+	entity cam;
+
+	cam = cine_camera( "intro_88" );
+	shot = 88;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot88();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_18.mp3" );
+	sys.startGlobalSound( "sounds/global/e_lightningn.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot89() {
+	cine_play( hirogi, "tkea" );
+	cine_until( shotStart + 2 );
+	if ( shot != 89 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot89() {
+	entity cam;
+
+	cam = cine_camera( "intro_89" );
+	shot = 89;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot89();
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_15.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot90() {
+	cine_play( toshiro, "tkh" );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 4 );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tke" );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 90 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 8.9 );
+	if ( shot != 90 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot90() {
+	entity cam;
+
+	cam = cine_camera( "intro_90" );
+	shot = 90;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot90();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_19.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot91() {
+	cine_play( toshiro, "tka" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 91 ) { return; }
+	// play_animation: amba (no such animation of toshiro's)
+	cine_play( toshiro, "tki" );
+	cine_until( shotStart + 6 );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tkc" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tkb" );
+	cine_until( shotStart + 10 );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 91 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 91 ) { return; }
+	// play_animation: amba (no such animation of toshiro's)
+	cine_until( shotStart + 15.5 );
+	if ( shot != 91 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot91() {
+	entity cam;
+
+	cam = cine_camera( "intro_91" );
+	shot = 91;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot91();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_20.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot92() {
+	cine_play( hirogi, "tkc" );
+	if ( shot != 92 ) { return; }
+	cine_play( hirogi, "tkb" );
+	cine_until( shotStart + 3 );
+	if ( shot != 92 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot92() {
+	entity cam;
+
+	cam = cine_camera( "intro_92" );
+	shot = 92;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot92();
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_16.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot93() {
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 5.2 );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tkf" );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tka" );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tkh" );
+	cine_until( shotStart + 8 );
+	if ( shot != 93 ) { return; }
+	cine_play( toshiro, "tke" );
+	cine_until( shotStart + 10 );
+	if ( shot != 93 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot93() {
+	entity cam;
+
+	cam = cine_camera( "intro_93" );
+	shot = 93;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot93();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_21.mp3" );
+	sys.startGlobalSound( "sounds/global/e_lightningm.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot94() {
+	cine_play( hirogi, "tkc" );
+	cine_until( shotStart + 2.5 );
+	if ( shot != 94 ) { return; }
+	cine_play( hirogi, "tka" );
+	if ( shot != 94 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 5 );
+	if ( shot != 94 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 6 );
+	if ( shot != 94 ) { return; }
+	cine_play( hirogi, "tkb" );
+	if ( shot != 94 ) { return; }
+	cine_play( hirogi, "tka" );
+	cine_until( shotStart + 9 );
+	if ( shot != 94 ) { return; }
+	hirogi.stopMove();
+}
+
+void shot94() {
+	entity cam;
+
+	cam = cine_camera( "intro_94" );
+	shot = 94;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot94();
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_17.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshlongtalk_shot95() {
+	cine_play( toshiro, "staffmad" );
+	if ( shot != 95 ) { return; }
+	cine_play( toshiro, "point" );
+	if ( shot != 95 ) { return; }
+	cine_play( toshiro, "tkg" );
+	if ( shot != 95 ) { return; }
+	cine_play( toshiro, "tkh" );
+	if ( shot != 95 ) { return; }
+	cine_play( toshiro, "tkf" );
+	if ( shot != 95 ) { return; }
+	cine_play( toshiro, "tka" );
+	cine_until( shotStart + 5.1 );
+	if ( shot != 95 ) { return; }
+	toshiro.stopMove();
+}
+
+void shot95() {
+	entity cam;
+
+	cam = cine_camera( "intro_95" );
+	shot = 95;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshlongtalk_shot95();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_22.mp3" );
+	sys.startGlobalSound( "sounds/global/e_lightningp.wav" );
+	sys.waitFor( cam );
+}
+
+void hirolongtalk_shot96() {
+	cine_play( hirogi, "lftlook" );
+	cine_until( shotStart + 0.9 );
+	if ( shot != 96 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	hirogi.stopMove();
+	cine_until( shotStart + 0.9 );
+	if ( shot != 96 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	cine_exit( hirogi, "hirolongtalk" );
+}
+
+void ninjasword_shot96() {
+	ninja_3 = cine_enter( ninja_3, "cine_ninja", '-2617.88 -1590.5 -739.199', -89.07, "ninja_3", "ninjasword" );
+	cine_play( ninja_3, "float" );
+}
+
+void ninja_shot96() {
+	ninja_2 = cine_enter( ninja_2, "cine_ninja", '-2651.75 -1592.88 -737.592', -89.07, "ninja_2", "ninja" );
+	cine_play( ninja_2, "float" );
+}
+
+void toshlongtalk_shot96() {
+	cine_until( shotStart + 0.9 );
+	if ( shot != 96 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	cine_exit( toshiro, "toshlongtalk" );
+}
+
+void shot96() {
+	entity cam;
+
+	cam = cine_camera( "intro_96" );
+	shot = 96;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirolongtalk_shot96();
+	thread ninjasword_shot96();
+	thread ninja_shot96();
+	thread toshlongtalk_shot96();
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_18.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirofight_shot97() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-2650.5 -1770.25 -737.163', 90.64, "hirogi", "hirofight" );
+}
+
+void ninjasword_shot97() {
+	cine_until( shotStart + 0.5 );
+	if ( shot != 97 ) { return; }
+	cine_play( ninja_3, "jpd" );
+	if ( shot != 97 ) { return; }
+	cine_play( ninja_3, "cr" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 97 ) { return; }
+	ninja_3.stopMove();
+}
+
+void ninja_shot97() {
+	cine_play( ninja_2, "jpns" );
+	if ( shot != 97 ) { return; }
+	cine_play( ninja_2, "ambans" );
+	cine_until( shotStart + 1.8 );
+	if ( shot != 97 ) { return; }
+	ninja_2.stopMove();
+}
+
+void toshfight_shot97() {
+	toshiro = cine_enter( toshiro, "cine_toshiro", '-2604.62 -1764.12 -736.683', 91.04, "toshiro", "toshfight" );
+	cine_play( toshiro, "tki" );
+}
+
+void shot97() {
+	entity cam;
+
+	cam = cine_camera( "intro_97" );
+	shot = 97;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirofight_shot97();
+	thread ninjasword_shot97();
+	thread ninja_shot97();
+	thread toshfight_shot97();
+	sys.startGlobalSound( "sounds/global/e_lightninga.wav" );
+	sys.startGlobalSound( "sounds/global/e_bodyflysa.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/global/p_stpsn4.wav" );
+	sys.wait( 0.3 );
+	sys.startGlobalSound( "sounds/global/e_bodyflysb.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/global/p_stpsn4.wav" );
+	sys.waitFor( cam );
+}
+
+void ninjasword_shot98() {
+	// start_running
+	cine_move( ninja_3, '-2598.12 -1697.38 -758.531', "runa" );
+}
+
+void ninja_shot98() {
+	cine_play( ninja_2, "ambans" );
+	if ( shot != 98 ) { return; }
+	cine_play( ninja_2, "cs" );
+	cine_until( shotStart + 1 );
+	if ( shot != 98 ) { return; }
+	ninja_2.stopMove();
+}
+
+void shot98() {
+	entity cam;
+
+	cam = cine_camera( "intro_98" );
+	shot = 98;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread ninjasword_shot98();
+	thread ninja_shot98();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_egrnt_02.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirofight_shot99() {
+	cine_play( hirogi, "ambb" );
+}
+
+void ninjasword_shot99() {
+	cine_play( ninja_3, "kcel" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 99 ) { return; }
+	ninja_3.stopMove();
+}
+
+void ninja_shot99() {
+	// play_animation:  (no such animation of ninja's)
+	cine_until( shotStart + 1.1 );
+	if ( shot != 99 ) { return; }
+	ninja_2.stopMove();
+}
+
+void toshfight_shot99() {
+	cine_play( toshiro, "diea" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 99 ) { cine_exit( toshiro, "toshfight" ); return; }
+	cine_exit( toshiro, "toshfight" );
+}
+
+void shot99() {
+	entity cam;
+
+	cam = cine_camera( "intro_99" );
+	shot = 99;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirofight_shot99();
+	thread ninjasword_shot99();
+	thread ninja_shot99();
+	thread toshfight_shot99();
+	sys.startGlobalSound( "sounds/global/we_swordwhooshd.wav" );
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_egrnt_04.mp3" );
+	sys.wait( 0.4 );
+	sys.startGlobalSound( "sounds/global/m_punchg.wav" );
+	sys.waitFor( cam );
+}
+
+void hirofight_shot100() {
+	cine_until( shotStart + 0.5 );
+	if ( shot != 100 ) { cine_exit( hirogi, "hirofight" ); return; }
+	cine_play( hirogi, "lkr" );
+	cine_until( shotStart + 1.3 );
+	if ( shot != 100 ) { cine_exit( hirogi, "hirofight" ); return; }
+	cine_exit( hirogi, "hirofight" );
+}
+
+void ninja_shot100() {
+	cine_until( shotStart + 1.3 );
+	if ( shot != 100 ) { cine_exit( ninja_2, "ninja" ); return; }
+	cine_exit( ninja_2, "ninja" );
+}
+
+void ninjasword_shot100() {
+	cine_until( shotStart + 0.9 );
+	if ( shot != 100 ) { return; }
+	ninja_3.stopMove();
+}
+
+void shot100() {
+	entity cam;
+
+	cam = cine_camera( "intro_100" );
+	shot = 100;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirofight_shot100();
+	thread ninja_shot100();
+	thread ninjasword_shot100();
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/hiro/breathe3.wav" );
+	sys.waitFor( cam );
+}
+
+void punch_shot101() {
+	ninja_2 = cine_enter( ninja_2, "cine_ninja", '-2642.88 -1701.5 -739.213', -94.88, "ninja_2", "punch" );
+	cine_until( shotStart + 1 );
+	if ( shot != 101 ) { cine_exit( ninja_2, "punch" ); return; }
+	cine_play( ninja_2, "punch" );
+	cine_until( shotStart + 5.5 );
+	if ( shot != 101 ) { cine_exit( ninja_2, "punch" ); return; }
+	cine_exit( ninja_2, "punch" );
+}
+
+void ninjasword_shot101() {
+	cine_place( ninja_3, '-2599 -1748.62 -758.736', -175.95 );
+	cine_play( ninja_3, "kcela" );
+	cine_until( shotStart + 5.5 );
+	if ( shot != 101 ) { cine_exit( ninja_3, "ninjasword" ); return; }
+	cine_exit( ninja_3, "ninjasword" );
+}
+
+void shot101() {
+	entity cam;
+
+	cam = cine_camera( "intro_101" );
+	shot = 101;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread punch_shot101();
+	thread ninjasword_shot101();
+	sys.wait( 1.2 );
+	sys.startGlobalSound( "sounds/global/m_punchf.wav" );
+	sys.wait( 0.1 );
+	sys.startGlobalSound( "sounds/global/m_punchd.wav" );
+	sys.startGlobalSound( "sounds/global/m_punchc.wav" );
+	sys.wait( 0.1 );
+	sys.startGlobalSound( "sounds/hiro/pain2.wav" );
+	sys.wait( 0.6 );
+	sys.startGlobalSound( "sounds/hiro/landhurt9.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/hiro/grunt7.wav" );
+	sys.wait( 0.7 );
+	sys.startGlobalSound( "sounds/hiro/pain9.wav" );
+	sys.waitFor( cam );
+}
+
+void hirodead_shot102() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-2643.12 -1869.75 -737.265', 87.8, "hirogi", "hirodead" );
+	cine_play( hirogi, "wzshake" );
+}
+
+void toshdie_shot102() {
+	toshiro = cine_enter( toshiro, "cine_toshiro", '-2600.88 -1764.38 -736.54', 95.26, "toshiro", "toshdie" );
+	cine_play( toshiro, "diea" );
+}
+
+void shot102() {
+	entity cam;
+
+	cam = cine_camera( "intro_102" );
+	shot = 102;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirodead_shot102();
+	thread toshdie_shot102();
+	sys.startGlobalSound( "sounds/global/e_lightningq.wav" );
+	sys.wait( 4 );
+	sys.startGlobalSound( "sounds/hiro/breathe5.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/hiro/icedeath2.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/hiro/breathe4.wav" );
+	sys.waitFor( cam );
+}
+
+void hirodead_shot103() {
+	cine_play( hirogi, "wzshake" );
+}
+
+void toshdie_shot103() {
+	cine_play( toshiro, "coffin" );
+}
+
+void shot103() {
+	entity cam;
+
+	cam = cine_camera( "intro_103" );
+	shot = 103;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirodead_shot103();
+	thread toshdie_shot103();
+	sys.startGlobalSound( "sounds/global/e_lightningq.wav" );
+	sys.waitFor( cam );
+}
+
+void hirodead_shot104() {
+	cine_play( hirogi, "wxtka" );
+	cine_until( shotStart + 11 );
+	if ( shot != 104 ) { return; }
+	cine_play( hirogi, "wxtkc" );
+}
+
+void toshdie_shot104() {
+	cine_play( toshiro, "coffin" );
+	if ( shot != 104 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 104 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	if ( shot != 104 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	if ( shot != 104 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 6 );
+	if ( shot != 104 ) { return; }
+	cine_play( toshiro, "deadtkb" );
+	cine_until( shotStart + 10 );
+	if ( shot != 104 ) { return; }
+	cine_play( toshiro, "deadtka" );
+}
+
+void shot104() {
+	entity cam;
+
+	cam = cine_camera( "intro_104" );
+	shot = 104;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirodead_shot104();
+	thread toshdie_shot104();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_24.mp3" );
+	sys.wait( 11 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_20.mp3" );
+	sys.waitFor( cam );
+}
+
+void hirodead_shot105() {
+	cine_play( hirogi, "wxtka" );
+	cine_until( shotStart + 11 );
+	if ( shot != 105 ) { return; }
+	cine_play( hirogi, "wxtka" );
+}
+
+void toshdie_shot105() {
+	cine_play( toshiro, "coffin" );
+	cine_until( shotStart + 1 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 3 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtkb" );
+	cine_until( shotStart + 7 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 10.6 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 11.8 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 14.5 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 16 );
+	if ( shot != 105 ) { return; }
+	cine_play( toshiro, "deadtkb" );
+}
+
+void shot105() {
+	entity cam;
+
+	cam = cine_camera( "intro_105" );
+	shot = 105;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirodead_shot105();
+	thread toshdie_shot105();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_25.mp3" );
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/global/e_lightningd.wav" );
+	sys.waitFor( cam );
+}
+
+void hirodead_shot106() {
+	cine_play( hirogi, "wxtka" );
+}
+
+void toshdie_shot106() {
+	cine_play( toshiro, "coffin" );
+}
+
+void shot106() {
+	entity cam;
+
+	cam = cine_camera( "intro_106" );
+	shot = 106;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirodead_shot106();
+	thread toshdie_shot106();
+	sys.startGlobalSound( "sounds/global/e_lightninga.wav" );
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/voices/hiro/e1m1_hiro_21.mp3" );
+	sys.waitFor( cam );
+}
+
+void toshdie_shot107() {
+	cine_play( toshiro, "coffin" );
+	if ( shot != 107 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 1.5 );
+	if ( shot != 107 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 2.9 );
+	if ( shot != 107 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 5 );
+	if ( shot != 107 ) { return; }
+	cine_play( toshiro, "deadtka" );
+	cine_until( shotStart + 6.9 );
+	if ( shot != 107 ) { return; }
+	cine_play( toshiro, "deadtkb" );
+	cine_until( shotStart + 10.2 );
+	if ( shot != 107 ) { return; }
+	cine_play( toshiro, "deadtkc" );
+}
+
+void shot107() {
+	entity cam;
+
+	cam = cine_camera( "intro_107" );
+	shot = 107;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread toshdie_shot107();
+	sys.startGlobalSound( "sounds/voices/ebihara/e1m1_ebi_26.mp3" );
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/global/e_lightningf.wav" );
+	sys.waitFor( cam );
+}
+
+void hirodead_shot108() {
+	cine_play( hirogi, "wzblank" );
+	cine_until( shotStart + 1 );
+	if ( shot != 108 ) { cine_exit( hirogi, "hirodead" ); return; }
+	cine_play( hirogi, "wza" );
+	cine_until( shotStart + 7 );
+	if ( shot != 108 ) { cine_exit( hirogi, "hirodead" ); return; }
+	cine_exit( hirogi, "hirodead" );
+}
+
+void toshdie_shot108() {
+	cine_play( toshiro, "coffin" );
+	cine_until( shotStart + 7 );
+	if ( shot != 108 ) { cine_exit( toshiro, "toshdie" ); return; }
+	cine_exit( toshiro, "toshdie" );
+}
+
+void shot108() {
+	entity cam;
+
+	cam = cine_camera( "intro_108" );
+	shot = 108;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hirodead_shot108();
+	thread toshdie_shot108();
+	sys.startGlobalSound( "sounds/global/e_lightningc.wav" );
+	sys.waitFor( cam );
+}
+
+void fat1_shot109() {
+	fatworker = cine_enter( fatworker, "cine_fatworker", '-2331.25 -1384.88 -737.873', 97.22, "fatworker", "fat1" );
+}
+
+void skin1_shot109() {
+	skinnyworker = cine_enter( skinnyworker, "cine_skinnyworker", '-2333.5 -1254 -736.898', -89.97, "skinnyworker", "skin1" );
+	cine_until( shotStart + 2.6 );
+	if ( shot != 109 ) { return; }
+	cine_play( skinnyworker, "famba" );
+	if ( shot != 109 ) { return; }
+	cine_play( skinnyworker, "famba" );
+	cine_until( shotStart + 4 );
+	if ( shot != 109 ) { return; }
+	cine_play( skinnyworker, "famba" );
+	if ( shot != 109 ) { return; }
+	cine_play( skinnyworker, "faaeaa" );
+	if ( shot != 109 ) { return; }
+	cine_play( skinnyworker, "eambd" );
+	if ( shot != 109 ) { return; }
+	cine_play( skinnyworker, "eambd" );
+	cine_until( shotStart + 9 );
+	if ( shot != 109 ) { return; }
+	skinnyworker.stopMove();
+}
+
+void shot109() {
+	entity cam;
+
+	cam = cine_camera( "intro_109" );
+	shot = 109;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fat1_shot109();
+	thread skin1_shot109();
+	sys.wait( 3.5 );
+	sys.startGlobalSound( "sounds/global/p_stpsn1.wav" );
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/global/p_stpsn1.wav" );
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/global/p_stpsn1.wav" );
+	sys.wait( 1.1 );
+	sys.startGlobalSound( "sounds/global/dgloveammo.wav" );
+	sys.wait( 0.7 );
+	sys.startGlobalSound( "sounds/global/b_011.wav" );
+	sys.wait( 0.3 );
+	sys.startGlobalSound( "sounds/global/b_011.wav" );
+	sys.wait( 0.4 );
+	sys.startGlobalSound( "sounds/global/b_012.wav" );
+	sys.wait( 0.5 );
+	sys.startGlobalSound( "sounds/global/b_011.wav" );
+	sys.waitFor( cam );
+}
+
+void fat1_shot110() {
+	cine_until( shotStart + 5 );
+	if ( shot != 110 ) { cine_exit( fatworker, "fat1" ); return; }
+	cine_exit( fatworker, "fat1" );
+}
+
+void skin1_shot110() {
+	cine_play( skinnyworker, "eambd" );
+	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	cine_play( skinnyworker, "eaafaa" );
+	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	cine_play( skinnyworker, "faaaa" );
+	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	cine_play( skinnyworker, "amba" );
+	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	cine_play( skinnyworker, "amba" );
+	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	cine_play( skinnyworker, "amba" );
+	cine_until( shotStart + 5 );
+	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	cine_exit( skinnyworker, "skin1" );
+}
+
+void shot110() {
+	entity cam;
+
+	cam = cine_camera( "intro_110" );
+	shot = 110;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fat1_shot110();
+	thread skin1_shot110();
+	sys.startGlobalSound( "sounds/global/e_lightningd.wav" );
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/global/dgloveammo.wav" );
+	sys.waitFor( cam );
+}
+
+void tm_shot111() {
+	hirogi = cine_enter( hirogi, "cine_hirogi", '-1854.75 -2945 -319.406', -22.71, "hirogi", "tm" );
+	cine_use( "truckgo", hirogi );
+	cine_until( shotStart + 8 );
+	if ( shot != 111 ) { cine_exit( hirogi, "tm" ); return; }
+	cine_exit( hirogi, "tm" );
+}
+
+void shot111() {
+	entity cam;
+
+	cam = cine_camera( "intro_111" );
+	shot = 111;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread tm_shot111();
+	sys.startGlobalSound( "sounds/global/e_lightninga.wav" );
+	sys.waitFor( cam );
+}
+
+void fatdrive_shot112() {
+	fatworker = cine_enter( fatworker, "cine_fatworker", '1832.25 -310.5 37.7474', -87.62, "fatworker", "fatdrive" );
+}
+
+void skinydrive_shot112() {
+	skinnyworker = cine_enter( skinnyworker, "cine_skinnyworker", '1774.88 -293.375 23.2958', -90.28, "skinnyworker", "skinydrive" );
+	cine_until( shotStart + 3.5 );
+	if ( shot != 112 ) { return; }
+	cine_play( skinnyworker, "foural" );
+}
+
+void shot112() {
+	entity cam;
+
+	cam = cine_camera( "intro_112" );
+	shot = 112;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fatdrive_shot112();
+	thread skinydrive_shot112();
+	sys.wait( 4.5 );
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_td_01.mp3" );
+	sys.waitFor( cam );
+}
+
+void fatdrive_shot113() {
+	cine_play( fatworker, "ambd" );
+}
+
+void shot113() {
+	entity cam;
+
+	cam = cine_camera( "intro_113" );
+	shot = 113;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fatdrive_shot113();
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_fd_01.mp3" );
+	sys.waitFor( cam );
+}
+
+void skinydrive_shot114() {
+	cine_play( skinnyworker, "foural" );
+}
+
+void shot114() {
+	entity cam;
+
+	cam = cine_camera( "intro_114" );
+	shot = 114;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread skinydrive_shot114();
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_td_02.mp3" );
+	sys.waitFor( cam );
+}
+
+void fatdrive_shot115() {
+	cine_until( shotStart + 6.8 );
+	if ( shot != 115 ) { cine_exit( fatworker, "fatdrive" ); return; }
+	cine_exit( fatworker, "fatdrive" );
+}
+
+void skinydrive_shot115() {
+	cine_until( shotStart + 6 );
+	if ( shot != 115 ) { cine_exit( skinnyworker, "skinydrive" ); return; }
+	cine_use( "toe1m1", skinnyworker );
+	cine_until( shotStart + 6.8 );
+	if ( shot != 115 ) { cine_exit( skinnyworker, "skinydrive" ); return; }
+	cine_exit( skinnyworker, "skinydrive" );
+}
+
+void shot115() {
+	entity cam;
+
+	cam = cine_camera( "intro_115" );
+	shot = 115;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fatdrive_shot115();
+	thread skinydrive_shot115();
+	sys.wait( 1 );
+	sys.startGlobalSound( "sounds/global/m_clubhitd.wav" );
+	sys.startGlobalSound( "sounds/global/m_bodyhitc.wav" );
+	sys.startGlobalSound( "sounds/global/e_explodeik.wav" );
+	sys.wait( 0.7 );
+	sys.startGlobalSound( "sounds/global/m_bodyhitb.wav" );
+	sys.startGlobalSound( "sounds/global/m_clubhitd.wav" );
+	sys.startGlobalSound( "sounds/global/e_debrisexplodea.wav" );
+	sys.startGlobalSound( "sounds/global/m_gibexpb.wav" );
+	sys.startGlobalSound( "sounds/global/e_explodeik.wav" );
+	sys.waitFor( cam );
+}
+
+/*
+================
+intro::play
+================
+*/
+void play() {
+	float first;
+
+	first = sys.strToFloat( sys.getcvar( "cine_firstShot" ) );
+	cine_start();
+	if ( first <= 1 ) { shot1(); }
+	if ( first <= 2 ) { shot2(); }
+	if ( first <= 3 ) { shot3(); }
+	if ( first <= 4 ) { shot4(); }
+	if ( first <= 5 ) { shot5(); }
+	if ( first <= 6 ) { shot6(); }
+	if ( first <= 7 ) { shot7(); }
+	if ( first <= 8 ) { shot8(); }
+	if ( first <= 9 ) { shot9(); }
+	if ( first <= 10 ) { shot10(); }
+	if ( first <= 11 ) { shot11(); }
+	if ( first <= 12 ) { shot12(); }
+	if ( first <= 13 ) { shot13(); }
+	if ( first <= 14 ) { shot14(); }
+	if ( first <= 15 ) { shot15(); }
+	if ( first <= 16 ) { shot16(); }
+	if ( first <= 17 ) { shot17(); }
+	if ( first <= 18 ) { shot18(); }
+	if ( first <= 19 ) { shot19(); }
+	if ( first <= 20 ) { shot20(); }
+	if ( first <= 21 ) { shot21(); }
+	if ( first <= 22 ) { shot22(); }
+	if ( first <= 23 ) { shot23(); }
+	if ( first <= 24 ) { shot24(); }
+	if ( first <= 25 ) { shot25(); }
+	if ( first <= 26 ) { shot26(); }
+	if ( first <= 27 ) { shot27(); }
+	if ( first <= 28 ) { shot28(); }
+	if ( first <= 29 ) { shot29(); }
+	if ( first <= 30 ) { shot30(); }
+	if ( first <= 31 ) { shot31(); }
+	if ( first <= 32 ) { shot32(); }
+	if ( first <= 33 ) { shot33(); }
+	if ( first <= 34 ) { shot34(); }
+	if ( first <= 35 ) { shot35(); }
+	if ( first <= 36 ) { shot36(); }
+	if ( first <= 37 ) { shot37(); }
+	if ( first <= 38 ) { shot38(); }
+	if ( first <= 39 ) { shot39(); }
+	if ( first <= 40 ) { shot40(); }
+	if ( first <= 41 ) { shot41(); }
+	if ( first <= 42 ) { shot42(); }
+	if ( first <= 43 ) { shot43(); }
+	if ( first <= 44 ) { shot44(); }
+	if ( first <= 45 ) { shot45(); }
+	if ( first <= 46 ) { shot46(); }
+	if ( first <= 47 ) { shot47(); }
+	if ( first <= 48 ) { shot48(); }
+	if ( first <= 49 ) { shot49(); }
+	if ( first <= 50 ) { shot50(); }
+	if ( first <= 51 ) { shot51(); }
+	if ( first <= 52 ) { shot52(); }
+	if ( first <= 53 ) { shot53(); }
+	if ( first <= 54 ) { shot54(); }
+	if ( first <= 55 ) { shot55(); }
+	if ( first <= 56 ) { shot56(); }
+	if ( first <= 57 ) { shot57(); }
+	if ( first <= 58 ) { shot58(); }
+	if ( first <= 59 ) { shot59(); }
+	if ( first <= 60 ) { shot60(); }
+	if ( first <= 61 ) { shot61(); }
+	if ( first <= 62 ) { shot62(); }
+	if ( first <= 63 ) { shot63(); }
+	if ( first <= 64 ) { shot64(); }
+	if ( first <= 65 ) { shot65(); }
+	if ( first <= 66 ) { shot66(); }
+	if ( first <= 67 ) { shot67(); }
+	if ( first <= 68 ) { shot68(); }
+	if ( first <= 69 ) { shot69(); }
+	if ( first <= 70 ) { shot70(); }
+	if ( first <= 71 ) { shot71(); }
+	if ( first <= 72 ) { shot72(); }
+	if ( first <= 73 ) { shot73(); }
+	if ( first <= 74 ) { shot74(); }
+	if ( first <= 75 ) { shot75(); }
+	if ( first <= 76 ) { shot76(); }
+	if ( first <= 77 ) { shot77(); }
+	if ( first <= 78 ) { shot78(); }
+	if ( first <= 79 ) { shot79(); }
+	if ( first <= 80 ) { shot80(); }
+	if ( first <= 81 ) { shot81(); }
+	if ( first <= 82 ) { shot82(); }
+	if ( first <= 83 ) { shot83(); }
+	if ( first <= 84 ) { shot84(); }
+	if ( first <= 85 ) { shot85(); }
+	if ( first <= 86 ) { shot86(); }
+	if ( first <= 87 ) { shot87(); }
+	if ( first <= 88 ) { shot88(); }
+	if ( first <= 89 ) { shot89(); }
+	if ( first <= 90 ) { shot90(); }
+	if ( first <= 91 ) { shot91(); }
+	if ( first <= 92 ) { shot92(); }
+	if ( first <= 93 ) { shot93(); }
+	if ( first <= 94 ) { shot94(); }
+	if ( first <= 95 ) { shot95(); }
+	if ( first <= 96 ) { shot96(); }
+	if ( first <= 97 ) { shot97(); }
+	if ( first <= 98 ) { shot98(); }
+	if ( first <= 99 ) { shot99(); }
+	if ( first <= 100 ) { shot100(); }
+	if ( first <= 101 ) { shot101(); }
+	if ( first <= 102 ) { shot102(); }
+	if ( first <= 103 ) { shot103(); }
+	if ( first <= 104 ) { shot104(); }
+	if ( first <= 105 ) { shot105(); }
+	if ( first <= 106 ) { shot106(); }
+	if ( first <= 107 ) { shot107(); }
+	if ( first <= 108 ) { shot108(); }
+	if ( first <= 109 ) { shot109(); }
+	if ( first <= 110 ) { shot110(); }
+	if ( first <= 111 ) { shot111(); }
+	if ( first <= 112 ) { shot112(); }
+	if ( first <= 113 ) { shot113(); }
+	if ( first <= 114 ) { shot114(); }
+	if ( first <= 115 ) { shot115(); }
+	cine_finish();
+	cine_remove( fatworker );
+	cine_remove( hirogi );
+	cine_remove( inshiro );
+	cine_remove( ninja );
+	cine_remove( ninja_2 );
+	cine_remove( ninja_3 );
+	cine_remove( osaka );
+	cine_remove( skinnyworker );
+	cine_remove( toshiro );
+	cine_remove( usagi );
+}
+
+}
