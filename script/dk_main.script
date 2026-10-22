@@ -7,6 +7,7 @@
 #include "script/ai/monster_base.script"
 #include "script/ai/monster_froginator.script"
 #include "script/ai/monster_slaughterskeet.script"
+#include "script/ai/monster_crox.script"
 
 // cinematics: the helpers (each map's cinematics are in cine/maps/<map>.script,
 // compiled with the map's script)

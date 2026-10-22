@@ -1,0 +1,149 @@
+// monster_crox.script -- Daikatana's Crox (crox.cpp), a robot crocodile:
+// it runs at you on land and swims at you in water, and bites when near, on
+// land atakc or atakd, in water ataka or atakb (two in three the first), the
+// bite on their 13th frame. A hit makes it flinch one time in five. It gives
+// up on you while you're over 100 above or below it, wandering until you're
+// not.
+
+object monster_crox : monster_base {
+	void		state_Combat();
+	void		state_Killed();
+	void		attack();
+	void		pain();
+	void		chase();
+	void		wanderAway();
+};
+
+/*
+================
+monster_crox::state_Combat
+================
+*/
+void monster_crox::state_Combat() {
+	vector	delta;
+
+	while( 1 ) {
+		if ( !getEnemy() ) {
+			setState( "state_Idle" );
+			return;
+		}
+		if ( AI_PAIN && sys.random( 1 ) < getFloatKey( "pain_chance" ) ) {
+			pain();
+		}
+		delta = getEnemyPos() - getOrigin();
+		if ( delta_z > 100 || delta_z < -100 ) {
+			wanderAway();
+		} else if ( testMeleeAttack() ) {
+			attack();
+		} else {
+			chase();
+		}
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_crox::chase
+
+after it a moment, running or swimming
+================
+*/
+void monster_crox::chase() {
+	if ( AI_IN_WATER ) {
+		playCycle( ANIMCHANNEL_LEGS, "swima" );
+		if ( sys.random( 1 ) < 0.05 ) {
+			startSound( "snd_swim", CHAN_BODY, false );
+		}
+	} else {
+		playCycle( ANIMCHANNEL_LEGS, "runa" );
+	}
+	moveToEnemy();
+	sys.wait( 0.3 );
+}
+
+/*
+================
+monster_crox::wanderAway
+
+you're out of its reach, up or down: it wanders until you're not
+================
+*/
+void monster_crox::wanderAway() {
+	playCycle( ANIMCHANNEL_LEGS, "walka" );
+	setMoveSpeed( getFloatKey( "walk_speed" ) );
+	wander();
+	sys.wait( 1 );
+	setMoveSpeed( getFloatKey( "run_speed" ) );
+}
+
+/*
+================
+monster_crox::attack
+
+a bite, its 13th frame the one that bites
+================
+*/
+void monster_crox::attack() {
+	string	anim;
+	float	t;
+
+	stopMove();
+	faceEnemy();
+	if ( AI_IN_WATER ) {
+		anim = "atakb";
+		if ( sys.random( 1 ) < 0.66 ) {
+			anim = "ataka";
+		}
+	} else {
+		anim = "atakd";
+		if ( sys.random( 1 ) < 0.66 ) {
+			anim = "atakc";
+		}
+	}
+	playAnim( ANIMCHANNEL_LEGS, anim );
+	startSound( "snd_attack", CHAN_VOICE, false );
+	t = sys.getTime() + 1.2;
+	while( sys.getTime() < t ) {
+		faceEnemy();
+		sys.waitFrame();
+	}
+	attackMelee( "damage_crox_bite" );
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_crox::pain
+================
+*/
+void monster_crox::pain() {
+	string anim;
+
+	stopMove();
+	startSound( "snd_pain", CHAN_VOICE, false );
+	anim = "hitb";
+	if ( sys.random( 1 ) < 0.5 ) {
+		anim = "hita";
+	}
+	waitAnim( anim );
+}
+
+/*
+================
+monster_crox::state_Killed
+
+slowly over, or a collapse
+================
+*/
+void monster_crox::state_Killed() {
+	stopMove();
+	startSound( "snd_death", CHAN_VOICE, false );
+	if ( sys.random( 1 ) < 0.5 ) {
+		waitAnim( "diea" );
+	} else {
+		waitAnim( "dieb" );
+	}
+}

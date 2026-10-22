@@ -113,3 +113,52 @@ entityDef damage_skeet_bite {
 	"damage_random"	"2"
 	"range"			"16"
 }
+
+// the Crox: a robot crocodile, amphibious, that bites (crox.cpp): it runs at
+// you on land and swims at you in water, and gives up on you when you're
+// over 100 above or below it
+
+entityDef model_crox {
+	"mesh"			"models/e1/m_croco.md3"
+	"mins"			"-16 -16 -16"	// AIData.csv
+	"maxs"			"16 16 8"
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim ataka"	"ataka 10"		// in water
+	"anim atakb"	"atakb 10"
+	"anim atakc"	"atakc 10"		// on land
+	"anim atakd"	"atakd 10"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim runa"		"runa 10 loop"
+	"anim swima"	"swima 10 loop"
+	"anim walka"	"walka 10 loop"
+}
+
+entityDef monster_crox {
+	"spawnclass"	"monster"
+	"model"			"model_crox"
+	"scriptobject"	"monster_crox"
+	"health"		"150"
+	"run_speed"		"175"
+	"walk_speed"	"50"
+	"turn_rate"		"250"			// 25 a tenth of a second
+	"fov"			"270"
+	"sight_range"	"1300"
+	"melee_range"	"60"
+	"pain_chance"	"0.2"
+	"snd_sight"		"crox_sight"
+	"snd_idle"		"crox_idle"
+	"snd_attack"	"crox_attack"
+	"snd_pain"		"crox_pain"
+	"snd_death"		"crox_death"
+	"snd_swim"		"crox_swim"
+}
+
+entityDef damage_crox_bite {
+	"damage"		"15"
+	"damage_random"	"20"
+	"range"			"60"
+}

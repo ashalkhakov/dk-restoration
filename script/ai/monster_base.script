@@ -81,7 +81,7 @@ void monster_base::sightEnemy() {
 ================
 monster_base::state_Idle
 
-until someone's seen, or hurts it
+until someone's seen, hurts it, or another monster tells it of them
 ================
 */
 void monster_base::state_Idle() {
@@ -96,7 +96,8 @@ void monster_base::state_Idle() {
 			sightEnemy();
 			return;
 		}
-		if ( AI_PAIN && getEnemy() != $null_entity ) {
+		// hurt, or given an enemy (another's alarm, alertMonsters)
+		if ( getEnemy() != $null_entity ) {
 			sightEnemy();
 			return;
 		}
