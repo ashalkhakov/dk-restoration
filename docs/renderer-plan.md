@@ -122,8 +122,8 @@ Anything else waits until something needs it.
 
 Each step is built, tested with `./dk`, committed and pushed before the next.
 
-1. Fog per pixel (small, and fixes visible smearing now).
-2. Volume fog and the Daikatana conversion.
+1. Fog per pixel (small, and fixes visible smearing now). Done: spearmint 654ab65b.
+2. Volume fog and the Daikatana conversion. Done: `fogLight` fog shaders drawn per pixel through their hull (spearmint e6511988, `tr_fogvolume.c`, documented in `opengl2-readme.md`); bsp-sekai 72c2753 marks Daikatana's fogs.
 3. Dynamic lights per pixel everywhere, and the 32-light limit.
 4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
 5. Portals from the BSP and portal flow (view, then lights).
