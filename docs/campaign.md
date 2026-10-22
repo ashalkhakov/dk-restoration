@@ -44,6 +44,15 @@ What the campaign plays now (`g_campaign.c`):
   `delay`, `message` and `killtarget`.
 - `func_wall` with Quake 2's trigger spawn, toggle and start on.
 - `trigger_remove_inventory_item` (its `item`), and `info_player_coop`.
+- Daikatana's artifacts (`def/dk_items.def`, its `artifacts.cpp`), carried and used from the inventory or the
+  belt: the five boosts each raise one of Daikatana's stats to its top level for 30 seconds (power x2.5 damage,
+  attack x3 firing and x2.5 projectile speed, speed x2 running, acro x1.75 jumping and half the falling damage,
+  vita +250 to health's limit and 75 health), the Wraith Orb hides you from monsters for a minute, the Skull of
+  Invincibility takes no damage for 30 seconds, the Mega Shield is a suit of 400 points taking 75%, the Golden
+  Soul heals 100 past the limit. In the campaign they're there from the start (deathmatch keeps Quake 3's
+  delay for powerups).
+- `misc_healthtree` (`g_healthtree.c`): use it for 10 health a fruit, one a second, up to its `max_fruit`
+  (five at most); picked bare it stays bare in the campaign and regrows elsewhere.
 - Items with Doom 3's `inv_item` key go into the inventory (`IT_INVENTORY`), up to `inv_max`: the Save Gem
   and the keys (`def/dk_items.def`). A `keyname` on a mover or a changelevel locks it until you have that item,
   and says what's needed. Daikatana's key spawnflags: `KEY_USE_ONCE` uses the key up, `KEY_UNLOCK` leaves the

@@ -34,8 +34,8 @@ entityDef item_goldensoul {
 	"inv_desc"		"Heals 100, past your health's limit."
 	"model"			"models/global/a_gsoul.md3"
 	"icon"			"icons/iconh_mega"
-	"snd_acquire"	"sounds/global/a_gspick.wav"
-	"sounds"		"sounds/global/a_gswait.wav"
+	"snd_acquire"	"sounds/artifacts/goldensoulpickup.wav"
+	"sounds"		"sounds/artifacts/goldensoulwait.wav"
 }
 
 // armor: suits, worn one at a time from the inventory (g_inventory.c). Each
@@ -109,13 +109,20 @@ entityDef item_ebonite_armor {
 	"armor_absorb"	"0.75"
 }
 
-// artifacts: Daikatana's permanent boosts are timed powerups for now
+// artifacts (artifacts.cpp): carried, used from the inventory or the belt.
+// A boost raises one of Daikatana's five stats to its top level for 30
+// seconds (com_CalcBoosts): power x2.5 damage, attack x3 firing and x2.5
+// projectile speed, speed x2 running, acro x1.75 jumping (x2.5 in
+// deathmatch) and half the falling damage, vita +250 to health's limit and
+// 75 health at once. The wraith orb hides you from monsters for a minute;
+// the skull of invincibility takes no damage for 30 seconds.
 
 entityDef item_wraithorb {
 	"spawnclass"	"item"
 	"inv_powerup"	"invis"
-	"time"			"30"
+	"time"			"60"
 	"inv_name"		"Wraith Orb"
+	"inv_desc"		"For a minute you're all but invisible, and monsters can't see you."
 	"model"			"models/global/a_wraithorb.md3"
 	"icon"			"icons/invis"
 	"snd_acquire"	"sounds/artifacts/wraithorbpickup.wav"
@@ -124,63 +131,85 @@ entityDef item_wraithorb {
 
 entityDef item_power_boost {
 	"spawnclass"	"item"
-	"inv_powerup"	"quad"
+	"inv_powerup"	"power_boost"
 	"time"			"30"
 	"inv_name"		"Power Boost"
+	"inv_desc"		"Two and a half times the damage, for 30 seconds."
 	"model"			"models/global/a_pwrb.md3"
 	"icon"			"icons/quad"
-	"snd_acquire"	"sound/items/quaddamage.wav"
-	"sounds"		"sound/items/damage2.wav sound/items/damage3.wav"
+	"snd_acquire"	"sounds/global/a_pboost.wav"
+	"sounds"		"sounds/global/a_powerquad.wav"
 }
 
 entityDef item_attack_boost {
 	"spawnclass"	"item"
-	"inv_powerup"	"haste"
+	"inv_powerup"	"attack_boost"
 	"time"			"30"
 	"inv_name"		"Attack Boost"
+	"inv_desc"		"Fire three times as fast, your shots flying faster, for 30 seconds."
 	"model"			"models/global/a_atkb.md3"
 	"icon"			"icons/haste"
-	"snd_acquire"	"sound/items/haste.wav"
+	"snd_acquire"	"sounds/global/a_atkboost.wav"
 }
 
 entityDef item_speed_boost {
-	"inherit"		"item_attack_boost"
+	"spawnclass"	"item"
+	"inv_powerup"	"speed_boost"
+	"time"			"30"
 	"inv_name"		"Speed Boost"
+	"inv_desc"		"Run twice as fast, for 30 seconds."
 	"model"			"models/global/a_spdb.md3"
+	"icon"			"icons/haste"
+	"snd_acquire"	"sounds/global/a_sboost.wav"
 }
 
 entityDef item_acro_boost {
-	"inherit"		"item_attack_boost"
+	"spawnclass"	"item"
+	"inv_powerup"	"acro_boost"
+	"time"			"30"
 	"inv_name"		"Acro Boost"
+	"inv_desc"		"Jump higher and fall softer, for 30 seconds."
 	"model"			"models/global/a_acrb.md3"
+	"icon"			"icons/flight"
+	"snd_acquire"	"sounds/global/a_aboost.wav"
 }
 
 entityDef item_vita_boost {
 	"spawnclass"	"item"
-	"inv_powerup"	"regen"
+	"inv_powerup"	"vita_boost"
 	"time"			"30"
 	"inv_name"		"Vita Boost"
+	"inv_desc"		"Heals 75 and raises your health's limit by 250, for 30 seconds."
 	"model"			"models/global/a_vtlb.md3"
 	"icon"			"icons/regen"
-	"snd_acquire"	"sound/items/regeneration.wav"
-	"sounds"		"sound/items/regen.wav"
+	"snd_acquire"	"sounds/global/a_vboost.wav"
 }
 
+// the mega shield is a suit, Daikatana's best: 400 points, three quarters of
+// the damage (artifacts.cpp ARMOR_MEGASHIELD_*)
 entityDef item_megashield {
 	"spawnclass"	"item"
-	"inv_powerup"	"battlesuit"
-	"time"			"30"
+	"inv_armor"		"400"
+	"armor_absorb"	"0.75"
+	"inv_size"		"2 2"
 	"inv_name"		"Mega Shield"
+	"inv_desc"		"A shield of 400 points. Takes three quarters of the damage."
 	"model"			"models/global/a_mshield.md3"
 	"icon"			"icons/envirosuit"
-	"snd_acquire"	"sound/items/protect.wav"
-	"sounds"		"sound/items/airout.wav sound/items/protect3.wav"
+	"snd_acquire"	"sounds/artifacts/megauser.wav"
+	"sounds"		"sounds/artifacts/megaamba.wav"
 }
 
 entityDef item_invincibility {
-	"inherit"		"item_megashield"
-	"inv_name"		"Invincibility"
+	"spawnclass"	"item"
+	"inv_powerup"	"invincible"
+	"time"			"30"
+	"inv_name"		"Skull of Invincibility"
+	"inv_desc"		"Nothing hurts you, for 30 seconds."
 	"model"			"models/global/a_invincibility.md3"
+	"icon"			"icons/envirosuit"
+	"snd_acquire"	"sounds/artifacts/manaskullpickup.wav"
+	"sounds"		"sounds/artifacts/manaskullamba.wav"
 }
 
 entityDef item_antidote {
