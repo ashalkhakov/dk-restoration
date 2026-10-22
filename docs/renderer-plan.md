@@ -114,6 +114,14 @@ Anything else waits until something needs it.
 3. **Fold:** each cubemap folded into L1 spherical harmonics (RBDOOM's irradiance code). From that come Quake 3's grid cell (ambient colour, directed colour, direction), so rend2's entity lighting uses it unchanged. The SH are kept too, for per-pixel model lighting later.
 4. **Output:** `maps/<map>.lightgrid`, which rend2 loads in place of the BSP's grid lump when it exists. `bakeLightGrid` is a console command; `./dk convert` runs it headless after converting.
 
+**As built** (spearmint `tr_lightgrid.c`, `./dk bakegrids`):
+- **Rooms, after RBDOOM's grid an area.** Our BSPs' areas are too few and their clusters too many, so the rooms are found from the space itself: a watershed over 32-unit voxels of the open space. Each voxel's depth is its distance from the walls, and the voxels flood in from the deepest. Each room fills from its middle, and where floods meet at a narrow place (a doorway) is a border; floods meeting nearly as deep as the shallower (`r_roomSaddle`, 0.7) are one room. e1m1a has 25 rooms, e1m1b 40.
+- **One lattice, every 64 units**, each open point labelled with its room. A model takes the light of the room of the nearest point it sees, from that room's points only, so no light comes through a wall.
+- **Capture:** at each point a cube of 6×16² of the lightmaps alone (`r_lightmap 1`, no textures, entities, flow or lit fog), into a small float FBO, 4 points a pass.
+- **Fold:** the ambient is the cube's average. The light comes the other way from where it lands, so a lit floor below is light from above, and walls lit all round cancel out. Then ambient + directed·max(0, n·d), with the same average and as much coming that way, in Quake 3's 8 bytes a point.
+- **Output:** `maps/<map>.lightgrid` (the rooms and the light), loaded with the map; it comes before the BSP's grid.
+- **Bake time:** e1m1a 6032 points in 20 s; e1m1b 21226 points in 79 s.
+
 **Done when:**
 - monsters and the player's view model on e1m1a and e1m1b are lit with a direction (bright on the side facing a lamp), compared with Daikatana's screenshots;
 - the bake time per map is noted.
@@ -127,8 +135,8 @@ Each step is built, tested with `./dk`, committed and pushed before the next.
 3. Dynamic lights per pixel everywhere, and the 32-light limit. Done: spearmint (per-pixel by default, 64 lit of up to 256), mint-arena `testlight`.
 4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
 5. Portals from the BSP and portal flow (view, then lights). View flow done: spearmint, `tr_portals.c` (portals cut at load in the renderer, not bsp-sekai; flow between clusters with screen rectangles). The lights' flow comes with the shadow maps.
-6. The shadow-map atlas with PCSS, fed by the lights' flow. Done (PCF, not yet PCSS): spearmint `tr_dlightshadow.c`; the portal flow culls each face's casters. Lit fog done (dlights scattered in fog lights, no shadows in it yet).
-7. The light grid bake.
+6. The shadow-map atlas with PCSS, fed by the lights' flow. Done: spearmint `tr_dlightshadow.c`; the portal flow culls each face's casters. Lit fog done: dlights scattered in fog lights, two of them with their shadows.
+7. The light grid bake. Done: spearmint `tr_lightgrid.c`, a grid a room; `./dk bakegrids`.
 
 ## Reference
 

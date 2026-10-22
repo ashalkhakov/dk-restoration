@@ -19,6 +19,8 @@
 #                              (RIG_MODELS), their defs and ragdolls
 #   ./dk rigshots [name...]    the rigged models in e1m1a, screenshots in
 #                              out/shots/rig
+#   ./dk bakegrids [map...]    the maps' rooms and the light in them, for
+#                              the models (out/maps/<map>.lightgrid)
 #   ./dk cine [name...]        Daikatana's cinematics as cameras, scripts and
 #                              actor defs, in out/cine (ours, in cine/, take
 #                              the place of theirs by name)
@@ -689,6 +691,21 @@ EOF
 	ls "$OUT/shots/$tag/${map}_"*.jpg
 }
 
+# ./dk bakegrids [map...]: each map's rooms and light grid (bakeLightGrid,
+#   renderergl2's tr_lightgrid.c), written next to it in out/maps. Baked
+#   again after the map is converted again.
+cmd_bakegrids() {
+	local map
+	[ $# -gt 0 ] || set -- $(default_maps)
+	mkdir -p "$OUT/test"
+	for map in "$@"; do
+		printf 'bake %-8s ' "$map"
+		play_script "bake_$map" "$map" "wait 50" "bakeLightGrid" "wait 5"
+		grep -h "^bakeLightGrid: maps/" "$OUT/test/bake_$map.log" | sed 's/^bakeLightGrid: //' \
+			|| echo "FAILED, see out/test/bake_$map.log"
+	done
+}
+
 # ./dk rigshots [name...]: the rigged models in e1m1a, three to a shot,
 # before its spawn points (each way they face), to compare with
 # Daikatana's (DEAD=1 kills the middle one: its ragdoll); out/shots/rig/
@@ -862,7 +879,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|rigshots|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|rigshots|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac
