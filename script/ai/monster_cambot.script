@@ -74,7 +74,6 @@ on patrol until it sees someone, or is hurt
 void monster_cambot::state_Idle() {
 	entity enemy;
 
-	sys.println( "CAMSTART " + getOrigin() );
 	playCycle( ANIMCHANNEL_LEGS, "amba" );
 	setFlySpeed( getFloatKey( "walk_speed" ) );
 	corner = getEntityKey( "target" );
@@ -90,9 +89,6 @@ void monster_cambot::state_Idle() {
 		}
 		patrol();
 		hum();
-		if ( findEnemy( false ) != $null_entity ) { sys.println( "CAMIDLE sees any" ); }
-		if ( findEnemy( true ) != $null_entity ) { sys.println( "CAMIDLE sees in fov" ); }
-		sys.println( "CAMIDLE yaw " + getCurrentYaw() + " org " + getOrigin() );
 		sys.wait( 0.1 );
 	}
 }
@@ -136,7 +132,6 @@ void monster_cambot::state_Combat() {
 			faceEnemy();
 		}
 		hum();
-		sys.println( "CAMDBG d " + enemyRange2D() + " org " + getOrigin() + " st " + moveStatus() );
 		sys.wait( 0.2 );
 	}
 }
