@@ -13,7 +13,7 @@ Status: agreed direction, not started (2026-10-22).
 
 ## Constraints
 
-- **The renderer is C,** like Spearmint and mint-arena. Doom 3 code comes in translated to C, as `cm2` (Doom 3's collision models) and mint-arena's `idlib/` (C ports of idLib) did.
+- **The engine, renderer and game are C,** like Spearmint and mint-arena. Offline tools (dmap) may be C++. Doom 3 code comes in translated to C, as `cm2` (Doom 3's collision models) and mint-arena's `idlib/` (C ports of idLib) did.
 - **Reuse as much of the current renderer as possible,** and keep an upgrade path from Quake 3 assets and shaders to the new materials and lighting. Quake 3 content keeps working.
 
 ## What we looked at
@@ -91,8 +91,7 @@ Each phase ends with something we can run and screenshot through `./dk`, and is 
   - **Sky and sun:** worldspawn `ambient`, sky and sun become a parallel light and the grid's sky term.
 
 **dmap:** an offline tool, `tools/dmap`, from TDM's (`darkmod_src/tools/compilers/dmap`, ~12.7k lines).
-- First as C++ on TDM's idLib, to unblock everything else; it ships with no game.
-- Translated to C later if the tools must be C too.
+- It stays C++ on TDM's idLib. Offline tools may be C++; only the engine and game must be C.
 - **During the move,** `./dk convert` keeps writing the Quake 3 BSP:
   - `bspc` builds the AAS (bot and monster navigation) from it;
   - the game keeps running on it until phase 3.
@@ -222,7 +221,6 @@ After RBDOOM-3-BFG.
   - The C idLib ports cover most of the math.
 - **Cost of lights:** e1m1b has 216 lights. The bake/dynamic split and the atlas budget decide the frame rate. The converter's guess has to be good, and tuning is per map.
 - **Apple's OpenGL** is frozen at 4.1 and deprecated. Metal is a later question.
-- **dmap:** whether the offline tools may stay C++ (only the engine and game must be C) is still open.
 - **Licence:** The Dark Mod is GPL v3; Spearmint and mint-arena are GPL v3 with Doom 3's additional terms. Fine, but keep notices on what we take.
 
 ## Reference
