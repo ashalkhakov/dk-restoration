@@ -99,6 +99,11 @@ RIGGED = {
 	"cine_hiro": ( "hiro", "c_hiro_" ), "cien_hiro": ( "hiro", "c_hiro_" ),
 	"cine_mikiko": ( "mikiko", "c_mikiko_" ),
 	"cine_superfly": ( "superfly", "c_super_" ), "cine_super": ( "superfly", "c_super_" ),
+	# the intro's, and Kage Mishima's fights (e1m7, e4m6)
+	"cine_inshiro": ( "inshiro", "c_inshiro_" ), "cine_toshiro": ( "toshiro", "c_tosh_" ),
+	"cine_ninja": ( "ninja", "c_ninja_" ), "cine_osaka": ( "osaka", "c_osaka_" ),
+	"cine_usagi": ( "usagi", "c_usagi_" ), "cine_tatsuo": ( "tatsuo", "c_tatsuo_" ),
+	"cine_kage": ( "kage", "c_kage_" ),
 }
 
 def monster_rig( classname ):
