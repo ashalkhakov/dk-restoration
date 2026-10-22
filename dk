@@ -3,7 +3,8 @@
 #
 # The code lives in repositories next to this one, each its own checkout:
 # spearmint (engine), mint-arena (game), bsp-sekai (map converter),
-# wal-tools, qwalk and pakextract. Everything builds into build/ here, the
+# wal-tools, qwalk, pakextract and netradiant (for its q3map2, which bakes
+# the lightmaps). Everything builds into build/ here, the
 # converted maps go to out/maps and the game runs with its home in out/.
 #
 #   ./dk setup                 clone the repositories that are missing
@@ -19,6 +20,8 @@
 #                              (RIG_MODELS), their defs and ragdolls
 #   ./dk rigshots [name...]    the rigged models in e1m1a, screenshots in
 #                              out/shots/rig
+#   ./dk lightmaps [map...]    the maps' lightmaps baked again by q3map2 from
+#                              Daikatana's lights (LIGHT_OPTIONS)
 #   ./dk bakegrids [map...]    the maps' rooms and the light in them, for
 #                              the models (out/maps/<map>.lightgrid)
 #   ./dk cine [name...]        Daikatana's cinematics as cameras, scripts and
@@ -66,7 +69,8 @@ mint-arena cmake-build git@github.com:ashalkhakov/mint-arena.git
 bsp-sekai daikatana-support git@github.com:ashalkhakov/bsp-sekai.git
 wal-tools palette-expansion git@github.com:ashalkhakov/wal-tools.git
 qwalk master https://github.com/ashalkhakov/qwalk.git
-pakextract cmake-build git@github.com:ashalkhakov/pakextract.git"
+pakextract cmake-build git@github.com:ashalkhakov/pakextract.git
+netradiant master https://gitlab.com/xonotic/netradiant.git"
 
 say() { printf '\033[1m%s\033[0m\n' "$*"; }
 die() { printf 'dk: %s\n' "$*" >&2; exit 1; }
@@ -125,6 +129,9 @@ cmake_args() {
 	case $1 in
 		spearmint) args="$args $SPEARMINT_CMAKE_ARGS" ;;
 		mint-arena) args="$args -DUSE_BASEGAME_MP_HUD=ON $MINT_ARENA_CMAKE_ARGS" ;;
+		# the tools alone (q3map2), with Homebrew's libraries on macOS
+		netradiant) args="$args -DBUILD_RADIANT=OFF -DDOWNLOAD_GAMEPACKS=OFF"
+			command -v brew >/dev/null && args="$args -DCMAKE_PREFIX_PATH=$(brew --prefix)" ;;
 	esac
 	printf '%s' "$args"
 }
@@ -691,6 +698,47 @@ EOF
 	ls "$OUT/shots/$tag/${map}_"*.jpg
 }
 
+# ./dk lightmaps [map...]: each map's lightmaps baked again by q3map2, from
+#   Daikatana's own lights (tools/maps/bsp_lights.py): its light entities,
+#   their caps as fades, LIGHT_DEFAULT_CAP for those without; its faces'
+#   surface lights; its sky as q3map2's sky light. External lightmaps in
+#   out/maps/<map>/lm_*.tga. Baked again after the map is converted again;
+#   the light grids (./dk bakegrids) after these.
+LIGHT_CAP_SCALE=${LIGHT_CAP_SCALE:-1.25}
+LIGHT_DEFAULT_CAP=${LIGHT_DEFAULT_CAP:-55}
+LIGHT_SKY_SCALE=${LIGHT_SKY_SCALE:-1}
+LIGHT_OPTIONS=${LIGHT_OPTIONS:--bounce 2 -samples 2 -filter -samplesize 8 -external -lightmapsize 1024}
+cmd_lightmaps() {
+	local map q3map2 home=$OUT/test-home work=$OUT/lightmaps scripts status start
+	q3map2=$(tool netradiant/q3map2)
+	[ $# -gt 0 ] || set -- $(default_maps)
+	assemble "$home" link
+	scripts=$home/$GAME/scripts
+	mkdir -p "$work"
+	for map in "$@"; do
+		printf 'lightmaps %-8s ' "$map"
+		[ -f "$DKRES/maps/$map.bsp" ] && [ -f "$OUT/maps/$map.bsp" ] || { echo "not converted"; continue; }
+		cp "$OUT/maps/$map.bsp" "$work/$map.game.bsp"
+		python3 "$ROOT/tools/maps/bsp_lights.py" bake "$work/$map.game.bsp" "$DKRES/maps/$map.bsp" "$work/$map.bsp" \
+			"$scripts/zz_lightbake.shader" "$LIGHT_CAP_SCALE" "$LIGHT_DEFAULT_CAP" "$LIGHT_SKY_SCALE" >/dev/null
+		# q3map2 reads the shaders shaderlist.txt names, only
+		(cd "$scripts" && ls -- *.shader | sed 's/\.shader$//') >"$scripts/shaderlist.txt"
+		rm -rf "${work:?}/$map"
+		start=$(date +%s)
+		# shellcheck disable=SC2086
+		"$q3map2" -game quake3 -fs_basepath "$home" -fs_game "$GAME" -light -threads "$JOBS" $LIGHT_OPTIONS \
+			"$work/$map.bsp" >"$work/$map.log" 2>&1
+		status=$?
+		rm -f "$scripts/zz_lightbake.shader" "$scripts/shaderlist.txt"
+		[ $status = 0 ] || { echo "FAILED, see out/lightmaps/$map.log"; continue; }
+		python3 "$ROOT/tools/maps/bsp_lights.py" restore "$work/$map.game.bsp" "$work/$map.bsp"
+		cp "$work/$map.bsp" "$OUT/maps/$map.bsp"
+		rm -rf "${OUT:?}/maps/$map"
+		[ -d "$work/$map" ] && cp -R "$work/$map" "$OUT/maps/$map"
+		echo "$(( $(date +%s) - start )) s, $(ls "$OUT/maps/$map" 2>/dev/null | wc -l | tr -d ' ') external lightmaps"
+	done
+}
+
 # ./dk bakegrids [map...]: each map's rooms and light grid (bakeLightGrid,
 #   renderergl2's tr_lightgrid.c), written next to it in out/maps. Baked
 #   again after the map is converted again.
@@ -879,7 +927,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|rigshots|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|rigshots|lightmaps|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac

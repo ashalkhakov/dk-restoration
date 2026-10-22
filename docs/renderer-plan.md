@@ -126,6 +126,18 @@ Anything else waits until something needs it.
 - monsters and the player's view model on e1m1a and e1m1b are lit with a direction (bright on the side facing a lamp), compared with Daikatana's screenshots;
 - the bake time per map is noted.
 
+## 6. Lightmaps baked again
+
+**Why:** Daikatana's lightmaps are a luxel every 16 units, and its light compiler is gone. Its BSPs still have what it lit from: the light entities (`light`, `_color`, and its own `cap`) and the faces' surface lights (SURF_LIGHT with a value, the sky's among them).
+
+**As built** (`./dk lightmaps`, `tools/maps/bsp_lights.py`, q3map2 from NetRadiant built by `./dk build netradiant`):
+- The converted BSP gets q3map2's lights for the bake only; the game's entities and shaders go back after.
+- **Point lights:** linear, colour unnormalized (q3map2's `0.9375 * light - distance`, as qrad's `light - distance`). `cap` is a ceiling on the light: taken as a light starting at cap × 1.25, fading to 0 at its `light`. Lights without a cap get 55. Switched or styled lights stay dynamic.
+- **Surface lights:** each face's value on a bake shader of its own (`<shader>_lv<value>`, `q3map_surfaceLight`), the converter making a surface of each face in order. The sky's faces as `q3map_skyLight`, light from the whole sky as radiosity gave.
+- **Calibrated** on e1m1b's four spawn views against Daikatana's lightmaps: mean brightness 0.93–1.05 of theirs. Indoors it matches by eye; outdoors ours keeps soft shadows where Daikatana's radiosity left the ground evenly lit.
+- **Default:** 8-unit luxels, 2 bounces, 2 samples and filtering, 1024² external lightmaps (`maps/<map>/lm_NNNN.tga`, which rend2 loads by itself). e1m1b takes 21 minutes; `LIGHT_OPTIONS="-fast …"` for quick ones.
+- The light grids (`./dk bakegrids`) are baked after.
+
 ## Order
 
 Each step is built, tested with `./dk`, committed and pushed before the next.
@@ -137,6 +149,7 @@ Each step is built, tested with `./dk`, committed and pushed before the next.
 5. Portals from the BSP and portal flow (view, then lights). View flow done: spearmint, `tr_portals.c` (portals cut at load in the renderer, not bsp-sekai; flow between clusters with screen rectangles). The lights' flow comes with the shadow maps.
 6. The shadow-map atlas with PCSS, fed by the lights' flow. Done: spearmint `tr_dlightshadow.c`; the portal flow culls each face's casters. Lit fog done: dlights scattered in fog lights, two of them with their shadows.
 7. The light grid bake. Done: spearmint `tr_lightgrid.c`, a grid a room; `./dk bakegrids`.
+8. Lightmaps baked again with q3map2 from Daikatana's lights. Done: `./dk lightmaps`.
 
 ## Reference
 
