@@ -51,8 +51,7 @@ out comes the skeet, after you; the pod lies open
 void monster_protopod::hatch() {
 	entity	skeet;
 
-	startSound( "snd_hatch", CHAN_VOICE, false );
-	playAnim( ANIMCHANNEL_LEGS, "hatcha" );
+	playAnim( ANIMCHANNEL_LEGS, "hatcha" );		// its sound with it
 	sys.setSpawnArg( "origin", "" + ( getOrigin() + '0 0 10' ) );
 	sys.setSpawnArg( "angle", "" + getCurrentYaw() );
 	skeet = sys.spawn( getKey( "hatch_monster" ) );

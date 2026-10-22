@@ -313,7 +313,7 @@ cambot          creature  e1/m_cambot            bones=12 surface=metal
 deathsphere     creature  e1/m_dsphere           bones=16 surface=metal
 lasergat        creature  e1/m_lasergat          bones=8 surface=metal
 trackattack     creature  e1/m_trakatak          bones=8 surface=metal
-rockgat         creature  e1/m_gatguns           bones=8 surface=metal
+# rockgat: not rigged, Daikatana's pop-up turret is models/e1/a1_rockgun (AIData.csv), its one animation rising
 # episode 2: Greece
 centurion       human     e2/m_centurion
 satyr           human     e2/m_satyr
@@ -562,10 +562,12 @@ assemble() {
 	put "$OUT/maps" "$mod/maps"
 	put "$ROOT/effects" "$mod/effects"
 	put "$ROOT/characters" "$mod/characters"
-	# the defs: this repository's and the converted cinematics' actors
-	rm -rf "$mod/def"
-	mkdir -p "$mod/def"
-	for f in "$ROOT"/def/* "$OUT"/cine/def/*; do
+	# the defs: this repository's, the converted cinematics' actors, and the
+	# monsters' frame commands from Daikatana's sound tables (tools/vsc)
+	rm -rf "$mod/def" "$OUT/frames"
+	mkdir -p "$mod/def" "$OUT/frames"
+	[ -d "$DKRES/sounds" ] && python3 "$ROOT/tools/vsc/vsc_frames.py" "$DKRES" "$OUT/frames/dk_monster_frames.def"
+	for f in "$ROOT"/def/* "$OUT"/cine/def/* "$OUT"/frames/*.def; do
 		[ -e "$f" ] && put "$f" "$mod/def/$(basename "$f")"
 	done
 	# the cinematics: the converted ones, then ours by the same names in their

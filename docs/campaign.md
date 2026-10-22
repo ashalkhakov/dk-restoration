@@ -51,7 +51,7 @@ What the campaign plays now (`g_campaign.c`):
   Invincibility takes no damage for 30 seconds, the Mega Shield is a suit of 400 points taking 75%, the Golden
   Soul heals 100 past the limit. In the campaign they're there from the start (deathmatch keeps Quake 3's
   delay for powerups).
-- `misc_healthtree` (`g_healthtree.c`): use it for 10 health a fruit, one a second, up to its `max_fruit`
+- `misc_healthtree` (`def/dk_level.def`, `script/level/misc_healthtree.script`): use it for 10 health a fruit, one a second, up to its `max_fruit`
   (five at most); picked bare it stays bare in the campaign and regrows elsewhere.
 - Items with Doom 3's `inv_item` key go into the inventory (`IT_INVENTORY`), up to `inv_max`: the Save Gem
   and the keys (`def/dk_items.def`). A `keyname` on a mover or a changelevel locks it until you have that item,
@@ -84,3 +84,21 @@ RTCW's ways, in `g_save.c`:
 
 A save fits only the build whose entities it was made with: the header records `sizeof( gentity_t )`, and a
 save from another layout is refused.
+
+## Daikatana's level scripting
+
+- **Action scripts.** Each map's `cin/aiscripts/<map>.sca` becomes `ai/maps/<map>.script` (`tools/aiscript/sca_convert.py`,
+  run by `./dk`), a Doom 3 function a script: `void ai_<name>( entity actor )`. A `trigger_script`'s `aiscript`, a
+  `monster_path_corner`'s (when a monster gets there), a monster's own (as it spawns) and the map's `Level_start` start
+  them (`g_aiscript.c`). Their actions are `script/ai/ai_actions.script`'s; a monster's part (`ignore_player`,
+  `aggressive`, `pathfollow`, standing still to be animated) is its object's `ai_*` functions (`monster_base.script`).
+  An entity's `uniqueid` is its name for them. `developer 1` traces what they do.
+- **`func_event_generator`**: used or touched, it uses each targetname given as a key, that key's seconds later.
+- **`target_earthquake`**: the views within its `radius` shake by its `severity` for its `duration`.
+- **`effect_lightning`** and **`target_attractor`**: bolts to its attractors, now and then at a player or the
+  ground, constantly, or once when used.
+- **`func_monitor`** and **`info_camera`**: used, the camera (looking at its target) is the view for `wait` seconds.
+- **`target_monster_spawn`** (`script/level/target_monster_spawn.script`): used, its `monsterclass` with its keys.
+- Entities whose script is all they do are `"spawnclass" "scripted"` defs (Doom 3's idStaticEntity, `def/dk_level.def`):
+  their model, frobbed their `frob( player )`, used their `onUse( activator )`.
+- bsp-sekai reads a map's `.ent` in place of its entities, as Daikatana did.

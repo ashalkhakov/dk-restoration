@@ -102,7 +102,6 @@ charge, and two shots
 void monster_thunderskeet::attack() {
 	faceEnemy();
 	playAnim( ANIMCHANNEL_LEGS, "ataka" );
-	startSound( "snd_attack", CHAN_VOICE, false );
 	sys.wait( 0.2 );
 	playModelFx( "attack" );
 	sys.wait( 0.5 );
@@ -172,7 +171,6 @@ monster_thunderskeet::pain
 void monster_thunderskeet::pain() {
 	string anim;
 
-	startSound( "snd_pain", CHAN_VOICE, false );
 	anim = "hitb";
 	if ( sys.random( 1 ) < 0.5 ) {
 		anim = "hita";

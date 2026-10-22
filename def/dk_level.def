@@ -1,0 +1,25 @@
+// Daikatana's level entities whose script objects are what they do (Doom 3's
+// idStaticEntity, "spawnclass" "scripted", mint-arena g_misc.c): script/level/
+
+// the health tree (healthtree.cpp): a plant of up to five fruit, 10 health
+// each to whoever uses it
+entityDef misc_healthtree {
+	"spawnclass"	"scripted"
+	"scriptobject"	"misc_healthtree"
+	"model"			"models/e1/healthtree.md3"
+	"mins"			"-8 -8 -24"
+	"maxs"			"8 8 8"
+	"frobable"		"1"
+	"drop_to_floor"	"1"
+	"max_fruit"		"5"				// 0 to 5
+	"fruit_value"	"10"
+	"regrow_time"	"30"			// seconds to grow them all back, outside the campaign
+	"snd_use"		"healthtree_use"
+	"snd_regen"		"healthtree_regen"
+}
+
+// target_monster_spawn (target.cpp): used, a monster of its "monsterclass"
+entityDef target_monster_spawn {
+	"spawnclass"	"scripted"
+	"scriptobject"	"target_monster_spawn"
+}

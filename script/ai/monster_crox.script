@@ -1,14 +1,16 @@
 // monster_crox.script -- Daikatana's Crox (crox.cpp), a robot crocodile:
 // it runs at you on land and swims at you in water, and bites when near, on
 // land atakc or atakd, in water ataka or atakb (two in three the first), the
-// bite on their 13th frame. A hit makes it flinch one time in five. It gives
-// up on you while you're over 100 above or below it, wandering until you're
-// not.
+// bite on their 13th frame (attackFrame, a frame command); its sounds are
+// its animations' (Daikatana's m_crox.vsc). A hit makes it flinch one time in
+// five. It gives up on you while you're over 100 above or below it,
+// wandering until you're not.
 
 object monster_crox : monster_base {
 	void		state_Combat();
 	void		state_Killed();
 	void		attack();
+	void		attackFrame();
 	void		pain();
 	void		chase();
 	void		wanderAway();
@@ -86,7 +88,6 @@ a bite, its 13th frame the one that bites
 */
 void monster_crox::attack() {
 	string	anim;
-	float	t;
 
 	stopMove();
 	faceEnemy();
@@ -102,16 +103,22 @@ void monster_crox::attack() {
 		}
 	}
 	playAnim( ANIMCHANNEL_LEGS, anim );
-	startSound( "snd_attack", CHAN_VOICE, false );
-	t = sys.getTime() + 1.2;
-	while( sys.getTime() < t ) {
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
 		faceEnemy();
 		sys.waitFrame();
 	}
+}
+
+/*
+================
+monster_crox::attackFrame
+
+the bite, on its attack's frame (its model's frame commands, from
+Daikatana's m_crox.vsc)
+================
+*/
+void monster_crox::attackFrame() {
 	attackMelee( "damage_crox_bite" );
-	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
-		sys.waitFrame();
-	}
 }
 
 /*
@@ -123,7 +130,6 @@ void monster_crox::pain() {
 	string anim;
 
 	stopMove();
-	startSound( "snd_pain", CHAN_VOICE, false );
 	anim = "hitb";
 	if ( sys.random( 1 ) < 0.5 ) {
 		anim = "hita";
@@ -140,7 +146,6 @@ slowly over, or a collapse
 */
 void monster_crox::state_Killed() {
 	stopMove();
-	startSound( "snd_death", CHAN_VOICE, false );
 	if ( sys.random( 1 ) < 0.5 ) {
 		waitAnim( "diea" );
 	} else {

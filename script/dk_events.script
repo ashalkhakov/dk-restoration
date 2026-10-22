@@ -160,6 +160,7 @@ scriptEvent	void		directDamage( entity damageTarget, string damageDef );
 scriptEvent	float		attackWeapon( string weaponDef, vector offset );	// a weapon def's shots at its enemy, from offset (forward, left, up)
 scriptEvent	void		alertMonsters( float range );	// monsters that hear it within range take its enemy
 scriptEvent	void		playModelFx( string which );	// its model def's "fx_<which>": death, muzzle, attack, special
+scriptEvent	void		setFrame( float frame );		// an md3 model's frame it shows
 scriptEvent	float		playAnim( float channel, string animName );
 scriptEvent	float		playCycle( float channel, string animName );
 scriptEvent	float		animDone( float channel, float blendFrames );

@@ -14,6 +14,8 @@
 #include "script/ai/monster_cambot.script"
 #include "script/ai/monster_rockgat.script"
 #include "script/ai/monster_thunderskeet.script"
+#include "script/level/misc_healthtree.script"
+#include "script/level/target_monster_spawn.script"
 
 // cinematics: the helpers (each map's cinematics are in cine/maps/<map>.script,
 // compiled with the map's script)

@@ -12,7 +12,10 @@ object monster_froginator : monster_base {
 	void		leapAt();
 	void		swim();
 	void		attack();
+	void		attackFrame();
 	void		pain();
+
+	boolean		biting;
 	void		crouch();
 	boolean		throwTo( vector dest, float up, float maxSpeed, string anim );
 	vector		floorUnder( vector pos );
@@ -83,7 +86,6 @@ boolean monster_froginator::throwTo( vector dest, float up, float maxSpeed, stri
 	}
 	turnToPos( dest );
 	playAnim( ANIMCHANNEL_LEGS, anim );
-	startSound( "snd_leap", CHAN_VOICE, false );
 	setLinearVelocity( vel );
 
 	t = sys.getTime() + 3;
@@ -204,19 +206,27 @@ a bite, as its animation strikes
 ================
 */
 void monster_froginator::attack() {
-	float t;
-
 	stopMove();
 	faceEnemy();
+	biting = true;
 	playAnim( ANIMCHANNEL_LEGS, "atakb" );
-	startSound( "snd_attack", CHAN_VOICE, false );
-	t = sys.getTime() + 0.6;
-	while( sys.getTime() < t ) {
-		sys.waitFrame();
-	}
-	attackMelee( "damage_frog_bite" );
 	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
 		sys.waitFrame();
+	}
+	biting = false;
+}
+
+/*
+================
+monster_froginator::attackFrame
+
+its bite's frames (frame commands, from Daikatana's m_frog.vsc); its leap's
+are the leap itself
+================
+*/
+void monster_froginator::attackFrame() {
+	if ( biting ) {
+		attackMelee( "damage_frog_bite" );
 	}
 }
 

@@ -1,0 +1,40 @@
+// target_monster_spawn.script -- Daikatana's target_monster_spawn
+// (target.cpp): used, a monster of its "monsterclass" where it is, facing
+// its way, with the keys Daikatana's maps give it ("muniqueid" its name,
+// "deathtarget", "spawnname", "aiscript", "spawnflags"), its "sound"
+// played; then it's gone.
+
+object target_monster_spawn {
+	void		onUse( entity activator );
+	void		passKey( string key );
+};
+
+void target_monster_spawn::passKey( string key ) {
+	if ( getKey( key ) != "" ) {
+		sys.setSpawnArg( key, getKey( key ) );
+	}
+}
+
+void target_monster_spawn::onUse( entity activator ) {
+	vector angles;
+
+	if ( getKey( "monsterclass" ) == "" ) {
+		sys.warning( "target_monster_spawn without a monsterclass" );
+		return;
+	}
+	angles = getAngles();
+	sys.setSpawnArg( "origin", "" + getOrigin() );
+	sys.setSpawnArg( "angle", "" + angles_y );
+	if ( getKey( "muniqueid" ) != "" ) {
+		sys.setSpawnArg( "targetname", getKey( "muniqueid" ) );
+	}
+	passKey( "deathtarget" );
+	passKey( "spawnname" );
+	passKey( "aiscript" );
+	passKey( "spawnflags" );
+	sys.spawn( getKey( "monsterclass" ) );
+	if ( getKey( "sound" ) != "" ) {
+		startSoundShader( "sounds/" + getKey( "sound" ), CHAN_AUTO );
+	}
+	remove();
+}

@@ -50,10 +50,8 @@ entityDef monster_froginator {
 	"snd_sight"		"frog_sight"
 	"snd_idle"		"frog_idle"
 	"snd_attack"	"frog_attack"
-	"snd_leap"		"frog_leap"
 	"snd_land"		"frog_land"
 	"snd_impact"	"frog_impact"
-	"snd_death"		"frog_death"
 }
 
 entityDef damage_frog_leap {
@@ -105,7 +103,6 @@ entityDef monster_slaughterskeet {
 	"snd_attack"	"skeet_attack"
 	"snd_fly"		"skeet_fly"
 	"snd_impact"	"skeet_impact"
-	"snd_death"		"skeet_death"
 }
 
 entityDef damage_skeet_bite {
@@ -151,9 +148,6 @@ entityDef monster_crox {
 	"pain_chance"	"0.2"
 	"snd_sight"		"crox_sight"
 	"snd_idle"		"crox_idle"
-	"snd_attack"	"crox_attack"
-	"snd_pain"		"crox_pain"
-	"snd_death"		"crox_death"
 	"snd_swim"		"crox_swim"
 }
 
@@ -188,7 +182,6 @@ entityDef monster_protopod {
 	"maybe_range"	"512"			// or by chance this near
 	"hatch_monster"	"monster_slaughterskeet"
 	"snd_idle"		"protopod_idle"
-	"snd_hatch"		"protopod_hatch"
 }
 
 // the Skinny Worker: a mine worker, harmless, who runs from you when hurt
@@ -221,7 +214,6 @@ entityDef monster_skinnyworker {
 	"fov"			"220"
 	"sight_range"	"1000"
 	"snd_flee"		"worker_flee"
-	"snd_death"		"worker_death"
 }
 
 // the Cambot: a flying security camera (cambot.cpp). It never attacks: it
@@ -358,9 +350,7 @@ entityDef monster_thunderskeet {
 	"muzzle"		"0 0 -40"		// under it
 	"snd_sight"		"tskeet_sight"
 	"snd_idle"		"tskeet_idle"
-	"snd_attack"	"tskeet_attack"
 	"snd_fly"		"tskeet_fly"
-	"snd_pain"		"tskeet_pain"
 	"snd_death"		"robot_explode"
 }
 

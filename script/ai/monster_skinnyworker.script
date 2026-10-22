@@ -128,7 +128,6 @@ monster_skinnyworker::state_Killed
 */
 void monster_skinnyworker::state_Killed() {
 	stopMove();
-	startSound( "snd_death", CHAN_VOICE, false );
 	if ( sys.random( 1 ) < 0.5 ) {
 		waitAnim( "diea" );
 	} else {

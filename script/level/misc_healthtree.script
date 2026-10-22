@@ -1,0 +1,81 @@
+// misc_healthtree.script -- Daikatana's health tree (healthtree.cpp): up to
+// five fruit ("max_fruit"), each healing whoever uses it (frobs it) by
+// "fruit_value", up to their health's limit, one a second. Its model's frame
+// shows the fruit left (0 all five, 5 none). Picked bare it stays bare in
+// the campaign; elsewhere it grows them back over "regrow_time" seconds.
+
+object misc_healthtree {
+	float		fruit;
+	float		maxFruit;
+	float		nextUse;
+
+	void		init();
+	void		frob( entity user );
+	void		onUse( entity activator );
+	void		showFruit();
+};
+
+void misc_healthtree::showFruit() {
+	setFrame( 5 - fruit );
+}
+
+void misc_healthtree::init() {
+	maxFruit = getFloatKey( "max_fruit" );
+	if ( maxFruit < 0 ) {
+		maxFruit = 0;
+	} else if ( maxFruit > 5 ) {
+		maxFruit = 5;
+	}
+	fruit = maxFruit;
+	showFruit();
+
+	// growing back, outside the campaign
+	if ( sys.getcvar( "g_gametype" ) == "3" || maxFruit <= 0 ) {
+		return;
+	}
+	while( 1 ) {
+		sys.wait( getFloatKey( "regrow_time" ) / maxFruit );
+		if ( fruit < maxFruit ) {
+			fruit = fruit + 1;
+			showFruit();
+			startSound( "snd_regen", CHAN_AUTO, false );
+		}
+	}
+}
+
+/*
+================
+misc_healthtree::frob
+
+a fruit, if they need it
+================
+*/
+void misc_healthtree::frob( entity user ) {
+	float health;
+	float max;
+
+	if ( fruit <= 0 || sys.getTime() < nextUse ) {
+		return;
+	}
+	health = user.getHealth();
+	max = user.getMaxHealth();
+	if ( health <= 0 || health >= max ) {
+		return;
+	}
+	health = health + getFloatKey( "fruit_value" );
+	if ( health > max ) {
+		health = max;
+	}
+	user.setHealth( health );
+	fruit = fruit - 1;
+	showFruit();
+	nextUse = sys.getTime() + 1;
+	startSound( "snd_use", CHAN_AUTO, false );
+}
+
+// used (a trigger, Daikatana's use): the same
+void misc_healthtree::onUse( entity activator ) {
+	if ( activator != $null_entity ) {
+		frob( activator );
+	}
+}

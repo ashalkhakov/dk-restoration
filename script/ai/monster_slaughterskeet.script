@@ -418,8 +418,7 @@ void monster_slaughterskeet::bite() {
 		return;		// it couldn't get to it: round again
 	}
 	playAnim( ANIMCHANNEL_LEGS, "ataka" );
-	startSound( "snd_attack", CHAN_VOICE, false );
-	attackMelee( "damage_skeet_bite" );
+	attackMelee( "damage_skeet_bite" );		// at once: a dart, not its animation's frame
 	stopMove();
 	t = sys.getTime() + 0.3;
 	while( sys.getTime() < t ) {

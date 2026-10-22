@@ -144,6 +144,16 @@ as the weapon's) from an offset at the enemy, so a monster's weapon is a weapon 
 `fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). A robot's death is `playModelFx( "death" )`, `hide()`,
 `remove()`. Daikatana's map keys on a monster: `deathtarget` is used when it dies, `spawnname` an item it leaves.
 
+## Frame commands
+
+Daikatana's per-monster sound tables (`sounds/e1/m_*.vsc`, each byte XORed with 0x96) say which sound plays on which
+frame of each animation, and the attack frames. `./dk` turns them into Doom 3 frame commands
+(`tools/vsc/vsc_frames.py`), a def `model_<name>_frames` that the model def of that name takes its frame commands
+from, the md3's or the rigged one's (`bg_model.c`). The cgame plays the `sound`s and `fx`; the game runs `melee
+<damage def>`, `weapon <weapon def>` (from the monster's `muzzle`) and `call <function>` of its script object as the
+animation passes the frame. Each attack frame is `call attackFrame`: the crox's bite and the frog's are their
+`attackFrame()`, not a timed guess. Several commands on a frame go in one key, `;` between them.
+
 ## What's to come
 
 Ground paths (the frog goes straight at you), the frog's spit, the skeet's hatching animation, the rockgat
