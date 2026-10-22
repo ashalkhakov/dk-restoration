@@ -19,7 +19,9 @@ numbers, Daikatana's `AIData.csv` at medium skill:
 
 - `health`, `modelscale`; `mins`, `maxs` (its box, to move with; the model def's, if it has none); `run_speed` (its moves' speed), `turn_rate` (degrees a second);
 - `fov`, `sight_range`: whom it sees;
-- `melee_range`: how far past its box a bite reaches (a damage def's `range` overrides it);
+- `melee_range`: how far past its box a bite reaches (a damage def's `range` overrides it); `melee_hitbox` a
+  joint of its rig whose hitbox bites (the crox's `Head`): the reach is then from that box's front end, posed as
+  it's drawn, to the enemy's box, and the hit lands there;
 - `fly` 1: it flies, at `fly_speed`, its thrust changing its velocity by `fly_accel` a second at most, `fly_offset`
   above what it flies at, bobbing `fly_bob`;
 - `impact_speed`, `impact_damage`, `impact_bounce`: hitting the world faster than `impact_speed` (a frog's leap,
@@ -141,8 +143,12 @@ an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 What scripts have for these: `attackWeapon( def, offset )` fires a weapon def's shots (hitscan or projectiles, drawn
 as the weapon's) from an offset at the enemy, so a monster's weapon is a weapon def no player gets (`weapon_slot`
 99, keeping the players' weapons' numbers); `alertMonsters( range )`; `playModelFx( "death" )` plays the model def's
-`fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). A robot's death is `playModelFx( "death" )`, `hide()`,
-`remove()`. Daikatana's map keys on a monster: `deathtarget` is used when it dies, `spawnname` an item it leaves.
+`fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). These and the other looks of a model
+(`surface`, `light_radius`/`light_color`/`light_offset` forward, left, up for a lamp it carries, `light_ambient`
+r g b added to the light grid's) can go in a `model_<name>_extra` def, which a rigged model's generated def
+keeps too. A robot's death is `playModelFx( "death" )`, `hide()`,
+`remove()`. No monster sees anyone during a cinematic, and a `killtarget` (a broken control box's) kills a
+monster rather than removing it. Daikatana's map keys on a monster: `deathtarget` is used when it dies, `spawnname` an item it leaves.
 
 ## Frame commands
 

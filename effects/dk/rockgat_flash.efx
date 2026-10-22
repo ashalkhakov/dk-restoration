@@ -1,0 +1,38 @@
+// The rockgat firing (rockgat.cpp's muzzle flash, me_mflash): a burst of
+// fire at its barrel, and its light.
+
+Particle
+{
+	life		60 90
+	origin		22 0 4 22 0 4
+	rgb
+	{
+		start	1 1 1
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	12 18
+	}
+	rotation	0 360
+	shaders [ dkfx/mflash ]
+}
+
+Light
+{
+	life		60
+	origin		22 0 4 22 0 4
+	rgb
+	{
+		start	1 0.7 0.3
+	}
+	size
+	{
+		start	120
+	}
+}

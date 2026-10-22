@@ -49,6 +49,19 @@ dkfx/flgreen
 	}
 }
 
+// Daikatana's muzzle flash sprite (me_mflash): a rockgat firing; its alpha
+// cuts the fire's shape out of the square
+dkfx/mflash
+{
+	cull none
+	{
+		map skins/me_mflash.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
 // Daikatana's e_flare.sp2: a firefly (cg_fireflies.c), coloured and faded by it
 dkfx/flare
 {

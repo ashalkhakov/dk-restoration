@@ -1,10 +1,12 @@
 // Daikatana's effect_lightning bolt (effects.cpp, g_dk_level.c): a jagged
 // bolt, its colour Daikatana's (0.45 0.45 0.75), a white core, for its
-// strike's 0.3 seconds, played to the bolt's end (CG_FX_PlayEffectLine).
+// strike's 0.3 seconds, running from the emitter to the bolt's end over the
+// first half of it (growing), played between them (CG_FX_PlayEffectLine).
 
 Electricity
 {
 	life		300
+	flags		growing
 	rgb
 	{
 		start	0.45 0.45 0.75
@@ -25,6 +27,7 @@ Electricity
 Electricity
 {
 	life		300
+	flags		growing
 	rgb
 	{
 		start	1 1 1

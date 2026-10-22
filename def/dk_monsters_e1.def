@@ -138,13 +138,16 @@ entityDef monster_crox {
 	"spawnclass"	"monster"
 	"model"			"model_crox"
 	"scriptobject"	"monster_crox"
+	"mins"			"-24 -24 -18"	// the box it moves with: its body's middle, Daikatana's (its tail and
+	"maxs"			"24 24 8"		// head reach past it; shots meet its rig's hitboxes)
 	"health"		"150"
 	"run_speed"		"175"
 	"walk_speed"	"50"
 	"turn_rate"		"250"			// 25 a tenth of a second
 	"fov"			"270"
 	"sight_range"	"1300"
-	"melee_range"	"60"
+	"melee_hitbox"	"Head"			// it bites with its jaws: the front of its rig's head box
+	"melee_range"	"32"			// its jaws this near you, it lunges
 	"pain_chance"	"0.2"
 	"snd_sight"		"crox_sight"
 	"snd_idle"		"crox_idle"
@@ -154,7 +157,7 @@ entityDef monster_crox {
 entityDef damage_crox_bite {
 	"damage"		"15"
 	"damage_random"	"20"
-	"range"			"60"
+	"range"			"12"			// from its jaws, as they close (the bite's frame)
 }
 
 // the Protopod: a pod that hatches a slaughter skeet (protopod.cpp) when it
@@ -229,8 +232,6 @@ entityDef model_cambot {
 	"anim amba"		"amba 10 loop"
 	"anim flya"		"flya 10 loop"
 	"anim diea"		"diea 10"
-	"surface"		"metal"
-	"fx_death"		"dk/explosion"
 }
 
 entityDef monster_cambot {
@@ -264,10 +265,8 @@ entityDef model_rockgat {
 	"mesh"			"models/e1/a1_rockgun.md3"
 	"mins"			"-16 -16 -16"	// AIData.csv
 	"maxs"			"16 16 16"
+	"anim idle"		"0 1 1"			// lowered in the rock, its first frame, until it sees you
 	"anim up"		"up 10"			// rising out of the rock
-	"surface"		"metal"
-	"fx_death"		"dk/explosion"
-	"fx_muzzle"		"dk/muzzle_smoke"
 }
 
 entityDef monster_rockgat {
@@ -324,10 +323,6 @@ entityDef model_thunderskeet {
 	"anim hita"		"hita 10"
 	"anim hitb"		"hitb 10"
 	"anim diea"		"diea 10"
-	"surface"		"metal"
-	"fx_death"		"dk/explosion"
-	"fx_attack"		"dk/thunderskeet_charge"
-	"fx_muzzle"		"dk/thunderskeet_fire"
 }
 
 entityDef monster_thunderskeet {
@@ -388,4 +383,29 @@ entityDef damage_thunderjiz {
 entityDef damage_thunderjiz_splash {
 	"damage"				"40"
 	"radius"				"256"
+}
+
+// what the monsters' model defs keep when a rigged one takes the md3's place
+// (bg_model.c BG_ModelKey): their effects and lights
+
+entityDef model_cambot_extra {
+	"surface"		"metal"
+	"fx_death"		"dk/explosion"
+	"light_radius"	"220"			// its lamp (Daikatana's light from its weapon offset)
+	"light_color"	"1 0.95 0.8"
+	"light_offset"	"30 0 -5"		// forward, left, up
+}
+
+entityDef model_rockgat_extra {
+	"surface"		"metal"
+	"fx_death"		"dk/explosion"
+	"fx_muzzle"		"dk/rockgat_flash"
+	"light_ambient"	"64 64 64"		// in the rock, where the light grid is black
+}
+
+entityDef model_thunderskeet_extra {
+	"surface"		"metal"
+	"fx_death"		"dk/explosion"
+	"fx_attack"		"dk/thunderskeet_charge"
+	"fx_muzzle"		"dk/thunderskeet_fire"
 }

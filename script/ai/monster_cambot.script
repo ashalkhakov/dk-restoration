@@ -76,6 +76,7 @@ void monster_cambot::state_Idle() {
 
 	playCycle( ANIMCHANNEL_LEGS, "amba" );
 	setFlySpeed( getFloatKey( "walk_speed" ) );
+	setFlyOffset( 0 );		// on its corners, as Daikatana's; above you only when it follows
 	corner = getEntityKey( "target" );
 	while( 1 ) {
 		enemy = findEnemy( true );
@@ -106,6 +107,7 @@ void monster_cambot::state_Combat() {
 	boolean	lost;
 
 	setFlySpeed( getFloatKey( "fly_speed" ) );
+	setFlyOffset( getFloatKey( "fly_offset" ) );
 	while( 1 ) {
 		if ( !getEnemy() ) {
 			setState( "state_Idle" );
