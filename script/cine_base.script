@@ -5,6 +5,11 @@
 //
 // While a cinematic is skipped (sys.skippingCinematic()), waits end at once
 // and the actors' moves, turns and animations here end where they would.
+//
+// An actor has its place (keys "cine_anchor", "cine_anchorYaw"), as
+// Daikatana's had: where it was spawned, put, or walked or turned to. Every
+// animation starts there: what one moved it by (Daikatana baked that in) is
+// only how it's drawn while it plays, not where the next starts.
 
 /*
 ================
@@ -50,6 +55,61 @@ entity cine_camera( string name ) {
 
 /*
 ================
+cine_anchor
+
+the actor's place from now on (cine_toAnchor)
+================
+*/
+void cine_anchor( entity actor, vector origin, float yaw ) {
+	actor.setKey( "cine_anchor", "" + origin );
+	actor.setKey( "cine_anchorYaw", "" + yaw );
+}
+
+/*
+================
+cine_toAnchor
+
+the actor back at its place, as an animation starts
+================
+*/
+void cine_toAnchor( entity actor ) {
+	actor.setOrigin( actor.getVectorKey( "cine_anchor" ) );
+	actor.setAngles( '0 1 0' * actor.getFloatKey( "cine_anchorYaw" ) );
+	actor.turnTo( actor.getFloatKey( "cine_anchorYaw" ) );
+}
+
+/*
+================
+cine_place
+
+the actor put there, facing yaw: its place now (Daikatana's teleport)
+================
+*/
+void cine_place( entity actor, vector origin, float yaw ) {
+	if ( actor == $null_entity ) {
+		return;
+	}
+	cine_anchor( actor, origin, yaw );
+	cine_toAnchor( actor );
+}
+
+/*
+================
+cine_idle
+
+the actor idles with that animation, at its place
+================
+*/
+void cine_idle( entity actor, string anim ) {
+	if ( actor == $null_entity ) {
+		return;
+	}
+	cine_toAnchor( actor );
+	actor.playCycle( ANIMCHANNEL_LEGS, anim );
+}
+
+/*
+================
 cine_spawn
 
 an actor of that def, there, facing yaw, named
@@ -63,6 +123,7 @@ entity cine_spawn( string def, vector origin, float yaw, string name ) {
 	actor = sys.spawn( def );
 	if ( actor != $null_entity ) {
 		actor.setName( name );
+		cine_anchor( actor, origin, yaw );
 		if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
 			actor.playCycle( ANIMCHANNEL_LEGS, "amba" );		// its idle, until it's told otherwise
 		}
@@ -94,6 +155,7 @@ void cine_play( entity actor, string anim ) {
 	if ( actor == $null_entity ) {
 		return;
 	}
+	cine_toAnchor( actor );
 	actor.playAnim( ANIMCHANNEL_LEGS, anim );
 	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() ) {
 		sys.waitFrame();
@@ -104,9 +166,11 @@ void cine_play( entity actor, string anim ) {
 ================
 cine_playMove
 
-the actor plays an animation in place while the game carries it along what
-the animation once moved it by (Daikatana baked it in; we don't): move is
-forward and to the left of how it faced, turn degrees by the end, over secs
+the actor plays an animation in place, from its place, while the game
+carries it along what the animation once moved it by (Daikatana baked it
+in; we don't): move is forward and to the left of how it faced, turn
+degrees by the end, over secs. Its place stays: the next animation starts
+there again, as Daikatana's did
 ================
 */
 void cine_playMove( entity actor, string anim, vector move, float turn, float secs ) {
@@ -119,6 +183,7 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 	if ( actor == $null_entity ) {
 		return;
 	}
+	cine_toAnchor( actor );
 	ang = actor.getAngles();
 	from = actor.getOrigin();
 	to = from + sys.angToForward( '0 1 0' * ang_y ) * move_x - sys.angToRight( '0 1 0' * ang_y ) * move_y;
@@ -149,6 +214,7 @@ void cine_move( entity actor, vector dest, string gait ) {
 	if ( actor == $null_entity ) {
 		return;
 	}
+	cine_toAnchor( actor );
 	if ( gait == "runa" ) {
 		actor.setMoveSpeed( actor.getFloatKey( "run_speed" ) );
 	} else {
@@ -166,6 +232,7 @@ void cine_move( entity actor, vector dest, string gait ) {
 		}
 		sys.waitFrame();
 	}
+	cine_anchor( actor, actor.getOrigin(), actor.getAngles() * '0 1 0' );
 	if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
 		actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
 	}
@@ -182,6 +249,7 @@ void cine_turn( entity actor, float yaw ) {
 	if ( actor == $null_entity ) {
 		return;
 	}
+	actor.setKey( "cine_anchorYaw", "" + yaw );
 	actor.turnTo( yaw );
 	while( !actor.facingIdeal() ) {
 		if ( sys.skippingCinematic() ) {

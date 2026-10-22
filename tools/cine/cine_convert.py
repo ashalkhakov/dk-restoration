@@ -106,6 +106,12 @@ RIGGED = {
 	"cine_kage": ( "kage", "c_kage_" ),
 }
 
+# a character in one cinematic model rigged apart (its own outfit): Hiro in
+# his gi, in the intro
+RIGGED_MODELS = {
+	"c_hiro_intr": ( "hirogi", "c_hiro_" ),
+}
+
 def monster_rig( classname ):
 	"""a monster's rigged model def (def/rig_<name>.def, ./dk rig): ( model def
 	name, its animations ), or None"""
@@ -121,9 +127,9 @@ def monster_rig( classname ):
 def rigged( dkres, classname, model ):
 	"""our character's cinematic animations for that model: ( character, tag,
 	the retargeting's JSON ), or None"""
-	if classname not in RIGGED or not model:
+	if not model or ( classname not in RIGGED and os.path.basename( model ) not in RIGGED_MODELS ):
 		return None
-	char, prefix = RIGGED[classname]
+	char, prefix = RIGGED_MODELS.get( os.path.basename( model ), RIGGED.get( classname ) )
 	tag = os.path.basename( model )[len( prefix ):]
 	path = os.path.join( dkres, "models", "rigged", "%s_%s.json" % ( char, tag ) )
 	if not os.path.exists( path ):
@@ -306,7 +312,7 @@ def task_lines( task, var, actors ):
 	if ty == "play_animation":
 		return [ "cine_play( %s, \"%s\" );" % ( var, task["animation"] ) ]
 	if ty == "set_idle_animation":
-		return [ "%s.playCycle( ANIMCHANNEL_LEGS, \"%s\" );" % ( var, task["animation"] ) ]
+		return [ "cine_idle( %s, \"%s\" );" % ( var, task["animation"] ) ]
 	if ty == "move_to":
 		return [ "cine_move( %s, %s, \"%s\" );" % ( var, dest, gaits.get( var, "walka" ) ) ]
 	if ty == "move_and_turn":
@@ -314,7 +320,7 @@ def task_lines( task, var, actors ):
 	if ty == "turn":
 		return [ "cine_turn( %s, %g );" % ( var, yaw ) ]
 	if ty == "teleport":
-		return [ "%s.setOrigin( %s );" % ( var, dest ), "%s.setAngles( '0 %g 0' );" % ( var, yaw ) ]
+		return [ "cine_place( %s, %s, %g );" % ( var, dest, yaw ) ]
 	if ty == "trigger_brush_use":
 		return [ "cine_use( \"%s\", %s );" % ( task["use_entity"], var ) ]
 	if ty == "remove_entity":
