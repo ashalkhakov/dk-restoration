@@ -265,18 +265,12 @@ def restore(src, dst, bounce=False):
         text = orig[0].decode("latin-1").rstrip("\0")
         brace = text.index("{") + 1
         lumps[0] = (text[:brace] + '\n"_bounceLightmaps" "1"' + text[brace:] + "\0").encode("latin-1")
-    # the baking shaders' surfaces back on theirs
-    names = shader_names(lumps)
-    origNames = shader_names(orig)
+    # the surfaces back on their own shaders, by number: the converter's
+    # shaders share names (a texture's, with different flags)
+    lumps[1] = orig[1]
     lumps[13] = bytearray(lumps[13])
     for i in range(len(lumps[13]) // 104):
-        shader = struct.unpack_from("<i", lumps[13], i * 104)[0]
-        if "__lb" in names[shader]:
-            want = origNames[struct.unpack_from("<i", orig[13], i * 104)[0]]
-            if want not in names:
-                names.append(want)
-                lumps[1] += orig[1][origNames.index(want) * 72:origNames.index(want) * 72 + 72]
-            struct.pack_into("<i", lumps[13], i * 104, names.index(want))
+        lumps[13][i * 104:i * 104 + 4] = orig[13][i * 104:i * 104 + 4]
     write_bsp(dst, version, lumps)
 
 

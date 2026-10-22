@@ -137,6 +137,8 @@ Anything else waits until something needs it.
 - **Searched** on e1m1b's 8 spawn views at Daikatana's 16 units, against its lightmaps, by 32×20 luminance grids (mean |log ratio|): sky scale 0.25–2, bounce scale 1–3, light scale 0.4–1. Best: sky 0.5, `-bouncescale 2`, `cg_staticLightScale 0.6`: error 0.094 (about 10% a cell), brightness 1.02, views 0.04–0.13. More sky brightens the open views too much (0.36 at sky 2); more light scale the spots with lights close together.
 - **Default:** those, at 8-unit luxels into 1024² external lightmaps (`maps/<map>/lm_NNNN.tga`, which rend2 loads by itself); `LIGHT_OPTIONS` for others (16 units as Daikatana: `-bounce 2 -bouncescale 2 -samples 2 -filter`).
 - The light grids (`./dk bakegrids`) are baked after.
+- **Kept in the repository,** so nobody bakes again: the lightmaps as PNG (`lightmaps/<map>/lm_NNNN.png`, external, which rend2 loads in any image format), where they go on the map (`lightmaps/<map>.lmcoords`: each surface's place, each vertex's lightmap coordinates and colour, the BSP's light grid, and a fingerprint of the geometry, `tools/maps/lightmap_coords.py`) and the room grid (`lightmaps/<map>.lightgrid`). `./dk convert` puts them back on each map; if the converter changed its geometry since, it says so and the map keeps Daikatana's lightmaps until it's baked again.
+- Brush entities' faces are lit as the world's and cast no shadow (Daikatana's qrad); rotating ones keep their entity, for their origin. Faces never drawn (clip, triggers, liquids' insides) cast no shadow.
 
 ## Order
 

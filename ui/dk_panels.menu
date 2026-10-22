@@ -304,7 +304,7 @@
 		DK_SLIDER( 20, 202, 184, "Screen Size", "cg_viewsize", 100, 30, 100 )
 
 		DK_YESNO( 240, 82, "Fullscreen:", "r_fullscreen" )
-		DK_MULTI( 240, 102, "Shadows:", "cg_shadows", { "Off" 0 "On" 1 } )
+		DK_MULTI( 240, 102, "Shadows:", "r_dlightShadows", { "Off" 0 "On" 4 } )
 		DK_YESNO( 240, 122, "Bullet Holes:", "cg_marks" )
 		DK_YESNO( 240, 142, "Snow and Rain:", "cg_atmosphericEffects" )
 		DK_YESNO( 240, 162, "Dynamic Lights:", "r_dynamiclight" )

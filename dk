@@ -532,6 +532,18 @@ cmd_convert() {
 			# the rungs of ladders drawn by an alpha tested texture
 			python3 "$ROOT/tools/maps/ladder_rungs.py" "$OUT/maps/$map.bsp" "$DKRES/scripts" "$DKRES" \
 				"$OUT/maps/$map.ladders" >>"$OUT/$map.log" 2>&1 || true
+			# its baked light, from the repository (./dk lightmaps, bakegrids):
+			# the lightmaps external (maps/<map>/lm_NNNN), where they go
+			rm -rf "${OUT:?}/maps/$map" "$OUT/maps/$map.lightgrid"
+			if [ -f "$ROOT/lightmaps/$map.lmcoords" ]; then
+				if python3 "$ROOT/tools/maps/lightmap_coords.py" apply "$OUT/maps/$map.bsp" "$ROOT/lightmaps/$map.lmcoords" \
+					>>"$OUT/$map.log" 2>&1; then
+					cp -R "$ROOT/lightmaps/$map" "$OUT/maps/$map"
+				else
+					echo "its lightmaps don't fit it any more:"; tail -1 "$OUT/$map.log"
+				fi
+			fi
+			[ -f "$ROOT/lightmaps/$map.lightgrid" ] && cp "$ROOT/lightmaps/$map.lightgrid" "$OUT/maps/"
 			echo ok
 		else
 			echo "FAILED, see out/$map.log"
@@ -705,13 +717,17 @@ EOF
 #   no shadow. Baked twice the same way, all of it and the light entities'
 #   direct light alone, the one less the other: the game draws that part
 #   with dynamic lights (cg_staticLightScale), the lightmaps keep the rest
-#   (worldspawn "_bounceLightmaps"). External lightmaps in
-#   out/maps/<map>/lm_*.tga. Baked again after the map is converted again;
-#   the light grids (./dk bakegrids) after these.
+#   (worldspawn "_bounceLightmaps"). Baked again after the map is changed;
+#   the light grids (./dk bakegrids) after these. Kept in the repository,
+#   the lightmaps as PNG (lightmaps/<map>/lm_NNNN.png) and where they go on
+#   the map (lightmaps/<map>.lmcoords, tools/maps/lightmap_coords.py), put
+#   back whenever the map is converted, while its geometry is the same.
 LIGHT_CAP_SCALE=${LIGHT_CAP_SCALE:-1.25}
 LIGHT_DEFAULT_CAP=${LIGHT_DEFAULT_CAP:-55}
 LIGHT_SKY_SCALE=${LIGHT_SKY_SCALE:-0.5}
-LIGHT_OPTIONS=${LIGHT_OPTIONS:--bounce 2 -bouncescale 2 -samples 2 -filter -samplesize 8 -external -lightmapsize 1024}
+# Daikatana's 16 units a luxel, as matched against its lightmaps, into
+# external lightmaps; finer (-samplesize 8) takes about 40 times longer
+LIGHT_OPTIONS=${LIGHT_OPTIONS:--bounce 2 -bouncescale 2 -samples 2 -filter -external -lightmapsize 1024}
 
 # light_pass <bake|bake-direct> <map> <out.bsp> <q3map2 options...>: one bake
 # of out/lightmaps/<map>.game.bsp
@@ -754,6 +770,17 @@ cmd_lightmaps() {
 		cp "$work/$map.bsp" "$OUT/maps/$map.bsp"
 		rm -rf "${OUT:?}/maps/$map"
 		[ -d "$work/$map" ] && cp -R "$work/$map" "$OUT/maps/$map"
+		# kept in the repository, for the map converted again (cmd_convert):
+		# where they go, and the lightmaps as PNG (the engine takes those
+		# for the TGAs q3map2 writes)
+		rm -rf "${ROOT:?}/lightmaps/$map"
+		mkdir -p "$ROOT/lightmaps/$map"
+		python3 "$ROOT/tools/maps/lightmap_coords.py" save "$OUT/maps/$map.bsp" "$ROOT/lightmaps/$map.lmcoords" >/dev/null
+		for f in "$OUT/maps/$map"/lm_*.tga; do
+			magick "$f" -define png:compression-level=9 "$ROOT/lightmaps/$map/$(basename "$f" .tga).png"
+		done
+		rm -rf "${OUT:?}/maps/$map"
+		cp -R "$ROOT/lightmaps/$map" "$OUT/maps/$map"
 		echo "$(( $(date +%s) - start )) s, $(ls "$OUT/maps/$map" 2>/dev/null | wc -l | tr -d ' ') external lightmaps"
 	done
 }
@@ -762,15 +789,23 @@ cmd_lightmaps() {
 #   renderergl2's tr_lightgrid.c), written next to it in out/maps. Baked
 #   again after the map is converted again.
 cmd_bakegrids() {
-	local map
+	local map failed=""
 	[ $# -gt 0 ] || set -- $(default_maps)
 	mkdir -p "$OUT/test"
 	for map in "$@"; do
 		printf 'bake %-8s ' "$map"
 		play_script "bake_$map" "$map" "wait 50" "bakeLightGrid" "wait 5"
-		grep -h "^bakeLightGrid: maps/" "$OUT/test/bake_$map.log" | sed 's/^bakeLightGrid: //' \
-			|| echo "FAILED, see out/test/bake_$map.log"
+		if ! grep -q "^bakeLightGrid: maps/" "$OUT/test/bake_$map.log"; then
+			echo "FAILED, see out/test/bake_$map.log"
+			failed="$failed $map"
+			continue
+		fi
+		grep -h "^bakeLightGrid: maps/" "$OUT/test/bake_$map.log" | sed 's/^bakeLightGrid: //'
+		# kept in the repository, for the map converted again (cmd_convert)
+		mkdir -p "$ROOT/lightmaps"
+		cp "$OUT/maps/$map.lightgrid" "$ROOT/lightmaps/"
 	done
+	[ -z "$failed" ] || die "baking failed:$failed"
 }
 
 # ./dk rigshots [name...]: the rigged models in e1m1a, three to a shot,
