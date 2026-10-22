@@ -4,8 +4,13 @@ Monsters are Doom 3's kind (idAI): a character entity whose behaviour is its scr
 `g_monster.c`) moves it, sees for it, hurts and kills it; its script object decides what it does, in states.
 Humans and sidekicks, which play more like bots, are to come another way (RTCW's AI Cast).
 
-So far: the Froginator and the Slaughter Skeet, episode 1's (`def/dk_monsters_e1.def`, `script/ai/`). The
-campaign spawns them where Daikatana's maps put them.
+Episode 1's, all of the first level's (`def/dk_monsters_e1.def`, `script/ai/`): the Froginator, the Slaughter
+Skeet, the Crox, the Protopod, the Skinny Worker, the Cambot, the Rockgat and the Thunderskeet, and the fireflies.
+The campaign spawns them where Daikatana's maps put them, and `target_monster_spawn` when it's used.
+
+Their numbers are Daikatana's `AIData.csv`; their animations and sounds come from its per-monster tables,
+`sounds/e1/m_*.vsc` (each byte XORed with 0x96 gives the CSV: per animation its sounds and the frames they play on,
+the attack frame, loop or once).
 
 ## A monster
 
@@ -114,7 +119,33 @@ The events a monster has (Doom 3's names): `setState`, `getState`; `findEnemy`, 
 `allowMovement`; `perch`, `isPerched`; `getJumpVelocity`; `testMeleeAttack`, `attackMelee`, `directDamage`; `playAnim`, `playCycle`, `animDone`, `hasAnim`; `startSound`. And
 an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 
+- **Crox** (`monster_crox.script`, crox.cpp): a robot crocodile. It runs at you on land and swims at you in water,
+  biting (`damage_crox_bite`, on its attack's 13th frame), on land `atakc`/`atakd`, in water `ataka`/`atakb`; a hit
+  makes it flinch one time in five; it gives up on you while you're over 100 above or below it.
+- **Protopod** (`monster_protopod.script`, protopod.cpp): a pod that hatches its `hatch_monster` (a slaughter skeet)
+  after you when it sees you within `hatch_range` (or by chance within `maybe_range`), then lies open.
+- **Skinny Worker** (`monster_skinnyworker.script`, skinnyworker.cpp): harmless. Hurt or alarmed, he runs from you
+  for ten seconds and cowers, runs again if you come within 300, and goes back to work when you're gone.
+- **Cambot** (`monster_cambot.script`, cambot.cpp): a flying camera on patrol along the `monster_path_corner`s it
+  targets. Seeing you (75 degrees either side) it sounds the alarm, `alertMonsters( alarm_range )`: the monsters that
+  hear it within 1024 come for you. Then it follows you, `near` to `far` away and 72 above. It never attacks.
+- **Rockgat** (`monster_rockgat.script`, rockgat.cpp): a chaingun turret in the rock. It rises when it sees you
+  within its `range`, and a second later fires (`attackWeapon`, a hitscan weapon def) about eight a second while
+  you're within 20 degrees of level.
+- **Thunderskeet** (`monster_thunderskeet.script`, thunderskeet.cpp): flies at you, 96 above; within 600 it hovers,
+  charges and fires two slow balls of lightning that bounce about until they touch someone (40 within 256), then darts
+  at you or flies off. On e1m1b `target_monster_spawn` brings it, and its death opens the way on and leaves a mega
+  shield.
+- **Fireflies** (`monster_firefly`, cgame `cg_fireflies.c`): only looks, a swarm of glowing flares on a leash.
+
+What scripts have for these: `attackWeapon( def, offset )` fires a weapon def's shots (hitscan or projectiles, drawn
+as the weapon's) from an offset at the enemy, so a monster's weapon is a weapon def no player gets (`weapon_slot`
+99, keeping the players' weapons' numbers); `alertMonsters( range )`; `playModelFx( "death" )` plays the model def's
+`fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). A robot's death is `playModelFx( "death" )`, `hide()`,
+`remove()`. Daikatana's map keys on a monster: `deathtarget` is used when it dies, `spawnname` an item it leaves.
+
 ## What's to come
 
-Ground paths (the frog goes straight at you), the frog's spit, the skeet hatching from a protopod,
-and their getting noticed (an effect that makes them stand out).
+Ground paths (the frog goes straight at you), the frog's spit, the skeet's hatching animation, the rockgat
+lowering (its model has only the rising), the rest of episode 1's monsters, and their getting noticed (an effect
+that makes them stand out).

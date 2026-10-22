@@ -48,3 +48,87 @@ dkfx/flgreen
 		rgbGen vertex
 	}
 }
+
+// Daikatana's e_flare.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flare
+{
+	cull none
+	{
+		map skins/e_flare.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// Daikatana's e_flare4+.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flare4+
+{
+	cull none
+	{
+		map skins/e_flare4+.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// Daikatana's e_flare4+o.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flare4+o
+{
+	cull none
+	{
+		map skins/e_flare4+o.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// Daikatana's e_flare4x.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flare4x
+{
+	cull none
+	{
+		map skins/e_flare4x.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// Daikatana's e_flare8+.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flare8+
+{
+	cull none
+	{
+		map skins/e_flare8+.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// Daikatana's e_flare8+o.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flare8+o
+{
+	cull none
+	{
+		map skins/e_flare8+o.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// Daikatana's e_flareo.sp2: a firefly (cg_fireflies.c), coloured and faded by it
+dkfx/flareo
+{
+	cull none
+	{
+		map skins/e_flareo.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
