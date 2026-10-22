@@ -72,7 +72,7 @@ def entities_text(ents):
 def surface_file(lumps, ents, path):
     """q3map2's .srf: each surface's lightmap axis (its plane's normal; a
     soup's average vertex normal; none for a patch, which q3map2 works out)
-    and its entity"""
+    and its entity, brush entities casting no shadow"""
     models = {}
     for n, e in enumerate(ents):
         if e.get("model", "").startswith("*"):
@@ -97,7 +97,11 @@ def surface_file(lumps, ents, path):
                 n = [a + b for a, b in zip(n, vn)]
             length = sum(c * c for c in n) ** 0.5
             axis = [c / length for c in n] if length > 0 else None
-        lines.append("%d\n{\n\tentity %d\n" % (i, surfEntity.get(i, 0)))
+        # brush entities' faces lit as the world's, as Daikatana's qrad
+        # lit them, casting no shadow
+        lines.append("%d\n{\n\tentity 0\n" % i)
+        if surfEntity.get(i, 0):
+            lines.append("\tcastShadows 0\n")
         if axis:
             lines.append("\tlightmapAxis ( %f %f %f )\n" % tuple(axis))
         lines.append("}\n")
