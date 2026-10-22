@@ -1,0 +1,158 @@
+// monster_cambot.script -- Daikatana's Cambot (cambot.cpp): a flying
+// security camera. It patrols the monster_path_corners it targets, humming,
+// looking where it goes. When it sees you, or you hurt it, it sounds the
+// alarm: every monster within 1024 that hears it comes for you (CAMBOT_
+// AlertNearbyMonsters). Then it follows you, 72 to 192 away and 72 above,
+// facing you; when it loses you it goes after you, and sounds the alarm
+// again when it sees you again. It never attacks; shot down, it blows up.
+
+object monster_cambot : monster_base {
+	void		state_Idle();
+	void		state_Combat();
+	void		state_Killed();
+	void		alarm();
+	void		patrol();
+	void		hum();
+
+	entity		corner;
+	float		humTime;
+};
+
+/*
+================
+monster_cambot::hum
+
+its machinery, now and then
+================
+*/
+void monster_cambot::hum() {
+	if ( sys.getTime() > humTime ) {
+		humTime = sys.getTime() + 1.2 + sys.random( 1 );
+		startSound( "snd_fly", CHAN_BODY, false );
+	}
+}
+
+/*
+================
+monster_cambot::alarm
+================
+*/
+void monster_cambot::alarm() {
+	startSound( "snd_alarm", CHAN_VOICE, false );
+	alertMonsters( getFloatKey( "alarm_range" ) );
+}
+
+/*
+================
+monster_cambot::patrol
+
+on to the corner it heads for, and the one that corner targets
+================
+*/
+void monster_cambot::patrol() {
+	if ( corner == $null_entity ) {
+		stopMove();
+		return;
+	}
+	if ( distanceTo( corner ) < 48 ) {
+		corner = corner.getEntityKey( "target" );
+		if ( corner == $null_entity ) {
+			stopMove();
+			return;
+		}
+	}
+	moveToEntity( corner );
+}
+
+/*
+================
+monster_cambot::state_Idle
+
+on patrol until it sees someone, or is hurt
+================
+*/
+void monster_cambot::state_Idle() {
+	entity enemy;
+
+	sys.println( "CAMSTART " + getOrigin() );
+	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	setFlySpeed( getFloatKey( "walk_speed" ) );
+	corner = getEntityKey( "target" );
+	while( 1 ) {
+		enemy = findEnemy( true );
+		if ( enemy ) {
+			setEnemy( enemy );
+		}
+		if ( getEnemy() != $null_entity ) {
+			alarm();
+			setState( "state_Combat" );
+			return;
+		}
+		patrol();
+		hum();
+		if ( findEnemy( false ) != $null_entity ) { sys.println( "CAMIDLE sees any" ); }
+		if ( findEnemy( true ) != $null_entity ) { sys.println( "CAMIDLE sees in fov" ); }
+		sys.println( "CAMIDLE yaw " + getCurrentYaw() + " org " + getOrigin() );
+		sys.wait( 0.1 );
+	}
+}
+
+/*
+================
+monster_cambot::state_Combat
+
+after you, keeping its distance
+================
+*/
+void monster_cambot::state_Combat() {
+	vector	away;
+	float	dist;
+	boolean	lost;
+
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+	while( 1 ) {
+		if ( !getEnemy() ) {
+			setState( "state_Idle" );
+			return;
+		}
+		if ( !AI_ENEMY_VISIBLE ) {
+			lost = true;
+			moveToEnemy();
+		} else {
+			if ( lost ) {
+				lost = false;
+				alarm();
+			}
+			dist = enemyRange2D();
+			if ( dist < getFloatKey( "near" ) ) {
+				away = getOrigin() - getEnemyPos();
+				away_z = 0;
+				moveToPosition( getOrigin() + sys.vecNormalize( away ) * 96 );
+			} else if ( dist > getFloatKey( "far" ) ) {
+				moveToEnemy();
+			} else {
+				stopMove();
+			}
+			faceEnemy();
+		}
+		hum();
+		sys.println( "CAMDBG d " + enemyRange2D() + " org " + getOrigin() + " st " + moveStatus() );
+		sys.wait( 0.2 );
+	}
+}
+
+/*
+================
+monster_cambot::state_Killed
+
+it blows up
+================
+*/
+void monster_cambot::state_Killed() {
+	stopMove();
+	startSound( "snd_death", CHAN_VOICE, false );
+	playModelFx( "death" );
+	hide();
+	sys.wait( 1 );
+	remove();
+}

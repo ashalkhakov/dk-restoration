@@ -157,6 +157,9 @@ scriptEvent	float		testMeleeAttack();		// its enemy in its melee_range (box to b
 scriptEvent	float		attackMelee( string damageDef );
 scriptEvent	vector		getJumpVelocity( vector pos, float upSpeed, float maxSpeed );	// a throw (setLinearVelocity) that lands it at pos
 scriptEvent	void		directDamage( entity damageTarget, string damageDef );
+scriptEvent	float		attackWeapon( string weaponDef, vector offset );	// a weapon def's shots at its enemy, from offset (forward, left, up)
+scriptEvent	void		alertMonsters( float range );	// monsters that hear it within range take its enemy
+scriptEvent	void		playModelFx( string which );	// its model def's "fx_<which>": death, muzzle, attack, special
 scriptEvent	float		playAnim( float channel, string animName );
 scriptEvent	float		playCycle( float channel, string animName );
 scriptEvent	float		animDone( float channel, float blendFrames );

@@ -162,3 +162,103 @@ entityDef damage_crox_bite {
 	"damage_random"	"20"
 	"range"			"60"
 }
+
+// the Protopod: a pod that hatches a slaughter skeet (protopod.cpp) when it
+// sees you near, then lies open
+
+entityDef model_protopod {
+	"mesh"			"models/e1/m_proto.md3"
+	"mins"			"-3.6 -3.6 0"	// Daikatana's box, at the model's size (AIData.csv's / 2.5)
+	"maxs"			"3.6 3.6 4"
+	"anim amba"		"amba 10 loop"
+	"anim hatcha"	"hatcha 10"
+}
+
+entityDef monster_protopod {
+	"spawnclass"	"monster"
+	"model"			"model_protopod"
+	"scriptobject"	"monster_protopod"
+	"health"		"50"
+	"modelscale"	"2.5"
+	"run_speed"		"0"
+	"turn_rate"		"0"
+	"fov"			"360"
+	"sight_range"	"1000"
+	"hatch_range"	"200"			// it hatches when it sees you this near
+	"maybe_range"	"512"			// or by chance this near
+	"hatch_monster"	"monster_slaughterskeet"
+	"snd_idle"		"protopod_idle"
+	"snd_hatch"		"protopod_hatch"
+}
+
+// the Skinny Worker: a mine worker, harmless, who runs from you when hurt
+// and cowers (skinnyworker.cpp)
+
+entityDef model_skinnyworker {
+	"mesh"			"models/e1/m_mwskny.md3"
+	"mins"			"-12 -12 -24"	// AIData.csv
+	"maxs"			"12 12 34"
+	"anim amba"		"amba 10 loop"
+	"anim ambb"		"ambb 10"
+	"anim runa"		"runa 10 loop"
+	"anim walka"	"walka 10 loop"
+	"anim damba"	"damba 10 loop"	// looking out
+	"anim dambb"	"dambb 10"
+	"anim gamba"	"gamba 10 loop"	// cowering
+	"anim gambc"	"gambc 10 loop"
+	"anim diea"		"diea 10"
+	"anim dieb"		"dieb 10"
+}
+
+entityDef monster_skinnyworker {
+	"spawnclass"	"monster"
+	"model"			"model_skinnyworker"
+	"scriptobject"	"monster_skinnyworker"
+	"health"		"25"
+	"run_speed"		"150"
+	"walk_speed"	"35"
+	"turn_rate"		"600"			// 60 a tenth of a second
+	"fov"			"220"
+	"sight_range"	"1000"
+	"snd_flee"		"worker_flee"
+	"snd_death"		"worker_death"
+}
+
+// the Cambot: a flying security camera (cambot.cpp). It never attacks: it
+// patrols its monster_path_corners, and when it sees you (75 degrees either
+// side of where it looks) it sounds the alarm, and every monster within
+// 1024 that hears it comes for you; then it follows you, 72 to 192 away and
+// 72 above. A robot: it blows up.
+
+entityDef model_cambot {
+	"mesh"			"models/e1/m_cambot.md3"
+	"mins"			"-24 -24 -24"	// AIData.csv
+	"maxs"			"24 24 24"
+	"anim amba"		"amba 10 loop"
+	"anim flya"		"flya 10 loop"
+	"anim diea"		"diea 10"
+	"surface"		"metal"
+	"fx_death"		"dk/explosion"
+}
+
+entityDef monster_cambot {
+	"spawnclass"	"monster"
+	"model"			"model_cambot"
+	"scriptobject"	"monster_cambot"
+	"health"		"80"
+	"fly"			"1"
+	"fly_speed"		"250"
+	"walk_speed"	"50"			// on its patrol
+	"fly_accel"		"400"
+	"fly_offset"	"72"			// above you
+	"fly_bob"		"8"
+	"turn_rate"		"90"
+	"fov"			"150"			// it sees 75 degrees either side (CAMBOT_IsVisible)
+	"sight_range"	"3000"
+	"alarm_range"	"1024"
+	"near"			"72"			// it keeps this far away
+	"far"			"192"			// and no farther
+	"snd_alarm"		"cambot_alarm"
+	"snd_fly"		"cambot_hum"
+	"snd_death"		"robot_explode"
+}

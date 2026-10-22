@@ -1,0 +1,137 @@
+// monster_skinnyworker.script -- Daikatana's Skinny Worker
+// (skinnyworker.cpp): a mine worker who means no harm. He goes about his
+// work until someone hurts him (or an alarm names them); then he runs from
+// them, as far as he can get in ten seconds, and cowers. If they come within
+// 300 and he sees them, he runs again; once they're past 1000, he goes back
+// to work.
+
+object monster_skinnyworker : monster_base {
+	void		state_Idle();
+	void		state_Combat();
+	void		state_Killed();
+	void		flee();
+	void		cower();
+};
+
+/*
+================
+monster_skinnyworker::state_Idle
+
+at work, not looking for anyone
+================
+*/
+void monster_skinnyworker::state_Idle() {
+	stopMove();
+	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	while( 1 ) {
+		if ( getEnemy() != $null_entity ) {
+			setState( "state_Combat" );
+			return;
+		}
+		sys.wait( 0.1 );
+	}
+}
+
+/*
+================
+monster_skinnyworker::state_Combat
+
+away from them, and cowering
+================
+*/
+void monster_skinnyworker::state_Combat() {
+	while( 1 ) {
+		if ( !getEnemy() || enemyRange() > getFloatKey( "sight_range" ) ) {
+			clearEnemy();
+			setState( "state_Idle" );
+			return;
+		}
+		flee();
+		cower();
+	}
+}
+
+/*
+================
+monster_skinnyworker::flee
+
+as far from them as ten seconds' running gets him, a sound half the time
+================
+*/
+void monster_skinnyworker::flee() {
+	vector	away;
+	vector	dest;
+	float	t;
+	float	frac;
+
+	if ( sys.random( 1 ) < 0.5 ) {
+		startSound( "snd_flee", CHAN_VOICE, false );
+	}
+	playCycle( ANIMCHANNEL_LEGS, "runa" );
+	t = sys.getTime() + 10;
+	while( sys.getTime() < t && getEnemy() != $null_entity ) {
+		// a point away from them, a little to a side, short of what's in the way
+		away = getOrigin() - getEnemyPos();
+		away_z = 0;
+		away = sys.vecNormalize( sys.vecNormalize( away ) + sys.angToRight( '0 1 0' * getCurrentYaw() ) * ( sys.random( 0.8 ) - 0.4 ) );
+		frac = sys.trace( getOrigin(), getOrigin() + away * 312, getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self );
+		dest = getOrigin() + away * ( 312 * frac - 16 );
+		if ( 312 * frac < 48 ) {
+			wander();		// cornered: anywhere
+		} else {
+			moveToPosition( dest );
+		}
+		sys.wait( 1 );
+		if ( enemyRange() > 600 ) {
+			break;
+		}
+	}
+	stopMove();
+}
+
+/*
+================
+monster_skinnyworker::cower
+
+ten seconds at least, until they come near again or leave
+================
+*/
+void monster_skinnyworker::cower() {
+	float t;
+
+	if ( sys.random( 1 ) < 0.5 ) {
+		playCycle( ANIMCHANNEL_LEGS, "gamba" );
+	} else {
+		playCycle( ANIMCHANNEL_LEGS, "gambc" );
+	}
+	t = sys.getTime() + 10;
+	while( 1 ) {
+		if ( !getEnemy() ) {
+			return;
+		}
+		if ( sys.getTime() > t ) {
+			if ( enemyRange() < 300 && AI_ENEMY_VISIBLE ) {
+				return;		// near again: run
+			}
+			if ( enemyRange() > getFloatKey( "sight_range" ) ) {
+				return;		// gone: back to work
+			}
+		}
+		sys.wait( 0.2 );
+	}
+}
+
+/*
+================
+monster_skinnyworker::state_Killed
+================
+*/
+void monster_skinnyworker::state_Killed() {
+	stopMove();
+	startSound( "snd_death", CHAN_VOICE, false );
+	if ( sys.random( 1 ) < 0.5 ) {
+		waitAnim( "diea" );
+	} else {
+		waitAnim( "dieb" );
+	}
+}

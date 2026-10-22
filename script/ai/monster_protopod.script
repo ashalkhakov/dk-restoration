@@ -1,0 +1,73 @@
+// monster_protopod.script -- Daikatana's Protopod (protopod.cpp): a pod that
+// lies still until it sees you within 200, or by chance (5% a look) within
+// 512; then, a moment later (half a second to three and a half), it hatches
+// a slaughter skeet that goes for you, and lies open, done. Shot first, it
+// dies with what's in it.
+
+object monster_protopod : monster_base {
+	void		state_Idle();
+	void		state_Killed();
+	void		hatch();
+};
+
+/*
+================
+monster_protopod::state_Idle
+
+waits to hatch
+================
+*/
+void monster_protopod::state_Idle() {
+	entity	enemy;
+	float	dist;
+
+	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	while( 1 ) {
+		enemy = findEnemy( false );
+		if ( enemy ) {
+			setEnemy( enemy );
+			dist = enemyRange2D();
+			if ( dist <= getFloatKey( "hatch_range" ) || ( dist <= getFloatKey( "maybe_range" ) && sys.random( 1 ) < 0.05 ) ) {
+				sys.wait( 0.5 + sys.random( 3 ) );
+				hatch();
+				return;
+			}
+		} else if ( AI_PAIN && getEnemy() != $null_entity ) {
+			hatch();
+			return;
+		}
+		idleAnims();
+		sys.wait( 0.1 );
+	}
+}
+
+/*
+================
+monster_protopod::hatch
+
+out comes the skeet, after you; the pod lies open
+================
+*/
+void monster_protopod::hatch() {
+	entity	skeet;
+
+	startSound( "snd_hatch", CHAN_VOICE, false );
+	playAnim( ANIMCHANNEL_LEGS, "hatcha" );
+	sys.setSpawnArg( "origin", "" + ( getOrigin() + '0 0 10' ) );
+	sys.setSpawnArg( "angle", "" + getCurrentYaw() );
+	skeet = sys.spawn( getKey( "hatch_monster" ) );
+	if ( skeet != $null_entity && getEnemy() != $null_entity ) {
+		skeet.setEnemy( getEnemy() );
+	}
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		sys.waitFrame();
+	}
+	setSize( '-8 -8 -2', '8 8 2' );		// open, flat
+	while( 1 ) {
+		sys.wait( 1 );
+	}
+}
+
+void monster_protopod::state_Killed() {
+	stopMove();
+}
