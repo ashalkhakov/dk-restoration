@@ -1,248 +1,98 @@
-# Renderer plan: Doom 3 lighting in Spearmint's renderer
+# Renderer plan: dynamic lights, fog, material features
 
-Status: agreed direction, not started (2026-10-22).
+Status: agreed scope, not started (2026-10-22).
 
-## Why
+## Scope
 
-- **Light has to be dynamic.** Cambots carry lamps, and parts of the game should be sneaked through. Shadows from moving lights matter, and so does how lit the player is.
-- **Daikatana's lightmaps can't stay.** The compiler that made them is gone, and they are too coarse for today.
-- **Its fog is half missing.**
-  - The global distance fog works: `fog_start`, `fog_end`, `fog_color` and `fog_value` reach the game as Spearmint's global fog.
-  - The volume fog brushes (`SURF_FOGPLANE`, drawn by `gl_fogsurf.cpp` from the brush's hull) are dropped by our converter (`VIEWFOGS 0` in `bsp-sekai/code/bsp_dk.c`). The swamp's fog is missing.
-- **We keep moving to Doom 3's subsystems,** and the renderer and its materials are next.
+We improve Spearmint's renderergl2 (rend2, the renderer `./dk` runs) in three places, porting from Doom 3 or The Dark Mod where they do it better:
 
-## Constraints
+1. dynamic lights;
+2. fog;
+3. the material features we actually need.
 
-- **The engine, renderer and game are C,** like Spearmint and mint-arena. Offline tools (dmap) may be C++. Doom 3 code comes in translated to C, as `cm2` (Doom 3's collision models) and mint-arena's `idlib/` (C ports of idLib) did.
-- **Reuse as much of the current renderer as possible,** and keep an upgrade path from Quake 3 assets to the new materials and lighting. Shaders are converted to materials by the upgrader; Quake 3 maps and models keep working.
+Everything else stays as it is: Quake 3 BSP maps with their lightmaps, the shader system, models, 2D. The engine, renderer and game stay C; what we take from Doom 3 or TDM (C++) is translated, using mint-arena's C idLib ports (`q_extramath`, `polylib`, `q_containers`...) where they help.
 
-## What we looked at
+Out of scope for now (looked at, set aside): Doom 3 maps and dmap, `.proc` worlds, replacing shaders with materials, the light grid bake, the light gem.
 
-| Renderer | Shadows | Static light | Fog | GL | Notes |
-|---|---|---|---|---|---|
-| Spearmint renderergl2 (in use, `RENDERER=opengl2`) | Sun cascades; pshadows; dlight cube shadows broken (`r_dlightMode 2`) | Lightmaps, light grid | Q3 fog volumes, global fog; per vertex | GL 2/3, GLSL | C, ~52k lines. Per-pixel dlights with normal/specular maps, HDR, tonemap, SSAO, cubemaps. 32 point dlights at most, immediate-mode API |
-| dhewm3 | Stencil volumes only | None, all per-pixel lights | Fog/blend lights, fixed function | GL 1.x + ARB programs | Nothing to take that TDM doesn't do better |
-| The Dark Mod | **Shadow-map atlas (6 faces a light, sized by screen size), PCSS soft shadows**, stencil as well | None (ambient lights, SSAO) | **Fog lights in GLSL** with fog-entry math | **GL 3.3 core** | C++, ~93k lines, heavily coupled. Light gem, volumetric lights |
-| RBDOOM-3-BFG | Shadow atlas, sun cascades | **Baked light grid + irradiance probes** | Doom 3's | NVRHI (DX12/Vulkan) | We take its light grid idea |
+## 1. Dynamic lights
 
-**Decision:** grow renderergl2 into the new renderer. It is already C, already has the GLSL/FBO backend, images, models, skeletons, 2D, fonts, sky, HDR, cascades and the Quake 3 shader system.
+**Today in rend2:**
+- dlights are points (origin, radius, colour, intensity) at most 32 a frame, because surfaces mark them in 32-bit masks (`MAX_DLIGHTS`, `renderercommon/tr_types.h:36`; `dlightBits` in `tr_local.h`);
+- `r_dlightMode 1` lights them per pixel with normal and specular maps (`ForwardDlight`, `tr_shade.c:886`), but only on single-stage `lightall` surfaces;
+- point-light shadows (`r_dlightMode 2`, cube maps) are broken: a cube texture is bound to a 2D sampler (`tr_shade.c:1087`);
+- the only working shadow maps are the sun's cascades and entity pshadows.
 
-We bring in from The Dark Mod, translated to C:
-- the `.proc` world and portal visibility;
-- Doom 3's lighting model (projected and point lights with falloff images, interactions);
-- the shadow-map atlas and PCSS (its GLSL kept);
-- fog lights;
-- the light gem and light query.
+**Work, in order:**
+1. **Per-pixel everywhere:** dlights lit per pixel on every opaque surface, not only single-stage `lightall` ones. Multi-stage shaders get the light added after their base stages, as Doom 3's interaction pass does after the depth pass. `r_dlightMode 1` becomes the default.
+2. **More lights:** the 32 limit goes. Surfaces keep a per-view light list (indices) instead of a bit mask. The cap becomes a cvar budget (e.g. 128), sorted by screen size and intensity.
+3. **Light shapes, from Doom 3:**
+   - Point lights with a falloff image.
+   - Projected (spot) lights: origin, target/right/up, a projection image, start and end.
+   - The refexport gains `AddLightToSceneEx(refLight_t *)`. The old calls stay and make point lights.
+   - The cambot's lamp becomes a spot light.
+4. **Shadows, from TDM:**
+   - a shadow-map atlas (one depth texture; six faces a point light, one a spot light; sizes from screen size);
+   - one pass for all shadowed lights;
+   - alpha-tested casters;
+   - PCSS soft shadows.
 
-From RBDOOM-3-BFG we take the light grid bake. Translating TDM whole would mean ~35–40k lines of C++ to C and replacing most of what rend2 already does; this way it's roughly half that.
-
-## Target
-
-1. **One renderer, two kinds of world:**
-   - Quake 3 BSPs render as today (lightmaps, light grid, Quake 3 fog): the compatibility path.
-   - Doom 3 `.proc` worlds render with dynamic lights, shadow maps, the light grid and fog lights.
-   - Entities and dynamic lights use the new lighting in both kinds of world, so Quake 3 maps can gain it too.
-2. **World:** Daikatana BSP → Doom 3 `.map` (bsp-sekai) → dmap → `.proc` (areas, portals, surfaces) and `.cm` (collision; `cm2` already loads Doom 3 collision models).
-3. **Materials replace shaders completely:**
-   - The renderer reads only Doom 3 materials (`.mtr`).
-   - Quake 3 `.shader` files reach it only through the upgrader, which converts them to materials.
-   - Daikatana's conversion writes materials directly.
-4. **Lighting:**
-   - Direct light comes from Doom 3 lights, shadow-mapped.
-   - Fill and bounce light comes from a light grid with irradiance probes baked in the engine (RBDOOM-3-BFG's approach).
-   - No lightmaps in `.proc` worlds.
-5. **Fog:**
-   - Daikatana's fog brushes become fog lights.
-   - Its global fog keeps using rend2's global fog, done per pixel.
-6. **Stealth:** TDM's light gem and CPU light query read both lights and grid.
-
-## What is reused, what comes in
-
-| Area | Kept from renderergl2 / renderercommon | New (from TDM or RBDOOM, in C) |
-|---|---|---|
-| Backend | GLSL program manager (`tr_glsl.c`), FBOs (`tr_fbo.c`), VAOs/VBOs (`tr_vbo.c`), state (`tr_backend.c`), HDR/tonemap, SSAO, `qgl` | Stages: shadow-map atlas, interaction, fog light, blend light, light grid ambient, light gem; TDM's GLSL adapted to rend2's uniform/permutation scheme |
-| World | Q3 BSP loading (`tr_bsp.c`), PVS, lightmaps, light grid | `.proc` loading, areas and portals, portal flow visibility, door portal state (`RenderWorld*`) |
-| Surfaces | Surface types, sorting (`tr_main.c`, `tr_surface.c`), deforms (`tr_shade_calc.c`), flares | Light/surface interactions and culling (`tr_light`, `Interaction`), shadow bounds |
-| Lights | dlights (become point lights without shadows), sun cascades (become parallel lights) | Light defs: point and projected, falloff and projection images, `noShadows`, `bake`; light materials with expressions |
-| Shaders / materials | `tr_shader.c`'s machinery behind the parser: stage compilation into GLSL permutations, sorting, implicit materials from images, sky, deforms | A Doom 3 material parser (`Material.cpp`: registers, tables, conditions), `diffusemap`/`bumpmap`/`specularmap`, light and fog materials; the Quake 3 shader parser moves into the upgrader |
-| Images | Loaders (tga, jpg, png, dds), mipmaps, compression (`tr_image*.c`) | Image programs (`heightmap`, `addnormals`, `makeIntensity`...), falloff images, shadow atlas |
-| Models | md3, iqm, mdr, skeletons (`tr_model*.c`, `tr_skeleton`) | md5 later if wanted; decals and overlays |
-| 2D, fonts, sky, cinematics | All kept | — |
-| Interface | `refexport_t` 2D and immediate scene calls (Quake 3 content and mods keep working) | Retained world calls: entity and light defs, `.proc` loading, portal state |
-| Math | `q_math.c`, mint-arena's `q_extramath.c`, `polylib.c`, `surface.c`, `q_containers.c` | Frustum, render matrices, whatever the translated code still needs |
-
-## Phases
-
-Each phase ends with something we can run and screenshot through `./dk`, and is committed and pushed.
-
-### Phase 1: Doom 3 maps from Daikatana's (bsp-sekai, dk)
-
-**Writer:** `bsp-sekai` gets a `.map` writer next to the Quake 3 BSP one (e.g. `-format d3map`), on mint-arena's `idlib/mapfile.c` (idMapFile in C).
-- **Brushes:** from the brush and brush-side lumps (`bsp_dk.c` already reads them, at 4521), world and brush models alike.
-- **Bevels:** the axial bevel planes qbsp added are among the brush sides, with no flag. Drop a side when its plane is axial, it carries no face of its own, and the brush stays the same without it (test by clipping). Hint, skip and clip sides become `textures/common/*` materials.
-- **Texture alignment:** Daikatana's texinfo vectors become `brushDef3` texture matrices.
-- **Entities:**
-  - As written now: `.ent` overrides, gametype keys and Daikatana's classnames.
-  - **Lights:** `light` entities, which the original BSPs keep (e1m1a about 82, e1m1b 216), become Doom 3 lights:
-    - `light` → `light_radius`; `_color` → color; Daikatana's `cap` is noted;
-    - a `bake` key (1: the light grid only; 0: dynamic) is guessed first: big, dim and uncapped lights become fill.
-  - **Fog:** the fog brushes become fog light entities (their box, `fog_color`, density from the texinfo value).
-  - **Sky and sun:** worldspawn `ambient`, sky and sun become a parallel light and the grid's sky term.
-
-**dmap:** an offline tool, `tools/dmap`, from TDM's (`darkmod_src/tools/compilers/dmap`, ~12.7k lines).
-- It stays C++ on TDM's idLib. Offline tools may be C++; only the engine and game must be C.
-- **During the move,** `./dk convert` keeps writing the Quake 3 BSP:
-  - `bspc` builds the AAS (bot and monster navigation) from it;
-  - the game keeps running on it until phase 3.
+   Ported from TDM's `ShadowMapStage`, the atlas page assignment in `frontend/tr_light.cpp`, and `glprogs/tdm_shadowmaps.glsl`, onto rend2's FBO and GLSL code. A light can say `noShadows`. This replaces the broken cube-map mode.
+5. **Map lights:**
+   - bsp-sekai passes Daikatana's `light` entities through (the original BSPs keep them: e1m1a about 82, e1m1b 216) with a key marking them as baked. They stay in the lightmaps and aren't drawn dynamically.
+   - A map can add dynamic ones by its `.ent` overrides (e.g. a flickering lamp that should cast moving shadows).
 
 **Done when:**
-- e1m1a, e1m1b and e1m1c dmap without leaks;
-- the `.proc` area count is sane;
-- `.cm` collision plays the same as the BSP's (`./dk test`).
+- e1m1a's cambots light the swamp with shadowed spot lamps;
+- muzzle flashes and effects light everything they reach;
+- 50+ dynamic lights on screen keep the frame time noted on this Mac;
+- `./dk test` passes.
 
-### Phase 2: materials replace shaders (spearmint renderergl2, tools)
+## 2. Fog
 
-- **The renderer reads materials only:**
-  - `tr_shader.c`'s parser is replaced by a Doom 3 material parser, translated from TDM's `Material.cpp` (3.4k lines):
-    - expression registers and ops (add, sub, mul, div, mod, table, compare, and/or);
-    - stage conditions;
-    - `diffusemap`/`bumpmap`/`specularmap` stages;
-    - light and fog material flags;
-    - a small C decl store for `table` decls.
-  - rend2's `shader_t` becomes `material_t`. What sits behind the parser stays: stage compilation into GLSL permutations, sorting, deforms, sky, implicit materials from an image when no material exists.
-  - The engine looks for `materials/*.mtr` and no longer reads `scripts/*.shader`.
-- **Extensions for what Doom 3 materials can't express:**
-  - Quake 3 content needs a few things Doom 3's syntax lacks. They become Spearmint extensions of the material syntax, documented in `DEFS.md`.
-  - The main one is a `lightmap` stage (and `vertexLit`) for Quake 3 BSP worlds, which keep their lightmaps.
-  - Others: Quake 3 `deformVertexes` forms that Doom 3's `deform` lacks, `skyParms` cloud layers, `fogParms` volumes.
-  - The material grammar stays a superset, never a different language.
-- **The upgrader** (`tools/shader2mtr`, in C, sharing the material writer with the engine's parser tests):
-  - reads Quake 3 `.shader` files with rend2's existing shader parser, moved out of the renderer;
-  - writes one `.mtr` per shader file;
-  - reports anything it can't map, written into the material as a comment.
+**Today:**
+- **Daikatana has two fogs:**
+  - global linear fog from the worldspawn (`fog_start`, `fog_end`, `fog_color`, `fog_value`; `gl_rmain.cpp`);
+  - volume fog brushes (`SURF_FOGPLANE`): `gl_fogsurf.cpp` computes each vertex's density by tracing through the brush's hull, from inside or outside.
+- **Ours:**
+  - The global fog reaches rend2 as Spearmint's global fog (the skybox shader's `fogvars`, `CG_FogView`).
+  - The volumes are dropped (`VIEWFOGS 0`, `bsp-sekai/code/bsp_dk.c`). The swamp's fog is missing.
+- **rend2 computes all fog per vertex** (`CalcFog` in `fogpass_vp.glsl` and `generic_vp.glsl`), which smears on the big swamp polygons. Quake 3 fog volumes also want a single visible fog plane.
 
-| Quake 3 shader | Doom 3 material |
-|---|---|
-| stages, `map`, `clampMap` | stages |
-| `animMap` | a `map` indexed by a table over time |
-| `blendFunc` | `blend` |
-| `rgbGen`/`alphaGen` (wave → table expressions; `entity`/`vertex` → `colored`/`vertexColor`) | stage colour expressions |
-| `alphaFunc` | `alphaTest` |
-| `tcMod scroll/scale/rotate/stretch/transform` | `translate`/`scale`/`rotate`/expressions |
-| `tcMod turb` | a sin table |
-| `tcGen environment` | `texgen reflect` |
-| `deformVertexes` | `deform` (extension forms where Doom 3 has none) |
-| `surfaceparm`, `cull`, `polygonOffset`, `sort` | flags |
-| `$lightmap` stages | the `lightmap` extension stage (Q3 worlds); in `.proc` worlds lighting comes from lights |
-| `normalMap`/`specularMap` (rend2), `_n`/`_s` images | `bumpmap`/`specularmap` |
-| `fogParms` | a fog material (extension volume in Q3 worlds, fog light in `.proc` worlds) |
-| `skyParms` | sky extension |
+**Work:**
+1. **Per pixel:** fog computed in the fragment shaders (the same maths as `CalcFog`, moved), for global fog and Quake 3 fog volumes alike.
+2. **Volume fog like Doom 3's fog lights:** a fog volume is a convex brush (or box) with colour and distance.
+   - Its pass draws the surfaces inside it and its back faces, with TDM's analytic fog-entry maths (`glprogs/stages/light_passes/fog_light.frag.glsl`).
+   - That handles the camera inside or outside, and any number of planes, which is what Daikatana's hull fog needs.
+   - It's new code beside the Quake 3 fog pass.
+3. **Conversion:** bsp-sekai writes Daikatana's fog brushes as these fog volumes (their planes, `fog_color`, distance from the texinfo value) in place of `VIEWFOGS 0`.
+4. **Global fog:** linear, with a separate sky distance (`fog_skyend`), checked against Daikatana's.
 
-- **Upgrade path for other mods:**
-  - run `shader2mtr` over a mod's `scripts/` and ship the `materials/`;
-  - `./dk` runs it over Quake 3 content we use.
-- **Daikatana:** bsp-sekai and our asset conversion write `materials/*.mtr` instead of `scripts/*.shader`:
-  - surface flags → material flags: `SURF_FLOWING` → translate, `SURF_FULLBRIGHT`, translucency, sky;
-  - Daikatana's surface types are already Doom 3's surface types (47dc4d9).
-- **Done when:**
-  - all our shaders are converted, and none is left in `scripts/`;
-  - Quake 3 maps and Daikatana's BSPs look the same as before (`./dk test` shots compared pixel for pixel where possible);
-  - `shader2mtr` converts a stock `baseq3` shader set with its unmapped list reviewed.
+**Done when:** e1m1a's swamp fog, from inside and outside, is compared side by side with Daikatana's screenshots.
 
-### Phase 3: `.proc` worlds and Doom 3 lights (spearmint renderergl2)
+## 3. Material features we need
 
-- **World:** `.proc` loading, areas, portals and portal-flow visibility translated to C from TDM's `RenderWorld_load`, `RenderWorld_portals` and `RenderWorld` (~4.8k lines).
-  - It sits beside `tr_bsp.c`; the map's extension picks which.
-  - Doors close portals through a new `SetPortalState`.
-- **API** (`tr_public.h`, new calls alongside the existing ones):
-  - `LoadWorld(.proc)`;
-  - `AddEntityDef/UpdateEntityDef/FreeEntityDef`, `AddLightDef/UpdateLightDef/FreeLightDef`;
-  - `SetPortalState`.
+Added to rend2's shader system (`tr_shader.c`) as keywords, taken from Doom 3's material syntax so they read the same. Only what our content and the work above use:
 
-  The immediate calls (`AddRefEntityToScene`, `AddLightToScene`) still work: each frame's immediate entities and dlights are fed into the same lighting as temporary defs. Mods written for Quake 3 keep working.
-- **Lighting:** Doom 3's light model, from `tr_light`, `tr_lightrun` and `Interaction` (~5k lines):
-  - point and projected lights;
-  - falloff and projection images;
-  - per-surface interactions;
-  - one interaction GLSL pass per light in rend2's program manager (`lightall` gains a Doom 3 interaction permutation, or a new program from TDM's `tdm_interaction.glsl`).
-- **mint-arena's cgame:**
-  - keeps a handle per entity in `.proc` worlds (`CG_Character`, `CG_Item`, movers, effects, local entities), updating it when it changes;
-  - its dlights become light defs; the cambot's lamp is a projected light.
-- **Order of work:** each step is renderable before the next.
-  1. The `.proc` world unlit (ambient only).
-  2. One light, no shadows.
-  3. All lights.
-  4. Entities.
-- **Done when:**
-  - e1m1a renders from its `.proc` with Daikatana's lights, no shadows yet;
-  - Quake 3 maps are unchanged;
-  - `./dk test` passes.
+- **Light shaders** (for part 1): a light's projection and falloff images (`lightFalloffImage`, the projection `map`), coloured and animated by its stages. This lets lights flicker and pulse, Daikatana's light styles included.
+- **Expressions and tables** (Doom 3's `table` decls and stage expressions: `time`, `parm0..`, sin and tables): for flicker, pulse and blink on lights and surfaces. Quake 3 waves can't express these, and our scripts need to drive them through entity parms.
+- **Fog volume shaders** (for part 2): colour and distance for the new volume fog.
+- **`bumpmap`/`specularmap`/`diffusemap` stage names:** alias rend2's `normalMap`/`specularMap`, so assets from Doom 3 and TDM read as written.
 
-### Phase 4: shadow maps
+Anything else waits until something needs it.
 
-- **Atlas:** TDM's shadow-map atlas (`FrameBufferManager`, `ShadowMapStage`, the atlas page assignment in `tr_light`), translated to C on rend2's FBO code:
-  - six faces a point light, one for a projected light;
-  - sizes from screen size;
-  - one pass for all lights;
-  - alpha-tested casters.
-- **Soft shadows:** PCSS from `tdm_shadowmaps.glsl`.
-- **Sun:** parallel lights use rend2's existing sun cascades, reworked to take the light def's direction.
-- **In Q3 worlds:** dynamic lights cast shadows as well. This is the fix for the broken `r_dlightMode 2`.
-- **Cambot:** its lamp casts shadows.
-- **Done when:** e1m1a and e1m1b have shadowed lights; the frame time on this Mac is noted.
+## Order
 
-### Phase 5: the light grid
+Each step is built, tested with `./dk`, committed and pushed before the next.
 
-After RBDOOM-3-BFG.
-- **Bake:** a command, `bakeLightGrid <map>`:
-  - a grid per area, from the `.proc`'s area bounds;
-  - at each point, a cubemap rendered with the `bake 1` lights and the sky (rend2's cubemap rendering, `R_RenderCubemapSide`);
-  - each cubemap folded into L2 spherical harmonics;
-  - saved as `maps/<map>.lightgrid`.
-- **Use:** an ambient term in the interaction pass samples it per pixel for the world and per entity for models.
-- **Probes:** environment probes for specular, building on rend2's cubemaps.
-- **Workflow:** bakes are part of `./dk convert` (headless).
-- **Done when:** e1m1a and e1m1b are lit by grid plus lights, compared side by side with Daikatana's screenshots.
-
-### Phase 6: fog
-
-- **Fog lights:** from Daikatana's fog brushes (phase 1), drawn with TDM's `fog_light` GLSL: the swamp's fog, from inside and outside.
-- **Quake 3 fog volumes:** `fogParms` brushes keep rend2's fog in Q3 worlds.
-- **Global fog:** rend2's global fog (`fogvars`, the refdef fog fields) moved from per vertex to per pixel, for both kinds of world.
-- **Done when:** e1m1a's swamp compared with Daikatana's.
-
-### Phase 7: stealth hooks
-
-- **Light gem:** TDM's (a 64×64 subview, async readback), including the light grid.
-- **CPU light query:** for monsters ("can I see the player in this light"), as script events.
-- **HUD:** a gem drawn from the `.menu` HUD.
-- The stealth AI itself is its own plan, after TDM.
-
-### Phase 8: the rest
-
-- **Navigation:** AAS from dmap's output (Doom 3's AAS compiler) or from the Quake 3 BSP kept as a by-product; decided then.
-- **renderergl1:** kept for old hardware, or dropped.
-
-## Risks and open questions
-
-- **Bevels:** dropping bevel planes wrongly makes broken brushes. The test is that dmap gives no leaks and `.cm` collision equals the BSP's.
-- **Quake 3 lighting in materials:** Quake 3 stage lighting (lightmaps, vertex colour) and Doom 3 interactions have to meet in one material grammar.
-  - The rule: the kind of world decides how a surface is lit, and the material decides what it looks like.
-  - The `lightmap` extension is the only Quake 3 lighting concept materials learn.
-- **A clean cut:** shaders stop working in the engine the day phase 2 lands. Every `.shader` we use has to be converted and checked in the same change, and mods that ship shaders need the upgrader run first.
-- **Translating to C** is still ~15–20k lines (world, lights, interactions, atlas, materials, light gem).
-  - Two bug sources: idLib's operator-heavy math becoming function calls, and object lifetimes becoming explicit.
-  - Keeping TDM's names and structure in the translated files keeps them reviewable.
-  - The C idLib ports cover most of the math.
-- **Cost of lights:** e1m1b has 216 lights. The bake/dynamic split and the atlas budget decide the frame rate. The converter's guess has to be good, and tuning is per map.
-- **Apple's OpenGL** is frozen at 4.1 and deprecated. Metal is a later question.
-- **Licence:** The Dark Mod is GPL v3; Spearmint and mint-arena are GPL v3 with Doom 3's additional terms. Fine, but keep notices on what we take.
+1. Fog per pixel (small, and fixes visible smearing now).
+2. Volume fog and the Daikatana conversion.
+3. Dynamic lights per pixel everywhere, and the 32-light limit.
+4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
+5. The shadow-map atlas with PCSS.
 
 ## Reference
 
-- `spearmint/code/renderergl2`, `renderercommon`: the renderer we grow.
-- `mint-arena/code/idlib`: C ports of idLib (`q_extramath`, `polylib`, `surface`, `mapfile`, `q_containers`, `str`, `strpool`, `hashindex`, `dict`, `drawvert`, `lcp`).
-- `darkmod_src/`: `renderer/` (frontend, backend/stages, resources/Material.cpp, glprogs), `tools/compilers/dmap`, `game/LightGem.*`, `frontend/LightQuerySystem.*`.
-- `../dhewm3-debugger/neo/renderer`: the original Doom 3 renderer, for comparison.
-- RBDOOM-3-BFG (GitHub `RobertBeckebans/RBDOOM-3-BFG`): the light grid bake and irradiance volumes.
+- `spearmint/code/renderergl2`: `tr_shade.c` (`ForwardDlight`, the fog pass), `tr_shader.c`, `tr_glsl.c`, `tr_fbo.c`, `glsl/`.
+- `darkmod_src/renderer`: `backend/stages/ShadowMapStage.cpp`, `frontend/tr_light.cpp` (atlas pages), `glprogs/tdm_shadowmaps.glsl`, `glprogs/stages/light_passes/fog_light.frag.glsl`, `resources/Material.cpp` (light shaders, expressions).
+- `../dhewm3-debugger/neo/renderer`: Doom 3's light and fog model, for comparison.
 - Daikatana (`atsb/daikatana-restoration-project`): `base/ref_gl/gl_rmain.cpp` (global fog), `gl_fogsurf.cpp` (volume fog), `dlls/world/world.cpp` (worldspawn fog keys).
