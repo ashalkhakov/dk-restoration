@@ -76,7 +76,7 @@ def surface_file(lumps, ents, path):
     models = {}
     for n, e in enumerate(ents):
         if e.get("model", "").startswith("*"):
-            models[int(e["model"][1:])] = n
+            models[int(e["model"][1:])] = n if "origin" in e else -n
     surfEntity = {}
     for m in range(len(lumps[7]) // 40):
         first, count = struct.unpack_from("<ii", lumps[7], m * 40 + 24)
@@ -98,9 +98,11 @@ def surface_file(lumps, ents, path):
             length = sum(c * c for c in n) ** 0.5
             axis = [c / length for c in n] if length > 0 else None
         # brush entities' faces lit as the world's, as Daikatana's qrad
-        # lit them, casting no shadow
-        lines.append("%d\n{\n\tentity 0\n" % i)
-        if surfEntity.get(i, 0):
+        # lit them, casting no shadow; those with an origin (rotating, their
+        # faces about it) their own entity's, which q3map2 moves there
+        entity = surfEntity.get(i, 0)
+        lines.append("%d\n{\n\tentity %d\n" % (i, max(0, entity)))
+        if entity:
             lines.append("\tcastShadows 0\n")
         if axis:
             lines.append("\tlightmapAxis ( %f %f %f )\n" % tuple(axis))
@@ -168,6 +170,10 @@ def surface_lights(lumps, dkBsp, shaderPath, skyScale, surfaceLights=True):
         body = generated.get(names[shader].lower(), "")
         lowered = body.lower()
         kind = "a" if "alphafunc" in lowered else "t" if "blendfunc" in lowered and "skyparms" not in lowered else ""
+        # faces never drawn (clip, triggers, liquids' insides: Quake 3's
+        # SURF_NODRAW in the BSP, no shader script) cast no shadow either
+        if struct.unpack_from("<i", lumps[1], shader * 72 + 64)[0] & 0x80:
+            kind = "n"
         light = lights.get(face)
         if not kind and not light:
             continue
@@ -188,7 +194,9 @@ def surface_lights(lumps, dkBsp, shaderPath, skyScale, surfaceLights=True):
                     lines.append("\tq3map_surfaceLight %d\n" % value)
                     if not body:
                         lines.append("\t{\n\t\tmap textures/%s.tga\n\t}\n" % texture)
-            if kind == "t":
+            if kind == "n":
+                lines += ["\tsurfaceparm nodraw\n", "\tsurfaceparm trans\n", "\tsurfaceparm nolightmap\n"]
+            elif kind == "t":
                 lines += ["\tsurfaceparm trans\n", "\tsurfaceparm nolightmap\n"]
             elif kind == "a":
                 lines += ["\tsurfaceparm trans\n", "\tq3map_alphaShadow\n"]
