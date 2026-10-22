@@ -127,7 +127,7 @@ Each step is built, tested with `./dk`, committed and pushed before the next.
 3. Dynamic lights per pixel everywhere, and the 32-light limit. Done: spearmint (per-pixel by default, 64 lit of up to 256), mint-arena `testlight`.
 4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
 5. Portals from the BSP and portal flow (view, then lights). View flow done: spearmint, `tr_portals.c` (portals cut at load in the renderer, not bsp-sekai; flow between clusters with screen rectangles). The lights' flow comes with the shadow maps.
-6. The shadow-map atlas with PCSS, fed by the lights' flow.
+6. The shadow-map atlas with PCSS, fed by the lights' flow. Done (PCF, not yet PCSS): spearmint `tr_dlightshadow.c`; the portal flow culls each face's casters. Next: lit fog (dlights in fog volumes).
 7. The light grid bake.
 
 ## Reference
