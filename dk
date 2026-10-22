@@ -55,7 +55,7 @@ JOBS=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
 CMAKE_BUILD_TYPE=""
 SPEARMINT_CMAKE_ARGS=""
 MINT_ARENA_CMAKE_ARGS=""
-EXTRA_MAPS="e1m1a e1m1b e1m1c"	# converted besides the maps of scripts/arenas.txt
+EXTRA_MAPS="intro e1m1a e1m1b e1m1c"	# converted besides the maps of scripts/arenas.txt
 [ -f "$ROOT/dk.local" ] && . "$ROOT/dk.local"
 
 BUILD=$ROOT/build
