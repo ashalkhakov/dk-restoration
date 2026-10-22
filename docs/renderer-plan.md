@@ -9,11 +9,12 @@ We improve Spearmint's renderergl2 (rend2, the renderer `./dk` runs) in three pl
 1. dynamic lights;
 2. fog;
 3. the material features we actually need;
-4. Doom 3's portal visibility (what `.proc` files give it), built from our own BSPs.
+4. Doom 3's portal visibility (what `.proc` files give it), built from our own BSPs;
+5. a light grid bake, since Daikatana's BSPs have no light grid.
 
 Everything else stays as it is: Quake 3 BSP maps with their lightmaps, the shader system, models, 2D. The engine, renderer and game stay C; what we take from Doom 3 or TDM (C++) is translated, using mint-arena's C idLib ports (`q_extramath`, `polylib`, `q_containers`...) where they help.
 
-Out of scope for now (looked at, set aside): Doom 3 maps and dmap, loading `.proc` files, replacing shaders with materials, the light grid bake, the light gem.
+Out of scope for now (looked at, set aside): Doom 3 maps and dmap, loading `.proc` files, replacing shaders with materials, the light gem.
 
 ## 1. Dynamic lights
 
@@ -101,6 +102,22 @@ Anything else waits until something needs it.
 - surfaces and entities drawn on e1m1b drop against the PVS (`r_speeds`), with no missing geometry seen in `./dk test` shots;
 - many dynamic lights in separate rooms cost little.
 
+## 5. Light grid bake
+
+**Why:** models (characters, monsters, items) are lit from the BSP's light grid. Daikatana's BSPs have none; Daikatana lit a model from the lightmap of the floor under it.
+- bsp-sekai makes one the same way (`InitLightGrid`, `bsp_dk.c:4394`): a cell every 128 units, coloured by the lightmap of the floor straight below (`RecursiveLightPoint`).
+- There is no light direction (the directed part is left 0), so models look flat, and the 128-unit cells are coarse.
+
+**The bake, after RBDOOM-3-BFG's**, in the engine with rend2, so it sees exactly what the player sees: Daikatana's lightmaps (its baked bounce included), the sky and emissive surfaces.
+1. **Grid:** the map's bounds in steps of 64 (`gridsize` in the worldspawn overrides it). Points in solid are skipped, as rend2 already skips empty cells when lighting an entity.
+2. **Capture:** at each point, a small cubemap (e.g. 6×32²) of the world with lightmaps only: no entities, dynamic lights or fog. Rend2's cubemap code (`R_RenderCubemapSide`) does the rendering.
+3. **Fold:** each cubemap folded into L1 spherical harmonics (RBDOOM's irradiance code). From that come Quake 3's grid cell (ambient colour, directed colour, direction), so rend2's entity lighting uses it unchanged. The SH are kept too, for per-pixel model lighting later.
+4. **Output:** `maps/<map>.lightgrid`, which rend2 loads in place of the BSP's grid lump when it exists. `bakeLightGrid` is a console command; `./dk convert` runs it headless after converting.
+
+**Done when:**
+- monsters and the player's view model on e1m1a and e1m1b are lit with a direction (bright on the side facing a lamp), compared with Daikatana's screenshots;
+- the bake time per map is noted.
+
 ## Order
 
 Each step is built, tested with `./dk`, committed and pushed before the next.
@@ -111,6 +128,7 @@ Each step is built, tested with `./dk`, committed and pushed before the next.
 4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
 5. Portals from the BSP and portal flow (view, then lights).
 6. The shadow-map atlas with PCSS, fed by the lights' flow.
+7. The light grid bake.
 
 ## Reference
 
