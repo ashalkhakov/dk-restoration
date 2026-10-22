@@ -14,7 +14,7 @@ Status: agreed direction, not started (2026-10-22).
 ## Constraints
 
 - **The engine, renderer and game are C,** like Spearmint and mint-arena. Offline tools (dmap) may be C++. Doom 3 code comes in translated to C, as `cm2` (Doom 3's collision models) and mint-arena's `idlib/` (C ports of idLib) did.
-- **Reuse as much of the current renderer as possible,** and keep an upgrade path from Quake 3 assets and shaders to the new materials and lighting. Quake 3 content keeps working.
+- **Reuse as much of the current renderer as possible,** and keep an upgrade path from Quake 3 assets to the new materials and lighting. Shaders are converted to materials by the upgrader; Quake 3 maps and models keep working.
 
 ## What we looked at
 
@@ -43,10 +43,9 @@ From RBDOOM-3-BFG we take the light grid bake. Translating TDM whole would mean 
    - Doom 3 `.proc` worlds render with dynamic lights, shadow maps, the light grid and fog lights.
    - Entities and dynamic lights use the new lighting in both kinds of world, so Quake 3 maps can gain it too.
 2. **World:** Daikatana BSP → Doom 3 `.map` (bsp-sekai) → dmap → `.proc` (areas, portals, surfaces) and `.cm` (collision; `cm2` already loads Doom 3 collision models).
-3. **Materials as the superset of shaders:**
-   - rend2's shader system learns Doom 3's material syntax (`.mtr`).
-   - A Quake 3 `.shader` is parsed into the same internal material, so every Quake 3 shader keeps working with no conversion.
-   - An upgrader writes `.mtr` files from shaders for authors who want to edit them as materials.
+3. **Materials replace shaders completely:**
+   - The renderer reads only Doom 3 materials (`.mtr`).
+   - Quake 3 `.shader` files reach it only through the upgrader, which converts them to materials.
    - Daikatana's conversion writes materials directly.
 4. **Lighting:**
    - Direct light comes from Doom 3 lights, shadow-mapped.
@@ -65,7 +64,7 @@ From RBDOOM-3-BFG we take the light grid bake. Translating TDM whole would mean 
 | World | Q3 BSP loading (`tr_bsp.c`), PVS, lightmaps, light grid | `.proc` loading, areas and portals, portal flow visibility, door portal state (`RenderWorld*`) |
 | Surfaces | Surface types, sorting (`tr_main.c`, `tr_surface.c`), deforms (`tr_shade_calc.c`), flares | Light/surface interactions and culling (`tr_light`, `Interaction`), shadow bounds |
 | Lights | dlights (become point lights without shadows), sun cascades (become parallel lights) | Light defs: point and projected, falloff and projection images, `noShadows`, `bake`; light materials with expressions |
-| Shaders / materials | `tr_shader.c` parser, stages, `normalMap`/`specularMap`, `_n`/`_s` suffixes, `.mtr` override files | Doom 3 material keywords and stage expressions (`Material.cpp`: registers, tables, conditions), `diffusemap`/`bumpmap`/`specularmap`, light and fog materials |
+| Shaders / materials | `tr_shader.c`'s machinery behind the parser: stage compilation into GLSL permutations, sorting, implicit materials from images, sky, deforms | A Doom 3 material parser (`Material.cpp`: registers, tables, conditions), `diffusemap`/`bumpmap`/`specularmap`, light and fog materials; the Quake 3 shader parser moves into the upgrader |
 | Images | Loaders (tga, jpg, png, dds), mipmaps, compression (`tr_image*.c`) | Image programs (`heightmap`, `addnormals`, `makeIntensity`...), falloff images, shadow atlas |
 | Models | md3, iqm, mdr, skeletons (`tr_model*.c`, `tr_skeleton`) | md5 later if wanted; decals and overlays |
 | 2D, fonts, sky, cinematics | All kept | — |
@@ -101,16 +100,26 @@ Each phase ends with something we can run and screenshot through `./dk`, and is 
 - the `.proc` area count is sane;
 - `.cm` collision plays the same as the BSP's (`./dk test`).
 
-### Phase 2: materials in the shader system (spearmint renderergl2, tools)
+### Phase 2: materials replace shaders (spearmint renderergl2, tools)
 
-- **Parser:** `tr_shader.c` parses Doom 3 material syntax as well as Quake 3's, into one internal `shader_t` that grows Doom 3's parts:
-  - expression registers and ops (add, sub, mul, div, mod, table, compare, and/or);
-  - stage conditions;
-  - `diffusemap`/`bumpmap`/`specularmap` stages;
-  - light and fog material flags.
-
-  Translated from TDM's `Material.cpp` (3.4k lines), merged with what rend2 has. Tables (`table` decls) get a small C decl store.
-- **Quake 3 shaders map onto the same structure** while parsing, so they render unchanged in Q3 worlds and lit in `.proc` worlds:
+- **The renderer reads materials only:**
+  - `tr_shader.c`'s parser is replaced by a Doom 3 material parser, translated from TDM's `Material.cpp` (3.4k lines):
+    - expression registers and ops (add, sub, mul, div, mod, table, compare, and/or);
+    - stage conditions;
+    - `diffusemap`/`bumpmap`/`specularmap` stages;
+    - light and fog material flags;
+    - a small C decl store for `table` decls.
+  - rend2's `shader_t` becomes `material_t`. What sits behind the parser stays: stage compilation into GLSL permutations, sorting, deforms, sky, implicit materials from an image when no material exists.
+  - The engine looks for `materials/*.mtr` and no longer reads `scripts/*.shader`.
+- **Extensions for what Doom 3 materials can't express:**
+  - Quake 3 content needs a few things Doom 3's syntax lacks. They become Spearmint extensions of the material syntax, documented in `DEFS.md`.
+  - The main one is a `lightmap` stage (and `vertexLit`) for Quake 3 BSP worlds, which keep their lightmaps.
+  - Others: Quake 3 `deformVertexes` forms that Doom 3's `deform` lacks, `skyParms` cloud layers, `fogParms` volumes.
+  - The material grammar stays a superset, never a different language.
+- **The upgrader** (`tools/shader2mtr`, in C, sharing the material writer with the engine's parser tests):
+  - reads Quake 3 `.shader` files with rend2's existing shader parser, moved out of the renderer;
+  - writes one `.mtr` per shader file;
+  - reports anything it can't map, written into the material as a comment.
 
 | Quake 3 shader | Doom 3 material |
 |---|---|
@@ -122,20 +131,23 @@ Each phase ends with something we can run and screenshot through `./dk`, and is 
 | `tcMod scroll/scale/rotate/stretch/transform` | `translate`/`scale`/`rotate`/expressions |
 | `tcMod turb` | a sin table |
 | `tcGen environment` | `texgen reflect` |
-| `deformVertexes` | kept (rend2 has them all) |
+| `deformVertexes` | `deform` (extension forms where Doom 3 has none) |
 | `surfaceparm`, `cull`, `polygonOffset`, `sort` | flags |
-| lightmap stages | kept in Q3 worlds; in `.proc` worlds the base texture becomes the `diffusemap` and the lighting comes from lights |
-| `normalMap`/`specularMap` (rend2) | `bumpmap`/`specularmap` |
-| `fogParms` | a fog material (for a fog light in `.proc` worlds) |
-| `skyParms` | kept |
+| `$lightmap` stages | the `lightmap` extension stage (Q3 worlds); in `.proc` worlds lighting comes from lights |
+| `normalMap`/`specularMap` (rend2), `_n`/`_s` images | `bumpmap`/`specularmap` |
+| `fogParms` | a fog material (extension volume in Q3 worlds, fog light in `.proc` worlds) |
+| `skyParms` | sky extension |
 
-- **Upgrader:** `tools/shader2mtr` writes that mapping out as `.mtr` text, for authors who want to work in materials. Anything unmapped is written as a comment and reported. The same code is the engine's parser, so the two can't drift apart.
+- **Upgrade path for other mods:**
+  - run `shader2mtr` over a mod's `scripts/` and ship the `materials/`;
+  - `./dk` runs it over Quake 3 content we use.
 - **Daikatana:** bsp-sekai and our asset conversion write `materials/*.mtr` instead of `scripts/*.shader`:
   - surface flags → material flags: `SURF_FLOWING` → translate, `SURF_FULLBRIGHT`, translucency, sky;
   - Daikatana's surface types are already Doom 3's surface types (47dc4d9).
 - **Done when:**
-  - Quake 3 maps and Daikatana's BSPs look the same as before (`./dk test` shots compared);
-  - the upgrader round-trips our shaders to `.mtr` and back to the same render.
+  - all our shaders are converted, and none is left in `scripts/`;
+  - Quake 3 maps and Daikatana's BSPs look the same as before (`./dk test` shots compared pixel for pixel where possible);
+  - `shader2mtr` converts a stock `baseq3` shader set with its unmapped list reviewed.
 
 ### Phase 3: `.proc` worlds and Doom 3 lights (spearmint renderergl2)
 
@@ -214,7 +226,10 @@ After RBDOOM-3-BFG.
 ## Risks and open questions
 
 - **Bevels:** dropping bevel planes wrongly makes broken brushes. The test is that dmap gives no leaks and `.cm` collision equals the BSP's.
-- **Two models in one shader system:** Quake 3 stage lighting (lightmaps, vertex colour) and Doom 3 interactions have to meet in one `shader_t`. The rule: which kind of world it is decides how a stage is lit, and the material decides what it looks like. Getting this boundary clean is the core of phase 2.
+- **Quake 3 lighting in materials:** Quake 3 stage lighting (lightmaps, vertex colour) and Doom 3 interactions have to meet in one material grammar.
+  - The rule: the kind of world decides how a surface is lit, and the material decides what it looks like.
+  - The `lightmap` extension is the only Quake 3 lighting concept materials learn.
+- **A clean cut:** shaders stop working in the engine the day phase 2 lands. Every `.shader` we use has to be converted and checked in the same change, and mods that ship shaders need the upgrader run first.
 - **Translating to C** is still ~15–20k lines (world, lights, interactions, atlas, materials, light gem).
   - Two bug sources: idLib's operator-heavy math becoming function calls, and object lifetimes becoming explicit.
   - Keeping TDM's names and structure in the translated files keeps them reviewable.
