@@ -1,0 +1,103 @@
+// monster_rockgat.script -- Daikatana's Rockgat (rockgat.cpp): a chaingun
+// turret in the rock. It waits lowered until it sees someone within its
+// range; then it rises (its "up" animation), and a second later it fires at
+// them, about eight bullets a second, turning to face them, while it sees
+// them no more than 20 degrees above or below. It stays up. Shot to
+// pieces, it blows up.
+
+object monster_rockgat : monster_base {
+	void		state_Idle();
+	void		state_Combat();
+	void		state_Killed();
+	void		rise();
+
+	boolean		raised;
+	float		soundTime;
+};
+
+/*
+================
+monster_rockgat::state_Idle
+================
+*/
+void monster_rockgat::state_Idle() {
+	entity enemy;
+
+	disableGravity();
+	stopMove();
+	while( 1 ) {
+		enemy = findEnemy( false );
+		if ( enemy ) {
+			setEnemy( enemy );
+		}
+		if ( getEnemy() != $null_entity && enemyRange() <= getFloatKey( "range" ) ) {
+			rise();
+			setState( "state_Combat" );
+			return;
+		}
+		sys.wait( 0.1 );
+	}
+}
+
+/*
+================
+monster_rockgat::rise
+
+out of the rock, and a second to take aim
+================
+*/
+void monster_rockgat::rise() {
+	if ( raised ) {
+		return;
+	}
+	startSound( "snd_up", CHAN_BODY, false );
+	waitAnim( "up" );
+	raised = true;
+	sys.wait( 1 );
+}
+
+/*
+================
+monster_rockgat::state_Combat
+
+at them while it can see them in range, its barrel no more than 20
+degrees up or down
+================
+*/
+void monster_rockgat::state_Combat() {
+	vector	delta;
+	float	flat;
+
+	while( 1 ) {
+		if ( !getEnemy() || enemyRange() > getFloatKey( "range" ) ) {
+			clearEnemy();
+			setState( "state_Idle" );
+			return;
+		}
+		faceEnemy();
+		delta = getEnemyPos() - getOrigin();
+		flat = sys.vecLength( delta - '0 0 1' * delta_z );
+		if ( AI_ENEMY_VISIBLE && facingIdeal() && delta_z < flat * 0.36 && delta_z > -flat * 0.36 ) {
+			attackWeapon( getKey( "def_weapon" ), getVectorKey( "muzzle" ) );
+			playModelFx( "muzzle" );
+			if ( sys.getTime() > soundTime ) {
+				soundTime = sys.getTime() + 0.22;
+				startSound( "snd_fire", CHAN_WEAPON, false );
+			}
+		}
+		sys.wait( getFloatKey( "fire_rate" ) + sys.random( 0.03 ) );
+	}
+}
+
+/*
+================
+monster_rockgat::state_Killed
+================
+*/
+void monster_rockgat::state_Killed() {
+	startSound( "snd_death", CHAN_VOICE, false );
+	playModelFx( "death" );
+	hide();
+	sys.wait( 1 );
+	remove();
+}

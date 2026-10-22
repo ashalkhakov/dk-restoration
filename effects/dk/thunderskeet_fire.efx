@@ -1,0 +1,24 @@
+// The thunderskeet firing: a cross of yellow flares under it, 0.7 seconds.
+
+Particle
+{
+	count		2
+	life		700
+	origin		0 0 -10 0 0 -10
+	rgb
+	{
+		start	1 1 1
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	30 60
+	}
+	rotation	-45 45
+	shaders [ dkfx/flyellow ]
+}

@@ -262,3 +262,140 @@ entityDef monster_cambot {
 	"snd_fly"		"cambot_hum"
 	"snd_death"		"robot_explode"
 }
+
+// the Rockgat: a chaingun turret in the rock (rockgat.cpp). Lowered until
+// it sees you within its "range" (Daikatana's 512), it rises, and a second
+// later fires at you about eight bullets a second, turning to you, while it
+// sees you no more than 20 degrees above or below it. A machine: it blows up.
+
+entityDef model_rockgat {
+	"mesh"			"models/e1/a1_rockgun.md3"
+	"mins"			"-16 -16 -16"	// AIData.csv
+	"maxs"			"16 16 16"
+	"anim up"		"up 10"			// rising out of the rock
+	"surface"		"metal"
+	"fx_death"		"dk/explosion"
+	"fx_muzzle"		"dk/muzzle_smoke"
+}
+
+entityDef monster_rockgat {
+	"spawnclass"	"monster"
+	"model"			"model_rockgat"
+	"scriptobject"	"monster_rockgat"
+	"health"		"500"
+	"run_speed"		"0"
+	"turn_rate"		"200"			// 20 a tenth of a second
+	"fov"			"360"
+	"sight_range"	"1024"
+	"range"			"512"			// it fires within this
+	"fire_rate"		"0.13"			// seconds a bullet, and up to 0.03 more
+	"def_weapon"	"weapon_monster_rockgat"
+	"muzzle"		"16 0 4"		// its barrel, forward, left, up
+	"snd_fire"		"rockgat_fire"
+	"snd_up"		"rockgat_up"
+	"snd_death"		"robot_explode"
+}
+
+// monsters' weapons: weapon defs no player has, at slot 99 so that the
+// players' weapons keep their numbers
+entityDef weapon_monster_rockgat {
+	"weapon_slot"			"99"
+	"def_projectile"		"projectile_rockgat"
+	"obituary"				"was gunned down by a rockgat"
+}
+
+entityDef projectile_rockgat {
+	"hitscan"				"1"
+	"range"					"512"
+	"def_damage"			"damage_rockgat"
+	"fx_impact"				"dk/bullet_hit"
+	"fx_impact_flesh"		"dk/blood"
+}
+
+entityDef damage_rockgat {
+	"damage"				"2"				// Daikatana's basedmg 1 + rnddmg 1
+}
+
+// the Thunderskeet: a great flying skeet, episode 1's boss among them
+// (thunderskeet.cpp). It flies at you and keeps 96 above you; within 600
+// it hovers, faces you, charges (two green flares) and fires two slow
+// yellow balls of lightning that bounce about until they touch someone,
+// then darts at you or flies off, and fires again. A machine: it blows up.
+
+entityDef model_thunderskeet {
+	"mesh"			"models/e1/m_tskeet.md3"
+	"mins"			"-37 -37 0"		// AIData.csv
+	"maxs"			"37 37 90"
+	"anim amba"		"amba 10 loop"
+	"anim ataka"	"ataka 10"
+	"anim flya"		"flya 10 loop"
+	"anim hita"		"hita 10"
+	"anim hitb"		"hitb 10"
+	"anim diea"		"diea 10"
+	"surface"		"metal"
+	"fx_death"		"dk/explosion"
+	"fx_attack"		"dk/thunderskeet_charge"
+	"fx_muzzle"		"dk/thunderskeet_fire"
+}
+
+entityDef monster_thunderskeet {
+	"spawnclass"	"monster"
+	"model"			"model_thunderskeet"
+	"scriptobject"	"monster_thunderskeet"
+	"health"		"600"
+	"fly"			"1"
+	"fly_speed"		"350"
+	"fly_accel"		"500"
+	"fly_offset"	"96"			// above you
+	"fly_bob"		"8"
+	"turn_rate"		"180"
+	"fov"			"215"
+	"sight_range"	"2000"
+	"attack_range"	"600"
+	"dart_speed"	"525"			// x1.5, at you after firing
+	"pain_chance"	"0.1"
+	"def_weapon"	"weapon_monster_thunderskeet"
+	"muzzle"		"0 0 -40"		// under it
+	"snd_sight"		"tskeet_sight"
+	"snd_idle"		"tskeet_idle"
+	"snd_attack"	"tskeet_attack"
+	"snd_fly"		"tskeet_fly"
+	"snd_pain"		"tskeet_pain"
+	"snd_death"		"robot_explode"
+}
+
+entityDef weapon_monster_thunderskeet {
+	"weapon_slot"			"99"
+	"def_projectile"		"projectile_thunderjiz"
+	"obituary"				"was fried by a thunderskeet"
+}
+
+// Daikatana's ThunderSpray: slow (128 to 192), bouncing about for 15
+// seconds, going off on whoever it touches, 40 within 256
+entityDef projectile_thunderjiz {
+	"velocity"				"160 0 0"
+	"bounce"				"1"
+	"max_bounces"			"20"
+	"detonate_on_world"		"0"
+	"detonate_on_actor"		"1"
+	"fuse"					"15"
+	"detonate_on_fuse"		"1"
+	"def_damage"			"damage_thunderjiz"
+	"def_splash_damage"		"damage_thunderjiz_splash"
+	"light_color"			"0.15 0.95 0.35"
+	"light_radius"			"400"
+	"fx_fly"				"dk/thunderjiz_fly"
+	"fx_fly_interval"		"0.05"
+	"fx_detonate"			"dk/thunderjiz_explode"
+	"snd_explode"			"sounds/global/e_explodeb.wav"
+	"snd_fly"				"sounds/global/e_warploopb.wav"
+}
+
+entityDef damage_thunderjiz {
+	"damage"				"15"			// AIData.csv's 10 + up to 10
+}
+
+entityDef damage_thunderjiz_splash {
+	"damage"				"40"
+	"radius"				"256"
+}

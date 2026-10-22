@@ -1,0 +1,196 @@
+// monster_thunderskeet.script -- Daikatana's Thunderskeet
+// (thunderskeet.cpp): a great flying skeet. It flies at you, keeping 96
+// above you. Within 600 it hovers a moment facing you, then attacks: it
+// charges (two green flares crossed before it) and fires two slow balls of
+// lightning, the second 0.4 seconds after the first, that bounce about until
+// they touch someone. Then it darts at you, or flies off a way, and attacks
+// again. A hit makes it flinch one time in ten. Unseen (a wraith orb), you
+// leave it hovering. It blows up.
+
+object monster_thunderskeet : monster_base {
+	void		state_Combat();
+	void		state_Killed();
+	void		attack();
+	void		hover( float seconds );
+	void		dart();
+	void		flyAway();
+	void		pain();
+	void		fly();
+
+	float		flyTime;
+};
+
+/*
+================
+monster_thunderskeet::fly
+
+its wings and servos, now and then
+================
+*/
+void monster_thunderskeet::fly() {
+	if ( sys.getTime() > flyTime ) {
+		flyTime = sys.getTime() + 1.1;
+		startSound( "snd_fly", CHAN_BODY, false );
+	}
+}
+
+/*
+================
+monster_thunderskeet::state_Combat
+================
+*/
+void monster_thunderskeet::state_Combat() {
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+	while( 1 ) {
+		if ( !getEnemy() ) {
+			setState( "state_Idle" );
+			return;
+		}
+		if ( AI_PAIN && sys.random( 1 ) < getFloatKey( "pain_chance" ) ) {
+			pain();
+		}
+		if ( !AI_ENEMY_VISIBLE ) {
+			hover( 1 );		// you're hidden (or gone): it waits, then looks where you were
+			moveToEnemy();
+		} else if ( enemyRange() > getFloatKey( "attack_range" ) ) {
+			setFlySpeed( getFloatKey( "fly_speed" ) );
+			moveToEnemy();
+		} else {
+			hover( 2.75 );
+			if ( getEnemy() != $null_entity && AI_ENEMY_VISIBLE ) {
+				attack();
+				if ( sys.random( 1 ) < 0.5 ) {
+					dart();
+				} else {
+					flyAway();
+				}
+			}
+		}
+		fly();
+		sys.wait( 0.2 );
+	}
+}
+
+/*
+================
+monster_thunderskeet::hover
+
+still, facing you
+================
+*/
+void monster_thunderskeet::hover( float seconds ) {
+	float t;
+
+	stopMove();
+	t = sys.getTime() + seconds;
+	while( sys.getTime() < t ) {
+		if ( getEnemy() != $null_entity && AI_ENEMY_VISIBLE ) {
+			faceEnemy();
+		}
+		fly();
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_thunderskeet::attack
+
+charge, and two shots
+================
+*/
+void monster_thunderskeet::attack() {
+	faceEnemy();
+	playAnim( ANIMCHANNEL_LEGS, "ataka" );
+	startSound( "snd_attack", CHAN_VOICE, false );
+	sys.wait( 0.2 );
+	playModelFx( "attack" );
+	sys.wait( 0.5 );
+	attackWeapon( getKey( "def_weapon" ), getVectorKey( "muzzle" ) );
+	playModelFx( "muzzle" );
+	sys.wait( 0.4 );
+	attackWeapon( getKey( "def_weapon" ), getVectorKey( "muzzle" ) );
+	playModelFx( "muzzle" );
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		sys.waitFrame();
+	}
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+}
+
+/*
+================
+monster_thunderskeet::dart
+
+at you, half as fast again, until within 512
+================
+*/
+void monster_thunderskeet::dart() {
+	float t;
+
+	setFlySpeed( getFloatKey( "dart_speed" ) );
+	moveToEnemy();
+	t = sys.getTime() + 3;
+	while( sys.getTime() < t && enemyRange() > 512 && !AI_BLOCKED ) {
+		fly();
+		sys.waitFrame();
+	}
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+}
+
+/*
+================
+monster_thunderskeet::flyAway
+
+off 256 to 512 a random way, as far as there's room
+================
+*/
+void monster_thunderskeet::flyAway() {
+	vector	dir;
+	float	frac;
+	float	len;
+	float	t;
+
+	dir = sys.angToForward( '0 1 0' * sys.random( 360 ) + '1 0 0' * ( sys.random( 30 ) - 15 ) );
+	len = 256 + sys.random( 256 );
+	frac = sys.trace( getOrigin(), getOrigin() + dir * len, getMins(), getMaxs(), CONTENTS_SOLID | CONTENTS_MONSTERCLIP, self );
+	if ( frac * len < 96 ) {
+		return;
+	}
+	moveToPosition( getOrigin() + dir * ( frac * len - 32 ) );
+	t = sys.getTime() + 3;
+	while( sys.getTime() < t && moveStatus() == MOVE_STATUS_MOVING ) {
+		fly();
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+monster_thunderskeet::pain
+================
+*/
+void monster_thunderskeet::pain() {
+	string anim;
+
+	startSound( "snd_pain", CHAN_VOICE, false );
+	anim = "hitb";
+	if ( sys.random( 1 ) < 0.5 ) {
+		anim = "hita";
+	}
+	waitAnim( anim );
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+}
+
+/*
+================
+monster_thunderskeet::state_Killed
+================
+*/
+void monster_thunderskeet::state_Killed() {
+	stopMove();
+	startSound( "snd_death", CHAN_VOICE, false );
+	playModelFx( "death" );
+	hide();
+	sys.wait( 1 );
+	remove();
+}

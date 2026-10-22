@@ -1,0 +1,22 @@
+// The thunderskeet's shot in flight (Daikatana's ThunderSpray): its yellow
+// flare, pulsing between a third and most of its size. Played every 50 msec
+// along the path; its green light is the projectile's own.
+
+Particle
+{
+	life		60 80
+	rgb
+	{
+		start	1 1 1
+	}
+	alpha
+	{
+		start	0.45
+	}
+	size
+	{
+		start	6 22
+	}
+	rotation	0 360
+	shaders [ dkfx/flyellow ]
+}

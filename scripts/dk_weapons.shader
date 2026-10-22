@@ -26,3 +26,25 @@ dkfx/ionexpl
 		alphaGen vertex
 	}
 }
+
+// Daikatana's flare sprites (models/global/e_flyellow.sp2, e_flgreen.sp2):
+// the thunderskeet's shot and its charge
+dkfx/flyellow
+{
+	cull none
+	{
+		map skins/e_flyellow.tga
+		blendFunc add
+		rgbGen vertex
+	}
+}
+
+dkfx/flgreen
+{
+	cull none
+	{
+		map skins/e_flgreen.tga
+		blendFunc add
+		rgbGen vertex
+	}
+}

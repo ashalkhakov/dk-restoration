@@ -32,3 +32,12 @@ worker_death	{ minDistance 3.25 maxDistance 25.4 volume 0.85 sounds/e1/skinnydea
 cambot_alarm	{ minDistance 3.25 maxDistance 25.4 volume 0.85 sounds/e1/m_cambotalarm.wav }
 cambot_hum		{ minDistance 3.25 maxDistance 25.4 volume 0.65 sounds/global/e_roomtoned.wav sounds/global/e_roomtonee.wav sounds/global/e_cntrltonea.wav sounds/global/e_cntrltoneb.wav sounds/global/e_cntrltonec.wav sounds/global/e_cntrltoned.wav sounds/global/e_cntrltonee.wav }
 robot_explode	{ minDistance 3.25 maxDistance 25.4 volume 0.85 sounds/global/e_explodea.wav sounds/global/e_explodeb.wav sounds/global/e_explodec.wav sounds/global/e_metalbreaksa.wav }
+
+rockgat_fire	{ minDistance 25.4 maxDistance 26 volume 0.85 sounds/e1/e_rockgatshootmultia.wav sounds/e1/e_rockgatshootmultib.wav sounds/e1/e_rockgatshootmultic.wav }
+rockgat_up		{ minDistance 3.25 maxDistance 25.4 volume 0.85 sounds/doors/e1/lift3start.wav }
+
+tskeet_sight	{ minDistance 15.2 maxDistance 40.6 volume 0.85 sounds/e1/m_thunderskeetsighta.wav sounds/e1/m_thunderskeetsightb.wav }
+tskeet_idle		{ minDistance 15.2 maxDistance 40.6 volume 0.65 sounds/e1/m_thunderskeetamba.wav }
+tskeet_attack	{ minDistance 15.2 maxDistance 40.6 volume 0.85 sounds/e1/m_thunderskeetataka.wav }
+tskeet_fly		{ minDistance 15.2 maxDistance 40.6 volume 0.65 sounds/e1/m_thunderskeetflya.wav sounds/e1/m_thunderskeetservo.wav }
+tskeet_pain		{ minDistance 15.2 maxDistance 40.6 volume 0.85 sounds/e1/m_thunderskeethita.wav }
