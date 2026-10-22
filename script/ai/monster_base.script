@@ -21,6 +21,7 @@ object monster_base {
 
 	float		skill;				// 0 easy, 1 medium, 2 hard (g_skill)
 	float		idleTime;
+	boolean		ignorePlayer;		// a map's script has it pay you no mind (ai_ignore_player)
 
 	void		init();
 	void		state_Idle();
@@ -30,6 +31,15 @@ object monster_base {
 	void		idleAnims();
 	void		sightEnemy();
 	void		waitAnim( string anim );
+
+	// what Daikatana's action scripts make it do (ai_actions.script)
+	void		ai_ignore_player();
+	void		ai_aggressive();
+	void		ai_pathfollow();
+	void		ai_scripted();
+	void		state_PathFollow();
+	void		state_Scripted();
+	string		moveAnim();
 };
 
 void monster_base::init() {
@@ -90,11 +100,13 @@ void monster_base::state_Idle() {
 	stopMove();
 	playCycle( ANIMCHANNEL_LEGS, "amba" );
 	while( 1 ) {
-		enemy = findEnemy( true );
-		if ( enemy ) {
-			setEnemy( enemy );
-			sightEnemy();
-			return;
+		if ( !ignorePlayer ) {
+			enemy = findEnemy( true );
+			if ( enemy ) {
+				setEnemy( enemy );
+				sightEnemy();
+				return;
+			}
 		}
 		// hurt, or given an enemy (another's alarm, alertMonsters)
 		if ( getEnemy() != $null_entity ) {
@@ -119,4 +131,144 @@ void monster_base::state_Killed() {
 	stopMove();
 	startSound( "snd_death", CHAN_VOICE, false );
 	waitAnim( "diea" );
+}
+
+/*
+===============================================================================
+
+	Daikatana's action scripts (its action.cpp, the maps' ai/maps/<map>.script):
+	set_state( it, ignore_player ), ( it, aggressive ), ( it, pathfollow, corner ),
+	and the actions that play it like a puppet (animate, face_angle)
+
+===============================================================================
+*/
+
+void monster_base::ai_ignore_player() {
+	ignorePlayer = true;
+}
+
+/*
+================
+monster_base::ai_aggressive
+
+after you, now
+================
+*/
+void monster_base::ai_aggressive() {
+	entity enemy;
+
+	ignorePlayer = false;
+	enemy = findEnemy( false );
+	if ( enemy == $null_entity ) {
+		enemy = sys.getEntity( "player1" );
+	}
+	if ( enemy != $null_entity ) {
+		setEnemy( enemy );
+		setState( "state_Combat" );
+	}
+}
+
+void monster_base::ai_pathfollow() {
+	setState( "state_PathFollow" );
+}
+
+/*
+================
+monster_base::ai_scripted
+
+it stands still for a script to play it
+================
+*/
+void monster_base::ai_scripted() {
+	if ( getState() != "state_Scripted" ) {
+		setState( "state_Scripted" );
+	}
+}
+
+void monster_base::state_Scripted() {
+	stopMove();
+	while( 1 ) {
+		sys.wait( 1 );
+	}
+}
+
+/*
+================
+monster_base::moveAnim
+
+what it moves with on a path: the script's (set_moving_animation), else its
+walk, or its flight
+================
+*/
+string monster_base::moveAnim() {
+	string anim;
+
+	anim = getKey( "ai_moveanim" );
+	if ( anim != "" ) {
+		return anim;
+	}
+	if ( hasAnim( ANIMCHANNEL_LEGS, "walka" ) ) {
+		return "walka";
+	}
+	if ( hasAnim( ANIMCHANNEL_LEGS, "flya" ) ) {
+		return "flya";
+	}
+	return "runa";
+}
+
+/*
+================
+monster_base::state_PathFollow
+
+from corner to corner (monster_path_corner, each its "target" the next),
+"ai_arg" the first. A corner with an "aiscript" runs it as it gets there,
+and that script says what's next. It goes for you if it sees you, unless
+it's ignoring you, and when hurt
+================
+*/
+void monster_base::state_PathFollow() {
+	entity	corner;
+	entity	next;
+	entity	enemy;
+	float	t;
+
+	corner = sys.getEntity( getKey( "ai_arg" ) );
+	playCycle( ANIMCHANNEL_LEGS, moveAnim() );
+	if ( getFloatKey( "walk_speed" ) > 0 ) {
+		setMoveSpeed( getFloatKey( "walk_speed" ) );		// walking it, as Daikatana's (flyers fly)
+	}
+	while( corner != $null_entity ) {
+		moveToEntity( corner );
+		t = sys.getTime() + 30;
+		while( distanceTo( corner ) > 40 && moveStatus() == MOVE_STATUS_MOVING && sys.getTime() < t ) {
+			if ( !ignorePlayer ) {
+				enemy = findEnemy( true );
+				if ( enemy ) {
+					setEnemy( enemy );
+				}
+			}
+			if ( getEnemy() != $null_entity && ( !ignorePlayer || AI_PAIN ) ) {
+				ignorePlayer = false;
+				if ( getFloatKey( "run_speed" ) > 0 ) {
+					setMoveSpeed( getFloatKey( "run_speed" ) );
+				}
+				sightEnemy();
+				return;
+			}
+			sys.wait( 0.1 );
+		}
+		next = corner.getEntityKey( "target" );
+		ai_debug( getName() + " at " + corner.getName() );
+		if ( corner.getKey( "aiscript" ) != "" ) {
+			corner.activate( self );		// its script carries on (g_aiscript.c)
+			setState( "state_Scripted" );
+			return;
+		}
+		corner = next;
+	}
+	stopMove();
+	if ( getFloatKey( "run_speed" ) > 0 ) {
+		setMoveSpeed( getFloatKey( "run_speed" ) );
+	}
+	setState( "state_Idle" );
 }

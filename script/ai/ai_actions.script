@@ -1,0 +1,176 @@
+// ai_actions.script -- what Daikatana's action scripts do (action.cpp), for
+// the maps' converted ones (ai/maps/<map>.script, tools/aiscript/
+// sca_convert.py). A monster's part is its object's ai_* functions
+// (monster_base.script); who's who is by name, Daikatana's "uniqueid".
+
+// what the scripts do, on the console with "developer 1"
+void ai_debug( string text ) {
+	if ( sys.getcvar( "developer" ) != "0" ) {
+		sys.println( "aiscript: " + text );
+	}
+}
+
+/*
+================
+ai_actor
+
+who acts: the one named in the script's header, else whoever started it
+================
+*/
+entity ai_actor( entity actor, string owner ) {
+	entity named;
+
+	named = sys.getEntity( owner );
+	if ( named != $null_entity ) {
+		return named;
+	}
+	return actor;
+}
+
+/*
+================
+ai_spawn
+
+spawn( class, name, x, y, z, yaw ): one more, by that name
+================
+*/
+void ai_spawn( string spawnClass, string name, vector origin, float yaw ) {
+	sys.setSpawnArg( "origin", "" + origin );
+	sys.setSpawnArg( "angle", "" + yaw );
+	sys.setSpawnArg( "targetname", name );
+	sys.spawn( spawnClass );
+	ai_debug( "spawn " + spawnClass + " " + name );
+}
+
+/*
+================
+ai_setState
+
+set_state( who, state [, arg] ): its object's ai_<state>(), the argument
+in its "ai_arg" (pathfollow's first corner)
+================
+*/
+void ai_setState( string name, string state, string arg ) {
+	entity who;
+
+	who = sys.getEntity( name );
+	if ( who == $null_entity ) {
+		sys.warning( "set_state: no " + name );
+		return;
+	}
+	if ( !who.hasFunction( "ai_" + state ) ) {
+		sys.warning( "set_state: " + name + " can't " + state );
+		return;
+	}
+	who.setKey( "ai_arg", arg );
+	ai_debug( name + " " + state + " " + arg );
+	who.callFunction( "ai_" + state );
+}
+
+/*
+================
+ai_animate
+
+animate( anim [, times] ): the actor stands and plays it through
+================
+*/
+void ai_animate( entity actor, string anim, float times ) {
+	float i;
+
+	if ( actor == $null_entity ) {
+		return;
+	}
+	if ( actor.hasFunction( "ai_scripted" ) ) {
+		actor.callFunction( "ai_scripted" );
+	}
+	ai_debug( actor.getName() + " animate " + anim );
+	for( i = 0; i < times; i++ ) {
+		actor.playAnim( ANIMCHANNEL_LEGS, anim );
+		sys.waitFrame();
+		while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+			sys.waitFrame();
+		}
+	}
+}
+
+/*
+================
+ai_faceAngle
+
+face_angle( pitch, yaw, roll ): turned to the yaw
+================
+*/
+void ai_faceAngle( entity actor, float yaw ) {
+	float t;
+
+	if ( actor == $null_entity ) {
+		return;
+	}
+	if ( actor.hasFunction( "ai_scripted" ) ) {
+		actor.callFunction( "ai_scripted" );
+	}
+	actor.turnTo( yaw );
+	t = sys.getTime() + 2;
+	while( !actor.facingIdeal() && sys.getTime() < t ) {
+		sys.waitFrame();
+	}
+}
+
+/*
+================
+ai_setMovingAnimation
+
+set_moving_animation( anim ): what it moves with on its paths
+================
+*/
+void ai_setMovingAnimation( entity actor, string anim ) {
+	if ( actor != $null_entity ) {
+		actor.setKey( "ai_moveanim", anim );
+	}
+}
+
+/*
+================
+ai_use
+
+use( name ): as a trigger would
+================
+*/
+void ai_use( string name ) {
+	entity e;
+
+	e = sys.getEntity( name );
+	if ( e == $null_entity ) {
+		sys.warning( "use: no " + name );
+		return;
+	}
+	ai_debug( "use " + name );
+	sys.trigger( e );
+}
+
+/*
+================
+ai_remove
+================
+*/
+void ai_remove( string name ) {
+	entity e;
+
+	e = sys.getEntity( name );
+	if ( e != $null_entity ) {
+		e.remove();
+	}
+}
+
+/*
+================
+ai_sound
+
+sound( file ): the actor's
+================
+*/
+void ai_sound( entity actor, string file ) {
+	if ( actor != $null_entity ) {
+		actor.startSoundShader( file, CHAN_VOICE );
+	}
+}

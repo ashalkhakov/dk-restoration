@@ -582,6 +582,15 @@ assemble() {
 	for f in "$OUT"/cine/maps/*.script "$ROOT"/cine/maps/*.script; do
 		[ -e "$f" ] && put "$f" "$mod/cine/maps/$(basename "$f")"
 	done
+	# Daikatana's action scripts (cin/aiscripts/<map>.sca) as Doom 3 ones,
+	# ai/maps/<map>.script, the game compiling a map's with its script; ours
+	# by the same names, in ai/maps, in their place
+	rm -rf "$OUT/ai" "$mod/ai"
+	mkdir -p "$mod/ai/maps"
+	[ -d "$DKRES/cin/aiscripts" ] && python3 "$ROOT/tools/aiscript/sca_convert.py" "$DKRES" "$OUT/ai/maps"
+	for f in "$OUT"/ai/maps/*.script "$ROOT"/ai/maps/*.script; do
+		[ -e "$f" ] && put "$f" "$mod/ai/maps/$(basename "$f")"
+	done
 	put "$ROOT/script" "$mod/script"
 	put "$ROOT/af" "$mod/af"
 	put "$ROOT/sound" "$mod/sound"
