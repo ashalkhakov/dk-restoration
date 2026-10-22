@@ -1,0 +1,43 @@
+// Daikatana's effect_lightning bolt (effects.cpp, g_dk_level.c): a jagged
+// bolt, its colour Daikatana's (0.45 0.45 0.75), a white core, for its
+// strike's 0.3 seconds, played to the bolt's end (CG_FX_PlayEffectLine).
+
+Electricity
+{
+	life		300
+	rgb
+	{
+		start	0.45 0.45 0.75
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	10
+	}
+	shaders [ dkfx/bolt ]
+}
+
+Electricity
+{
+	life		300
+	rgb
+	{
+		start	1 1 1
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	3
+	}
+	shaders [ dkfx/bolt ]
+}

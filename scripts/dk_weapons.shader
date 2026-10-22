@@ -132,3 +132,16 @@ dkfx/flareo
 		alphaGen vertex
 	}
 }
+
+// Daikatana's lightning bolts (effect_lightning): a flat glow, coloured by
+// the effect
+dkfx/bolt
+{
+	cull none
+	{
+		map $whiteimage
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
