@@ -69,11 +69,17 @@ void cine_anchor( entity actor, vector origin, float yaw ) {
 ================
 cine_toAnchor
 
-the actor back at its place, as an animation starts
+the actor back at its place, as an animation starts: across the floor, as
+high as it stands now (spawned in the air, it has come down to the floor:
+back up there, it would drop again)
 ================
 */
 void cine_toAnchor( entity actor ) {
-	actor.setOrigin( actor.getVectorKey( "cine_anchor" ) );
+	vector	place;
+
+	place = actor.getVectorKey( "cine_anchor" );
+	place_z = actor.getOrigin() * '0 0 1';
+	actor.setOrigin( place );
 	actor.setAngles( '0 1 0' * actor.getFloatKey( "cine_anchorYaw" ) );
 	actor.turnTo( actor.getFloatKey( "cine_anchorYaw" ) );
 }
@@ -207,32 +213,57 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 cine_move
 
 the actor walks there (or runs: gait "runa"), at its walk_speed (run_speed),
-playing its walk, then stands
+playing its walk, then stands: straight there, as Daikatana's did, not as
+its legs would find a way (the map may have no way for them, or a door
+not yet open)
 ================
 */
 void cine_move( entity actor, vector dest, string gait ) {
+	vector	from;
+	vector	dir;
+	vector	at;
+	float	speed;
+	float	dist;
+	float	t0;
+	float	f;
+
 	if ( actor == $null_entity ) {
 		return;
 	}
 	cine_toAnchor( actor );
 	if ( gait == "runa" ) {
-		actor.setMoveSpeed( actor.getFloatKey( "run_speed" ) );
+		speed = actor.getFloatKey( "run_speed" );
 	} else {
-		actor.setMoveSpeed( actor.getFloatKey( "walk_speed" ) );
+		speed = actor.getFloatKey( "walk_speed" );
 	}
-	if ( actor.hasAnim( ANIMCHANNEL_LEGS, gait ) ) {
-		actor.playCycle( ANIMCHANNEL_LEGS, gait );
+	if ( speed <= 0 ) {
+		speed = 60;
 	}
-	actor.moveToPosition( dest );
-	while( actor.moveStatus() == MOVE_STATUS_MOVING ) {
-		if ( sys.skippingCinematic() ) {
-			actor.stopMove();
-			actor.setOrigin( dest );
-			break;
+	from = actor.getOrigin();
+	dir = dest - from;
+	dir_z = 0;
+	dist = sys.vecLength( dir );
+	if ( dist > 1 ) {
+		actor.turnTo( sys.VecToAngles( dir ) * '0 1 0' );
+		if ( actor.hasAnim( ANIMCHANNEL_LEGS, gait ) ) {
+			actor.playCycle( ANIMCHANNEL_LEGS, gait );
 		}
-		sys.waitFrame();
+		t0 = sys.getTime();
+		while( !sys.skippingCinematic() ) {
+			f = ( sys.getTime() - t0 ) * speed / dist;
+			if ( f >= 1 ) {
+				break;
+			}
+			at = from + dir * f;
+			at_z = actor.getOrigin() * '0 0 1';		// (on the floor, as gravity has it)
+			actor.setOrigin( at );
+			sys.waitFrame();
+		}
 	}
-	cine_anchor( actor, actor.getOrigin(), actor.getAngles() * '0 1 0' );
+	at = from + dir;
+	at_z = actor.getOrigin() * '0 0 1';
+	actor.setOrigin( at );
+	cine_anchor( actor, at, actor.getAngles() * '0 1 0' );
 	if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
 		actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
 	}

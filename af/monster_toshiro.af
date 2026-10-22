@@ -1,6 +1,6 @@
 // made by tools/rig/autorig.py: toshiro's ragdoll, Doom 3's articulated figure
 // (made in the model's bind pose; joint() and bone*() name the IQM's joints)
-articulatedFigure char_toshiro {
+articulatedFigure monster_toshiro {
 	settings {
 		model "model_toshiro"
 		friction 0.01, 0.01, 0.8, 0.5
@@ -19,8 +19,8 @@ articulatedFigure char_toshiro {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -2.49, -3.79, -3.06 ), ( 2.49, 3.79, 3.06 ) )
-		origin ( -62.43, -1.94, -20.59 )
+		model box( ( -2.64, -3.52, -2.20 ), ( 2.64, 3.52, 2.20 ) )
+		origin ( 0.61, 1.30, -0.77 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +31,8 @@ articulatedFigure char_toshiro {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -8.20, -3.43, -3.98 ), ( 8.20, 3.43, 3.98 ) )
-		origin ( -68.87, -0.28, -21.67 )
+		model box( ( -3.88, -4.52, -5.50 ), ( 3.88, 4.52, 5.50 ) )
+		origin ( 0.54, 1.25, 4.52 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +43,8 @@ articulatedFigure char_toshiro {
 	body "head" {
 		joint "Loneck"
 		mod orientation
-		model box( ( -2.37, -3.79, -2.84 ), ( 2.37, 3.79, 2.84 ) )
-		origin ( -82.36, 0.55, -21.66 )
+		model box( ( -2.35, -3.63, -2.51 ), ( 2.35, 3.63, 2.51 ) )
+		origin ( 6.36, 1.57, 16.11 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +55,8 @@ articulatedFigure char_toshiro {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( -82.57, 0.51, -21.72 ), ( -76.63, 0.80, -22.31 ), 5.64 )
-		origin ( -79.60, 0.65, -22.02 )
+		model bone( ( 3.99, 4.48, 11.72 ), ( 2.27, 5.81, 4.63 ), 5.91 )
+		origin ( 3.13, 5.15, 8.17 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +67,8 @@ articulatedFigure char_toshiro {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -76.63, 0.80, -22.31 ), ( -62.27, 9.55, -19.77 ), 7.00 )
-		origin ( -69.45, 5.17, -21.04 )
+		model bone( ( 2.27, 5.81, 4.63 ), ( 8.16, 7.00, 0.20 ), 5.08 )
+		origin ( 5.21, 6.41, 2.41 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure char_toshiro {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -61.37, 7.12, -22.29 ), ( -48.29, 4.86, -20.40 ), 4.63 )
-		origin ( -54.83, 5.99, -21.35 )
+		model bone( ( -0.40, 2.78, -1.53 ), ( 1.69, 3.05, -10.04 ), 6.17 )
+		origin ( 0.64, 2.92, -5.78 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure char_toshiro {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -48.29, 4.86, -20.40 ), ( -39.64, 3.54, -22.70 ), 8.00 )
-		origin ( -43.97, 4.20, -21.55 )
+		model bone( ( 1.69, 3.05, -10.04 ), ( 1.19, 3.38, -21.78 ), 5.20 )
+		origin ( 1.44, 3.21, -15.91 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -103,8 +103,8 @@ articulatedFigure char_toshiro {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( -78.74, -7.13, -23.03 ), ( -79.42, -6.22, -21.44 ), 5.63 )
-		origin ( -79.08, -6.67, -22.24 )
+		model bone( ( 1.29, -0.06, 11.13 ), ( 2.13, -6.27, 10.78 ), 4.50 )
+		origin ( 1.71, -3.16, 10.95 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +115,8 @@ articulatedFigure char_toshiro {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -79.42, -6.22, -21.44 ), ( -68.36, -9.08, -21.45 ), 4.66 )
-		origin ( -73.89, -7.65, -21.44 )
+		model bone( ( 2.13, -6.27, 10.78 ), ( -1.23, -8.85, 4.33 ), 4.72 )
+		origin ( 0.45, -7.56, 7.55 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure char_toshiro {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -58.61, -4.06, -23.87 ), ( -48.29, -3.45, -22.14 ), 11.02 )
-		origin ( -53.45, -3.75, -23.01 )
+		model bone( ( -1.91, 0.16, -1.53 ), ( 1.03, -0.95, -10.04 ), 11.63 )
+		origin ( -0.44, -0.39, -5.78 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure char_toshiro {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( -48.29, -3.45, -22.14 ), ( -39.78, -3.36, -21.20 ), 5.49 )
-		origin ( -44.04, -3.40, -21.67 )
+		model bone( ( 1.03, -0.95, -10.04 ), ( -0.28, -2.30, -21.95 ), 5.87 )
+		origin ( 0.38, -1.62, -16.00 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -152,90 +152,90 @@ articulatedFigure char_toshiro {
 		body1 "chest"
 		body2 "waist"
 		anchor joint( "Waist" )
-		shafts ( -1.00, 0.00, 0.00 ), ( 1.00, 0.00, 0.00 )
+		shafts ( 0.00, 0.00, 1.00 ), ( 0.00, 0.00, -1.00 )
 		friction 0.20
-		coneLimit ( -1.00, 0.00, 0.00 ), 60
+		coneLimit ( 0.00, 0.00, 1.00 ), 60
 	}
 
 	universalJoint "chestHead" {
 		body1 "head"
 		body2 "chest"
 		anchor joint( "Loneck" )
-		shafts ( -1.00, 0.00, 0.00 ), ( 1.00, 0.00, 0.00 )
+		shafts ( 0.00, 0.00, 1.00 ), ( 0.00, 0.00, -1.00 )
 		friction 0.20
-		coneLimit ( -1.00, 0.00, 0.00 ), 80
+		coneLimit ( 0.00, 0.00, 1.00 ), 80
 	}
 
 	universalJoint "Lshoulder" {
 		body1 "Luparm"
 		body2 "chest"
 		anchor joint( "Luparm" )
-		shafts ( 0.99, 0.05, -0.10 ), ( -0.99, -0.05, 0.10 )
+		shafts ( -0.23, 0.18, -0.96 ), ( 0.23, -0.18, 0.96 )
 		friction 0.20
-		coneLimit ( 0.93, 0.37, 0.00 ), 170
+		coneLimit ( 0.00, 0.37, -0.93 ), 170
 	}
 
 	hinge "Lelbow" {
 		body1 "Lloarm"
 		body2 "Luparm"
 		anchor joint( "Lloarm" )
-		axis ( -0.00, 1.00, 0.00 )
+		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -115.7, 150.0, 174.3
+		limit 146.3, 150.0, 76.3
 	}
 
 	universalJoint "Lhip" {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( 0.98, -0.17, 0.14 ), ( -0.98, 0.17, -0.14 )
+		shafts ( 0.24, 0.03, -0.97 ), ( -0.24, -0.03, 0.97 )
 		friction 0.20
-		coneLimit ( 0.85, 0.15, 0.50 ), 120
+		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
 
 	hinge "Lknee" {
 		body1 "Lloleg"
 		body2 "Lupleg"
 		anchor joint( "Lloleg" )
-		axis ( -0.00, 1.00, 0.00 )
+		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 123.2, 140.0, -171.8
+		limit 38.8, 140.0, 103.8
 	}
 
 	universalJoint "Rshoulder" {
 		body1 "Ruparm"
 		body2 "chest"
 		anchor joint( "Ruparm" )
-		shafts ( -0.34, 0.47, 0.81 ), ( 0.34, -0.47, -0.81 )
+		shafts ( 0.13, -0.99, -0.06 ), ( -0.13, 0.99, 0.06 )
 		friction 0.20
-		coneLimit ( 0.93, -0.37, 0.00 ), 170
+		coneLimit ( 0.00, -0.37, -0.93 ), 170
 	}
 
 	hinge "Relbow" {
 		body1 "Rloarm"
 		body2 "Ruparm"
 		anchor joint( "Rloarm" )
-		axis ( -0.00, 1.00, 0.00 )
+		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -137.1, 150.0, -67.1
+		limit -132.7, 150.0, 157.3
 	}
 
 	universalJoint "Rhip" {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( 0.98, 0.06, 0.16 ), ( -0.98, -0.06, -0.16 )
+		shafts ( 0.32, -0.12, -0.94 ), ( -0.32, 0.12, 0.94 )
 		friction 0.20
-		coneLimit ( 0.85, -0.15, 0.50 ), 120
+		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
 
 	hinge "Rknee" {
 		body1 "Rloleg"
 		body2 "Rupleg"
 		anchor joint( "Rloleg" )
-		axis ( -0.00, 1.00, 0.00 )
+		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 124.5, 140.0, -170.5
+		limit 44.1, 140.0, 109.1
 	}
 
 }

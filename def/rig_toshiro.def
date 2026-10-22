@@ -1,0 +1,68 @@
+// made by tools/rig/autorig.py from models/cinematic/c_tosh_intr.md3
+entityDef model_toshiro {
+	"inherit"			"character_base"	// def/dk_characters.def
+	"mesh"				"models/rigged/toshiro.iqm"
+	"mins"				"-10 -10 -24"	// standing, at the origin (pmove's)
+	"maxs"				"10 10 20"
+	"crouch_height"		"20"		// maxs z crouched
+	"eye_height"		"16"
+	"crouch_eye_height"	"16"
+	"ik_minWaistAnkleDist"	"16"	// the walk IK's waist drops no lower (Doom 3's)
+
+	"anim rest"		"rest 10"
+	"anim coffin"		"coffin 10"
+	"anim cough"		"cough 10"
+	"anim coughb"		"coughb 10"
+	"anim coughc"		"coughc 10"
+	"anim coughd"		"coughd 10"
+	"anim deadtka"		"deadtka 10"
+	"anim deadtkb"		"deadtkb 10"
+	"anim deadtkc"		"deadtkc 10"
+	"anim diea"		"diea 10"
+	"anim point"		"point 10"
+	"anim staffmad"		"staffmad 10"
+	"anim tka"		"tka 10"
+	"anim tkb"		"tkb 10"
+	"anim tkc"		"tkc 10"
+	"anim tkd"		"tkd 10"
+	"anim tkda"		"tkda 10"
+	"anim tke"		"tke 10"
+	"anim tkf"		"tkf 10"
+	"anim tkg"		"tkg 10"
+	"anim tkh"		"tkh 10"
+	"anim tki"		"tki 10"
+	"anim walka"		"walka 10 loop"
+	"anim walkl"		"walkl 10 loop"
+	"anim walkr"		"walkr 10 loop"
+
+	"frame walka 19"	"footstep Lankle_r 0.4"
+
+	"anim_speed walka"	"5"
+
+
+	"hitbox Lupleg"	"-1.8 -6.8 -3.5 8.6 2.7 2.7 legs"
+	"hitbox Lloleg"	"0.7 -2.1 -7.1 10.2 6.5 3.3 legs"
+	"hitbox Lankle_r"	"0.1 -2.7 -4.6 3.1 2.6 8.2 legs"
+	"hitbox Rupleg"	"1.7 -6.6 1.9 6.3 -4.5 4.3 legs"
+	"hitbox Rloleg"	"0.4 -7.7 -7.6 10.4 2.1 3.9 legs"
+	"hitbox Rankle_r"	"0.0 -2.9 -2.6 3.8 2.7 6.1 legs"
+	"hitbox Waist"	"-2.5 -3.5 -7.9 3.2 4.1 -0.0 torso"
+	"hitbox Chest"	"-1.4 -2.6 -4.4 6.3 6.4 2.0 torso"
+	"hitbox Loneck"	"6.8 -0.1 1.3 7.7 2.5 3.2 head"
+	"hitbox Head"	"-1.5 -1.5 -0.5 3.2 7.6 5.6 head"
+	"hitbox Luparm"	"-0.3 0.1 -5.5 7.2 2.4 0.0 arms"
+	"hitbox Lloarm"	"0.5 -2.5 -1.2 6.9 1.2 3.2 arms"
+	"hitbox Lhand"	"-0.4 -0.1 0.0 1.1 0.4 2.0 arms"
+	"hitbox Ruparm"	"2.0 -4.8 -3.3 7.8 3.1 2.7 arms"
+	"hitbox Rloarm"	"0.4 -1.6 -2.6 3.2 0.3 0.4 arms"
+	"hitbox Rhand"	"-1.3 -2.3 -3.4 1.8 -0.2 -0.7 arms"
+	"hitbox Head_1"	"-4.5 -1.5 -0.2 -0.3 4.5 6.2 head"
+	"hitbox Lloleg_1"	"0.1 -1.2 0.1 3.5 3.0 7.5 legs"
+
+	"damage_scale head"	"2"
+	"damage_scale arms"	"0.75"
+	"damage_scale legs"	"0.75"
+
+	"ragdoll"			"monster_toshiro"	// af/monster_toshiro.af, Doom 3's articulated figure
+
+}

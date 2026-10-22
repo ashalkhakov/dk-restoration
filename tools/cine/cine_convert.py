@@ -437,8 +437,11 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 			out.append( "\tsys.stopGlobalLoops();" )
 		out += [ "}", "" ]
 
-	out += [ "/*", "================", "%s::play" % ns, "================", "*/", "void play() {", "\tcine_start();" ]
-	out += [ "\t%s();" % f for f in shotFuncs ]
+	# cine_firstShot n starts it at its nth shot (for looking at one; its
+	# actors spawned before then are missing)
+	out += [ "/*", "================", "%s::play" % ns, "================", "*/", "void play() {",
+			 "\tfloat first;", "", "\tfirst = sys.strToFloat( sys.getcvar( \"cine_firstShot\" ) );", "\tcine_start();" ]
+	out += [ "\tif ( first <= %d ) { %s(); }" % ( i + 1, f ) for i, f in enumerate( shotFuncs ) ]
 	out += [ "\tcine_finish();" ]
 	for var in sorted( actors ):
 		out.append( "\tif ( %s != $null_entity ) { %s.remove(); }" % ( var, var ) )

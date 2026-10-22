@@ -242,20 +242,42 @@ step_envs() {
 	done
 }
 
+# a .wal as a .tga, unless there's one: the paks' own .tga of the same name is
+# what Daikatana drew (d1_swt1's .wal is another picture)
 wal_export_all() {
 	local exporter
 	exporter=$(tool wal-tools/wal-export)
 	find "$DKRES/$1" -type f -name '*.wal' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c \
-		'"$0" "$1" -mip 0 -expand -o "${1%.wal}"' "$exporter"
+		'[ -e "${1%.wal}.tga" ] || "$0" "$1" -mip 0 -expand -o "${1%.wal}"' "$exporter"
 }
 step_textures() { wal_export_all textures; }
 step_skins() { wal_export_all skins; }
 
+# the models; a skin with transparent pixels gets an alpha tested shader
+# (qwalk -s: it writes gen_skins.shader into the folder given, which must
+# hold a .shader already), each model's into a folder of its own as they
+# convert at once, then into scripts/gen_skins.shader
 step_models() {
-	local converter
+	local converter tmp
 	converter=$(tool qwalk/qwalk_converter)
+	tmp=$OUT/skinshaders
+	rm -rf "$tmp"
+	mkdir -p "$tmp"
 	(cd "$DKRES" && find models -type f -name '*.dkm' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c \
-		'rm -f "${1%.dkm}.md3"; "$0" -force -i "$1" "${1%.dkm}.md3" >/dev/null </dev/null' "$converter")
+		'd="$1/$(printf %s "$2" | tr / _)"; mkdir -p "$d"; : >"$d/seed.shader"
+		rm -f "${2%.dkm}.md3"; "$0" -force -s "$d" -i "$2" "${2%.dkm}.md3" >/dev/null </dev/null' "$converter" "$tmp")
+	python3 - "$tmp" "$DKRES/scripts/gen_skins.shader" <<'PY'
+import glob, re, sys
+seen, out = set(), []
+for path in sorted(glob.glob(sys.argv[1] + "/*/gen_skins.shader")):
+	for m in re.finditer(r"\n(\S+)\n\{.*?\n\}\n", open(path).read(), re.S):
+		if m.group(1).lower() not in seen:
+			seen.add(m.group(1).lower())
+			out.append(m.group(0))
+open(sys.argv[2], "w").write("// made by ./dk extract models (qwalk): the models' skins with transparent pixels\n" + "".join(out))
+print("  %d skins alpha tested (scripts/gen_skins.shader)" % len(out))
+PY
+	rm -rf "$tmp"
 	# report the ones that didn't convert
 	(cd "$DKRES" && find models -type f -name '*.dkm' | while read -r f; do
 		[ -e "${f%.dkm}.md3" ] || echo "not converted: $f"
@@ -276,7 +298,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -396,14 +418,14 @@ inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
 ninja           human     cinematic/c_ninja_intr    iqm=ninja
 osaka           human     cinematic/c_osaka_intr    iqm=osaka
 tatsuo          human     cinematic/c_tatsuo_e4m4   iqm=tatsuo
-toshiro         lying     cinematic/c_tosh_intr     iqm=toshiro
+toshiro         human     cinematic/c_tosh_intr     iqm=toshiro rest=tka
 "
 RIG_ANIMS_froginator="amba 10 loop;ambb 10;ataka 10;atakb 10;atakc 10;diea 10;hita 10;jumpa 10;runa 15 loop;swima 10 loop;walka 10 loop"
 RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15 loop;hita 10;speciala 10"
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -413,6 +435,7 @@ rig_model() {
 			fps=*) fps="--fps ${kv#fps=}" ;;
 			iqm=*) iqm=${kv#iqm=} ;;
 			surface=*) surface="--surface ${kv#surface=}" ;;
+			rest=*) rest="--rest ${kv#rest=}" ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -422,7 +445,7 @@ rig_model() {
 	case $rigger in
 		player) python3 tools/rig/autorig.py "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
-		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface --anims "$anims" "$md3" "$out" ;;
+		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest --anims "$anims" "$md3" "$out" ;;
 		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac
@@ -627,9 +650,10 @@ assemble() {
 	done
 	[ -e "$DKRES/ui/assets" ] && put "$DKRES/ui/assets" "$mod/ui/assets"
 
-	# shaders: those of the maps and those of this repository
-	find "$mod/scripts" -name '*_gen.shader' -exec rm -f {} +
-	for f in "$DKRES"/scripts/*_gen.shader "$ROOT"/scripts/*; do
+	# shaders: those of the maps, the models' alpha-tested skins (qwalk's
+	# gen_skins.shader) and those of this repository
+	find "$mod/scripts" \( -name '*_gen.shader' -o -name gen_skins.shader \) -exec rm -f {} +
+	for f in "$DKRES"/scripts/*_gen.shader "$DKRES"/scripts/gen_skins.shader "$ROOT"/scripts/*; do
 		[ -e "$f" ] && put "$f" "$mod/scripts/$(basename "$f")"
 	done
 
@@ -673,7 +697,8 @@ cmd_install() {
 # ---------------------------------------------------------------- testing
 
 # runs a script in the engine, its own home so it doesn't touch yours:
-# play_script <name> <map> <commands...>; map "-" for the main menu
+# play_script <name> <map> <commands...>; map "-" for the main menu; DK_ARGS
+# adds to the command line, before the map (+set cine_firstShot 30)
 play_script() {
 	local name=$1 map=$2 home=$OUT/test-home devmap=()
 	shift 2
@@ -683,7 +708,7 @@ play_script() {
 	printf '%s\n' "$@" quit >"$home/$GAME/dk_$name.cfg"
 	(play "$home" +set r_fullscreen 0 +set r_mode -1 +set r_customwidth 960 +set r_customheight 600 \
 		+set s_initsound 0 +set bot_enable "${BOTS:-0}" +set g_gametype "${GAMETYPE:-0}" +set cg_draw2D "${HUD:-0}" +set cg_drawGun "${HUD:-0}" \
-		${devmap[@]+"${devmap[@]}"} +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
+		${DK_ARGS:-} ${devmap[@]+"${devmap[@]}"} +exec "dk_$name.cfg") >"$OUT/test/$name.log" 2>&1 || true
 }
 
 cmd_shots() {

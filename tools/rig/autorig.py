@@ -592,6 +592,7 @@ def hair_chain( rest, headVerts, head ):
 
 EXTRA_BONES = 0		# --extra: at most this many bones for what the template doesn't carry
 SURFACE = None		# --surface: "metal" for a robot, its hits spark
+REST = None			# --rest: the animation whose first frame it's rigged from
 LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
 WRITE = True		# False: only how well it fits
 EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
@@ -812,6 +813,17 @@ def load_pins( name, body, verts, J ):
 
 def main( md3Path, outBase ):
 	m = MD3( md3Path )
+	if REST:
+		# rigged from that animation's first frame, as if it were the first
+		# (a model whose first frame isn't standing: Toshiro's starts dead):
+		# a copy of it goes first, its own one-frame animation "rest"
+		rest = next( ( first for name, first, n in m.animations() if name == REST ), None )
+		if rest is None:
+			sys.exit( "%s: no animation %s" % ( md3Path, REST ) )
+		m.frameNames.insert( 0, "rest" )
+		m.numFrames += 1
+		for sf in m.surfaces:
+			sf.frames.insert( 0, list( sf.frames[rest + 1 - 1] ) )
 	if TO_MODEL:
 		for sf in m.surfaces:
 			sf.frames = [ [ stand_up( v ) for v in frame ] for frame in sf.frames ]
@@ -1797,7 +1809,7 @@ if __name__ == "__main__":
 		TO_MODEL = lie_down
 		args = args[1:]
 	for opt, var, kind in ( ( "--name", "NAME", str ), ( "--fps", "FPS", float ), ( "--anims", "ANIMS", str ),
-							( "--extra", "EXTRA_BONES", int ), ( "--surface", "SURFACE", str ) ):
+							( "--extra", "EXTRA_BONES", int ), ( "--surface", "SURFACE", str ), ( "--rest", "REST", str ) ):
 		if opt in args:
 			i = args.index( opt )
 			globals()[var] = kind( args[i + 1] )
