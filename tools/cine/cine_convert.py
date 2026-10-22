@@ -34,6 +34,7 @@ own versions of a cinematic or a shot go in the repository's cine/ (its
 script/ and cameras/), in place of these by name (./dk assembles them).
 """
 
+import glob
 import json
 import math
 import os
@@ -106,18 +107,33 @@ RIGGED = {
 	"cine_kage": ( "kage", "c_kage_" ),
 }
 
-# a character in one cinematic model rigged apart (its own outfit): Hiro in
-# his gi, in the intro
-RIGGED_MODELS = {
-	"c_hiro_intr": ( "hirogi", "c_hiro_" ),
-}
+def rigs_of_cinematic_models():
+	"""the cinematic models rigged as themselves (./dk rig: def/rig_*.def and
+	def/char_*.def, made "from models/cinematic/<model>.md3"; Hiro in his gi,
+	the intro's people): model name -> its rig's def. Such a rig's own
+	animations are Daikatana's frames as they were, travel and all, so its
+	actors play them as they are, as a monster plays its own"""
+	rigs = {}
+	for path in glob.glob( os.path.join( "def", "rig_*.def" ) ) + glob.glob( os.path.join( "def", "char_*.def" ) ):
+		text = open( path ).read()
+		m = re.match( r"// made by tools/rig/autorig\.py from models/cinematic/(\S+)\.md3", text )
+		d = re.search( r"entityDef\s+(\S+)", text )
+		if m and d:
+			rigs[m.group( 1 )] = path
+	return rigs
 
-def monster_rig( classname ):
-	"""a monster's rigged model def (def/rig_<name>.def, ./dk rig): ( model def
-	name, its animations ), or None"""
-	if not classname.startswith( "monster_" ):
+RIGGED_MODELS = rigs_of_cinematic_models()
+
+def monster_rig( classname, model = None ):
+	"""a monster's rigged model def (def/rig_<name>.def, ./dk rig), or a
+	cinematic model's rigged as itself (RIGGED_MODELS): ( model def name, its
+	animations ), or None"""
+	if model and os.path.basename( model ) in RIGGED_MODELS:
+		path = RIGGED_MODELS[os.path.basename( model )]
+	elif classname.startswith( "monster_" ):
+		path = os.path.join( "def", "rig_%s.def" % classname[8:] )
+	else:
 		return None
-	path = os.path.join( "def", "rig_%s.def" % classname[8:] )
 	if not os.path.exists( path ):
 		return None
 	text = open( path ).read()
@@ -127,9 +143,9 @@ def monster_rig( classname ):
 def rigged( dkres, classname, model ):
 	"""our character's cinematic animations for that model: ( character, tag,
 	the retargeting's JSON ), or None"""
-	if not model or ( classname not in RIGGED and os.path.basename( model ) not in RIGGED_MODELS ):
+	if classname not in RIGGED or not model or os.path.basename( model ) in RIGGED_MODELS:
 		return None
-	char, prefix = RIGGED_MODELS.get( os.path.basename( model ), RIGGED.get( classname ) )
+	char, prefix = RIGGED[classname]
 	tag = os.path.basename( model )[len( prefix ):]
 	path = os.path.join( dkres, "models", "rigged", "%s_%s.json" % ( char, tag ) )
 	if not os.path.exists( path ):
@@ -342,11 +358,11 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 				continue
 			model = actor_model( dkres, e["name"], mapname )
 			rig = rigged( dkres, e["name"], model )
-			mrig = monster_rig( e["name"] )
+			mrig = monster_rig( e["name"], model )
 			if mrig:
-				defname = "cine_%s" % e["name"][8:]
+				defname = "cine_%s" % mrig[0][6:]
 				actorDefs[defname] = mrig[0]
-				rig = { "character": e["name"][8:], "anims": dict( ( a, {} ) for a in mrig[1] ) }
+				rig = { "character": mrig[0][6:], "anims": dict( ( a, {} ) for a in mrig[1] ) }
 			elif rig:
 				defname = "cine_%s_%s" % ( rig[0], rig[1] )
 				actorDefs[defname] = rig

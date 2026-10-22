@@ -475,7 +475,7 @@ cmd_rig() {
 # has its animations moved onto the character's rig, in place
 # (tools/rig/retarget.py: models/rigged/<character>_<map>.iqm and .json),
 # unless that's done already.
-CINE_CHARACTERS="hiro:c_hiro_ mikiko:c_mikiko_ superfly:c_super_ inshiro:c_inshiro_ toshiro:c_tosh_ ninja:c_ninja_ osaka:c_osaka_ usagi:c_usagi_ tatsuo:c_tatsuo_ kage:c_kage_ hirogi:c_hiro_:intr"
+CINE_CHARACTERS="hiro:c_hiro_ mikiko:c_mikiko_ superfly:c_super_ usagi:c_usagi_ tatsuo:c_tatsuo_ kage:c_kage_"
 cmd_cine() {
 	local c name prefix only f tag out
 	for c in $CINE_CHARACTERS; do
