@@ -126,7 +126,7 @@ Each step is built, tested with `./dk`, committed and pushed before the next.
 2. Volume fog and the Daikatana conversion. Done: `fogLight` fog shaders drawn per pixel through their hull (spearmint e6511988, `tr_fogvolume.c`, documented in `opengl2-readme.md`); bsp-sekai 72c2753 marks Daikatana's fogs.
 3. Dynamic lights per pixel everywhere, and the 32-light limit. Done: spearmint (per-pixel by default, 64 lit of up to 256), mint-arena `testlight`.
 4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
-5. Portals from the BSP and portal flow (view, then lights).
+5. Portals from the BSP and portal flow (view, then lights). View flow done: spearmint, `tr_portals.c` (portals cut at load in the renderer, not bsp-sekai; flow between clusters with screen rectangles). The lights' flow comes with the shadow maps.
 6. The shadow-map atlas with PCSS, fed by the lights' flow.
 7. The light grid bake.
 
