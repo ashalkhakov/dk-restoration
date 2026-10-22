@@ -8,11 +8,12 @@ We improve Spearmint's renderergl2 (rend2, the renderer `./dk` runs) in three pl
 
 1. dynamic lights;
 2. fog;
-3. the material features we actually need.
+3. the material features we actually need;
+4. Doom 3's portal visibility (what `.proc` files give it), built from our own BSPs.
 
 Everything else stays as it is: Quake 3 BSP maps with their lightmaps, the shader system, models, 2D. The engine, renderer and game stay C; what we take from Doom 3 or TDM (C++) is translated, using mint-arena's C idLib ports (`q_extramath`, `polylib`, `q_containers`...) where they help.
 
-Out of scope for now (looked at, set aside): Doom 3 maps and dmap, `.proc` worlds, replacing shaders with materials, the light grid bake, the light gem.
+Out of scope for now (looked at, set aside): Doom 3 maps and dmap, loading `.proc` files, replacing shaders with materials, the light grid bake, the light gem.
 
 ## 1. Dynamic lights
 
@@ -80,6 +81,26 @@ Added to rend2's shader system (`tr_shader.c`) as keywords, taken from Doom 3's 
 
 Anything else waits until something needs it.
 
+## 4. Portal visibility on our BSPs
+
+**What it is:** Doom 3's `.proc` world gives its renderer areas joined by portal polygons.
+- The view and each light flow through the portals, clipped to a shrinking frustum (`RenderWorld_portals.cpp`: `FlowViewThroughPortals`, `FloodViewThroughArea_r`, `FlowLightThroughPortals`).
+- Entities and lights are culled per area; doors close portals.
+- This is what keeps many dynamic lights cheap: a light only touches the surfaces its flow reaches, and only those cast its shadows.
+
+**What we have:**
+- Quake 3 BSPs carry PVS clusters, areas and area portals (doors already close them, `trap_AdjustAreaPortalState`), but no portal polygons.
+- Daikatana's BSPs are the same (Quake 2 family).
+
+**Work:**
+1. **Portals from the BSP tree:** bsp-sekai cuts the BSP tree into leaf portals, as qbsp's `MakeTreePortals` does (the node planes clipped to each other), and merges leaves into clusters' convex areas. They're written beside the map as `maps/<map>.portals`: areas, portal windings, which area each leaf is in. `idlib/polylib.c` has the windings.
+2. **Portal flow:** Doom 3's portal flow translated to C into rend2, run from the camera's leaf. It replaces the PVS test where the portals file exists, and falls back to the PVS where it doesn't. Area portals closed by doors close the matching portals.
+3. **Per-light flow:** each dynamic light floods from its leaf through open portals within its radius or frustum. That gives the surfaces it lights and the casters for its shadow map (Doom 3's `tr_light`/`tr_lightrun`), cached until the light moves or a door changes. Part 1's lights and shadow atlas use these lists.
+
+**Done when:**
+- surfaces and entities drawn on e1m1b drop against the PVS (`r_speeds`), with no missing geometry seen in `./dk test` shots;
+- many dynamic lights in separate rooms cost little.
+
 ## Order
 
 Each step is built, tested with `./dk`, committed and pushed before the next.
@@ -88,11 +109,12 @@ Each step is built, tested with `./dk`, committed and pushed before the next.
 2. Volume fog and the Daikatana conversion.
 3. Dynamic lights per pixel everywhere, and the 32-light limit.
 4. Light shaders, expressions and tables; spot lights; the cambot's lamp.
-5. The shadow-map atlas with PCSS.
+5. Portals from the BSP and portal flow (view, then lights).
+6. The shadow-map atlas with PCSS, fed by the lights' flow.
 
 ## Reference
 
 - `spearmint/code/renderergl2`: `tr_shade.c` (`ForwardDlight`, the fog pass), `tr_shader.c`, `tr_glsl.c`, `tr_fbo.c`, `glsl/`.
-- `darkmod_src/renderer`: `backend/stages/ShadowMapStage.cpp`, `frontend/tr_light.cpp` (atlas pages), `glprogs/tdm_shadowmaps.glsl`, `glprogs/stages/light_passes/fog_light.frag.glsl`, `resources/Material.cpp` (light shaders, expressions).
+- `darkmod_src/renderer`: `frontend/RenderWorld_portals.cpp` (portal flow), `frontend/tr_lightrun.cpp`, `backend/stages/ShadowMapStage.cpp`, `frontend/tr_light.cpp` (atlas pages), `glprogs/tdm_shadowmaps.glsl`, `glprogs/stages/light_passes/fog_light.frag.glsl`, `resources/Material.cpp` (light shaders, expressions).
 - `../dhewm3-debugger/neo/renderer`: Doom 3's light and fog model, for comparison.
 - Daikatana (`atsb/daikatana-restoration-project`): `base/ref_gl/gl_rmain.cpp` (global fog), `gl_fogsurf.cpp` (volume fog), `dlls/world/world.cpp` (worldspawn fog keys).
