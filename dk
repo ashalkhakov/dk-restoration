@@ -775,7 +775,7 @@ cmd_invtest() {
 	done
 	local IFS='|'
 	# shellcheck disable=SC2086
-	play_script invtest e1m1a "g_debugFrob 1" "cg_drawBelt 1" "wait 200" "invlist" \
+	play_script invtest e1m1a "com_maxfps 60" "g_debugFrob 1" "cg_drawBelt 1" "wait 200" "invlist" \
 		"spawnitem item_plasteel_armor" "wait 20" "screenshotJPEG invtest_hint" "+use" "wait 3" "-use" "wait 10" "invlist" \
 		"invquick armor" "wait 5" "hurt 40" "wait 5" "invremove" "wait 5" "invlist" \
 		"hurt 60" "spawnitem item_health_50" "wait 20" "+use" "wait 3" "-use" "wait 10" \
