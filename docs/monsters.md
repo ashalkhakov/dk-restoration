@@ -144,7 +144,8 @@ What scripts have for these: `attackWeapon( def, offset )` fires a weapon def's 
 as the weapon's) from an offset at the enemy, so a monster's weapon is a weapon def no player gets (`weapon_slot`
 99, keeping the players' weapons' numbers); `alertMonsters( range )`; `playModelFx( "death" )` plays the model def's
 `fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). These and the other looks of a model
-(`surface`, `light_radius`/`light_color`/`light_offset` forward, left, up for a lamp it carries, `light_ambient`
+(`surface`, `light_radius`/`light_color`/`light_offset` forward, left, up for a lamp it carries, made a spot light
+by `light_cone` degrees along `light_dir` forward, left, up, `light_ambient`
 r g b added to the light grid's) can go in a `model_<name>_extra` def, which a rigged model's generated def
 keeps too. A robot's death is `playModelFx( "death" )`, `hide()`,
 `remove()`. No monster sees anyone during a cinematic, and a `killtarget` (a broken control box's) kills a

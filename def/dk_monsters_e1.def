@@ -391,9 +391,11 @@ entityDef damage_thunderjiz_splash {
 entityDef model_cambot_extra {
 	"surface"		"metal"
 	"fx_death"		"dk/explosion"
-	"light_radius"	"220"			// its lamp (Daikatana's light from its weapon offset)
+	"light_radius"	"600"			// its lamp (Daikatana's light from its weapon offset)
 	"light_color"	"1 0.95 0.8"
 	"light_offset"	"30 0 -5"		// forward, left, up
+	"light_cone"	"25"			// a spot light, along where it looks, a little down
+	"light_dir"		"1 0 -0.25"
 }
 
 entityDef model_rockgat_extra {
