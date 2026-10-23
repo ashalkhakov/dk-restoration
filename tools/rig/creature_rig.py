@@ -725,10 +725,8 @@ def write_af( name, joints, rest, assign, S ):
 						"		coneLimit %s, %.0f" % ( vec( shaft ), cone ),
 						"	}", "" ] )
 	lines += [ "}", "" ]
-	os.makedirs( "af", exist_ok = True )
 	path = os.path.join( "af", "monster_%s.af" % name )
-	with open( path, "w" ) as fp:
-		fp.write( "\n".join( lines ) )
+	A.write_af( path, "\n".join( lines ) )
 	print( "  wrote %s" % path )
 
 if __name__ == "__main__":

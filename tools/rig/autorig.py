@@ -48,6 +48,7 @@ import re
 import struct
 import sys
 
+ROOT_DIR = os.path.normpath( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), "..", ".." ) )
 sys.path.insert( 0, os.path.dirname( __file__ ) )
 from md3 import MD3, Surface
 
@@ -1654,6 +1655,24 @@ def d3_rotation_angle( axis, frm, to ):
 	a = math.atan2( vdot( axis, vcross( frm, to ) ), vdot( frm, to ) )
 	return -math.degrees( a )
 
+def write_af( path, text ):
+	"""the articulated figure written to path the first time; after that the
+	file there is the authority (kept in the repository, edited by hand:
+	Toshiro's "mod both") and is never written again. What the rig would make
+	of it now goes to out/rig/<path> for the user to compare and validate
+	(./dk rigcheck lists those that differ); a change to an AF is theirs"""
+	if not os.path.exists( path ):
+		os.makedirs( os.path.dirname( path ) or ".", exist_ok = True )
+		with open( path, "w" ) as fp:
+			fp.write( text )
+		return
+	proposal = os.path.join( ROOT_DIR, "out", "rig", path )
+	os.makedirs( os.path.dirname( proposal ), exist_ok = True )
+	with open( proposal, "w" ) as fp:
+		fp.write( text )
+	if open( path ).read() != text:
+		print( "  %s kept (it's the authority); the rig's differs: %s" % ( path, os.path.relpath( proposal ) ) )
+
 def ragdoll_af( name, joints, rest, assign, afName = None ):
 	J = { joint["name"]: j for j, joint in enumerate( joints ) }
 	if any( n not in J for n in ( "Hips", "Waist", "Chest", "Loneck", "Head", "Luparm", "Lloarm", "Lhand",
@@ -2185,9 +2204,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale arms\"\t\"0.75\"", "\t\"damage_scale legs\"\t\"0.75\"" ]
 	af = ragdoll_af( name, joints, rest, assign, afName )
 	if af:
-		os.makedirs( "af", exist_ok = True )
-		with open( os.path.join( "af", "%s.af" % afName ), "w" ) as fp:
-			fp.write( af )
+		write_af( os.path.join( "af", "%s.af" % afName ), af )
 		lines += [ "", "\t\"ragdoll\"\t\t\t\"%s\"\t// af/%s.af, Doom 3's articulated figure" % ( afName, afName ) ]
 	# as a player model: Quake 3's animations (pmove's) to Daikatana's, the
 	# first of each list the character has

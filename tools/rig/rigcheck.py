@@ -19,7 +19,9 @@ Daikatana's frames (the MD3 the rig was made from, the root motion autorig
 --root-out took out taken out of them too), on average and at worst.
 
 	rigcheck.py                 every validated animation whose rig changed
-	                            since: "revalidate" (exit status 1 if any)
+	                            since: "revalidate" (exit status 1 if any);
+	                            and the AF files (af/, the authority once
+	                            written) whose regenerated version differs
 
 ./dk rig runs it after rigging; an autorig change is committed only when
 the animations it changes have been looked at again (validated, or the
@@ -251,7 +253,23 @@ def check():
 				changed.append( ( defName, anim, dict( e, why = "changed" ) ) )
 	return changed
 
+def af_proposals():
+	"""the AF files whose regenerated version (out/rig/af, autorig's
+	write_af) differs from the one kept in af/, the authority: [ path ]"""
+	out = []
+	pdir = os.path.join( ROOT, "out", "rig", "af" )
+	if os.path.isdir( pdir ):
+		for fn in sorted( os.listdir( pdir ) ):
+			kept = os.path.join( ROOT, "af", fn )
+			if fn.endswith( ".af" ) and os.path.exists( kept ) and open( kept ).read() != open( os.path.join( pdir, fn ) ).read():
+				out.append( fn )
+	return out
+
 if __name__ == "__main__":
+	afs = af_proposals()
+	if afs:
+		print( "rigcheck: %d AF files kept, the rigs' regenerated ones differ (compare, validate): %s" % ( len( afs ),
+			", ".join( "af/%s vs out/rig/af/%s" % ( f, f ) for f in afs ) ) )
 	rec = load_record()
 	n = sum( len( m["anims"] ) for m in rec.values() )
 	changed = check()
