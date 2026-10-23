@@ -1204,6 +1204,37 @@ def main( md3Path, outBase ):
 	joints[J["origin"]]["pos"] = ( joints[J["Hips"]]["pos"][0], joints[J["Hips"]]["pos"][1], zmin )
 	motion[J["Body"]] = motion[J["Hips"]]
 
+	# 3b. a rigid skeleton, as Doom 3's: the hips go where they will (the body's
+	# going about, lying down), every other joint stays at the end of its
+	# parent's bone and only turns, as its vertexes turn about it. Each bone
+	# fitted on its own let joints wander off their parents (Toshiro's waist
+	# 70 from his hips lying in his coffin, the bind pose's 3.5), which a
+	# ragdoll, bodies joined at fixed places, can't take
+	def turn_fit( src, dst ):
+		"""the rotation that best takes the vectors src to dst (about the
+		origin: each with its opposite, both centred there)"""
+		return rigid_fit( src + [ vscale( a, -1.0 ) for a in src ], dst + [ vscale( b, -1.0 ) for b in dst ] )[0]
+	chain = { J["Hips"]: motion[J["Hips"]], J["Body"]: motion[J["Hips"]] }
+	for b in range( len( joints ) ):
+		if b in chain or b not in bones:
+			continue
+		par = joints[b]["parentIndex"]
+		if par not in chain:
+			continue
+		pj = joints[b]["pos"]
+		idx = [ i for i in range( N ) if assign[i] == b ]
+		chain[b] = {}
+		for f in range( F ):
+			q = xform( chain[par][f], pj )
+			if len( idx ) >= 4:
+				r = turn_fit( [ vsub( rest[i], pj ) for i in idx ], [ vsub( frames[f][i], q ) for i in idx ] )
+			else:
+				r = chain[par][f][0]		# too few to turn by: with its parent
+			chain[b][f] = ( r, vsub( q, mvec( r, pj ) ) )
+	for b in chain:
+		motion[b] = chain[b]
+
+
 	# 4. two weights a vertex: its bone, and a neighbour where blending fits
 	weights = []
 	for i in range( N ):

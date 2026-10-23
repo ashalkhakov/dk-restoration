@@ -4,8 +4,9 @@
 // model) out, his rigged character in, where the deco was, 1.25 times the
 // cinematic model's size as Daikatana's map draws him. The deco's origin is
 // at the body; a character's is 24 (30 at his size) over its floor, its
-// dead lie on: his is the deco's 30 higher. Limp in the same pose (coffin,
-// the frame the deco's mesh is)
+// dead lie on: his is the deco's 30 higher. A ragdoll asleep ("nodrop",
+// Doom 3's) in the same pose till he's hit (coffin, the frame the deco's
+// mesh is)
 {
 "_match classname" "misc_gamemodel"
 "_match model" "models/e1/cin_toshiro.md3"
@@ -16,6 +17,7 @@
 "model" "model_toshiro"
 "anim" "coffin"
 "ragdoll" "1"
+"nodrop" "1"
 "modelscale" "1.25"
 "origin" "1779 -2590 558"
 "angle" "0"
@@ -23,7 +25,8 @@
 
 // the dead workers: Daikatana's deadguy decos (m_dead.md3, still, one of its
 // ten death poses each by "frame", 1.5 times the size) out, the rigged
-// m_dead character in, limp from the same pose, where each lay
+// m_dead character in, a ragdoll asleep in the same pose till it's hit
+// ("nodrop": falling from it, they slumped off the coffins), where each lay
 {
 "_match classname" "func_physics"
 "_match model" "models/e1/m_dead.md3"
@@ -36,6 +39,7 @@
 "anim" "dead"
 "frame" "4"
 "ragdoll" "1"
+"nodrop" "1"
 "modelscale" "1.5"
 "origin" "1602 -2695 552"
 }
@@ -51,6 +55,7 @@
 "anim" "dead"
 "frame" "8"
 "ragdoll" "1"
+"nodrop" "1"
 "modelscale" "1.5"
 "origin" "1473 -2716 536"
 }
@@ -66,6 +71,7 @@
 "anim" "dead"
 "frame" "1"
 "ragdoll" "1"
+"nodrop" "1"
 "modelscale" "1.5"
 "angle" "135"
 "origin" "1731 -2430 540"
