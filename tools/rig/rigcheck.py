@@ -23,9 +23,19 @@ Daikatana's frames (the MD3 the rig was made from, the root motion autorig
 	                            and the AF files (af/, the authority once
 	                            written) whose regenerated version differs
 
-./dk rig runs it after rigging; an autorig change is committed only when
-the animations it changes have been looked at again (validated, or the
-change dropped).
+	rigcheck.py --gate <def file> <iqm> [--change die,cdie]
+	                            whether a rig made again may replace the one
+	                            installed: every validated animation of its
+	                            model the same (new animations, from the
+	                            cinematics' MD3s, may come); --change lets
+	                            the ones named so change, as the user asked
+	                            (exit status 1, and those listed, if not)
+	rigcheck.py --restamp <model def> [die,cdie]
+	                            after installing what the gate let through:
+	                            the validated animations' fingerprints from it
+
+A validated rig doesn't change: ./dk rig makes each rig in out/rig/stage/
+and installs it only if the gate lets it, else keeps the one there.
 """
 import datetime
 import hashlib
@@ -302,7 +312,66 @@ def af_proposals():
 				out.append( fn )
 	return out
 
+SAME = 0.01		# units: a vertex of a validated animation moving no more than this, it's the same
+
+def gate( defPath, iqmPath, change = () ):
+	"""the validated animations of defPath's model the rig at iqmPath changes
+	(those named with a prefix in change aside): [ ( animation, why ) ].
+	Against the rig installed, which must be the validated one: no vertex
+	in any frame more than SAME apart (a hash would flip on IQM's
+	quantisation, which shifts every frame a little when one changes)"""
+	d = re.search( r"entityDef\s+(\S+)", open( defPath, encoding = "latin-1" ).read() )
+	defName = d.group( 1 ) if d else ""
+	known = load_record().get( defName, {} ).get( "anims", {} )
+	if not known:
+		return []
+	info = model_info( defName )
+	old = Rig( os.path.join( DKRES, info[0] ) ) if info and os.path.exists( os.path.join( DKRES, info[0] ) ) else None
+	rig = Rig( iqmPath )
+	out = []
+	for anim, e in sorted( known.items() ):
+		if any( anim.startswith( p ) for p in change ):
+			continue
+		if anim not in rig.anims:
+			out.append( ( anim, "gone" ) )
+		elif not old or anim not in old.anims or old.fingerprint( anim ) != e["fingerprint"]:
+			out.append( ( anim, "the rig installed isn't the validated one" ) )
+		else:
+			( f0, n ), ( g0, m ) = old.anims[anim], rig.anims[anim]
+			if n != m or any( math.dist( p, q ) > SAME for k in range( n ) for p, q in zip( old.frame( f0 + k ), rig.frame( g0 + k ) ) ):
+				out.append( ( anim, "changed" ) )
+	return out
+
+def restamp( defName, change = () ):
+	"""the validated animations' fingerprints from the rig installed, once
+	the gate has found them the same (those named in change keep theirs:
+	they changed, to be validated again)"""
+	rec = load_record()
+	known = rec.get( defName, {} ).get( "anims", {} )
+	info = model_info( defName )
+	if not known or not info:
+		return
+	rig = Rig( os.path.join( DKRES, info[0] ) )
+	for anim, e in known.items():
+		if anim in rig.anims and not any( anim.startswith( p ) for p in change ):
+			e["fingerprint"] = rig.fingerprint( anim )
+	save_record( rec )
+
 if __name__ == "__main__":
+	if sys.argv[1:2] == [ "--gate" ]:
+		args = sys.argv[2:]
+		change = ()
+		if "--change" in args:
+			i = args.index( "--change" )
+			change = tuple( a for a in args[i + 1].split( "," ) if a )
+			args = args[:i] + args[i + 2:]
+		bad = gate( args[0], args[1], change )
+		if bad:
+			print( "validated, would change: %s" % ", ".join( "%s (%s)" % b for b in bad ) )
+		sys.exit( 1 if bad else 0 )
+	if sys.argv[1:2] == [ "--restamp" ]:
+		restamp( sys.argv[2], tuple( a for a in ( sys.argv[3] if len( sys.argv ) > 3 else "" ).split( "," ) if a ) )
+		sys.exit( 0 )
 	afs = af_proposals()
 	if afs:
 		print( "rigcheck: %d AF files kept, the rigs' regenerated ones differ (compare, validate): %s" % ( len( afs ),

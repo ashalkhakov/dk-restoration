@@ -590,7 +590,7 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, res
 	mins, maxs, hitMins, hitMaxs = boxes( joints, assign, anims, looping, frames )
 	lines = [ "// made by tools/rig/creature_rig.py from %s: the rigged model, in place of the md3's" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
-			  "\t\"mesh\"\t\t\t\"%s.iqm\"" % A.gamePath( outBase ),
+			  "\t\"mesh\"\t\t\t\"%s.iqm\"" % A.meshPath( outBase ),
 			  "\t\"mins\"\t\t\t\"%.0f %.0f %.0f\"\t// the box it moves with: all but its wings, idling" % mins,
 			  "\t\"maxs\"\t\t\t\"%.0f %.0f %.0f\"" % maxs,
 			  "\t\"hit_mins\"\t\t\"%.0f %.0f %.0f\"\t// the box shots meet: all of it, whichever way it faces" % hitMins,
@@ -626,8 +626,8 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, res
 	lines += [ "", "\t\"damage_scale head\"\t\"2\"", "\t\"damage_scale legs\"\t\"0.75\"",
 			   "", "\t\"ragdoll\"\t\t\"monster_%s\"\t// af/monster_%s.af, Doom 3's articulated figure" % ( name, name ),
 			   "}", "" ]
-	os.makedirs( "def", exist_ok = True )
-	path = os.path.join( "def", "rig_%s.def" % name )
+	os.makedirs( os.path.join( A.STAGE or ".", "def" ), exist_ok = True )
+	path = os.path.join( A.STAGE or ".", "def", "rig_%s.def" % name )
 	with open( path, "w" ) as fp:
 		fp.write( "\n".join( lines ) )
 	print( "  wrote %s" % path )

@@ -25,7 +25,10 @@ N more bones for what the template has no bone for (a cape, wings, a sword);
 --surface metal makes it a robot, its hits spark.
 With --root-out, Daikatana's going over the ground (a fall back on dying)
 is taken out of the animations: each plays over the origin, and
-<out>.json says what was taken out, for the game to move the character by.
+<out>.json says what was taken out, for the game to move the character by;
+--root-out-anims die,cdie only out of the animations named so (Hiro's deaths).
+With RIG_STAGE set, the def (and sound shaders) go under that directory
+instead, for ./dk rig to install once the validated animations are unchanged.
 With --lying, the model lies on its back, its head toward -x (as Daikatana's
 dead bodies: their frames are poses, not animations): it's rigged stood up,
 head up and facing +x, and everything written is turned back to lying.
@@ -702,6 +705,8 @@ EXTRA_BONES = 0		# --extra: at most this many bones for what the template doesn'
 SURFACE = None		# --surface: "metal" for a robot, its hits spark
 REST = None			# --rest: the animation whose first frame it's rigged from
 ROOT_OUT = False	# --root-out: the going over the ground out of the animations (root_out)
+ROOT_OUT_ANIMS = None	# --root-out-anims die,cdie: only out of those (names starting so): Hiro's deaths
+STAGE = os.environ.get( "RIG_STAGE" )	# the def (and sound shaders) written under this, for ./dk rig to install
 LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
 WRITE = True		# False: only how well it fits
 EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
@@ -1672,10 +1677,15 @@ def root_out( m, joints, motion, J, assign, outBase, md3Path ):
 	# has none, and its joint never moves)
 	hip = joints[J["Hips"]]["pos"]
 	root = next( b for b in ( J["Hips"], J["Waist"], J["Chest"] ) if assign.count( b ) >= 4 )
+	# (--root-out-anims: those animations' frames only, the others as they are)
+	outOf = set( range( m.numFrames ) )
+	if ROOT_OUT_ANIMS:
+		outOf = set( f for name, first, count in m.animations() if any( name.startswith( p ) for p in ROOT_OUT_ANIMS )
+					 for f in range( first, first + count ) )
 	off = []
 	for f in range( m.numFrames ):
 		h = xform( motion[root][f], hip )
-		off.append( ( h[0] - hip[0], h[1] - hip[1], 0.0 ) )
+		off.append( ( h[0] - hip[0], h[1] - hip[1], 0.0 ) if f in outOf else ( 0.0, 0.0, 0.0 ) )
 	# every joint the frames move goes with it; one they don't (the origin,
 	# such a pelvis) stays. (A bone with few vertexes shares its parent's
 	# motion: each from the motion as it was, so none is moved twice)
@@ -1746,6 +1756,11 @@ def scale_bones( joints, motion, assign, rest, frames, F, sample ):
 			motion[b] = scaled
 			SCALE3[b] = scales
 			print( "  %s turns and scales (%d vertexes)" % ( jb["name"], len( idx ) ) )
+
+def meshPath( outBase ):
+	"""The rig's IQM as the def names it, without .iqm: where ./dk rig installs
+	it when it's made in the stage (RIG_STAGE), else where it's written"""
+	return "models/rigged/" + os.path.basename( outBase ) if STAGE else gamePath( outBase )
 
 def gamePath( path ):
 	"""The path the game sees: from the data folder (dkres) on."""
@@ -2210,7 +2225,7 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	lines = [ "// made by tools/rig/autorig.py from %s" % m.path.split( "dkres/" )[-1],
 			  "entityDef model_%s {" % name,
 			  "\t\"inherit\"\t\t\t\"character_base\"\t// def/dk_characters.def",
-			  "\t\"mesh\"\t\t\t\t\"%s.iqm\"" % gamePath( outBase ),
+			  "\t\"mesh\"\t\t\t\t\"%s.iqm\"" % meshPath( outBase ),
 			  "\t\"mins\"\t\t\t\t\"%.0f %.0f %.0f\"\t// standing, at the origin (pmove's)" % ( -half, -half, bottom ),
 			  "\t\"maxs\"\t\t\t\t\"%.0f %.0f %.0f\"" % ( half, half, top ),
 			  "\t\"crouch_height\"\t\t\"%.0f\"\t\t// maxs z crouched" % crouchTop,
@@ -2322,8 +2337,8 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	lines += soundKeys
 	lines.append( "" )
 	if soundShaders:
-		os.makedirs( "sound", exist_ok = True )
-		with open( os.path.join( "sound", "char_%s.sndshd" % name ), "w" ) as fp:
+		os.makedirs( os.path.join( STAGE or ".", "sound" ), exist_ok = True )
+		with open( os.path.join( STAGE or ".", "sound", "char_%s.sndshd" % name ), "w" ) as fp:
 			fp.write( soundShaders )
 	for j, joint in enumerate( joints ):
 		if not joint["zone"] or joint["zone"] == "hair":
@@ -2351,8 +2366,8 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 				lines.append( "\t\"player_anim %s\"\t\"%s\"" % ( q3, c ) )
 				break
 	lines += [ "}", "" ]
-	os.makedirs( "def", exist_ok = True )
-	defPath = os.path.join( "def", "%s%s.def" % ( prefix, name ) )
+	os.makedirs( os.path.join( STAGE or ".", "def" ), exist_ok = True )
+	defPath = os.path.join( STAGE or ".", "def", "%s%s.def" % ( prefix, name ) )
 	with open( defPath, "w" ) as fp:
 		fp.write( "\n".join( lines ) )
 	print( "  wrote %s" % defPath )
@@ -2362,6 +2377,10 @@ if __name__ == "__main__":
 	if args and args[0] == "--lying":
 		TO_MODEL = lie_down
 		args = args[1:]
+	if "--root-out-anims" in args:
+		i = args.index( "--root-out-anims" )
+		ROOT_OUT_ANIMS = [ a for a in args[i + 1].split( "," ) if a ]
+		args = args[:i] + [ "--root-out" ] + args[i + 2:]
 	if "--root-out" in args:
 		if TO_MODEL:
 			sys.exit( "--root-out: not with --lying" )

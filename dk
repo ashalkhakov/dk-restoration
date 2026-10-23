@@ -16,8 +16,10 @@
 #   ./dk shots <map> [tag]     screenshots from the spawn points (HUD=1 ./dk
 #                              shots... to have the HUD, the weapon selector
 #                              and the weapon in them, and the scoreboard)
-#   ./dk rig [name...]         skeletal IQMs of the characters and monsters
-#                              (RIG_MODELS), their defs and ragdolls
+#   ./dk rig [--change a,b] [name...]  skeletal IQMs of the characters and
+#                              monsters (RIG_MODELS), their defs and ragdolls;
+#                              a validated rig is kept unless only new
+#                              animations come (--change: those named so may)
 #   ./dk rigshots [name...]    the rigged models in e1m1a, screenshots in
 #                              out/shots/rig
 #   ./dk viewer [port]         the rig viewer: the rigged models over
@@ -337,7 +339,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -349,10 +351,14 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # animations play at 10 frames a second (fps=), their idle and their ways of
 # getting about looping; RIG_ANIMS_<name> ("<anim> <fps> [loop];...") sets
 # them one by one. surface=metal: a robot (Daikatana's no-blood monsters), its
-# hits spark.
+# hits spark. rootout=1: Daikatana's going over the ground out of the
+# animations (they play over the origin); rootout=die,cdie: out of those only.
+# A validated rig doesn't change: each is made in out/rig/stage/<name>/ and
+# installed only if every validated animation of it is the same
+# (tools/rig/rigcheck.py --gate), else the one there is kept.
 RIG_MODELS="
 # the player characters
-hiro            player    global/m_hiro
+hiro            player    global/m_hiro             rootout=die,cdie
 mikiko          player    global/m_mikiko
 superfly        player    global/m_superfly
 # dead bodies
@@ -476,19 +482,39 @@ rig_model() {
 			surface=*) surface="--surface ${kv#surface=}" ;;
 			rest=*) rest="--rest ${kv#rest=}" ;;
 			rootout=1) rootout="--root-out" ;;
+			rootout=*) rootout="--root-out-anims ${kv#rootout=}" ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
 	anims=$(eval echo "\"\${RIG_ANIMS_$name:-}\"")
-	local md3="$DKRES/models/$model.md3" out="$DKRES/models/rigged/$iqm"
+	# made in the stage, installed if the validated animations stay the same
+	local stage="$OUT/rig/stage/$name" f
+	local md3="$DKRES/models/$model.md3" out="$OUT/rig/stage/$name/$iqm"
+	rm -rf "$stage"; mkdir -p "$stage"
 	cd "$ROOT"
+	export RIG_STAGE="$stage"
 	case $rigger in
-		player) python3 tools/rig/autorig.py "$md3" "$out" ;;
+		player) python3 tools/rig/autorig.py $rootout "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
 		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest $rootout --anims "$anims" "$md3" "$out" ;;
 		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		*) die "$name: no rigger $rigger" ;;
-	esac
+	esac || return 1
+	if ! grep -q "\"mesh\"[[:space:]]*\"models/rigged/$iqm.iqm\"" "$stage"/def/*.def; then
+		echo "rig not installed: its def doesn't name models/rigged/$iqm.iqm"
+		return 1
+	fi
+	if ! python3 tools/rig/rigcheck.py --gate "$stage"/def/*.def "$out.iqm" ${RIG_CHANGE:+--change "$RIG_CHANGE"}; then
+		echo "rig kept: validated (the new one in out/rig/stage/$name)"
+		return 0
+	fi
+	for f in "$out".iqm "$out".json "$out"_skin.txt; do
+		[ -f "$f" ] && cp "$f" "$DKRES/models/rigged/"
+	done
+	cp "$stage"/def/*.def "$ROOT/def/"
+	if [ -d "$stage/sound" ]; then cp "$stage"/sound/* "$ROOT/sound/"; fi
+	python3 tools/rig/rigcheck.py --restamp "$(sed -n 's/^entityDef[[:space:]]*\([^[:space:]]*\).*/\1/p' "$stage"/def/*.def | head -1)" "${RIG_CHANGE:-}"
+	touch "$stage/installed"
 }
 
 # ./dk rig [name...]: all of RIG_MODELS by default, $JOBS at a time, each
@@ -497,6 +523,10 @@ rig_model() {
 cmd_rig() {
 	local list name rest failed=0
 	mkdir -p "$DKRES/models/rigged"
+	if [ "${1:-}" = "--change" ]; then
+		export RIG_CHANGE=$2
+		shift 2
+	fi
 	list=$(printf '%s\n' "$RIG_MODELS" | sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d')
 	if [ $# -gt 0 ]; then
 		list=$(printf '%s\n' "$list" | while read -r name rest; do
@@ -508,12 +538,19 @@ cmd_rig() {
 	fi
 	say "rigging $(printf '%s\n' "$list" | wc -l | tr -d ' ') models, $JOBS at a time"
 	export -f rig_model die
-	export ROOT DKRES $(compgen -v RIG_ANIMS_ || true)
+	export ROOT DKRES OUT $(compgen -v RIG_ANIMS_ || true)
 	printf '%s\n' "$list" | xargs -P "$JOBS" -L 1 bash -c '
-		if rig_model "$@" >"$DKRES/models/rigged/$1.log" 2>&1; then
-			printf "  %-16s %s\n" "$1" "$(grep "error:" "$DKRES/models/rigged/$1.log" | tail -1 | sed "s/^ *error: //")"
+		mkdir -p "$OUT/rig/stage"
+		log="$OUT/rig/stage/$1.log"
+		if rig_model "$@" >"$log" 2>&1; then
+			if [ -f "$OUT/rig/stage/$1/installed" ]; then
+				cp "$log" "$DKRES/models/rigged/$1.log"
+				printf "  %-16s %s\n" "$1" "$(grep "error:" "$log" | tail -1 | sed "s/^ *error: //")"
+			else
+				printf "  %-16s KEPT, validated: %s\n" "$1" "$(grep "validated, would change" "$log" | sed "s/^validated, would change: //" | cut -c1-90)"
+			fi
 		else
-			printf "  %-16s FAILED (dkres/models/rigged/%s.log)\n" "$1" "$1"; exit 1
+			printf "  %-16s FAILED (out/rig/stage/%s.log)\n" "$1" "$1"; exit 1
 		fi' rig || failed=1
 	{
 		printf '# name rigger model vertexes frames animations bones average worst size\n'

@@ -3,7 +3,7 @@
 		"anims": {
 			"aamb": {
 				"date": "2026-10-23",
-				"fingerprint": "af604453eb96bf34",
+				"fingerprint": "20afbb7cd5182028",
 				"fit": [
 					0.015,
 					0.07
@@ -13,7 +13,7 @@
 			},
 			"aamba": {
 				"date": "2026-10-23",
-				"fingerprint": "6b4efb42721d802a",
+				"fingerprint": "4b1ad64597231545",
 				"fit": [
 					0.023,
 					0.27
@@ -23,7 +23,7 @@
 			},
 			"aambb": {
 				"date": "2026-10-23",
-				"fingerprint": "8f9190900238b0e9",
+				"fingerprint": "78ed60317b1b95ee",
 				"fit": [
 					0.051,
 					0.59
@@ -33,7 +33,7 @@
 			},
 			"ajump": {
 				"date": "2026-10-23",
-				"fingerprint": "2f7e0c7f7142ac04",
+				"fingerprint": "11f5b17ab4336a27",
 				"fit": [
 					0.082,
 					0.95
@@ -43,7 +43,7 @@
 			},
 			"ajumpa": {
 				"date": "2026-10-23",
-				"fingerprint": "e84a56891a87abab",
+				"fingerprint": "dfa3135c882e28a7",
 				"fit": [
 					0.083,
 					0.95
@@ -53,7 +53,7 @@
 			},
 			"ajumpb": {
 				"date": "2026-10-23",
-				"fingerprint": "0f83a0f24ae0c29c",
+				"fingerprint": "83da27eb2251a23c",
 				"fit": [
 					0.091,
 					0.95
@@ -63,7 +63,7 @@
 			},
 			"atak": {
 				"date": "2026-10-23",
-				"fingerprint": "921187132fcb8a3b",
+				"fingerprint": "b44ef831eecfd9da",
 				"fit": [
 					0.065,
 					0.74
@@ -73,7 +73,7 @@
 			},
 			"ataka": {
 				"date": "2026-10-23",
-				"fingerprint": "52ae21c726bfbd12",
+				"fingerprint": "db47b3c1cada3258",
 				"fit": [
 					0.029,
 					0.45
@@ -83,7 +83,7 @@
 			},
 			"atakb": {
 				"date": "2026-10-23",
-				"fingerprint": "d6fec6b799162643",
+				"fingerprint": "3c6aa7e71328e2ed",
 				"fit": [
 					0.059,
 					0.58
@@ -93,7 +93,7 @@
 			},
 			"aws": {
 				"date": "2026-10-23",
-				"fingerprint": "b97bb1d041653f70",
+				"fingerprint": "736e8374dce2aa94",
 				"fit": [
 					0.032,
 					0.55
@@ -103,7 +103,7 @@
 			},
 			"awsa": {
 				"date": "2026-10-23",
-				"fingerprint": "17a6e95fcfcc6dd5",
+				"fingerprint": "b4af71a04c5027b0",
 				"fit": [
 					0.038,
 					0.45
@@ -113,7 +113,7 @@
 			},
 			"awsb": {
 				"date": "2026-10-23",
-				"fingerprint": "63a5a9337087b8da",
+				"fingerprint": "3fd1863c2de45d64",
 				"fit": [
 					0.058,
 					0.57
@@ -123,7 +123,7 @@
 			},
 			"bamb": {
 				"date": "2026-10-23",
-				"fingerprint": "60ab4cb3d525ce6f",
+				"fingerprint": "f5bc5a6234a399b2",
 				"fit": [
 					0.032,
 					0.36
@@ -133,7 +133,7 @@
 			},
 			"bamba": {
 				"date": "2026-10-23",
-				"fingerprint": "f22ff92c464e0226",
+				"fingerprint": "7da3c8c4016a1941",
 				"fit": [
 					0.026,
 					0.28
@@ -143,7 +143,7 @@
 			},
 			"bambb": {
 				"date": "2026-10-23",
-				"fingerprint": "f7ca7d5cdb06dfa9",
+				"fingerprint": "352aa68f33335931",
 				"fit": [
 					0.052,
 					0.59
@@ -153,7 +153,7 @@
 			},
 			"bwalk": {
 				"date": "2026-10-23",
-				"fingerprint": "8400bb05f52152a8",
+				"fingerprint": "04e360765c0a646f",
 				"fit": [
 					0.1,
 					0.71
@@ -163,7 +163,7 @@
 			},
 			"bwalka": {
 				"date": "2026-10-23",
-				"fingerprint": "ad79d77c69d6f224",
+				"fingerprint": "94f4f85f36278cfd",
 				"fit": [
 					0.091,
 					0.69
@@ -173,7 +173,7 @@
 			},
 			"bwalkb": {
 				"date": "2026-10-23",
-				"fingerprint": "ab25c7fdc6728702",
+				"fingerprint": "a024ff00d6316bec",
 				"fit": [
 					0.101,
 					0.74
@@ -183,7 +183,7 @@
 			},
 			"camb": {
 				"date": "2026-10-23",
-				"fingerprint": "88d09648d774ce7e",
+				"fingerprint": "086e0ece6334c95a",
 				"fit": [
 					0.122,
 					1.5
@@ -193,7 +193,7 @@
 			},
 			"camba": {
 				"date": "2026-10-23",
-				"fingerprint": "28008346c6611dac",
+				"fingerprint": "b29853057886808a",
 				"fit": [
 					0.131,
 					1.5
@@ -203,7 +203,7 @@
 			},
 			"cambb": {
 				"date": "2026-10-23",
-				"fingerprint": "e9a79556707bdf06",
+				"fingerprint": "012bdddb6e8fc7f1",
 				"fit": [
 					0.143,
 					1.5
@@ -213,7 +213,7 @@
 			},
 			"catak": {
 				"date": "2026-10-23",
-				"fingerprint": "ed88f568cf8579a8",
+				"fingerprint": "ccf8e43470eec2f5",
 				"fit": [
 					0.139,
 					1.84
@@ -222,14 +222,14 @@
 				"verdict": "valid"
 			},
 			"cataka": {
-				"date": "2026-10-23",
-				"fingerprint": "de7a11ef6fc571ef",
+				"date": "2026-10-24",
+				"fingerprint": "59ec9e4e08176c6d",
 				"fit": [
 					0.13,
 					1.46
 				],
 				"note": "right thigh is smaller than it should be",
-				"verdict": "broken"
+				"verdict": "valid"
 			}
 		},
 		"iqm": "models/rigged/hiro.iqm"
