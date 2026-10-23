@@ -19,3 +19,53 @@
 "origin" "1854.1 -2590.1 558.1"
 "angle" "0"
 }
+
+// the dead workers: Daikatana's deadguy decos (m_dead.md3, still, one of its
+// ten death poses each by "frame", 1.5 times the size) out, the rigged
+// m_dead character in, limp from the same pose, where each lay
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/m_dead.md3"
+"_match origin" "1602 -2695 552"
+"_delete" "1"
+}
+{
+"classname" "misc_character"
+"model" "model_dead"
+"anim" "dead"
+"frame" "4"
+"ragdoll" "1"
+"modelscale" "1.5"
+"origin" "1602 -2695 552"
+}
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/m_dead.md3"
+"_match origin" "1473 -2716 536"
+"_delete" "1"
+}
+{
+"classname" "misc_character"
+"model" "model_dead"
+"anim" "dead"
+"frame" "8"
+"ragdoll" "1"
+"modelscale" "1.5"
+"origin" "1473 -2716 536"
+}
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/m_dead.md3"
+"_match origin" "1731 -2430 540"
+"_delete" "1"
+}
+{
+"classname" "misc_character"
+"model" "model_dead"
+"anim" "dead"
+"frame" "1"
+"ragdoll" "1"
+"modelscale" "1.5"
+"angle" "135"
+"origin" "1731 -2430 540"
+}
