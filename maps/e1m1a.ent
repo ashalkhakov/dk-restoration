@@ -2,8 +2,10 @@
 
 // Toshiro's body: Daikatana's deadtoshiro deco (cin_toshiro.md3, a still
 // model) out, his rigged character in, where the deco was, 1.25 times the
-// cinematic model's size as Daikatana's map draws him, limp in the same pose
-// (coffin, the frame the deco's mesh is)
+// cinematic model's size as Daikatana's map draws him. The deco's origin is
+// at the body; a character's is 24 (30 at his size) over its floor, its
+// dead lie on: his is the deco's 30 higher. Limp in the same pose (coffin,
+// the frame the deco's mesh is)
 {
 "_match classname" "misc_gamemodel"
 "_match model" "models/e1/cin_toshiro.md3"
@@ -15,7 +17,7 @@
 "anim" "coffin"
 "ragdoll" "1"
 "modelscale" "1.25"
-"origin" "1779 -2590 528"
+"origin" "1779 -2590 558"
 "angle" "0"
 }
 
