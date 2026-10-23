@@ -1463,6 +1463,111 @@
 		},
 		"iqm": "models/rigged/hirogi.iqm"
 	},
+	"model_inshiro": {
+		"anims": {
+			"nodd": {
+				"date": "2026-10-24",
+				"fingerprint": "bc521bf6803fd040",
+				"fit": [
+					0.02,
+					0.29
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"samba": {
+				"date": "2026-10-24",
+				"fingerprint": "5d2e9b5494eaeb12",
+				"fit": [
+					1.667,
+					13.15
+				],
+				"note": "tunic merged with his right hand",
+				"verdict": "broken"
+			},
+			"sambb": {
+				"date": "2026-10-24",
+				"fingerprint": "a334143ebe404a9e",
+				"fit": [
+					1.66,
+					13.48
+				],
+				"note": "tunic, right hand",
+				"verdict": "broken"
+			},
+			"sambc": {
+				"date": "2026-10-24",
+				"fingerprint": "a7b7ef40e460b9c5",
+				"fit": [
+					1.6,
+					13.13
+				],
+				"note": "tunic",
+				"verdict": "broken"
+			},
+			"sambd": {
+				"date": "2026-10-24",
+				"fingerprint": "165cc0b80b6cff7e",
+				"fit": [
+					1.973,
+					33.22
+				],
+				"note": "right hand. also his sword is animated (movement needs removal)",
+				"verdict": "broken"
+			},
+			"sfa": {
+				"date": "2026-10-24",
+				"fingerprint": "661212ea4d8bf2d7",
+				"fit": [
+					1.767,
+					14.4
+				],
+				"note": "right hand/tunic",
+				"verdict": "broken"
+			},
+			"sfamb": {
+				"date": "2026-10-24",
+				"fingerprint": "f484c09c8666d865",
+				"fit": [
+					1.675,
+					14.01
+				],
+				"note": "tunic, right hand",
+				"verdict": "broken"
+			},
+			"sfb": {
+				"date": "2026-10-24",
+				"fingerprint": "6f02d5e91d8de494",
+				"fit": [
+					1.803,
+					14.01
+				],
+				"note": "tunic",
+				"verdict": "broken"
+			},
+			"tka": {
+				"date": "2026-10-24",
+				"fingerprint": "5c7b892dcc3ff08c",
+				"fit": [
+					0.122,
+					3.33
+				],
+				"note": "tunic",
+				"verdict": "broken"
+			},
+			"tkb": {
+				"date": "2026-10-24",
+				"fingerprint": "e087f8b60b1cbae1",
+				"fit": [
+					0.099,
+					6.16
+				],
+				"note": "tunic",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/inshiro.iqm"
+	},
 	"model_mikiko": {
 		"anims": {
 			"aamb": {
@@ -1657,6 +1762,116 @@
 			}
 		},
 		"iqm": "models/rigged/mikiko.iqm"
+	},
+	"model_ninja": {
+		"anims": {
+			"kcel": {
+				"date": "2026-10-24",
+				"fingerprint": "cb7a9bdf7078e651",
+				"fit": [
+					0.603,
+					6.85
+				],
+				"note": "lower back is broken",
+				"verdict": "broken"
+			},
+			"kcela": {
+				"date": "2026-10-24",
+				"fingerprint": "05893b0080b8c96e",
+				"fit": [
+					0.64,
+					5.74
+				],
+				"note": "lower back",
+				"verdict": "broken"
+			},
+			"punch": {
+				"date": "2026-10-24",
+				"fingerprint": "2afd98ad2f0d94a8",
+				"fit": [
+					0.509,
+					5.63
+				],
+				"note": "lower back",
+				"verdict": "broken"
+			},
+			"runa": {
+				"date": "2026-10-24",
+				"fingerprint": "d35e18ebd149191d",
+				"fit": [
+					0.597,
+					6.5
+				],
+				"note": "left leg",
+				"verdict": "broken"
+			},
+			"sfa": {
+				"date": "2026-10-24",
+				"fingerprint": "1fba2d1613b9164b",
+				"fit": [
+					1.048,
+					7.14
+				],
+				"note": "origin is wrong. movement removal?",
+				"verdict": "broken"
+			},
+			"sfb": {
+				"date": "2026-10-24",
+				"fingerprint": "342e78d7ed40e25c",
+				"fit": [
+					1.145,
+					7.85
+				],
+				"note": "movement removal needed",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/ninja.iqm"
+	},
+	"model_osaka": {
+		"anims": {
+			"c_amba": {
+				"date": "2026-10-24",
+				"fingerprint": "9ced085d1bdfa86a",
+				"fit": [
+					0.018,
+					0.09
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"c_ambd": {
+				"date": "2026-10-24",
+				"fingerprint": "23fddfc4aed570d6",
+				"fit": [
+					0.19,
+					3.36
+				],
+				"note": "arms / biceps",
+				"verdict": "broken"
+			},
+			"c_stndtka": {
+				"date": "2026-10-24",
+				"fingerprint": "23af61043fa73673",
+				"fit": [
+					0.071,
+					0.58
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"c_stndtkb": {
+				"date": "2026-10-24",
+				"fingerprint": "eb9eb3d356acbbf3",
+				"fit": [
+					0.036,
+					0.49
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/osaka.iqm"
 	},
 	"model_toshiro": {
 		"anims": {

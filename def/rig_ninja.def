@@ -2,13 +2,14 @@
 entityDef model_ninja {
 	"inherit"			"character_base"	// def/dk_characters.def
 	"mesh"				"models/rigged/ninja.iqm"
-	"mins"				"-26 -26 -24"	// standing, at the origin (pmove's)
-	"maxs"				"26 26 17"
-	"crouch_height"		"17"		// maxs z crouched
-	"eye_height"		"13"
-	"crouch_eye_height"	"13"
-	"ik_minWaistAnkleDist"	"11"	// the walk IK's waist drops no lower (Doom 3's)
+	"mins"				"-10 -10 -24"	// standing, at the origin (pmove's)
+	"maxs"				"10 10 38"
+	"crouch_height"		"38"		// maxs z crouched
+	"eye_height"		"32"
+	"crouch_eye_height"	"32"
+	"ik_minWaistAnkleDist"	"23"	// the walk IK's waist drops no lower (Doom 3's)
 
+	"anim rest"		"rest 10"
 	"anim ambans"		"ambans 10"
 	"anim cr"		"cr 10"
 	"anim crns"		"crns 10"
@@ -25,30 +26,32 @@ entityDef model_ninja {
 	"anim sfb"		"sfb 10"
 
 	"frame runa 1"	"footstep Lankle_r"
+	"frame runa 6"	"footstep Rankle_r"
 
-	"anim_speed runa"	"64"
+	"anim_speed runa"	"61"
 
 
-	"hitbox Lupleg"	"-3.3 -3.1 -7.8 6.2 6.0 0.3 legs"
-	"hitbox Lloleg"	"6.4 -1.0 -1.1 7.5 1.7 2.3 legs"
-	"hitbox Lankle_r"	"2.9 -2.1 -1.4 3.7 2.3 -0.1 legs"
-	"hitbox Rupleg"	"6.2 -6.4 -1.7 13.2 4.0 12.7 legs"
-	"hitbox Rloleg"	"4.9 -0.2 2.2 6.6 1.0 5.5 legs"
-	"hitbox Waist"	"4.9 -3.4 -5.3 9.1 8.2 1.6 torso"
-	"hitbox Chest"	"4.8 1.8 -3.3 4.8 1.8 -3.3 torso"
-	"hitbox Loneck"	"3.1 -3.3 -4.4 7.4 1.1 3.8 head"
-	"hitbox Head"	"1.3 -3.4 -4.0 6.7 2.1 3.4 head"
-	"hitbox Luparm"	"-5.8 -7.1 -7.7 1.5 -1.2 0.5 arms"
-	"hitbox Lloarm"	"4.0 -0.4 -3.0 7.8 4.6 1.6 arms"
-	"hitbox Lhand"	"0.1 -3.1 -1.7 6.0 1.3 0.4 arms"
-	"hitbox Ruparm"	"-4.3 -11.0 -3.3 5.6 2.5 5.4 arms"
-	"hitbox Rloarm"	"5.8 -4.2 -3.2 9.7 1.1 1.1 arms"
-	"hitbox Rhand"	"1.2 2.0 -2.0 5.6 7.6 1.4 arms"
-	"hitbox Rloleg_1"	"-4.6 -3.6 -3.3 -1.1 5.4 1.6 legs"
-	"hitbox Luparm_1"	"-4.2 0.1 -3.9 0.6 4.8 4.8 arms"
-	"hitbox Rloleg_2"	"1.5 -3.1 -6.3 5.0 0.7 -0.4 legs"
-	"hitbox Lankle_r_1"	"-2.5 -7.7 -2.6 1.7 0.2 1.5 legs"
-	"hitbox Rloleg_2_1"	"-6.2 2.1 -4.3 -2.1 5.2 -1.8 legs"
+	"hitbox Hips"	"-4.2 -0.7 -0.1 1.2 0.2 0.7 torso"
+	"hitbox Lupleg"	"0.0 5.2 -4.6 4.7 7.7 -1.4 legs"
+	"hitbox Rloleg"	"3.8 -5.5 -0.7 7.0 3.7 5.2 legs"
+	"hitbox Rankle_r"	"0.0 -1.9 -1.9 4.9 2.4 7.2 legs"
+	"hitbox Waist"	"1.7 -5.4 -3.9 4.0 0.5 -0.1 torso"
+	"hitbox Chest"	"4.1 -1.0 -4.3 10.3 7.4 3.0 torso"
+	"hitbox Loneck"	"0.4 -2.3 -1.5 4.2 1.8 2.5 head"
+	"hitbox Head"	"-1.7 -2.9 -0.4 5.9 2.5 6.7 head"
+	"hitbox Luparm"	"1.5 -2.1 -1.3 10.3 2.5 4.6 arms"
+	"hitbox Lloarm"	"5.9 -2.2 -4.2 9.8 2.9 0.8 arms"
+	"hitbox Lhand"	"0.7 -2.1 -1.0 6.0 0.4 1.6 arms"
+	"hitbox Ruparm"	"-1.2 -1.0 -0.6 1.2 -0.7 -0.4 arms"
+	"hitbox Rloarm"	"7.5 -2.0 0.6 11.3 1.4 4.3 arms"
+	"hitbox Rhand"	"-4.3 -1.2 -4.6 -1.2 3.2 -0.8 arms"
+	"hitbox Waist_1"	"0.0 0.0 0.0 0.0 0.0 0.0 torso"
+	"hitbox Rloarm_2"	"-1.3 -1.1 -2.5 0.0 0.0 0.1 arms"
+	"hitbox Rloarm_3"	"0.0 0.0 0.0 1.0 0.9 1.2 arms"
+	"hitbox Rankle_r_1"	"-2.1 -1.6 -0.7 0.0 1.8 0.0 legs"
+	"hitbox Lankle_r_6"	"-0.5 -4.2 -0.3 0.0 0.0 0.0 legs"
+	"hitbox Lankle_r_8"	"-0.7 -2.0 -1.3 -0.0 0.0 0.0 legs"
+	"hitbox Chest_1"	"-1.2 -1.6 -1.2 2.6 5.1 2.2 torso"
 
 	"damage_scale head"	"2"
 	"damage_scale arms"	"0.75"
