@@ -21,7 +21,9 @@
 #   ./dk rigshots [name...]    the rigged models in e1m1a, screenshots in
 #                              out/shots/rig
 #   ./dk viewer [port]         the rig viewer: the rigged models over
-#                              Daikatana's frames, http://localhost:8765
+#                              Daikatana's frames, http://localhost:8765;
+#                              validate their animations there
+#   ./dk rigcheck              the validated animations whose rig changed
 #   ./dk lightmaps [map...]    the maps' lightmaps baked again by q3map2 from
 #                              Daikatana's lights (LIGHT_OPTIONS)
 #   ./dk bakegrids [map...]    the maps' rooms and the light in them, for
@@ -527,6 +529,15 @@ cmd_rig() {
 	} >"$DKRES/models/rigged/results.txt"
 	[ $failed = 0 ] || die "some models failed to rig"
 	rig_outfits
+	# what was validated and has changed (tools/rig/validated.json)
+	cmd_rigcheck || true
+}
+
+# ./dk rigcheck: the rigs' animations validated in the viewer (./dk viewer,
+# tools/rig/validated.json) whose rig has changed since: to validate again.
+# An autorig change that changes them isn't committed till they have been
+cmd_rigcheck() {
+	(cd "$ROOT" && python3 tools/rig/rigcheck.py)
 }
 
 # OUTFITS: a character's other outfit, rigged on its own (RIG_MODELS), on the
@@ -1086,7 +1097,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|rigshots|viewer|lightmaps|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|rigshots|viewer|rigcheck|lightmaps|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac

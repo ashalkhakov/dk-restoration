@@ -5,6 +5,14 @@ skins) and the ragdolls (af/), on this machine only.
 
   serve.py [port]
 
+GET /api/status?def=<model def> says, for each of its rig's animations,
+whether it's validated (tools/rig/rigcheck.py, tools/rig/validated.json):
+valid, broken, changed since, or new; POST /api/validate { "def", "anim",
+"verdict": "valid" | "broken", "note" } records a verdict on it as it is now.
+
+POST /api/save?name=<file> saves what the page sends to out/rigcheck/<file>
+(its capture: a picture of each model, its fit numbers).
+
 /api/models lists the rigged models: every def whose "mesh" is an IQM
 autorig made (def/*.def), with the MD3 it was made from (the def's first
 line says), its ragdoll (af/<name>.af) and what --root-out took out of its
@@ -15,10 +23,15 @@ import json
 import os
 import re
 import sys
+import urllib.parse
+
+sys.path.insert( 0, os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), ".." ) )
+import rigcheck  # noqa: E402
 
 ROOT = os.path.normpath( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), "..", "..", ".." ) )
 PAGE = os.path.join( ROOT, "tools", "rig", "viewer" )
 DKRES = os.path.join( ROOT, "dkres" )
+SHOTS = os.path.join( ROOT, "out", "rigcheck" )	# what the page's capture saves (POST /api/save?name=)
 
 
 def models():
@@ -70,9 +83,40 @@ class Handler( http.server.SimpleHTTPRequestHandler ):
 		self.end_headers()
 		self.wfile.write( data )
 
+	def send_json( self, obj, code = 200 ):
+		data = json.dumps( obj ).encode()
+		self.send_response( code )
+		self.send_header( "Content-Type", "application/json" )
+		self.send_header( "Content-Length", str( len( data ) ) )
+		self.end_headers()
+		self.wfile.write( data )
+
+	def do_POST( self ):
+		p, _, q = self.path.partition( "?" )
+		if p == "/api/validate":
+			try:
+				body = json.loads( self.rfile.read( int( self.headers.get( "Content-Length", 0 ) ) ) )
+				entry = rigcheck.validate( body["def"], body["anim"], body["verdict"], body.get( "note", "" ) )
+				self.send_json( dict( entry, state = entry["verdict"] ) )
+			except ( ValueError, KeyError ) as e:
+				self.send_json( { "error": str( e ) }, 400 )
+			return
+		name = q[len( "name=" ):] if q.startswith( "name=" ) else ""
+		if p != "/api/save" or not re.match( r"^[A-Za-z0-9_.-]+$", name ) or name.startswith( "." ):
+			self.send_error( 400 )
+			return
+		data = self.rfile.read( int( self.headers.get( "Content-Length", 0 ) ) )
+		os.makedirs( SHOTS, exist_ok = True )
+		open( os.path.join( SHOTS, name ), "wb" ).write( data )
+		self.send_response( 204 )
+		self.end_headers()
+
 	def do_GET( self ):
 		p = self.path.split( "?" )[0]
-		if p == "/api/models":
+		if p == "/api/status":
+			q = urllib.parse.parse_qs( self.path.partition( "?" )[2] )
+			self.send_json( rigcheck.status( q.get( "def", [ "" ] )[0] ) )
+		elif p == "/api/models":
 			data = json.dumps( models() ).encode()
 			self.send_response( 200 )
 			self.send_header( "Content-Type", "application/json" )

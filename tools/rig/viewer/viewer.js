@@ -353,6 +353,7 @@ async function loadModel( m ) {
 		sel.appendChild( o );
 	} );
 	setAnim( 0 );
+	loadValidation();
 	// the camera on the bind pose
 	const p = S.iqm.arrays[0].data;
 	let lo = [ 1e9, 1e9, 1e9 ], hi = [ -1e9, -1e9, -1e9 ];
@@ -413,8 +414,64 @@ function setAnim( i ) {
 	S.anim = i; S.frame = 0;
 	$( "anim" ).value = i;
 	$( "frame" ).max = Math.max( 0, S.iqm.anims[i].count - 1 );
+	showValidation();
 	update();
 }
+
+// ------------------------------------------------------------------ validation
+// each animation's verdict (tools/rig/validated.json, through the server's
+// tools/rig/rigcheck.py): valid, broken, changed since it was judged, or new
+
+const MARK = { valid: "\u2713", broken: "\u2717", changed: "!", new: "\u00b7" };
+
+async function loadValidation() {
+	S.valid = null;
+	showValidation();
+	const def = S.model.def;
+	try {
+		const st = await ( await fetch( "/api/status?def=" + encodeURIComponent( def ) ) ).json();
+		if ( S.model.def !== def ) return;
+		S.valid = st;
+	} catch ( e ) { S.valid = {}; }
+	labelAnims();
+	showValidation();
+}
+
+function labelAnims() {
+	[ ...$( "anim" ).options ].forEach( ( o, i ) => {
+		const a = S.iqm.anims[i], v = S.valid && S.valid[a.name];
+		o.textContent = `${v ? MARK[v.state] : " "} ${a.name}  (${a.count} frames, ${a.fps} fps)`;
+	} );
+}
+
+function showValidation() {
+	const box = $( "vstate" ), a = S.iqm && S.iqm.anims[S.anim];
+	if ( !a || !S.valid ) { box.className = "vstate"; box.textContent = "checking…"; return; }
+	const v = S.valid[a.name] || { state: "new" };
+	box.className = "vstate " + v.state;
+	const fit = v.fit ? `, fit ${v.fit[0]} average, ${v.fit[1]} worst` : "";
+	box.textContent = {
+		new: `${a.name}: not validated yet`,
+		valid: `${a.name}: valid (${v.date}${fit})`,
+		broken: `${a.name}: broken (${v.date}${fit})`,
+		changed: `${a.name}: CHANGED since you marked it ${v.verdict} (${v.date}${fit}): validate again`,
+	}[v.state] + ( v.note ? `\n${v.note}` : "" );
+	$( "vnote" ).value = v.note || "";
+}
+
+async function judge( verdict ) {
+	const a = S.iqm.anims[S.anim];
+	$( "vstate" ).textContent = "recording…";
+	const r = await fetch( "/api/validate", { method: "POST", headers: { "Content-Type": "application/json" },
+		body: JSON.stringify( { def: S.model.def, anim: a.name, verdict, note: $( "vnote" ).value } ) } );
+	const e = await r.json();
+	if ( !r.ok ) { $( "err" ).textContent = e.error || "not recorded"; showValidation(); return; }
+	S.valid[a.name] = e;
+	labelAnims();
+	showValidation();
+}
+$( "vvalid" ).onclick = () => judge( "valid" );
+$( "vbroken" ).onclick = () => judge( "broken" );
 
 // ------------------------------------------------------------------ pose
 
@@ -690,7 +747,7 @@ window.addEventListener( "mousemove", e => {
 canvas.addEventListener( "wheel", e => { e.preventDefault(); S.cam.dist *= Math.exp( e.deltaY * 0.001 ); update(); }, { passive: false } );
 window.addEventListener( "resize", update );
 window.addEventListener( "keydown", e => {
-	if ( e.target.tagName === "SELECT" ) return;
+	if ( e.target.tagName === "SELECT" || e.target.tagName === "INPUT" ) return;
 	if ( e.key === " " ) { e.preventDefault(); $( "play" ).click(); }
 	if ( e.key === "ArrowRight" ) $( "next" ).click();
 	if ( e.key === "ArrowLeft" ) $( "prev" ).click();

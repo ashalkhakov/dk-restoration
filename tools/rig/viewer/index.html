@@ -29,6 +29,9 @@
 	#info { font: 11px/1.45 ui-monospace, Menlo, monospace; white-space: pre-wrap; color: var(--dim); }
 	.key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 2px; }
 	#err { color: #f66; }
+	input[type=text] { width: 100%; margin-top: 6px; background: #1d2026; color: var(--text); border: 1px solid var(--line); padding: 4px; border-radius: 3px; }
+	.vstate { font: 12px/1.4 ui-monospace, Menlo, monospace; padding: 4px 6px; border-radius: 3px; background: #1d2026; white-space: pre-wrap; }
+	.vstate.valid { color: #7ee08a; } .vstate.broken { color: #ff7a6b; } .vstate.changed { color: #ffd166; } .vstate.new { color: var(--dim); }
 </style>
 </head>
 <body>
@@ -47,6 +50,13 @@
 		</div>
 		<input type="range" id="frame" min="0" max="0" value="0">
 		<label>speed <input type="range" id="speed" min="0.1" max="2" step="0.1" value="1" style="flex:1"></label>
+		<h2>Validation</h2>
+		<div id="vstate" class="vstate">checking…</div>
+		<input type="text" id="vnote" placeholder="note (what's wrong, or what to watch)">
+		<div class="row" style="margin-top:6px">
+			<button id="vvalid">Valid</button>
+			<button id="vbroken">Broken</button>
+		</div>
 		<h2>Show</h2>
 		<label><input type="checkbox" id="showMesh" checked> rigged mesh (IQM)</label>
 		<label><input type="checkbox" id="showTex" checked> textured</label>
