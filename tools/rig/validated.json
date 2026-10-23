@@ -2,7 +2,8 @@
 	"model_hiro": {
 		"anims": {
 			"aamb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "20afbb7cd5182028",
 				"fit": [
 					0.015,
@@ -12,7 +13,8 @@
 				"verdict": "valid"
 			},
 			"aamba": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "4b1ad64597231545",
 				"fit": [
 					0.023,
@@ -22,7 +24,8 @@
 				"verdict": "valid"
 			},
 			"aambb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "78ed60317b1b95ee",
 				"fit": [
 					0.051,
@@ -32,7 +35,8 @@
 				"verdict": "valid"
 			},
 			"ajump": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "11f5b17ab4336a27",
 				"fit": [
 					0.082,
@@ -42,7 +46,8 @@
 				"verdict": "valid"
 			},
 			"ajumpa": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "dfa3135c882e28a7",
 				"fit": [
 					0.083,
@@ -52,7 +57,8 @@
 				"verdict": "valid"
 			},
 			"ajumpb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "83da27eb2251a23c",
 				"fit": [
 					0.091,
@@ -62,7 +68,8 @@
 				"verdict": "valid"
 			},
 			"atak": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "b44ef831eecfd9da",
 				"fit": [
 					0.065,
@@ -72,7 +79,8 @@
 				"verdict": "valid"
 			},
 			"ataka": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "db47b3c1cada3258",
 				"fit": [
 					0.029,
@@ -82,7 +90,8 @@
 				"verdict": "valid"
 			},
 			"atakb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "3c6aa7e71328e2ed",
 				"fit": [
 					0.059,
@@ -92,7 +101,8 @@
 				"verdict": "valid"
 			},
 			"aws": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "736e8374dce2aa94",
 				"fit": [
 					0.032,
@@ -102,7 +112,8 @@
 				"verdict": "valid"
 			},
 			"awsa": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "b4af71a04c5027b0",
 				"fit": [
 					0.038,
@@ -112,7 +123,8 @@
 				"verdict": "valid"
 			},
 			"awsb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "3fd1863c2de45d64",
 				"fit": [
 					0.058,
@@ -122,7 +134,8 @@
 				"verdict": "valid"
 			},
 			"bamb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "f5bc5a6234a399b2",
 				"fit": [
 					0.032,
@@ -132,7 +145,8 @@
 				"verdict": "valid"
 			},
 			"bamba": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "7da3c8c4016a1941",
 				"fit": [
 					0.026,
@@ -142,7 +156,8 @@
 				"verdict": "valid"
 			},
 			"bambb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "352aa68f33335931",
 				"fit": [
 					0.052,
@@ -152,7 +167,8 @@
 				"verdict": "valid"
 			},
 			"bwalk": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "04e360765c0a646f",
 				"fit": [
 					0.1,
@@ -162,7 +178,8 @@
 				"verdict": "valid"
 			},
 			"bwalka": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "94f4f85f36278cfd",
 				"fit": [
 					0.091,
@@ -172,7 +189,8 @@
 				"verdict": "valid"
 			},
 			"bwalkb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "a024ff00d6316bec",
 				"fit": [
 					0.101,
@@ -181,8 +199,152 @@
 				"note": "",
 				"verdict": "valid"
 			},
+			"c_lkbacktalk": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "72f1069c3a4524d8",
+				"fit": [
+					0.059,
+					0.94
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_lkturnl": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "288b4ff62941c299",
+				"fit": [
+					0.042,
+					0.51
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_lkturnr": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "16b277a4936142f5",
+				"fit": [
+					0.034,
+					0.36
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_look": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "5b80ec32856e7437",
+				"fit": [
+					0.044,
+					0.49
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_lookout": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "835f8f5f6d8450e8",
+				"fit": [
+					0.059,
+					0.75
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_nodd": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "49af6a74e57d3316",
+				"fit": [
+					0.023,
+					0.27
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_surp": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "05c1237c685e9f16",
+				"fit": [
+					0.029,
+					0.38
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_talk": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "1a9903264b343199",
+				"fit": [
+					0.024,
+					0.28
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_thotdown": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "937f133d0405fab7",
+				"fit": [
+					0.029,
+					0.31
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_thotup": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "8afc714acf3b0b0b",
+				"fit": [
+					0.027,
+					0.37
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_tkokay": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b0a1a2dc8cade231",
+				"fit": [
+					0.036,
+					0.48
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_tkpoint": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "307e0671b02de866",
+				"fit": [
+					0.038,
+					0.69
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"c_walklook": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "94f3bd072272de0c",
+				"fit": [
+					0.084,
+					0.9
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
 			"camb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "086e0ece6334c95a",
 				"fit": [
 					0.122,
@@ -192,7 +354,8 @@
 				"verdict": "valid"
 			},
 			"camba": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "b29853057886808a",
 				"fit": [
 					0.131,
@@ -202,7 +365,8 @@
 				"verdict": "valid"
 			},
 			"cambb": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "012bdddb6e8fc7f1",
 				"fit": [
 					0.143,
@@ -212,7 +376,8 @@
 				"verdict": "valid"
 			},
 			"catak": {
-				"date": "2026-10-23",
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
 				"fingerprint": "ccf8e43470eec2f5",
 				"fit": [
 					0.139,
@@ -222,6 +387,7 @@
 				"verdict": "valid"
 			},
 			"cataka": {
+				"by": "Artyom Shalkhakov",
 				"date": "2026-10-24",
 				"fingerprint": "59ec9e4e08176c6d",
 				"fit": [
@@ -229,6 +395,512 @@
 					1.46
 				],
 				"note": "right thigh is smaller than it should be",
+				"verdict": "valid"
+			},
+			"catakb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f046eb8a70b78191",
+				"fit": [
+					0.149,
+					1.52
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cdie": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "35f1a40435f7821b",
+				"fit": [
+					0.159,
+					2.51
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cdiea": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "a5cb94dbb5a66a3c",
+				"fit": [
+					0.159,
+					2.51
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cdieb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "da484ebf22111301",
+				"fit": [
+					0.163,
+					2.51
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cin": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "4d18b5c937006493",
+				"fit": [
+					0.065,
+					0.8
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cina": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "7c165075a248e1c9",
+				"fit": [
+					0.076,
+					0.8
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cinb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "7d85c02d3b2d22ca",
+				"fit": [
+					0.094,
+					0.8
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cout": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "5cd21377f38bf824",
+				"fit": [
+					0.06,
+					0.66
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"couta": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "76e65e94b10e743b",
+				"fit": [
+					0.063,
+					0.66
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"coutb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "aabc45ee554d4fc4",
+				"fit": [
+					0.078,
+					0.72
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cwalk": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "99104af4c0c09311",
+				"fit": [
+					0.135,
+					2.31
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cwalka": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "fe2f1bab852d3d8e",
+				"fit": [
+					0.135,
+					2.31
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cwalkb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "8383f0d28f382b54",
+				"fit": [
+					0.153,
+					2.37
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cws": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b4787ea0af2181f2",
+				"fit": [
+					0.125,
+					1.47
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cwsa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "dcd04568d8de069a",
+				"fit": [
+					0.13,
+					1.5
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"cwsb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "6f00b3bfc835a3e0",
+				"fit": [
+					0.142,
+					1.5
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"die": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f5876abc394536b7",
+				"fit": [
+					0.156,
+					2.52
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"diea": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f3b154798064ed12",
+				"fit": [
+					0.156,
+					2.5
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"dieb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "30a2e3c0832d2ed2",
+				"fit": [
+					0.159,
+					2.5
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"hita": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b58bb23930413823",
+				"fit": [
+					0.069,
+					1.15
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"hitb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "3d06ff2e3d3e36de",
+				"fit": [
+					0.051,
+					0.71
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"hitc": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "453f4c3da443cf1d",
+				"fit": [
+					0.055,
+					0.6
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"jump": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "e05bfc4fbd04f6e4",
+				"fit": [
+					0.101,
+					1.05
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"ladderdn": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b2b9db9f4b756e1f",
+				"fit": [
+					0.137,
+					1.41
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"ladderup": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "37b86b4976d33314",
+				"fit": [
+					0.137,
+					1.41
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"oamba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d350ca8bef808841",
+				"fit": [
+					0.072,
+					0.5
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"oambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "0f8408a29870602c",
+				"fit": [
+					0.172,
+					2.21
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"rstopl": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "7c3cff4dbd0bcb00",
+				"fit": [
+					0.053,
+					0.65
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"rstopla": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "7ad5114ce7c38dfb",
+				"fit": [
+					0.062,
+					0.65
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"rstoplb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "34de8bdba98184c4",
+				"fit": [
+					0.088,
+					0.66
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"rstopr": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "515d9774767fd9ef",
+				"fit": [
+					0.068,
+					0.88
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"rstopra": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "8602898c7ce7fb26",
+				"fit": [
+					0.066,
+					0.87
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"rstoprb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "1b482ff547166886",
+				"fit": [
+					0.079,
+					0.86
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"run": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "e2115b8544986b3e",
+				"fit": [
+					0.082,
+					0.81
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"runa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "e145e243012a5c76",
+				"fit": [
+					0.08,
+					0.82
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"runb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "657d7aa126c47f92",
+				"fit": [
+					0.087,
+					0.82
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"swim": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "064fae3c97eddfc7",
+				"fit": [
+					0.133,
+					1.69
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"walk": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "90752580b05cd7f0",
+				"fit": [
+					0.077,
+					0.84
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"walka": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "05acf24ddc1347a5",
+				"fit": [
+					0.065,
+					0.84
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"walkb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "0f9c53773e52d639",
+				"fit": [
+					0.084,
+					0.84
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"wstopl": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "3fa0273038cc2d9c",
+				"fit": [
+					0.06,
+					0.53
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"wstopla": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d272913683982a6d",
+				"fit": [
+					0.063,
+					0.54
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"wstoplb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f32de79396bed8c1",
+				"fit": [
+					0.087,
+					0.65
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"wstopr": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "953023c742ab4ab3",
+				"fit": [
+					0.066,
+					0.84
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"wstopra": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "1e28ef21c9ea22e6",
+				"fit": [
+					0.063,
+					0.84
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
+				"verdict": "valid"
+			},
+			"wstoprb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "1980195d47872531",
+				"fit": [
+					0.087,
+					0.84
+				],
+				"note": "approved with the whole rig (2026-10-23), not judged one by one",
 				"verdict": "valid"
 			}
 		},

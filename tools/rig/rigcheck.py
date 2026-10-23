@@ -10,7 +10,8 @@ The record is tools/rig/validated.json:
 	                   "anims": { "<animation>": { "verdict": "valid" | "broken",
 	                                               "note": "...", "date": "YYYY-MM-DD",
 	                                               "fingerprint": "...",
-	                                               "fit": [ average, worst ] } } } }
+	                                               "fit": [ average, worst ],
+	                                               "by": "<who>" (when recorded for them) } } } }
 
 An animation's fingerprint is a hash of its skinned mesh, every frame, each
 vertex rounded to 0.05 units: a rig made again that moves no vertex
@@ -264,8 +265,9 @@ def status( defName, rec = None ):
 		out[anim] = e
 	return out
 
-def validate( defName, anim, verdict, note = "" ):
-	"""the user's verdict on an animation of the rig as it is now, recorded"""
+def validate( defName, anim, verdict, note = "", by = None ):
+	"""the user's verdict on an animation of the rig as it is now, recorded
+	(by: whose, when it's recorded for them)"""
 	if verdict not in ( "valid", "broken" ):
 		raise ValueError( "verdict: valid or broken" )
 	info = model_info( defName )
@@ -280,6 +282,8 @@ def validate( defName, anim, verdict, note = "" ):
 	m["iqm"] = info[0]
 	m["anims"][anim] = { "verdict": verdict, "note": note, "date": datetime.date.today().isoformat(),
 						 "fingerprint": rig.fingerprint( anim ), "fit": fit }
+	if by:
+		m["anims"][anim]["by"] = by
 	save_record( rec )
 	return m["anims"][anim]
 
