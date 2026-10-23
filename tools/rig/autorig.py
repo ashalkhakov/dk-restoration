@@ -1707,7 +1707,8 @@ def root_out( m, joints, motion, J, assign, outBase, md3Path ):
 	# with vertexes of its own (a pelvis skinned to the thighs and the waist
 	# has none, and its joint never moves)
 	hip = joints[J["Hips"]]["pos"]
-	root = next( b for b in ( J["Hips"], J["Waist"], J["Chest"] ) if assign.count( b ) >= 4 )
+	trunk = ( J["Hips"], J["Waist"], J["Chest"] )
+	root = next( ( b for b in trunk if assign.count( b ) >= 4 ), max( trunk, key = assign.count ) )
 	# (--root-out-anims: those animations' frames only, the others as they are)
 	outOf = set( range( m.numFrames ) )
 	if ROOT_OUT_ANIMS:

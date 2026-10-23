@@ -394,7 +394,13 @@ function matchMD3() {
 	S.match = new Int32Array( iqm.numVerts );
 	S.matchDist = new Float32Array( iqm.numVerts );
 	for ( let i = 0; i < iqm.numVerts; i++ ) {
-		const [ k, d ] = nearest( restFrame, i );
+		let [ k, d ] = nearest( restFrame, i );
+		// not there in the bind frame: a prop, at rest in the frame it's
+		// biggest in; paired where it's exactly
+		for ( let f = 0; d >= 1e-4 && f < md3.numFrames; f++ ) {
+			const [ k2, d2 ] = nearest( f, i );
+			if ( d2 < 1e-4 ) { k = k2; d = d2; }
+		}
 		S.match[i] = k; S.matchDist[i] = Math.sqrt( d );
 	}
 	S.md3All = all;

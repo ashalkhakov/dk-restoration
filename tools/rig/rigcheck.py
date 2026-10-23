@@ -163,7 +163,18 @@ class Source:
 			ds = [ nearest( f, p )[1] for p in rig.pos ]
 			return ( -sum( 1 for d in ds if d < 1e-4 ), sum( ds ) )
 		self.rest = min( cands, key = score )
-		self.match = [ nearest( self.rest, p )[0] for p in rig.pos ]
+		self.match = []
+		for p in rig.pos:
+			m, d = nearest( self.rest, p )
+			if d >= 1e-4:
+				# not there in the bind frame: a prop, at rest in the frame
+				# it's biggest in; paired where it's exactly
+				for f in range( len( self.m.frameNames ) ):
+					m2, d2 = nearest( f, p )
+					if d2 < 1e-4:
+						m = m2
+						break
+			self.match.append( m )
 
 	def fit( self, rig, anim ):
 		"""( average, worst ) distance of the rig's vertexes from Daikatana's
@@ -319,7 +330,7 @@ def af_proposals():
 SAME = 0.01		# units: a vertex of a validated animation moving no more than this, it's the same
 
 def gate( defPath, iqmPath, change = () ):
-	"""the validated animations of defPath's model the rig at iqmPath changes
+	"""the valid animations of defPath's model the rig at iqmPath changes
 	(those named with a prefix in change aside): [ ( animation, why ) ].
 	Against the rig installed, which must be the validated one: no vertex
 	in any frame more than SAME apart (a hash would flip on IQM's
@@ -334,8 +345,8 @@ def gate( defPath, iqmPath, change = () ):
 	rig = Rig( iqmPath )
 	out = []
 	for anim, e in sorted( known.items() ):
-		if any( anim.startswith( p ) for p in change ):
-			continue
+		if e["verdict"] != "valid" or any( anim.startswith( p ) for p in change ):
+			continue		# (one marked broken is there to be changed)
 		if anim not in rig.anims:
 			out.append( ( anim, "gone" ) )
 		elif not old or anim not in old.anims or old.fingerprint( anim ) != e["fingerprint"]:
