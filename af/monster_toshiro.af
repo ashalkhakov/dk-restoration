@@ -55,7 +55,7 @@ articulatedFigure monster_toshiro {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 3.99, 4.48, 11.72 ), ( 2.27, 5.81, 4.63 ), 5.91 )
+		model bone( ( 3.99, 4.48, 11.72 ), ( 2.27, 5.81, 4.63 ), 5.20 )
 		origin ( 3.13, 5.15, 8.17 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -79,7 +79,7 @@ articulatedFigure monster_toshiro {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -0.40, 2.78, -1.53 ), ( 0.72, 2.77, -10.04 ), 6.19 )
+		model bone( ( -0.40, 2.78, -1.53 ), ( 0.72, 2.77, -10.04 ), 2.72 )
 		origin ( 0.16, 2.78, -5.78 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,7 +91,7 @@ articulatedFigure monster_toshiro {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 0.72, 2.77, -10.04 ), ( -0.96, 2.75, -21.95 ), 5.22 )
+		model bone( ( 0.72, 2.77, -10.04 ), ( -0.96, 2.75, -21.95 ), 2.72 )
 		origin ( -0.12, 2.76, -16.00 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -103,7 +103,7 @@ articulatedFigure monster_toshiro {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 1.29, -0.06, 11.13 ), ( 2.13, -6.27, 10.78 ), 4.50 )
+		model bone( ( 1.29, -0.06, 11.13 ), ( 2.13, -6.27, 10.78 ), 4.39 )
 		origin ( 1.71, -3.16, 10.95 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure monster_toshiro {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -1.91, 0.16, -1.53 ), ( 1.03, -0.95, -10.04 ), 11.63 )
+		model bone( ( -1.91, 0.16, -1.53 ), ( 1.03, -0.95, -10.04 ), 2.72 )
 		origin ( -0.44, -0.39, -5.78 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -139,7 +139,7 @@ articulatedFigure monster_toshiro {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 1.03, -0.95, -10.04 ), ( -0.28, -2.30, -21.95 ), 5.60 )
+		model bone( ( 1.03, -0.95, -10.04 ), ( -0.28, -2.30, -21.95 ), 2.72 )
 		origin ( 0.38, -1.62, -16.00 )
 		density 0.2
 		friction 0.01, 0.01, 0.8

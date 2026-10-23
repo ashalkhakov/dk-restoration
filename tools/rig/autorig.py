@@ -1532,8 +1532,22 @@ def ragdoll_af( name, joints, rest, assign, afName = None ):
 						"		clipMask solid, corpse",
 						"		selfCollision 1",
 						"	}", "" ] )
+	J_ = { j["name"]: j for j in joints }
+	hips = vlen( vsub( J_["Lupleg"]["pos"], J_["Rupleg"]["pos"] ) ) if "Lupleg" in J_ and "Rupleg" in J_ else None
 	def body_bone( bname, joint, names, a, b ):
 		w = width( names[:1], a, b )		# the limb's own vertexes, not a hand's or a foot's
+		# not much fatter than it's long, nor a leg wider than the hips are
+		# apart: a robe round Toshiro's thighs made them 12 wide, each deep in
+		# the other, and the figure stood stuck
+		w = min( w, max( 2.0, 0.7 * vlen( vsub( b, a ) ) ) )
+		if hips and names[0].endswith( ( "upleg", "loleg" ) ):
+			w = min( w, max( 2.0, 0.9 * hips ) )
+		# the body clear of the floor it stands on: one in it at the start is
+		# stuck there (Doom 3's AF rests a body it can't get out), and the
+		# figure with it, standing (Toshiro's thick legs)
+		floor = min( v[2] for v in rest ) + 0.5 * w + 0.5
+		if b[2] < floor:
+			b = ( b[0], b[1], floor )
 		lines.extend( [ "	body \"%s\" {" % bname,
 						"		joint \"%s\"" % joint,
 						"		mod orientation",

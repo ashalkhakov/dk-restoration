@@ -55,7 +55,7 @@ articulatedFigure monster_usagi {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( -0.09, 0.73, 14.41 ), ( 0.69, 2.43, 14.05 ), 4.36 )
+		model bone( ( -0.09, 0.73, 14.41 ), ( 0.69, 2.43, 14.05 ), 2.00 )
 		origin ( 0.30, 1.58, 14.23 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -91,8 +91,8 @@ articulatedFigure monster_usagi {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( 1.47, 1.58, -6.48 ), ( -3.00, 3.74, -22.45 ), 5.60 )
-		origin ( -0.77, 2.66, -14.46 )
+		model bone( ( 1.47, 1.58, -6.48 ), ( -3.00, 3.74, -21.15 ), 5.60 )
+		origin ( -0.77, 2.66, -13.81 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -103,7 +103,7 @@ articulatedFigure monster_usagi {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 0.05, -7.67, 15.08 ), ( -0.48, -11.81, 13.88 ), 4.79 )
+		model bone( ( 0.05, -7.67, 15.08 ), ( -0.48, -11.81, 13.88 ), 3.04 )
 		origin ( -0.21, -9.74, 14.48 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -127,7 +127,7 @@ articulatedFigure monster_usagi {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 2.02, -7.28, 3.40 ), ( 2.26, -8.97, -6.19 ), 7.11 )
+		model bone( ( 2.02, -7.28, 3.40 ), ( 2.26, -8.97, -6.19 ), 6.82 )
 		origin ( 2.14, -8.12, -1.40 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -139,8 +139,8 @@ articulatedFigure monster_usagi {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 2.26, -8.97, -6.19 ), ( -3.95, -10.44, -22.09 ), 5.63 )
-		origin ( -0.84, -9.70, -14.14 )
+		model bone( ( 2.26, -8.97, -6.19 ), ( -3.95, -10.44, -21.14 ), 5.63 )
+		origin ( -0.84, -9.70, -13.67 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse

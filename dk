@@ -266,16 +266,51 @@ step_models() {
 	(cd "$DKRES" && find models -type f -name '*.dkm' -print0 | xargs -0 -P "$JOBS" -n 1 sh -c \
 		'd="$1/$(printf %s "$2" | tr / _)"; mkdir -p "$d"; : >"$d/seed.shader"
 		rm -f "${2%.dkm}.md3"; "$0" -force -s "$d" -i "$2" "${2%.dkm}.md3" >/dev/null </dev/null' "$converter" "$tmp")
-	python3 - "$tmp" "$DKRES/scripts/gen_skins.shader" <<'PY'
-import glob, re, sys
-seen, out = set(), []
-for path in sorted(glob.glob(sys.argv[1] + "/*/gen_skins.shader")):
-	for m in re.finditer(r"\n(\S+)\n\{.*?\n\}\n", open(path).read(), re.S):
-		if m.group(1).lower() not in seen:
-			seen.add(m.group(1).lower())
-			out.append(m.group(0))
-open(sys.argv[2], "w").write("// made by ./dk extract models (qwalk): the models' skins with transparent pixels\n" + "".join(out))
-print("  %d skins alpha tested (scripts/gen_skins.shader)" % len(out))
+	python3 - "$tmp" "$DKRES/scripts/gen_skins.shader" "$DKRES" <<'PY'
+import glob, os, re, struct, sys
+
+def alphas( path ):
+	"""a 32-bit TGA's alpha values (plain or run-length), or None"""
+	try:
+		d = open( path, "rb" ).read()
+	except OSError:
+		return None
+	idlen, cmap, kind = d[0], d[1], d[2]
+	w, h, bpp = struct.unpack_from( "<HHB", d, 12 )
+	if cmap or bpp != 32 or kind not in ( 2, 10 ):
+		return None
+	o, n, out = 18 + idlen, w * h, bytearray()
+	if kind == 2:
+		return d[o + 3:o + 4 * n:4]
+	while len( out ) < n:
+		c = d[o]; o += 1
+		k = ( c & 0x7f ) + 1
+		if c & 0x80:
+			out += bytes( [ d[o + 3] ] ) * k; o += 4
+		else:
+			out += d[o + 3:o + 4 * k:4]; o += 4 * k
+	return bytes( out )
+
+# alpha tested only where the skin cuts out: its see-through pixels clear.
+# One whose pixels are half see-through (the ion pack's glowing cells) is
+# drawn whole, as it was (alpha tested, it looked empty)
+seen, out, half = set(), [], []
+for path in sorted( glob.glob( sys.argv[1] + "/*/gen_skins.shader" ) ):
+	for m in re.finditer( r"\n(\S+)\n\{.*?\n\}\n", open( path ).read(), re.S ):
+		if m.group( 1 ).lower() in seen:
+			continue
+		seen.add( m.group( 1 ).lower() )
+		img = re.search( r"map (\S+)", m.group( 0 ) )
+		a = alphas( os.path.join( sys.argv[3], img.group( 1 ) ) ) if img else None
+		if a:
+			clear = sum( 1 for x in a if x < 16 )
+			partly = sum( 1 for x in a if 16 <= x < 240 )
+			if partly > 0.05 * ( clear + partly ):
+				half.append( m.group( 1 ) )
+				continue
+		out.append( m.group( 0 ) )
+open( sys.argv[2], "w" ).write( "// made by ./dk extract models (qwalk): the models' skins that cut out\n" + "".join( out ) )
+print( "  %d skins alpha tested (scripts/gen_skins.shader); %d half see-through, drawn whole: %s" % ( len( out ), len( half ), " ".join( half ) ) )
 PY
 	rm -rf "$tmp"
 	# report the ones that didn't convert

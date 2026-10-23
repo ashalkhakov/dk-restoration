@@ -77,16 +77,18 @@ def def_anim_speeds( path ):
 
 # a cinematic's walk: Daikatana's actors walked about 35 a second (Hiro and
 # Toshiro out of the dojo, shots 27 and 28 of the intro), their walks drawn
-# at 10 frames a second for slower: the game plays the legs up to
-# legs_rate_max faster to keep up
+# at 10 frames a second for slower (Hiro's 10, Toshiro's 5): the game plays
+# the legs up to legs_rate_max faster to keep up, not more (faster looks
+# hurried; a little slide less so)
 CINE_WALK = 35
-CINE_LEGS_RATE_MAX = 8
+CINE_LEGS_RATE_MAX = 2
 
 def actor_entity_def( fp, defname, model, speeds ):
 	walk, run = speeds
 	fp.write( "entityDef %s {\n\t\"spawnclass\"\t\"monster\"\n\t\"model\"\t\t\"%s\"\n"
 			  "\t\"scriptobject\"\t\"cine_actor\"\n\t\"health\"\t\"100000\"\n\t\"skill_scale\"\t\"0\"\n"
 			  "\t\"run_speed\"\t\"%g\"\n\t\"walk_speed\"\t\"%g\"\n\t\"legs_rate_max\"\t\"%g\"\n"
+			  "\t\"unstick\"\t\"0\"\t// where Daikatana's stood, our box or not (Hiro at the dojo door)\n"
 			  "\t\"turn_rate\"\t\"360\"\n\t\"fov\"\t\t\"360\"\n}\n"
 			  % ( defname, model, run or 220, walk or CINE_WALK, CINE_LEGS_RATE_MAX ) )
 
