@@ -20,6 +20,8 @@
 #                              (RIG_MODELS), their defs and ragdolls
 #   ./dk rigshots [name...]    the rigged models in e1m1a, screenshots in
 #                              out/shots/rig
+#   ./dk viewer [port]         the rig viewer: the rigged models over
+#                              Daikatana's frames, http://localhost:8765
 #   ./dk lightmaps [map...]    the maps' lightmaps baked again by q3map2 from
 #                              Daikatana's lights (LIGHT_OPTIONS)
 #   ./dk bakegrids [map...]    the maps' rooms and the light in them, for
@@ -941,6 +943,13 @@ EOF
 	ls "$OUT/shots/rig/"
 }
 
+# ./dk viewer [port]: the rig viewer (tools/rig/viewer) on this machine: an
+#   IQM autorig made, its animations, and over it Daikatana's MD3 frames,
+#   each vertex's error, the skeleton and the ragdoll's bodies
+cmd_viewer() {
+	exec python3 "$ROOT/tools/rig/viewer/serve.py" "${1:-8765}"
+}
+
 # contact_sheet <out.jpg> <pictures...>: four to a row
 contact_sheet() {
 	local sheet=$1 row="" rows="" n=0 r=0 f tmp
@@ -1076,7 +1085,7 @@ cmd_test() {
 command=$1
 shift
 case $command in
-	setup|status|build|extract|convert|rig|rigshots|lightmaps|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
+	setup|status|build|extract|convert|rig|rigshots|viewer|lightmaps|bakegrids|cine|aas|run|shots|test|invtest|script|install) "cmd_$command" "$@" ;;
 	help|-h|--help) sed -n '2,/^$/s/^# \{0,1\}//p' "$0" ;;
 	*) die "no command $command; ./dk help" ;;
 esac
