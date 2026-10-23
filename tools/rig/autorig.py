@@ -45,7 +45,7 @@ import struct
 import sys
 
 sys.path.insert( 0, os.path.dirname( __file__ ) )
-from md3 import MD3
+from md3 import MD3, Surface
 
 # ------------------------------------------------------------------------
 # small linear algebra
@@ -266,6 +266,65 @@ def is_prop( s ):
 	part of the body"""
 	sizes = [ extent( f ) for f in s.frames ]
 	return s.numVerts > 3 and max( sizes ) > 1 and min( sizes ) < 0.1 * max( sizes )
+
+def split_props( surfaces ):
+	"""A surface's pieces Daikatana hides by squashing them (Hiro's sword in
+	his gi: blade, guard and hilt, in his body's surface) as surfaces of
+	their own, props; the pieces hidden in the same frames one prop (they're
+	one thing). A piece: its triangles joined, and its vertexes where they're
+	in the same place in every frame (the md3 splits them where the texture
+	does)."""
+	out = []
+	for s in surfaces:
+		if is_hardpoint( s ) or s.numVerts < 8:
+			out.append( s )
+			continue
+		F = len( s.frames )
+		par = list( range( s.numVerts ) )
+		def find( a ):
+			while par[a] != a:
+				par[a] = par[par[a]]
+				a = par[a]
+			return a
+		for t in s.triangles:
+			par[find( t[0] )] = find( t[1] )
+			par[find( t[1] )] = find( t[2] )
+		probe = sorted( set( [ 0, F // 4, F // 2, 3 * F // 4, F - 1 ] ) )
+		place = {}
+		for v in range( s.numVerts ):
+			k = tuple( round( c * 4 ) for f in probe for c in s.frames[f][v] )
+			if k in place:
+				par[find( v )] = find( place[k] )
+			else:
+				place[k] = v
+		pieces = {}
+		for v in range( s.numVerts ):
+			pieces.setdefault( find( v ), [] ).append( v )
+		props = {}		# the frames it's hidden in -> its vertexes
+		for vs in pieces.values():
+			if len( vs ) == s.numVerts:
+				break
+			sizes = [ extent( [ s.frames[f][v] for v in vs ] ) for f in range( F ) ]
+			if max( sizes ) > 1 and min( sizes ) < 0.1 * max( sizes ):
+				hidden = tuple( f for f in range( F ) if sizes[f] < 0.1 * max( sizes ) )
+				props.setdefault( hidden, [] ).extend( vs )
+		if not props:
+			out.append( s )
+			continue
+		def part( name, vs ):
+			idx = { v: i for i, v in enumerate( sorted( vs ) ) }
+			p = Surface()
+			p.name, p.shader, p.numVerts = name, s.shader, len( idx )
+			p.triangles = [ tuple( idx[c] for c in t ) for t in s.triangles if t[0] in idx ]
+			p.st = [ s.st[v] for v in sorted( vs ) ]
+			p.frames = [ [ fr[v] for v in sorted( vs ) ] for fr in s.frames ]
+			return p
+		taken = set( v for vs in props.values() for v in vs )
+		out.append( part( s.name, [ v for v in range( s.numVerts ) if v not in taken ] ) )
+		for k, vs in enumerate( props.values() ):
+			out.append( part( "%s_prop%d" % ( s.name, k + 1 ), vs ) )
+			print( "  %s: a piece of %d vertexes hidden in some frames, a prop" % ( s.name, len( vs ) ) )
+	return out
 
 # a prop's joint's scale a frame (0.01 where it's hidden): joint -> { frame: scale }
 PROP_SCALE = {}
@@ -870,6 +929,7 @@ def main( md3Path, outBase ):
 		for sf in m.surfaces:
 			sf.frames = [ [ stand_up( v ) for v in frame ] for frame in sf.frames ]
 	# the body: every surface but the hardpoints and the props
+	m.surfaces = split_props( m.surfaces )
 	body = [ s for s in m.surfaces if not is_hardpoint( s ) and not is_prop( s ) ]
 	hps = [ s for s in m.surfaces if is_hardpoint( s ) ]
 	props = [ s for s in m.surfaces if not is_hardpoint( s ) and is_prop( s ) ]
@@ -1180,6 +1240,64 @@ def main( md3Path, outBase ):
 			wc = t * t * ( 3 - 2 * t )
 			weights[i] = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
 			assign[i] = weights[i][0]
+
+	# an arm's vertexes are what's joined to its shoulder: a hand resting on a
+	# thigh (Usagi's) is near the thigh, and moves with it in most frames,
+	# but the thigh's vertexes are the leg's (joined to it by the mesh). A
+	# piece that isn't, but is joined to another bone's, goes to the bone
+	# nearest it that isn't the arm's
+	adjv = [ set() for i in range( N ) ]
+	for a, b, c in tris:
+		for p, q in ( ( a, b ), ( b, c ), ( c, a ) ):
+			adjv[p].add( q )
+			adjv[q].add( p )
+	at = {}
+	for i, v in enumerate( rest ):
+		at.setdefault( tuple( int( round( c / SEAM ) ) for c in v ), [] ).append( i )
+	for same in at.values():
+		for i in same:
+			adjv[i].update( k for k in same if k != i )
+	moved = 0
+	for side in "LR":
+		arm = set( j for j, jt in enumerate( joints ) if jt["zone"] == "arms" and jt["name"].startswith( side ) )
+		if side + "uparm" not in J:
+			continue
+		mine = set( i for i in range( N ) if weights[i][0] in arm )
+		if not mine:
+			continue
+		# from the vertexes nearest the shoulder, through the arm's
+		shoulder = joints[J[side + "uparm"]]["pos"]
+		start = min( mine, key = lambda i: vlen( vsub( rest[i], shoulder ) ) )
+		seen, todo = { start }, [ start ]
+		while todo:
+			v = todo.pop()
+			for n in adjv[v]:
+				if n in mine and n not in seen:
+					seen.add( n )
+					todo.append( n )
+		# the rest, a piece at a time: off the arm if the mesh joins it to
+		# what isn't the arm's (a separate piece, a glove, stays)
+		rest_ = mine - seen
+		while rest_:
+			piece, todo = set(), [ rest_.pop() ]
+			while todo:
+				v = todo.pop()
+				piece.add( v )
+				for n in adjv[v]:
+					if n in rest_:
+						rest_.discard( n )
+						todo.append( n )
+			if not any( n not in mine for v in piece for n in adjv[v] ):
+				continue
+			for i in piece:
+				if i in pins:
+					continue
+				b = min( ( b for b in bones if b not in arm and allowed( i, b ) ), key = lambda b: seg_dist( rest[i], *segs[b] ) )
+				weights[i] = ( b, b, 1.0 )
+				assign[i] = b
+				moved += 1
+	if moved:
+		print( "  %d vertexes not joined to their arm off it" % moved )
 
 	# the seams: vertexes of different surfaces in one place (Hiro's head on
 	# his neck) skin alike, or a pose the animations never had (the head

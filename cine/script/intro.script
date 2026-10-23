@@ -320,17 +320,17 @@ void shot14() {
 void hiro1_shot15() {
 	cine_play( hirogi, "lksadb" );
 	cine_until( shotStart + 2.5 );
-	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	if ( shot != 15 ) { return; }
 	cine_play( hirogi, "lksadc" );
-	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	if ( shot != 15 ) { return; }
 	cine_play( hirogi, "lksadc" );
-	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	if ( shot != 15 ) { return; }
 	cine_play( hirogi, "lksadc" );
 	cine_until( shotStart + 6 );
-	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	if ( shot != 15 ) { return; }
 	hirogi.stopMove();
 	cine_until( shotStart + 6 );
-	if ( shot != 15 ) { cine_exit( hirogi, "hiro1" ); return; }
+	if ( shot != 15 ) { return; }
 	cine_exit( hirogi, "hiro1" );
 }
 
@@ -656,24 +656,24 @@ void shot25() {
 
 void hiro2_shot26() {
 	cine_until( shotStart + 7 );
-	if ( shot != 26 ) { cine_exit( hirogi, "hiro2" ); return; }
+	if ( shot != 26 ) { return; }
 	cine_exit( hirogi, "hiro2" );
 }
 
 void tat1_shot26() {
 	cine_play( toshiro, "tkf" );
 	cine_until( shotStart + 1.4 );
-	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	if ( shot != 26 ) { return; }
 	cine_play( toshiro, "tka" );
 	cine_until( shotStart + 2.8 );
-	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	if ( shot != 26 ) { return; }
 	cine_play( toshiro, "tka" );
-	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	if ( shot != 26 ) { return; }
 	cine_play( toshiro, "tkg" );
-	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	if ( shot != 26 ) { return; }
 	cine_play( toshiro, "tka" );
 	cine_until( shotStart + 7 );
-	if ( shot != 26 ) { cine_exit( toshiro, "tat1" ); return; }
+	if ( shot != 26 ) { return; }
 	cine_exit( toshiro, "tat1" );
 }
 
@@ -738,13 +738,13 @@ void shot28() {
 
 void hiro3_shot29() {
 	cine_until( shotStart + 6 );
-	if ( shot != 29 ) { cine_exit( hirogi, "hiro3" ); return; }
+	if ( shot != 29 ) { return; }
 	cine_exit( hirogi, "hiro3" );
 }
 
 void tosh1_shot29() {
 	cine_until( shotStart + 6 );
-	if ( shot != 29 ) { cine_exit( toshiro, "tosh1" ); return; }
+	if ( shot != 29 ) { return; }
 	cine_exit( toshiro, "tosh1" );
 }
 
@@ -966,16 +966,16 @@ void shot36() {
 void osa1_shot37() {
 	cine_play( osaka, "c_amba" );
 	cine_until( shotStart + 4 );
-	if ( shot != 37 ) { cine_exit( osaka, "oka1" ); return; }
+	if ( shot != 37 ) { return; }
 	cine_exit( osaka, "oka1" );
 }
 
 void usag1_shot37() {
 	cine_turn( usagi, 89.46 );
-	if ( shot != 37 ) { cine_exit( usagi, "usag1" ); return; }
+	if ( shot != 37 ) { return; }
 	cine_move( usagi, '282.375 -855 -248.085', "walka" );
 	cine_until( shotStart + 4 );
-	if ( shot != 37 ) { cine_exit( usagi, "usag1" ); return; }
+	if ( shot != 37 ) { return; }
 	cine_exit( usagi, "usag1" );
 }
 
@@ -1191,7 +1191,7 @@ void shot47() {
 void usagbuild_shot48() {
 	cine_play( usagi, "frgse" );
 	cine_until( shotStart + 3 );
-	if ( shot != 48 ) { cine_exit( usagi, "usagbuild" ); return; }
+	if ( shot != 48 ) { return; }
 	cine_exit( usagi, "usagbuild" );
 }
 
@@ -1209,14 +1209,14 @@ void shot48() {
 void hiroally_shot49() {
 	hirogi = cine_enter( hirogi, "cine_hirogi", '-2672 -1591.62 -736.628', -74.4, "hirogi", "hiroally" );
 	cine_until( shotStart + 0.7 );
-	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	if ( shot != 49 ) { return; }
 	cine_move( hirogi, '-2651.62 -1707 -761.195', "walka" );
-	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	if ( shot != 49 ) { return; }
 	cine_turn( hirogi, -17.69 );
-	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	if ( shot != 49 ) { return; }
 	cine_play( hirogi, "ambb" );
 	cine_until( shotStart + 6 );
-	if ( shot != 49 ) { cine_exit( hirogi, "hiroally" ); return; }
+	if ( shot != 49 ) { return; }
 	cine_exit( hirogi, "hiroally" );
 }
 
@@ -1245,12 +1245,12 @@ void shot49() {
 
 void toshally_shot50() {
 	cine_play( toshiro, "tka" );
-	if ( shot != 50 ) { cine_exit( toshiro, "toshally" ); return; }
+	if ( shot != 50 ) { return; }
 	cine_play( toshiro, "tka" );
-	if ( shot != 50 ) { cine_exit( toshiro, "toshally" ); return; }
+	if ( shot != 50 ) { return; }
 	cine_play( toshiro, "tka" );
 	cine_until( shotStart + 4 );
-	if ( shot != 50 ) { cine_exit( toshiro, "toshally" ); return; }
+	if ( shot != 50 ) { return; }
 	cine_exit( toshiro, "toshally" );
 }
 
@@ -1307,13 +1307,13 @@ void shot52() {
 void insh1_shot53() {
 	cine_play( inshiro, "nodd" );
 	cine_until( shotStart + 3 );
-	if ( shot != 53 ) { cine_exit( inshiro, "insh1" ); return; }
+	if ( shot != 53 ) { return; }
 	cine_exit( inshiro, "insh1" );
 }
 
 void usagsafe_shot53() {
 	cine_until( shotStart + 3 );
-	if ( shot != 53 ) { cine_exit( usagi, "usagsafe" ); return; }
+	if ( shot != 53 ) { return; }
 	cine_exit( usagi, "usagsafe" );
 }
 
@@ -1497,7 +1497,7 @@ void shot62() {
 void inshvolc_shot63() {
 	cine_play( usagi, "frgse" );
 	cine_until( shotStart + 2 );
-	if ( shot != 63 ) { cine_exit( usagi, "inshvolc" ); return; }
+	if ( shot != 63 ) { return; }
 	cine_exit( usagi, "inshvolc" );
 }
 
@@ -2024,22 +2024,22 @@ void shot80() {
 
 void hirolongtalk_shot81() {
 	cine_until( shotStart + 5.5 );
-	if ( shot != 81 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	if ( shot != 81 ) { return; }
 	hirogi.stopMove();
 	cine_until( shotStart + 5.5 );
-	if ( shot != 81 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	if ( shot != 81 ) { return; }
 	cine_exit( hirogi, "hirolongtalk" );
 }
 
 void toshlongtalk_shot81() {
 	cine_play( toshiro, "tkb" );
-	if ( shot != 81 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	if ( shot != 81 ) { return; }
 	cine_play( toshiro, "tkh" );
 	cine_until( shotStart + 5.5 );
-	if ( shot != 81 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	if ( shot != 81 ) { return; }
 	toshiro.stopMove();
 	cine_until( shotStart + 5.5 );
-	if ( shot != 81 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	if ( shot != 81 ) { return; }
 	cine_exit( toshiro, "toshlongtalk" );
 }
 
@@ -2558,10 +2558,10 @@ void shot95() {
 void hirolongtalk_shot96() {
 	cine_play( hirogi, "lftlook" );
 	cine_until( shotStart + 0.9 );
-	if ( shot != 96 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	if ( shot != 96 ) { return; }
 	hirogi.stopMove();
 	cine_until( shotStart + 0.9 );
-	if ( shot != 96 ) { cine_exit( hirogi, "hirolongtalk" ); return; }
+	if ( shot != 96 ) { return; }
 	cine_exit( hirogi, "hirolongtalk" );
 }
 
@@ -2577,7 +2577,7 @@ void ninja_shot96() {
 
 void toshlongtalk_shot96() {
 	cine_until( shotStart + 0.9 );
-	if ( shot != 96 ) { cine_exit( toshiro, "toshlongtalk" ); return; }
+	if ( shot != 96 ) { return; }
 	cine_exit( toshiro, "toshlongtalk" );
 }
 
@@ -2695,7 +2695,7 @@ void ninja_shot99() {
 void toshfight_shot99() {
 	cine_play( toshiro, "diea" );
 	cine_until( shotStart + 1.5 );
-	if ( shot != 99 ) { cine_exit( toshiro, "toshfight" ); return; }
+	if ( shot != 99 ) { return; }
 	cine_exit( toshiro, "toshfight" );
 }
 
@@ -2719,16 +2719,16 @@ void shot99() {
 
 void hirofight_shot100() {
 	cine_until( shotStart + 0.5 );
-	if ( shot != 100 ) { cine_exit( hirogi, "hirofight" ); return; }
+	if ( shot != 100 ) { return; }
 	cine_play( hirogi, "lkr" );
 	cine_until( shotStart + 1.3 );
-	if ( shot != 100 ) { cine_exit( hirogi, "hirofight" ); return; }
+	if ( shot != 100 ) { return; }
 	cine_exit( hirogi, "hirofight" );
 }
 
 void ninja_shot100() {
 	cine_until( shotStart + 1.3 );
-	if ( shot != 100 ) { cine_exit( ninja_2, "ninja" ); return; }
+	if ( shot != 100 ) { return; }
 	cine_exit( ninja_2, "ninja" );
 }
 
@@ -2756,10 +2756,10 @@ void shot100() {
 void punch_shot101() {
 	ninja_2 = cine_enter( ninja_2, "cine_ninja", '-2642.88 -1701.5 -739.213', -94.88, "ninja_2", "punch" );
 	cine_until( shotStart + 1 );
-	if ( shot != 101 ) { cine_exit( ninja_2, "punch" ); return; }
+	if ( shot != 101 ) { return; }
 	cine_play( ninja_2, "punch" );
 	cine_until( shotStart + 5.5 );
-	if ( shot != 101 ) { cine_exit( ninja_2, "punch" ); return; }
+	if ( shot != 101 ) { return; }
 	cine_exit( ninja_2, "punch" );
 }
 
@@ -2767,7 +2767,7 @@ void ninjasword_shot101() {
 	cine_place( ninja_3, '-2599 -1748.62 -758.736', -175.95 );
 	cine_play( ninja_3, "kcela" );
 	cine_until( shotStart + 5.5 );
-	if ( shot != 101 ) { cine_exit( ninja_3, "ninjasword" ); return; }
+	if ( shot != 101 ) { return; }
 	cine_exit( ninja_3, "ninjasword" );
 }
 
@@ -2999,17 +2999,17 @@ void shot107() {
 void hirodead_shot108() {
 	cine_play( hirogi, "wzblank" );
 	cine_until( shotStart + 1 );
-	if ( shot != 108 ) { cine_exit( hirogi, "hirodead" ); return; }
+	if ( shot != 108 ) { return; }
 	cine_play( hirogi, "wza" );
 	cine_until( shotStart + 7 );
-	if ( shot != 108 ) { cine_exit( hirogi, "hirodead" ); return; }
+	if ( shot != 108 ) { return; }
 	cine_exit( hirogi, "hirodead" );
 }
 
 void toshdie_shot108() {
 	cine_play( toshiro, "coffin" );
 	cine_until( shotStart + 7 );
-	if ( shot != 108 ) { cine_exit( toshiro, "toshdie" ); return; }
+	if ( shot != 108 ) { return; }
 	cine_exit( toshiro, "toshdie" );
 }
 
@@ -3081,24 +3081,24 @@ void shot109() {
 
 void fat1_shot110() {
 	cine_until( shotStart + 5 );
-	if ( shot != 110 ) { cine_exit( fatworker, "fat1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_exit( fatworker, "fat1" );
 }
 
 void skin1_shot110() {
 	cine_play( skinnyworker, "eambd" );
-	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_play( skinnyworker, "eaafaa" );
-	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_play( skinnyworker, "faaaa" );
-	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_play( skinnyworker, "amba" );
-	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_play( skinnyworker, "amba" );
-	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_play( skinnyworker, "amba" );
 	cine_until( shotStart + 5 );
-	if ( shot != 110 ) { cine_exit( skinnyworker, "skin1" ); return; }
+	if ( shot != 110 ) { return; }
 	cine_exit( skinnyworker, "skin1" );
 }
 
@@ -3121,7 +3121,7 @@ void tm_shot111() {
 	hirogi = cine_enter( hirogi, "cine_hirogi", '-1854.75 -2945 -319.406', -22.71, "hirogi", "tm" );
 	cine_use( "truckgo", hirogi );
 	cine_until( shotStart + 8 );
-	if ( shot != 111 ) { cine_exit( hirogi, "tm" ); return; }
+	if ( shot != 111 ) { return; }
 	cine_exit( hirogi, "tm" );
 }
 
@@ -3196,16 +3196,16 @@ void shot114() {
 
 void fatdrive_shot115() {
 	cine_until( shotStart + 6.8 );
-	if ( shot != 115 ) { cine_exit( fatworker, "fatdrive" ); return; }
+	if ( shot != 115 ) { return; }
 	cine_exit( fatworker, "fatdrive" );
 }
 
 void skinydrive_shot115() {
 	cine_until( shotStart + 6 );
-	if ( shot != 115 ) { cine_exit( skinnyworker, "skinydrive" ); return; }
+	if ( shot != 115 ) { return; }
 	cine_use( "toe1m1", skinnyworker );
 	cine_until( shotStart + 6.8 );
-	if ( shot != 115 ) { cine_exit( skinnyworker, "skinydrive" ); return; }
+	if ( shot != 115 ) { return; }
 	cine_exit( skinnyworker, "skinydrive" );
 }
 

@@ -467,12 +467,10 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 			var = ident( e["uniqueid"] or e["name"] )
 			body = []
 			# after a wait, the shot may have changed: then it's not this shot's
-			# to do; but an actor this shot removes goes even so (Daikatana's
-			# tasks ran on into the next shot), or it stays as a clone of the
-			# one the next shot spawns
-			removes = any( t["type"] == "remove_entity" for t in e["tasks"] )
-			guard = ( "if ( shot != %d ) { cine_exit( %s, \"%s\" ); return; }" % ( num, slots[var], owners[var] ) if removes
-					  else "if ( shot != %d ) { return; }" % num )
+			# to do (Daikatana's tasks past a shot's end never ran: the intro's
+			# shot 81 removes Hiro and Toshiro after its cut, and they talk on
+			# to shot 96)
+			guard = "if ( shot != %d ) { return; }" % num
 			for task in e["tasks"]:
 				lines = task_lines( task, var, actors, slots[var], owners[var] )
 				if not lines:
