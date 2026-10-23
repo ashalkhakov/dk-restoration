@@ -47,3 +47,11 @@ entityDef character_base {
 	"snd_footstep_snow"			"dk_footstep_snow"
 	"snd_footstep_sand"			"dk_footstep_sand"
 }
+
+// Hiro in his gi (the intro, rigged from c_hiro_intr: def/rig_hirogi.def). His
+// sword is a model of its own at the joint "sword" (autorig --props); in
+// lksadb his left hand lets it go after frame 13, and it falls as a rigid
+// body (the game's "drop" frame command)
+entityDef model_hirogi_extra {
+	"frame lksadb 13"		"drop sword"
+}

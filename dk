@@ -339,7 +339,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b] [props=a,b]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -353,6 +353,8 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # them one by one. surface=metal: a robot (Daikatana's no-blood monsters), its
 # hits spark. rootout=1: Daikatana's going over the ground out of the
 # animations (they play over the origin); rootout=die,cdie: out of those only.
+# props=sword: the model's prop (its biggest) a model of its own, <iqm>_sword,
+# attached at a joint "sword" (the game drops it as a rigid body).
 # A validated rig doesn't change: each is made in out/rig/stage/<name>/ and
 # installed only if every validated animation of it is the same
 # (tools/rig/rigcheck.py --gate), else the one there is kept.
@@ -458,7 +460,7 @@ mikikofly       creature  global/m_mikikofly     bones=32
 casseti         human     cinematic/c_casseti_e4m1  iqm=casseti
 gusagi          human     cinematic/c_gusagi_e2m3   iqm=gusagi
 usagi           human     cinematic/c_usagi_intr    iqm=usagi
-hirogi          human     cinematic/c_hiro_intr     iqm=hirogi
+hirogi          human     cinematic/c_hiro_intr     iqm=hirogi props=sword
 inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
 ninja           human     cinematic/c_ninja_intr    iqm=ninja
 osaka           human     cinematic/c_osaka_intr    iqm=osaka
@@ -470,7 +472,7 @@ RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -483,6 +485,7 @@ rig_model() {
 			rest=*) rest="--rest ${kv#rest=}" ;;
 			rootout=1) rootout="--root-out" ;;
 			rootout=*) rootout="--root-out-anims ${kv#rootout=}" ;;
+			props=*) props="--props ${kv#props=}" ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -496,7 +499,7 @@ rig_model() {
 	case $rigger in
 		player) python3 tools/rig/autorig.py $rootout "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
-		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest $rootout --anims "$anims" "$md3" "$out" ;;
+		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest $rootout $props --anims "$anims" "$md3" "$out" ;;
 		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac || return 1
@@ -508,7 +511,7 @@ rig_model() {
 		echo "rig kept: validated (the new one in out/rig/stage/$name)"
 		return 0
 	fi
-	for f in "$out".iqm "$out".json "$out"_skin.txt; do
+	for f in "$out".iqm "$out".json "$out"_skin.txt "$out"_*.iqm; do
 		[ -f "$f" ] && cp "$f" "$DKRES/models/rigged/"
 	done
 	cp "$stage"/def/*.def "$ROOT/def/"

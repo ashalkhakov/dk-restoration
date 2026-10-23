@@ -1,4 +1,94 @@
 {
+	"model_dead": {
+		"anims": {
+			"dead": {
+				"date": "2026-10-24",
+				"fingerprint": "24be564f7f94e9cb",
+				"fit": [
+					2.246,
+					28.0
+				],
+				"note": "doesn't fit at all",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/dead.iqm"
+	},
+	"model_froginator": {
+		"anims": {
+			"ataka": {
+				"date": "2026-10-24",
+				"fingerprint": "fa70084efe5597c2",
+				"fit": [
+					0.414,
+					35.6
+				],
+				"note": "",
+				"verdict": "broken"
+			},
+			"atakb": {
+				"date": "2026-10-24",
+				"fingerprint": "da310113e9602509",
+				"fit": [
+					0.258,
+					3.6
+				],
+				"note": "",
+				"verdict": "broken"
+			},
+			"atakc": {
+				"date": "2026-10-24",
+				"fingerprint": "10ce60250812b246",
+				"fit": [
+					0.249,
+					14.78
+				],
+				"note": "movement",
+				"verdict": "broken"
+			},
+			"diea": {
+				"date": "2026-10-24",
+				"fingerprint": "b43e9e8c0147ab94",
+				"fit": [
+					0.3,
+					7.57
+				],
+				"note": "movement",
+				"verdict": "broken"
+			},
+			"jumpa": {
+				"date": "2026-10-24",
+				"fingerprint": "11ff3897427a6151",
+				"fit": [
+					0.232,
+					4.68
+				],
+				"note": "movement",
+				"verdict": "broken"
+			},
+			"runa": {
+				"date": "2026-10-24",
+				"fingerprint": "6fc9443ae91790a9",
+				"fit": [
+					0.288,
+					4.0
+				],
+				"note": "movement",
+				"verdict": "broken"
+			},
+			"swima": {
+				"date": "2026-10-24",
+				"fingerprint": "d5d9a8d59499a90c",
+				"fit": [
+					0.344,
+					5.42
+				],
+				"note": "",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/frog.iqm"
+	},
 	"model_hiro": {
 		"anims": {
 			"aamb": {
@@ -905,6 +995,306 @@
 			}
 		},
 		"iqm": "models/rigged/hiro.iqm"
+	},
+	"model_hirogi": {
+		"anims": {
+			"ambappa": {
+				"date": "2026-10-24",
+				"fingerprint": "ab212b2e4ba305e7",
+				"fit": [
+					0.076,
+					1.38
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambappb": {
+				"date": "2026-10-24",
+				"fingerprint": "df9ef863a55aa7e1",
+				"fit": [
+					0.063,
+					1.32
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambathnk": {
+				"date": "2026-10-24",
+				"fingerprint": "729556d04b1c3973",
+				"fit": [
+					0.124,
+					1.63
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambb": {
+				"date": "2026-10-24",
+				"fingerprint": "619fae2c6f696e34",
+				"fit": [
+					0.057,
+					0.36
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambba": {
+				"date": "2026-10-24",
+				"fingerprint": "fe9834accef26c33",
+				"fit": [
+					0.055,
+					0.42
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambbb": {
+				"date": "2026-10-24",
+				"fingerprint": "eefa53f53c2ad567",
+				"fit": [
+					0.021,
+					0.12
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lftlook": {
+				"date": "2026-10-24",
+				"fingerprint": "1f4762d5088c3aee",
+				"fit": [
+					0.035,
+					0.38
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lftlooks": {
+				"date": "2026-10-24",
+				"fingerprint": "45f3d50fb05f364e",
+				"fit": [
+					0.054,
+					0.38
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lkr": {
+				"date": "2026-10-24",
+				"fingerprint": "cec53dae4ce6c17d",
+				"fit": [
+					0.1,
+					1.24
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lksad": {
+				"date": "2026-10-24",
+				"fingerprint": "99745e5ffb411d0a",
+				"fit": [
+					0.054,
+					1.33
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/hirogi.iqm"
+	},
+	"model_mikiko": {
+		"anims": {
+			"aamb": {
+				"date": "2026-10-24",
+				"fingerprint": "40397cba861cb348",
+				"fit": [
+					0.032,
+					2.46
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aamba": {
+				"date": "2026-10-24",
+				"fingerprint": "1908575b34c44586",
+				"fit": [
+					0.108,
+					2.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aambb": {
+				"date": "2026-10-24",
+				"fingerprint": "759d4bcf90990753",
+				"fit": [
+					0.196,
+					2.48
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ajump": {
+				"date": "2026-10-24",
+				"fingerprint": "7c4e55832a9dace2",
+				"fit": [
+					0.153,
+					4.59
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ajumpa": {
+				"date": "2026-10-24",
+				"fingerprint": "dd01f551a1fb9ae0",
+				"fit": [
+					0.175,
+					4.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ajumpb": {
+				"date": "2026-10-24",
+				"fingerprint": "194bca5f3d423333",
+				"fit": [
+					0.193,
+					4.59
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atak": {
+				"date": "2026-10-24",
+				"fingerprint": "7b4b1020ec9b049d",
+				"fit": [
+					0.136,
+					3.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ataka": {
+				"date": "2026-10-24",
+				"fingerprint": "762115e6afa57df3",
+				"fit": [
+					0.103,
+					3.78
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atakb": {
+				"date": "2026-10-24",
+				"fingerprint": "3b2482c65c7ab701",
+				"fit": [
+					0.137,
+					1.78
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bamb": {
+				"date": "2026-10-24",
+				"fingerprint": "97b5180c7ce57924",
+				"fit": [
+					0.064,
+					2.12
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bamba": {
+				"date": "2026-10-24",
+				"fingerprint": "1e2c171a7af5f9eb",
+				"fit": [
+					0.104,
+					2.14
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambb": {
+				"date": "2026-10-24",
+				"fingerprint": "dad9d83d1af6da0f",
+				"fit": [
+					0.14,
+					2.18
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bjump": {
+				"date": "2026-10-24",
+				"fingerprint": "8df4f45dc4d9b45d",
+				"fit": [
+					0.237,
+					5.96
+				],
+				"note": "lots of differences across the pose. also need to remove movement",
+				"verdict": "broken"
+			},
+			"bjumpa": {
+				"date": "2026-10-24",
+				"fingerprint": "267a7623dd918a40",
+				"fit": [
+					0.252,
+					5.96
+				],
+				"note": "same",
+				"verdict": "broken"
+			},
+			"bjumpb": {
+				"date": "2026-10-24",
+				"fingerprint": "f99b90b2494a16ff",
+				"fit": [
+					0.267,
+					5.96
+				],
+				"note": "same",
+				"verdict": "broken"
+			},
+			"bwalk": {
+				"date": "2026-10-24",
+				"fingerprint": "cfbe6c12a303111d",
+				"fit": [
+					0.193,
+					1.93
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bwalka": {
+				"date": "2026-10-24",
+				"fingerprint": "fc4b9f6e991170ad",
+				"fit": [
+					0.155,
+					1.96
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bwalkb": {
+				"date": "2026-10-24",
+				"fingerprint": "8cc6f4699be863f3",
+				"fit": [
+					0.2,
+					2.33
+				],
+				"note": "forearms",
+				"verdict": "broken"
+			},
+			"camb": {
+				"date": "2026-10-24",
+				"fingerprint": "1222a259bc44498f",
+				"fit": [
+					0.221,
+					2.58
+				],
+				"note": "right forearm. thighs/hamstrings",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/mikiko.iqm"
 	},
 	"model_toshiro": {
 		"anims": {

@@ -706,6 +706,8 @@ SURFACE = None		# --surface: "metal" for a robot, its hits spark
 REST = None			# --rest: the animation whose first frame it's rigged from
 ROOT_OUT = False	# --root-out: the going over the ground out of the animations (root_out)
 ROOT_OUT_ANIMS = None	# --root-out-anims die,cdie: only out of those (names starting so): Hiro's deaths
+PROP_NAMES = []		# --props sword: the props (biggest first) as models of their own, attached at a joint so named
+DETACHED = []		# those: ( name, its joint, its surface, its vertexes in the joint's rest frame )
 STAGE = os.environ.get( "RIG_STAGE" )	# the def (and sound shaders) written under this, for ./dk rig to install
 LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
 WRITE = True		# False: only how well it fits
@@ -1644,13 +1646,28 @@ def main( md3Path, outBase ):
 		print( "  hardpoint %s on %s" % ( joint["name"], joint["parent"] ) )
 	motion[J["origin"]] = { f: ( IDENT, ( 0, 0, 0 ) ) for f in range( F ) }
 
-	# 6. props as joints of their own, their vertexes all theirs
+	# 6. props as joints of their own, their vertexes all theirs; a named one
+	# (--props: Hiro's sword in his gi) a model of its own, out of the
+	# character's, attached at its joint: the game draws it there, and can
+	# take it away (lksadb: he drops it)
+	byName = sorted( props, key = lambda sf: -sf.numVerts )
+	DETACHED.clear()
 	for joint, jm, js, prest in prop_joints( props, joints, motion, bones, F ):
+		sf = next( sf for sf in props if sf.name == joint["name"] )
+		if byName.index( sf ) < len( PROP_NAMES ):
+			joint["name"] = PROP_NAMES[byName.index( sf )]
+			joints.append( joint )
+			j = len( joints ) - 1
+			motion[j], PROP_SCALE[j] = jm, js
+			DETACHED.append( ( joint["name"], j, sf, [ vsub( p, joint["pos"] ) for p in prest ] ) )
+			print( "  prop %s on %s, a model of its own, hidden in %d frames" % ( joint["name"], joint["parent"],
+				sum( 1 for v in js.values() if v < 0.1 ) ) )
+			continue
 		joints.append( joint )
 		j = len( joints ) - 1
 		motion[j], PROP_SCALE[j] = jm, js
 		si = len( body )
-		body.append( next( sf for sf in props if sf.name == joint["name"] ) )
+		body.append( sf )
 		for vi in range( body[-1].numVerts ):
 			verts.append( ( si, vi ) )
 			rest.append( prest[vi] )
@@ -2185,6 +2202,17 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	spec, looping = anim_spec( ANIMS, FPS or MONSTER_FPS, MONSTER_LOOPING ) if NAME else ( {}, None )
 	fps = ( FPS or MONSTER_FPS ) if NAME else ANIM_FPS
 	anims, restRot = write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping, fps )
+	# the props of their own: a joint, their vertexes in its frame, no animation
+	class Still:
+		numFrames = 1
+		def animations( self ):
+			return []
+	for pname, j, sf, local in DETACHED:
+		if restRot[j] != IDENT:
+			local = [ mvec( mtrans( restRot[j] ), p ) for p in local ]
+		write_iqm( Still(), [ sf ], [ ( 0, vi ) for vi in range( sf.numVerts ) ], local,
+				   [ { "name": pname, "parent": None, "parentIndex": -1, "zone": None, "pos": ( 0.0, 0.0, 0.0 ) } ],
+				   { 0: { 0: ( IDENT, ( 0.0, 0.0, 0.0 ) ) } }, [ ( 0, 0, 1.0 ) ] * sf.numVerts, "%s_%s" % ( outBase, pname ) )
 
 	# the model def: animations and hitboxes fitted to each bone's vertexes
 	name = NAME or os.path.basename( outBase )
@@ -2356,6 +2384,9 @@ def write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBas
 	if af:
 		write_af( os.path.join( "af", "%s.af" % afName ), af )
 		lines += [ "", "\t\"ragdoll\"\t\t\t\"%s\"\t// af/%s.af, Doom 3's articulated figure" % ( afName, afName ) ]
+	for pname, j, sf, local in DETACHED:
+		lines += [ "\t\"attach %s\"\t\t\"%s_%s.iqm\"\t// its own model, drawn at the joint till dropped (\"drop %s\")"
+				   % ( pname, meshPath( outBase ), pname, pname ) ]
 	# as a player model: Quake 3's animations (pmove's) to Daikatana's, the
 	# first of each list the character has
 	lines.append( "" )
@@ -2386,6 +2417,10 @@ if __name__ == "__main__":
 			sys.exit( "--root-out: not with --lying" )
 		ROOT_OUT = True
 		args.remove( "--root-out" )
+	if "--props" in args:
+		i = args.index( "--props" )
+		PROP_NAMES = [ a for a in args[i + 1].split( "," ) if a ]
+		args = args[:i] + args[i + 2:]
 	for opt, var, kind in ( ( "--name", "NAME", str ), ( "--fps", "FPS", float ), ( "--anims", "ANIMS", str ),
 							( "--extra", "EXTRA_BONES", int ), ( "--surface", "SURFACE", str ), ( "--rest", "REST", str ) ):
 		if opt in args:
