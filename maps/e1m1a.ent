@@ -1,10 +1,9 @@
 // e1m1a's entities changed by hand (tools/maps/ent_overrides.py)
 
-// Toshiro's body, where the start cinematic shows it: Daikatana's deadtoshiro
-// deco (cin_toshiro.md3, a still model) out, his rigged character in, limp,
-// in the same pose (coffin, the frame the deco's mesh is). Daikatana's map
-// draws him 1.25 times the cinematic model's size; the origin puts the
-// pose's middle where the deco's was: (1779 -2590 528) + (75.1 -0.1 30.1)
+// Toshiro's body: Daikatana's deadtoshiro deco (cin_toshiro.md3, a still
+// model) out, his rigged character in, where the deco was, 1.25 times the
+// cinematic model's size as Daikatana's map draws him, limp in the same pose
+// (coffin, the frame the deco's mesh is)
 {
 "_match classname" "misc_gamemodel"
 "_match model" "models/e1/cin_toshiro.md3"
@@ -16,7 +15,7 @@
 "anim" "coffin"
 "ragdoll" "1"
 "modelscale" "1.25"
-"origin" "1854.1 -2590.1 558.1"
+"origin" "1779 -2590 528"
 "angle" "0"
 }
 

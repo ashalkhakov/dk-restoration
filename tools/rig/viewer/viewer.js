@@ -313,6 +313,9 @@ async function loadModel( m ) {
 	S.md3 = null; S.af = null; S.match = null;
 	try { if ( m.md3 ) S.md3 = parseMD3( await fetchBuf( "/dkres/" + m.md3 ) ); }
 	catch ( e ) { $( "err" ).textContent = "MD3: " + e.message; }
+	S.root = null;
+	try { if ( m.root ) S.root = JSON.parse( new TextDecoder().decode( await fetchBuf( "/dkres/" + m.root ) ) ); }
+	catch ( e ) { $( "err" ).textContent += " root: " + e.message; }
 	try { if ( m.af ) S.af = parseAF( new TextDecoder().decode( await fetchBuf( "/" + m.af ) ) ); }
 	catch ( e ) { $( "err" ).textContent += " AF: " + e.message; }
 	for ( const mesh of S.iqm.meshes ) {
@@ -486,6 +489,9 @@ function draw() {
 	$( "frameNo" ).textContent = a ? `${S.frame + 1} / ${a.count}` : "";
 	const P = pose();
 	const md3f = md3Frame( S.anim, S.frame );
+	// what --root-out took out of this frame: Daikatana's frame without it
+	const ra = S.root && a && S.root.anims[a.name], rp = ra && ra.path[Math.min( S.frame, ra.path.length - 1 )];
+	const md3Off = rp ? [ -rp[0], -rp[1], 0 ] : [ 0, 0, 0 ];
 
 	// camera
 	const cam = S.cam;
@@ -505,8 +511,8 @@ function draw() {
 		for ( let i = 0; i < n; i++ ) {
 			const [ si, v ] = S.md3All[S.match[i]], fr = S.md3.surfaces[si].frames[md3f];
 			if ( !fr ) continue;
-			md3Pts[i * 3] = fr[v * 3]; md3Pts[i * 3 + 1] = fr[v * 3 + 1]; md3Pts[i * 3 + 2] = fr[v * 3 + 2];
-			err[i] = Math.hypot( P.verts[i * 3] - fr[v * 3], P.verts[i * 3 + 1] - fr[v * 3 + 1], P.verts[i * 3 + 2] - fr[v * 3 + 2] );
+			for ( let c = 0; c < 3; c++ ) md3Pts[i * 3 + c] = fr[v * 3 + c] + md3Off[c];
+			err[i] = Math.hypot( P.verts[i * 3] - md3Pts[i * 3], P.verts[i * 3 + 1] - md3Pts[i * 3 + 1], P.verts[i * 3 + 2] - md3Pts[i * 3 + 2] );
 			errSum += err[i]; errMax = Math.max( errMax, err[i] );
 		}
 	}
@@ -549,7 +555,7 @@ function draw() {
 	}
 	// Daikatana's frame: its triangles' edges, over the rig or beside it
 	if ( $( "showMd3" ).checked && S.md3 && md3f >= 0 ) {
-		const off = $( "sideBySide" ).checked ? [ 0, -S.span * 1.1, 0 ] : [ 0, 0, 0 ];
+		const off = add( md3Off, $( "sideBySide" ).checked ? [ 0, -S.span * 1.1, 0 ] : [ 0, 0, 0 ] );
 		for ( const s of S.md3.surfaces ) {
 			const fr = s.frames[md3f];
 			if ( !fr ) continue;
@@ -619,6 +625,7 @@ function draw() {
 	let hud = `${S.model.def}  ${S.model.iqm}\n${a ? a.name : "-"} frame ${S.frame}` +
 		( S.md3 ? `   MD3 frame ${md3f} (${S.md3.frameNames[md3f] || "?"})` : "   no MD3" );
 	if ( md3Pts ) hud += `\nerror vs MD3: ${( errSum / n ).toFixed( 2 )} average, ${errMax.toFixed( 2 )} at most`;
+	if ( ra ) hud += `\nroot motion out: starts ${ra.start.join( " " )}, moves ${ra.move.join( " " )} (MD3 drawn without it)`;
 	if ( S.match ) {
 		let mm = 0; for ( const d of S.matchDist ) mm = Math.max( mm, d );
 		hud += `\nbind pose = MD3 frame ${S.md3Rest} (${S.md3.frameNames[S.md3Rest]}), vertexes matched to ${mm.toFixed( 2 )}`;

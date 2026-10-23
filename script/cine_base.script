@@ -267,16 +267,18 @@ void cine_play( entity actor, string anim ) {
 
 /*
 ================
-cine_playMove
+cine_playFrom
 
-the actor plays an animation in place, from its place, while the game
-carries it along what the animation once moved it by (Daikatana baked it
-in; we don't): move is forward and to the left of how it faced, turn
-degrees by the end, over secs. Its place stays: the next animation starts
-there again, as Daikatana's did
+the actor plays an animation in place, drawn offset away from its place
+(forward and to the left of how it faces), while the game carries it on
+along what the animation once moved it by: move, turn degrees by the end,
+over secs. Daikatana baked both into the frames (Toshiro lies 65 back where
+his death fell him); a rig with them out (autorig --root-out) plays over its
+origin. Its place stays: the next animation starts there again, as
+Daikatana's did
 ================
 */
-void cine_playMove( entity actor, string anim, vector move, float turn, float secs ) {
+void cine_playFrom( entity actor, string anim, vector offset, vector move, float turn, float secs ) {
 	vector	ang;
 	vector	from;
 	vector	to;
@@ -290,12 +292,16 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 	who = actor.getKey( "cine_owner" );
 	cine_toAnchor( actor );
 	ang = actor.getAngles();
-	from = actor.getOrigin();
+	from = actor.getOrigin() + sys.angToForward( '0 1 0' * ang_y ) * offset_x - sys.angToRight( '0 1 0' * ang_y ) * offset_y;
 	to = from + sys.angToForward( '0 1 0' * ang_y ) * move_x - sys.angToRight( '0 1 0' * ang_y ) * move_y;
+	actor.setOrigin( from );
 	actor.playAnim( ANIMCHANNEL_LEGS, anim );
 	t0 = sys.getTime();
 	while( !actor.animDone( ANIMCHANNEL_LEGS, 0 ) && !sys.skippingCinematic() ) {
-		f = ( sys.getTime() - t0 ) / secs;
+		f = 1;
+		if ( secs > 0 ) {
+			f = ( sys.getTime() - t0 ) / secs;
+		}
 		if ( f > 1 ) {
 			f = 1;
 		}
@@ -308,6 +314,17 @@ void cine_playMove( entity actor, string anim, vector move, float turn, float se
 	}
 	actor.setOrigin( to );
 	actor.turnTo( ang_y + turn );
+}
+
+/*
+================
+cine_playMove
+
+cine_playFrom, starting at the actor's place
+================
+*/
+void cine_playMove( entity actor, string anim, vector move, float turn, float secs ) {
+	cine_playFrom( actor, anim, '0 0 0', move, turn, secs );
 }
 
 /*

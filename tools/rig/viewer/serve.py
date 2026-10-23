@@ -7,7 +7,8 @@ skins) and the ragdolls (af/), on this machine only.
 
 /api/models lists the rigged models: every def whose "mesh" is an IQM
 autorig made (def/*.def), with the MD3 it was made from (the def's first
-line says) and its ragdoll (af/<name>.af).
+line says), its ragdoll (af/<name>.af) and what --root-out took out of its
+animations (<iqm>.json).
 """
 import http.server
 import json
@@ -38,7 +39,9 @@ def models():
 			for cand in ( ragdoll.group( 1 ) + ".af", ):
 				if os.path.exists( os.path.join( ROOT, "af", cand ) ):
 					af = "af/" + cand
+		root = mesh.group( 1 )[:-4] + ".json"		# what autorig --root-out took out
 		out.append( {
+			"root": root if os.path.exists( os.path.join( DKRES, root ) ) else None,
 			"def": name.group( 1 ) if name else fn[:-4],
 			"file": "def/" + fn,
 			"iqm": mesh.group( 1 ),

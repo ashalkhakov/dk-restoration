@@ -2693,7 +2693,7 @@ void ninja_shot99() {
 }
 
 void toshfight_shot99() {
-	cine_play( toshiro, "diea" );
+	cine_playMove( toshiro, "diea", '-64.92 0.16 0', 0, 2.5 );
 	cine_until( shotStart + 1.5 );
 	if ( shot != 99 ) { return; }
 	cine_exit( toshiro, "toshfight" );
@@ -2803,7 +2803,7 @@ void hirodead_shot102() {
 
 void toshdie_shot102() {
 	toshiro = cine_enter( toshiro, "cine_toshiro", '-2600.88 -1764.38 -736.54', 95.26, "toshiro", "toshdie" );
-	cine_play( toshiro, "diea" );
+	cine_playMove( toshiro, "diea", '-64.92 0.16 0', 0, 2.5 );
 }
 
 void shot102() {
@@ -2830,7 +2830,7 @@ void hirodead_shot103() {
 }
 
 void toshdie_shot103() {
-	cine_play( toshiro, "coffin" );
+	cine_playFrom( toshiro, "coffin", '-64.81 0.16 0', '0 0 0', 0, 0.1 );
 }
 
 void shot103() {
@@ -2854,22 +2854,22 @@ void hirodead_shot104() {
 }
 
 void toshdie_shot104() {
-	cine_play( toshiro, "coffin" );
+	cine_playFrom( toshiro, "coffin", '-64.81 0.16 0', '0 0 0', 0, 0.1 );
 	if ( shot != 104 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 1.5 );
 	if ( shot != 104 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	if ( shot != 104 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	if ( shot != 104 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 6 );
 	if ( shot != 104 ) { return; }
-	cine_play( toshiro, "deadtkb" );
+	cine_playFrom( toshiro, "deadtkb", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 10 );
 	if ( shot != 104 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 }
 
 void shot104() {
@@ -2895,32 +2895,32 @@ void hirodead_shot105() {
 }
 
 void toshdie_shot105() {
-	cine_play( toshiro, "coffin" );
+	cine_playFrom( toshiro, "coffin", '-64.81 0.16 0', '0 0 0', 0, 0.1 );
 	cine_until( shotStart + 1 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 3 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtkb" );
+	cine_playFrom( toshiro, "deadtkb", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 7 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 10.6 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 11.8 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 14.5 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 16 );
 	if ( shot != 105 ) { return; }
-	cine_play( toshiro, "deadtkb" );
+	cine_playFrom( toshiro, "deadtkb", '-64.81 0.16 0', '0 0 0', 0, 2 );
 }
 
 void shot105() {
@@ -2943,7 +2943,7 @@ void hirodead_shot106() {
 }
 
 void toshdie_shot106() {
-	cine_play( toshiro, "coffin" );
+	cine_playFrom( toshiro, "coffin", '-64.81 0.16 0', '0 0 0', 0, 0.1 );
 }
 
 void shot106() {
@@ -2962,24 +2962,24 @@ void shot106() {
 }
 
 void toshdie_shot107() {
-	cine_play( toshiro, "coffin" );
+	cine_playFrom( toshiro, "coffin", '-64.81 0.16 0', '0 0 0', 0, 0.1 );
 	if ( shot != 107 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 1.5 );
 	if ( shot != 107 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 2.9 );
 	if ( shot != 107 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 5 );
 	if ( shot != 107 ) { return; }
-	cine_play( toshiro, "deadtka" );
+	cine_playFrom( toshiro, "deadtka", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 6.9 );
 	if ( shot != 107 ) { return; }
-	cine_play( toshiro, "deadtkb" );
+	cine_playFrom( toshiro, "deadtkb", '-64.81 0.16 0', '0 0 0', 0, 2 );
 	cine_until( shotStart + 10.2 );
 	if ( shot != 107 ) { return; }
-	cine_play( toshiro, "deadtkc" );
+	cine_playFrom( toshiro, "deadtkc", '-64.81 0.16 0', '0 0 0', 0, 2 );
 }
 
 void shot107() {
@@ -3007,7 +3007,7 @@ void hirodead_shot108() {
 }
 
 void toshdie_shot108() {
-	cine_play( toshiro, "coffin" );
+	cine_playFrom( toshiro, "coffin", '-64.81 0.16 0', '0 0 0', 0, 0.1 );
 	cine_until( shotStart + 7 );
 	if ( shot != 108 ) { return; }
 	cine_exit( toshiro, "toshdie" );

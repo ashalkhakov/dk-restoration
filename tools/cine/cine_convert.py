@@ -134,10 +134,12 @@ def rigs_of_cinematic_models():
 
 RIGGED_MODELS = rigs_of_cinematic_models()
 
-def monster_rig( classname, model = None ):
+def monster_rig( classname, model = None, dkres = None ):
 	"""a monster's rigged model def (def/rig_<name>.def, ./dk rig), or a
 	cinematic model's rigged as itself (RIGGED_MODELS): ( model def name, its
-	animations ), or None"""
+	animations, what autorig --root-out took out of them (its IQM's .json:
+	{ animation: { "start", "move", "turn", "frames", "fps" } }, or {}) ), or
+	None"""
 	if model and os.path.basename( model ) in RIGGED_MODELS:
 		path = RIGGED_MODELS[os.path.basename( model )]
 	elif classname.startswith( "monster_" ):
@@ -148,7 +150,13 @@ def monster_rig( classname, model = None ):
 		return None
 	text = open( path ).read()
 	m = re.search( r"entityDef\s+(\S+)", text )
-	return ( m.group( 1 ), set( re.findall( r'"anim (\S+)"', text ) ) ) if m else None
+	if not m:
+		return None
+	moves = {}
+	mesh = re.search( r'"mesh"\s+"(\S+)\.iqm"', text )
+	if dkres and mesh and os.path.exists( os.path.join( dkres, mesh.group( 1 ) + ".json" ) ):
+		moves = json.load( open( os.path.join( dkres, mesh.group( 1 ) + ".json" ) ) )["anims"]
+	return ( m.group( 1 ), set( re.findall( r'"anim (\S+)"', text ) ), moves )
 
 def rigged( dkres, classname, model ):
 	"""our character's cinematic animations for that model: ( character, tag,
@@ -163,7 +171,7 @@ def rigged( dkres, classname, model ):
 	return ( char, tag, json.load( open( path ) ) )
 
 def fmt( v ):
-	return " ".join( "%g" % round( x, 4 ) for x in v )
+	return " ".join( "%g" % ( round( x, 4 ) + 0.0 ) for x in v )		# (+ 0.0: no "-0")
 
 def ident( s ):
 	"""a name a script can use"""
@@ -326,7 +334,12 @@ def task_lines( task, dkvar, actors, var, owner ):
 		name = a.get( "iqm_name", task["animation"] )
 		if ty == "set_idle_animation":
 			return [ "%s.playCycle( ANIMCHANNEL_LEGS, \"%s\" );" % ( var, name ) ]
-		move, turn = a.get( "move", [ 0, 0 ] ), a.get( "turn", 0 )
+		move, turn, start = a.get( "move", [ 0, 0 ] ), a.get( "turn", 0 ), a.get( "start", [ 0, 0 ] )
+		if math.hypot( start[0], start[1] ) > 2:
+			# it starts away from where the character is (its rig plays it over
+			# the origin: autorig --root-out): drawn there, as Daikatana's was
+			return [ "cine_playFrom( %s, \"%s\", '%s 0', '%s 0', %g, %g );" % ( var, name, fmt( start ), fmt( move ), round( turn, 2 ),
+																		 round( a["frames"] / float( a.get( "fps", 10 ) ), 3 ) ) ]
 		if math.hypot( move[0], move[1] ) > 2 or abs( turn ) > 3:
 			# it moved the character: in place now, the game moves it
 			return [ "cine_playMove( %s, \"%s\", '%s 0', %g, %g );" % ( var, name, fmt( move ), round( turn, 2 ),
@@ -431,11 +444,11 @@ def write_script( path, name, data, src, mapname, cams, dkres, actorDefs ):
 				continue
 			model = actor_model( dkres, e["name"], mapname )
 			rig = rigged( dkres, e["name"], model )
-			mrig = monster_rig( e["name"], model )
+			mrig = monster_rig( e["name"], model, dkres )
 			if mrig:
 				defname = "cine_%s" % mrig[0][6:]
 				actorDefs[defname] = mrig[0]
-				rig = { "character": mrig[0][6:], "anims": dict( ( a, {} ) for a in mrig[1] ) }
+				rig = { "character": mrig[0][6:], "anims": dict( ( a, mrig[2].get( a, {} ) ) for a in mrig[1] ) }
 			elif rig:
 				defname = "cine_%s_%s" % ( rig[0], rig[1] )
 				actorDefs[defname] = rig

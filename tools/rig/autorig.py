@@ -23,6 +23,9 @@ With --name, a monster or another character, not a player: def/rig_<name>.def
 (--fps) or as --anims "<anim> <fps> [loop];..." says, and with --extra N up to
 N more bones for what the template has no bone for (a cape, wings, a sword);
 --surface metal makes it a robot, its hits spark.
+With --root-out, Daikatana's going over the ground (a fall back on dying)
+is taken out of the animations: each plays over the origin, and
+<out>.json says what was taken out, for the game to move the character by.
 With --lying, the model lies on its back, its head toward -x (as Daikatana's
 dead bodies: their frames are poses, not animations): it's rigged stood up,
 head up and facing +x, and everything written is turned back to lying.
@@ -38,6 +41,7 @@ are from the original ones. ./dk rig runs it for the characters (RIG_MODELS).
 
 Pure Python (no numpy): a few minutes for a character.
 """
+import json
 import math
 import os
 import re
@@ -694,6 +698,7 @@ def hair_chain( rest, headVerts, head ):
 EXTRA_BONES = 0		# --extra: at most this many bones for what the template doesn't carry
 SURFACE = None		# --surface: "metal" for a robot, its hits spark
 REST = None			# --rest: the animation whose first frame it's rigged from
+ROOT_OUT = False	# --root-out: the going over the ground out of the animations (root_out)
 LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
 WRITE = True		# False: only how well it fits
 EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
@@ -1374,8 +1379,51 @@ def main( md3Path, outBase ):
 			assign.append( j )
 		print( "  prop %s on %s, hidden in %d frames" % ( joint["name"], joint["parent"], sum( 1 for v in js.values() if v < 0.1 ) ) )
 
+	if ROOT_OUT:
+		root_out( m, joints, motion, J, assign, outBase, md3Path )
 	write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase )
 	return total / count
+
+def root_out( m, joints, motion, J, assign, outBase, md3Path ):
+	"""Daikatana baked a character's going over the ground into its frames
+	(Toshiro falls 65 back dying, and the poses after lie there): each
+	frame's hips are put back over where the bind pose has them, every joint
+	with them, so every animation plays over the origin; rising, falling and
+	turning stay. <outBase>.json says what was taken out, as retarget.py's:
+	an animation, where it starts from the origin, how far it goes, and each
+	frame's place (path) -- for the game to move the character by
+	(tools/cine/cine_convert.py)"""
+	# the hips' place as the pelvis carries it: the first bone of the trunk
+	# with vertexes of its own (a pelvis skinned to the thighs and the waist
+	# has none, and its joint never moves)
+	hip = joints[J["Hips"]]["pos"]
+	root = next( b for b in ( J["Hips"], J["Waist"], J["Chest"] ) if assign.count( b ) >= 4 )
+	off = []
+	for f in range( m.numFrames ):
+		h = xform( motion[root][f], hip )
+		off.append( ( h[0] - hip[0], h[1] - hip[1], 0.0 ) )
+	# every joint the frames move goes with it; one they don't (the origin,
+	# such a pelvis) stays. (A bone with few vertexes shares its parent's
+	# motion: each from the motion as it was, so none is moved twice)
+	def still( mt ):
+		return all( r == IDENT and t == ( 0, 0, 0 ) for r, t in mt.values() )
+	before = dict( motion )
+	for j, mt in before.items():
+		if not still( mt ):
+			motion[j] = { f: ( r, vsub( t, off[f] ) ) for f, ( r, t ) in mt.items() }
+	fps = ( FPS or MONSTER_FPS ) if NAME else ANIM_FPS
+	anims = {}
+	for name, first, count in m.animations():
+		s0, s1 = off[first], off[first + count - 1]
+		anims[name] = { "frames": count, "fps": fps, "start": [ round( s0[0], 2 ), round( s0[1], 2 ) ],
+						"move": [ round( s1[0] - s0[0], 2 ), round( s1[1] - s0[1], 2 ) ], "turn": 0,
+						"path": [ [ round( off[f][0], 2 ), round( off[f][1], 2 ) ] for f in range( first, first + count ) ] }
+	moved = [ "%s %.0f" % ( n, math.hypot( *a["start"] ) + math.hypot( *a["move"] ) ) for n, a in anims.items()
+			  if math.hypot( *a["start"] ) > 4 or math.hypot( *a["move"] ) > 4 ]
+	with open( outBase + ".json", "w" ) as fp:
+		json.dump( { "character": NAME or os.path.basename( outBase ), "source": gamePath( md3Path ), "root": "Hips",
+					 "anims": anims }, fp, indent = "\t" )
+	print( "  root motion out (%s), wrote %s.json" % ( ", ".join( moved ) or "none to speak of", outBase ) )
 
 def gamePath( path ):
 	"""The path the game sees: from the data folder (dkres) on."""
@@ -1963,6 +2011,11 @@ if __name__ == "__main__":
 	if args and args[0] == "--lying":
 		TO_MODEL = lie_down
 		args = args[1:]
+	if "--root-out" in args:
+		if TO_MODEL:
+			sys.exit( "--root-out: not with --lying" )
+		ROOT_OUT = True
+		args.remove( "--root-out" )
 	for opt, var, kind in ( ( "--name", "NAME", str ), ( "--fps", "FPS", float ), ( "--anims", "ANIMS", str ),
 							( "--extra", "EXTRA_BONES", int ), ( "--surface", "SURFACE", str ), ( "--rest", "REST", str ) ):
 		if opt in args:

@@ -335,7 +335,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -455,14 +455,14 @@ inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
 ninja           human     cinematic/c_ninja_intr    iqm=ninja
 osaka           human     cinematic/c_osaka_intr    iqm=osaka
 tatsuo          human     cinematic/c_tatsuo_e4m4   iqm=tatsuo
-toshiro         human     cinematic/c_tosh_intr     iqm=toshiro rest=tka
+toshiro         human     cinematic/c_tosh_intr     iqm=toshiro rest=tka rootout=1
 "
 RIG_ANIMS_froginator="amba 10 loop;ambb 10;ataka 10;atakb 10;atakc 10;diea 10;hita 10;jumpa 10;runa 15 loop;swima 10 loop;walka 10 loop"
 RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15 loop;hita 10;speciala 10"
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -473,6 +473,7 @@ rig_model() {
 			iqm=*) iqm=${kv#iqm=} ;;
 			surface=*) surface="--surface ${kv#surface=}" ;;
 			rest=*) rest="--rest ${kv#rest=}" ;;
+			rootout=1) rootout="--root-out" ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -482,7 +483,7 @@ rig_model() {
 	case $rigger in
 		player) python3 tools/rig/autorig.py "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
-		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest --anims "$anims" "$md3" "$out" ;;
+		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest $rootout --anims "$anims" "$md3" "$out" ;;
 		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac
