@@ -116,6 +116,29 @@ void cine_idle( entity actor, string anim ) {
 
 /*
 ================
+cine_stand
+
+the actor stands: the first idle it has of Daikatana's (amba most; the gi
+Hiro's is ambb, Toshiro's his talking stance, tka). Without, a walk it ended
+on would go on, on the spot
+================
+*/
+void cine_stand( entity actor ) {
+	if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
+	} else if ( actor.hasAnim( ANIMCHANNEL_LEGS, "ambb" ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, "ambb" );
+	} else if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amb" ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, "amb" );
+	} else if ( actor.hasAnim( ANIMCHANNEL_LEGS, "tka" ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, "tka" );
+	} else if ( actor.hasAnim( ANIMCHANNEL_LEGS, "rest" ) ) {
+		actor.playCycle( ANIMCHANNEL_LEGS, "rest" );
+	}
+}
+
+/*
+================
 cine_spawn
 
 an actor of that def, there, facing yaw, named
@@ -130,9 +153,7 @@ entity cine_spawn( string def, vector origin, float yaw, string name ) {
 	if ( actor != $null_entity ) {
 		actor.setName( name );
 		cine_anchor( actor, origin, yaw );
-		if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
-			actor.playCycle( ANIMCHANNEL_LEGS, "amba" );		// its idle, until it's told otherwise
-		}
+		cine_stand( actor );
 	}
 	return actor;
 }
@@ -155,9 +176,7 @@ entity cine_enter( entity actor, string def, vector origin, float yaw, string na
 		actor.setAngles( '0 1 0' * yaw );
 		actor.turnTo( yaw );
 		cine_anchor( actor, origin, yaw );
-		if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
-			actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
-		}
+		cine_stand( actor );
 	}
 	if ( actor != $null_entity ) {
 		actor.setKey( "cine_owner", who );
@@ -332,9 +351,7 @@ void cine_move( entity actor, vector dest, string gait ) {
 	at_z = actor.getOrigin() * '0 0 1';
 	actor.setOrigin( at );
 	cine_anchor( actor, at, actor.getAngles() * '0 1 0' );
-	if ( actor.hasAnim( ANIMCHANNEL_LEGS, "amba" ) ) {
-		actor.playCycle( ANIMCHANNEL_LEGS, "amba" );
-	}
+	cine_stand( actor );
 }
 
 /*

@@ -19,8 +19,8 @@ articulatedFigure monster_hirogi {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.19, -4.25, -2.66 ), ( 3.19, 4.25, 2.66 ) )
-		origin ( 1.70, -4.48, 6.67 )
+		model box( ( -3.99, -3.49, -3.35 ), ( 3.99, 3.49, 3.35 ) )
+		origin ( -0.54, -8.59, -0.34 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +79,8 @@ articulatedFigure monster_hirogi {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -4.39, 0.11, 2.75 ), ( -0.37, 1.91, -7.54 ), 7.32 )
-		origin ( -2.38, 1.01, -2.39 )
+		model bone( ( -3.93, 0.78, 0.62 ), ( -4.25, -1.55, -12.40 ), 3.00 )
+		origin ( -4.09, -0.39, -5.89 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +91,8 @@ articulatedFigure monster_hirogi {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -0.37, 1.91, -7.54 ), ( -1.81, 4.11, -21.79 ), 4.13 )
-		origin ( -1.09, 3.01, -14.66 )
+		model bone( ( -4.25, -1.55, -12.40 ), ( -2.21, 3.85, -19.83 ), 8.06 )
+		origin ( -3.23, 1.15, -16.11 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +127,8 @@ articulatedFigure monster_hirogi {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( -4.41, -8.09, 2.75 ), ( 1.69, -10.33, -4.20 ), 6.66 )
-		origin ( -1.36, -9.21, -0.73 )
+		model bone( ( 1.23, -11.06, -2.50 ), ( 0.93, -11.30, -12.40 ), 6.94 )
+		origin ( 1.08, -11.18, -7.45 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +139,8 @@ articulatedFigure monster_hirogi {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 1.69, -10.33, -4.20 ), ( -2.18, -11.42, -21.47 ), 4.79 )
-		origin ( -0.25, -10.88, -12.83 )
+		model bone( ( 0.93, -11.30, -12.40 ), ( -2.53, -11.07, -21.97 ), 3.68 )
+		origin ( -0.80, -11.19, -17.18 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -188,7 +188,7 @@ articulatedFigure monster_hirogi {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( 0.36, 0.16, -0.92 ), ( -0.36, -0.16, 0.92 )
+		shafts ( -0.02, -0.18, -0.98 ), ( 0.02, 0.18, 0.98 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,7 +199,7 @@ articulatedFigure monster_hirogi {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 46.4, 140.0, 111.4
+		limit 23.6, 140.0, 88.6
 	}
 
 	universalJoint "Rshoulder" {
@@ -224,7 +224,7 @@ articulatedFigure monster_hirogi {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( 0.64, -0.24, -0.73 ), ( -0.64, 0.24, 0.73 )
+		shafts ( -0.03, -0.02, -1.00 ), ( 0.03, 0.02, 1.00 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_hirogi {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 66.3, 140.0, 131.3
+		limit 23.3, 140.0, 88.3
 	}
 
 }

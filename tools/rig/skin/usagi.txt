@@ -1,0 +1,54 @@
+# usagi's left hand rests on his thigh in the rest pose (his first frame): nearness
+# gave its fingers to the thigh, which then followed the hand up when he forges
+# (they move 12 to 18 units with it in frgsa, the thigh hardly at all)
+Auto_1:193 Lhand
+Auto_1:194 Lhand
+Auto_1:195 Lhand
+Auto_1:196 Lhand
+Auto_1:287 Lhand
+Auto_1:288 Lhand
+Auto_1:289 Lhand
+Auto_1:290 Lhand
+Auto_1:291 Lhand
+Auto_1:292 Lhand
+Auto_1:293 Lhand
+Auto_1:294 Lhand
+Auto_1:295 Lhand
+Auto_1:296 Lhand
+Auto_1:297 Lhand
+Auto_1:298 Lhand
+Auto_1:299 Lhand
+Auto_1:300 Lhand
+Auto_1:301 Lhand
+Auto_1:302 Lhand
+Auto_1:303 Lhand
+Auto_1:304 Lhand
+Auto_1:305 Lhand
+Auto_1:306 Lhand
+Auto_1:309 Lhand
+Auto_1:312 Lhand
+Auto_1:313 Lhand
+Auto_1:315 Lhand
+Auto_1:316 Lhand
+Auto_1:317 Lhand
+# and his right hand hangs by his right thigh: its fingers (22 to 28 units with it
+# when he forges) went to the thigh too
+Auto_1:189 Rhand
+Auto_1:191 Rhand
+Auto_1:192 Rhand
+Auto_1:215 Rhand
+Auto_1:216 Rhand
+Auto_1:218 Rhand
+Auto_1:220 Rhand
+Auto_1:221 Rhand
+Auto_1:222 Rhand
+Auto_1:223 Rhand
+Auto_1:224 Rhand
+Auto_1:226 Rhand
+Auto_1:227 Rhand
+Auto_1:228 Rhand
+Auto_1:229 Rhand
+Auto_1:230 Rhand
+Auto_1:231 Rhand
+Auto_1:232 Rhand
+Auto_1:233 Rhand

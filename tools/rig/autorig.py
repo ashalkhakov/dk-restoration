@@ -1107,6 +1107,27 @@ def main( md3Path, outBase ):
 				segs[b] = bone_segment( b )
 			print( "  extra bones: %s" % ", ".join( "%s(%d, on %s)" % ( joints[b]["name"], assign.count( b ), joints[b]["parent"] ) for b in added ) )
 	motion = fit_bones( range( F ) )
+	# a vertex another bone carries far better, in the frames it's worst in,
+	# is that bone's: nearness put Usagi's fingers, resting on his thigh, on
+	# the thigh, and the thigh followed his hand up when he forged (a few
+	# such pull a bone's whole fit; on average, over all the frames, they
+	# hardly show). Then the bones fitted again, without them
+	def worst_err( i, b ):
+		return max( vlen( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in sample )
+	moved = 0
+	for i in range( N ):
+		if i in pins or i in hairIdx:
+			continue
+		own = worst_err( i, assign[i] )
+		if own < 2.0:
+			continue
+		best = min( ( b for b in bones if allowed( i, b ) ), key = lambda b: worst_err( i, b ) )
+		if best != assign[i] and worst_err( i, best ) < 0.3 * own:
+			assign[i] = best
+			moved += 1
+	if moved:
+		print( "  %d vertexes to the bone that carries them" % moved )
+		motion = fit_bones( range( F ) )
 	if os.environ.get( "RIG_DEBUG" ):
 		plot_segments( rest, assign, joints, os.environ["RIG_DEBUG"] )
 
@@ -1241,64 +1262,6 @@ def main( md3Path, outBase ):
 			weights[i] = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
 			assign[i] = weights[i][0]
 
-	# an arm's vertexes are what's joined to its shoulder: a hand resting on a
-	# thigh (Usagi's) is near the thigh, and moves with it in most frames,
-	# but the thigh's vertexes are the leg's (joined to it by the mesh). A
-	# piece that isn't, but is joined to another bone's, goes to the bone
-	# nearest it that isn't the arm's
-	adjv = [ set() for i in range( N ) ]
-	for a, b, c in tris:
-		for p, q in ( ( a, b ), ( b, c ), ( c, a ) ):
-			adjv[p].add( q )
-			adjv[q].add( p )
-	at = {}
-	for i, v in enumerate( rest ):
-		at.setdefault( tuple( int( round( c / SEAM ) ) for c in v ), [] ).append( i )
-	for same in at.values():
-		for i in same:
-			adjv[i].update( k for k in same if k != i )
-	moved = 0
-	for side in "LR":
-		arm = set( j for j, jt in enumerate( joints ) if jt["zone"] == "arms" and jt["name"].startswith( side ) )
-		if side + "uparm" not in J:
-			continue
-		mine = set( i for i in range( N ) if weights[i][0] in arm )
-		if not mine:
-			continue
-		# from the vertexes nearest the shoulder, through the arm's
-		shoulder = joints[J[side + "uparm"]]["pos"]
-		start = min( mine, key = lambda i: vlen( vsub( rest[i], shoulder ) ) )
-		seen, todo = { start }, [ start ]
-		while todo:
-			v = todo.pop()
-			for n in adjv[v]:
-				if n in mine and n not in seen:
-					seen.add( n )
-					todo.append( n )
-		# the rest, a piece at a time: off the arm if the mesh joins it to
-		# what isn't the arm's (a separate piece, a glove, stays)
-		rest_ = mine - seen
-		while rest_:
-			piece, todo = set(), [ rest_.pop() ]
-			while todo:
-				v = todo.pop()
-				piece.add( v )
-				for n in adjv[v]:
-					if n in rest_:
-						rest_.discard( n )
-						todo.append( n )
-			if not any( n not in mine for v in piece for n in adjv[v] ):
-				continue
-			for i in piece:
-				if i in pins:
-					continue
-				b = min( ( b for b in bones if b not in arm and allowed( i, b ) ), key = lambda b: seg_dist( rest[i], *segs[b] ) )
-				weights[i] = ( b, b, 1.0 )
-				assign[i] = b
-				moved += 1
-	if moved:
-		print( "  %d vertexes not joined to their arm off it" % moved )
-
 	# the seams: vertexes of different surfaces in one place (Hiro's head on
 	# his neck) skin alike, or a pose the animations never had (the head
 	# pitched to aim) opens a hole between them. A group takes whichever of
@@ -1318,7 +1281,10 @@ def main( md3Path, outBase ):
 	for i in range( N ):
 		if i in seen:
 			continue
-		group = [ k for k in range( N ) if vlen( vsub( rest[k], rest[i] ) ) < SEAM ]
+		# (in one place in the frames too: a seam, not a hand resting on a
+		# thigh in the rest pose, Usagi's, that leaves it in others)
+		group = [ k for k in range( N ) if vlen( vsub( rest[k], rest[i] ) ) < SEAM
+				  and all( vlen( vsub( frames[f][k], frames[f][i] ) ) < 2 * SEAM for f in sample[::8] ) ]
 		seen.update( group )
 		if len( set( verts[k][0] for k in group ) ) < 2 or len( set( weights[k] for k in group ) ) < 2:
 			continue
