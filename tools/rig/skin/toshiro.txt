@@ -1,0 +1,4 @@
+# toshiro's right elbow: Daikatana's frames push its back out when the arm
+# bends (cough, point, staffmad), more than the arm's bones carry it, though
+# less than the bar for a point no bone carries: a bone of its own
+point Auto_2:171

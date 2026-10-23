@@ -18,15 +18,16 @@ function m4mul( a, b ) {
 	}
 	return o;
 }
-// translate * rotate (quaternion x y z w) * scale
+// translate * scale * rotate (quaternion x y z w): the scale along the
+// parent's axes, as the engine does it (bg_model.c, tr_model_iqm.c)
 function m4trs( t, q, s ) {
 	let [ x, y, z, w ] = q;
 	const l = Math.hypot( x, y, z, w ) || 1;
 	x /= l; y /= l; z /= l; w /= l;
 	const m = new Float32Array( 16 );
-	m[0] = ( 1 - 2 * ( y * y + z * z ) ) * s[0]; m[1] = 2 * ( x * y + z * w ) * s[0]; m[2] = 2 * ( x * z - y * w ) * s[0];
-	m[4] = 2 * ( x * y - z * w ) * s[1]; m[5] = ( 1 - 2 * ( x * x + z * z ) ) * s[1]; m[6] = 2 * ( y * z + x * w ) * s[1];
-	m[8] = 2 * ( x * z + y * w ) * s[2]; m[9] = 2 * ( y * z - x * w ) * s[2]; m[10] = ( 1 - 2 * ( x * x + y * y ) ) * s[2];
+	m[0] = ( 1 - 2 * ( y * y + z * z ) ) * s[0]; m[1] = 2 * ( x * y + z * w ) * s[1]; m[2] = 2 * ( x * z - y * w ) * s[2];
+	m[4] = 2 * ( x * y - z * w ) * s[0]; m[5] = ( 1 - 2 * ( x * x + z * z ) ) * s[1]; m[6] = 2 * ( y * z + x * w ) * s[2];
+	m[8] = 2 * ( x * z + y * w ) * s[0]; m[9] = 2 * ( y * z - x * w ) * s[1]; m[10] = ( 1 - 2 * ( x * x + y * y ) ) * s[2];
 	m[12] = t[0]; m[13] = t[1]; m[14] = t[2]; m[15] = 1;
 	return m;
 }
@@ -381,16 +382,13 @@ function matchMD3() {
 		}
 		return [ best, bd ];
 	};
-	// (by the median: a prop's vertexes are put where it shows, not where the
-	// bind pose's frame hides it)
-	let restFrame = 0, restErr = 1e18;
+	// (where the most of its vertexes are exactly: a prop shows elsewhere,
+	// and standing frames alike are near, but only the bind's is exact)
+	let restFrame = 0, restScore = null;
 	for ( const f of new Set( [ 0, ...md3.anims.map( a => a.first ) ] ) ) {
-		const ds = [];
-		for ( let i = 0; i < iqm.numVerts; i += 5 ) ds.push( nearest( f, i )[1] );
-		ds.sort( ( x, y ) => x - y );
-		// (frames alike, a standing one in several animations: the mean decides)
-		const e = ds[ds.length >> 1] + 1e-3 * ds.reduce( ( x, y ) => x + y, 0 ) / ds.length;
-		if ( e < restErr ) { restErr = e; restFrame = f; }
+		let exact = 0, sum = 0;
+		for ( let i = 0; i < iqm.numVerts; i++ ) { const d = nearest( f, i )[1]; if ( d < 1e-4 ) exact++; sum += d; }
+		if ( !restScore || exact > restScore[0] || ( exact === restScore[0] && sum < restScore[1] ) ) { restScore = [ exact, sum ]; restFrame = f; }
 	}
 	S.md3Rest = restFrame;
 	S.match = new Int32Array( iqm.numVerts );

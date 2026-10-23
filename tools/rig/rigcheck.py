@@ -52,7 +52,7 @@ def mat( q, s ):
 	r = [ [ 1 - 2 * ( y * y + z * z ), 2 * ( x * y - z * w ), 2 * ( x * z + y * w ) ],
 		  [ 2 * ( x * y + z * w ), 1 - 2 * ( x * x + z * z ), 2 * ( y * z - x * w ) ],
 		  [ 2 * ( x * z - y * w ), 2 * ( y * z + x * w ), 1 - 2 * ( x * x + y * y ) ] ]
-	return [ [ r[i][c] * s[c] for c in range( 3 ) ] for i in range( 3 ) ]
+	return [ [ r[i][c] * s[i] for c in range( 3 ) ] for i in range( 3 ) ]	# (rows: the engine's, bg_model.c)
 
 def apply( t, v ):
 	m, o = t
@@ -142,11 +142,12 @@ class Source:
 					best, bd = ( si, vi ), d
 			return best, bd
 		# the frame the bind pose is (the MD3's first, or --rest's): the one
-		# its vertexes are nearest, by the median (a prop shows elsewhere)
+		# where the most of its vertexes are exactly (a prop shows elsewhere;
+		# standing frames alike are near, but only the bind's is exact)
 		cands = sorted( set( [ 0 ] + [ a[0] for a in self.anims.values() ] ) )
 		def score( f ):
-			ds = sorted( nearest( f, rig.pos[i] )[1] for i in range( 0, len( rig.pos ), 5 ) )
-			return ds[len( ds ) // 2] + 1e-3 * sum( ds ) / len( ds )
+			ds = [ nearest( f, p )[1] for p in rig.pos ]
+			return ( -sum( 1 for d in ds if d < 1e-4 ), sum( ds ) )
 		self.rest = min( cands, key = score )
 		self.match = [ nearest( self.rest, p )[0] for p in rig.pos ]
 

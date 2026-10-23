@@ -332,6 +332,8 @@ def split_props( surfaces ):
 
 # a prop's joint's scale a frame (0.01 where it's hidden): joint -> { frame: scale }
 PROP_SCALE = {}
+# a cloth bone's scale a frame, along its parent's axes (scale_bones): joint -> { frame: ( x, y, z ) }
+SCALE3 = {}
 
 def prop_joints( props, joints, motion, bones, F ):
 	"""The props as joints of their own: rest the frame each is biggest in,
@@ -703,8 +705,9 @@ LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the moti
 WRITE = True		# False: only how well it fits
 EXTRA_ERROR = 0.02	# of the height: a vertex its bone carries worse than this, on average, is extra
 EXTRA_MIN = 8		# vertexes: a smaller part stays on its bone
+EXTRA_FAR = 0.1		# of the height: unless one of it is this far off at worst
 
-def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins, hairIdx, budget ):
+def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins, hairIdx, budget, spans = None ):
 	"""Bones for the mesh no template bone carries well: its pieces (joined by
 	the mesh) are split by their motion until each moves rigidly, the biggest
 	first; each becomes a bone on the one it meets most, the vertexes it
@@ -730,7 +733,13 @@ def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins
 		for i in ms:
 			adj[i].update( k for k in ms if k != i )
 	cur = [ err( i, motion[assign[i]] ) for i in range( N ) ]
-	bad = set( i for i in range( N ) if cur[i] > EXTRA_ERROR * H and i not in pins and i not in hairIdx )
+	# carried badly in some animation (the robe over Toshiro's shoulder,
+	# right but in his coughs, is fine on average over all of them)
+	inSpan = [ [ f for f in sample if a <= f < a + n ] or [ a ] for a, n in ( spans or [] ) ]
+	inSpan = [ fs for fs in inSpan if all( f in motion[assign[0]] for f in fs ) ]
+	def worst_anim( i, mt ):
+		return max( [ sum( vlen( vsub( xform( mt[f], rest[i] ), frames[f][i] ) ) for f in fs ) / len( fs ) for fs in inSpan ] + [ err( i, mt ) ] )
+	bad = set( i for i in range( N ) if worst_anim( i, motion[assign[i]] ) > EXTRA_ERROR * H and i not in pins and i not in hairIdx )
 	def pieces( vs ):
 		vs, out, seen = set( vs ), [], set()
 		for s0 in vs:
@@ -769,8 +778,13 @@ def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins
 	for p in pieces( range( N ) ):
 		for i in p:
 			whole[i] = len( p )
+	def worst( i, mt ):
+		return max( vlen( vsub( xform( mt[f], rest[i] ), frames[f][i] ) ) for f in sample )
 	def big( p ):
-		return len( p ) >= EXTRA_MIN or ( len( p ) >= 3 and whole[p[0]] == len( p ) )
+		# big enough to be worth a bone, or few but far off (a robe's flap,
+		# its corners swinging free of the legs they hang by: Toshiro's)
+		return len( p ) >= EXTRA_MIN or ( len( p ) >= 3 and whole[p[0]] == len( p ) ) or \
+			( len( p ) >= 3 and max( worst( i, motion[assign[i]] ) for i in p ) > EXTRA_FAR * H )
 	# the pieces, split until rigid (or too small to split)
 	todo = [ p for p in pieces( bad ) if big( p ) ]
 	parts = []
@@ -805,7 +819,17 @@ def extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins
 			for n in adj[i]:
 				if n not in gs:
 					meet[assign[n]] = meet.get( assign[n], 0 ) + 1
-		parent = max( meet, key = meet.get ) if meet else max( set( assign[i] for i in gain ), key = [ assign[i] for i in gain ].count )
+		# on the bone it meets, or one those hang from, that carries it best
+		# in its worst frames: the one it follows (a robe's flap meeting the
+		# sleeve hangs from the waist, not the arm, which aims)
+		near = set( meet ) if meet else set( assign[i] for i in gain )
+		for b0 in list( near ):
+			p0 = joints[b0]["parentIndex"]
+			while p0 >= 0:
+				if p0 in motion and joints[p0]["zone"]:
+					near.add( p0 )
+				p0 = joints[p0]["parentIndex"]
+		parent = min( ( b0 for b0 in near if b0 in motion ), key = lambda b0: sum( worst( i, motion[b0] ) for i in gain ) )
 		edge = [ rest[n] for i in gain for n in adj[i] if n not in gs and assign[n] == parent ]
 		pos = vscale( ( sum( v[0] for v in edge ), sum( v[1] for v in edge ), sum( v[2] for v in edge ) ), 1.0 / len( edge ) ) if edge \
 			else min( ( rest[i] for i in gain ), key = lambda v: vlen( vsub( v, joints[parent]["pos"] ) ) )
@@ -895,10 +919,16 @@ def cap_holes( sf ):
 	if added:
 		print( "  %s: %d holes capped" % ( sf.name, added ) )
 
+POINTS = set()	# vertexes tools/rig/skin/<name>.txt gives bones of their own ("point")
+
 def load_pins( name, body, verts, J ):
 	"""Vertexes pinned to bones by hand, tools/rig/skin/<name>.txt: lines of
 	"<surface>:<index> <bone> [<blend bone> <weight>]" (the skin table's
-	columns), # comments. Daikatana's data stays out: only numbers and names."""
+	columns), # comments. Daikatana's data stays out: only numbers and names.
+	A line "point <surface>:<index>" gives that vertex (and those in its
+	place) a bone of its own, as the points no bone carries get (one under
+	their bar the eye still sees: Toshiro's right elbow)"""
+	POINTS.clear()
 	path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), "skin", name + ".txt" )
 	pins = {}
 	if not os.path.exists( path ):
@@ -907,6 +937,14 @@ def load_pins( name, body, verts, J ):
 	for n, line in enumerate( open( path ), 1 ):
 		w = line.split( "#" )[0].split()
 		if not w:
+			continue
+		if w[0] == "point" and len( w ) == 2:
+			surf, _, vi = w[1].rpartition( ":" )
+			i = index.get( ( surf, int( vi ) ) ) if surf else None
+			if i is None:
+				print( "  %s:%d: no vertex %s" % ( path, n, w[1] ) )
+			else:
+				POINTS.add( i )
 			continue
 		surf, _, vi = w[0].rpartition( ":" )
 		i = index.get( ( surf, int( vi ) ) ) if surf else None
@@ -1104,13 +1142,40 @@ def main( md3Path, outBase ):
 	# rigger finds them (EXTRA_BONES at most)
 	if EXTRA_BONES:
 		motion = fit_bones( sample )
-		added = extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins, hairIdx, EXTRA_BONES )
+		added = extra_bones( rest, frames, tris, assign, joints, bones, motion, sample, pins, hairIdx, EXTRA_BONES,
+							 [ ( first, n ) for name, first, n in m.animations() ] )
 		if added:
 			children = { i: [ k for k, j in enumerate( joints ) if j["parentIndex"] == i ] for i in range( len( joints ) ) }
 			J = { j["name"]: i for i, j in enumerate( joints ) }
 			for b in added:
 				segs[b] = bone_segment( b )
 			print( "  extra bones: %s" % ", ".join( "%s(%d, on %s)" % ( joints[b]["name"], assign.count( b ), joints[b]["parent"] ) for b in added ) )
+	# the robe over the shoulders: a character in one (Toshiro, under his
+	# tunic) had a bone there in Daikatana's rig, the cloth moving on its own
+	# between the neck and the arms; a bone on the chest across them takes the
+	# vertexes about them it carries better than their bones do
+	if NAME and all( n in J for n in ( "Chest", "Luparm", "Ruparm", "Loneck" ) ):
+		motion = fit_bones( sample )
+		a_, b_ = joints[J["Luparm"]]["pos"], joints[J["Ruparm"]]["pos"]
+		Hh = max( v[2] for v in rest ) - min( v[2] for v in rest )
+		near = [ i for i in range( N ) if assign[i] in ( J["Chest"], J["Loneck"], J["Luparm"], J["Ruparm"] )
+				 and i not in pins and i not in hairIdx and seg_dist( rest[i], a_, b_ ) < 0.12 * Hh ]
+		if len( near ) >= 4:
+			mt = { f: rigid_fit( [ rest[i] for i in near ], [ frames[f][i] for i in near ] ) for f in sample }
+			def e_( i, m_ ):
+				return sum( vlen( vsub( xform( m_[f], rest[i] ), frames[f][i] ) ) for f in sample ) / len( sample )
+			gain = [ i for i in near if e_( i, mt ) < 0.7 * e_( i, motion[assign[i]] ) ]
+			if len( gain ) >= 4:
+				joints.append( { "name": "Shoulders", "parent": "Chest", "parentIndex": J["Chest"], "zone": "torso",
+								 "pos": vscale( vadd( a_, b_ ), 0.5 ), "extra": True } )
+				sb = len( joints ) - 1
+				bones.append( sb )
+				for i in gain:
+					assign[i] = sb
+				children = { i: [ k for k, j in enumerate( joints ) if j["parentIndex"] == i ] for i in range( len( joints ) ) }
+				J = { j["name"]: i for i, j in enumerate( joints ) }
+				segs[sb] = bone_segment( sb )
+				print( "  shoulders: %d vertexes of the robe over them" % len( gain ) )
 	motion = fit_bones( range( F ) )
 	# a vertex another bone carries far better, in the frames it's worst in,
 	# is that bone's: nearness put Usagi's fingers, resting on his thigh, on
@@ -1118,7 +1183,7 @@ def main( md3Path, outBase ):
 	# such pull a bone's whole fit; on average, over all the frames, they
 	# hardly show). Then the bones fitted again, without them
 	def worst_err( i, b ):
-		return max( vlen( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in sample )
+		return max( vlen( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in range( F ) )
 	moved = 0
 	for i in range( N ):
 		if i in pins or i in hairIdx:
@@ -1127,12 +1192,60 @@ def main( md3Path, outBase ):
 		if own < 2.0:
 			continue
 		best = min( ( b for b in bones if allowed( i, b ) ), key = lambda b: worst_err( i, b ) )
-		if best != assign[i] and worst_err( i, best ) < 0.3 * own:
+		if best != assign[i] and worst_err( i, best ) < 0.5 * own:
 			assign[i] = best
 			moved += 1
 	if moved:
 		print( "  %d vertexes to the bone that carries them" % moved )
 		motion = fit_bones( range( F ) )
+	# a point no bone carries (the corner of Toshiro's robe at the back of
+	# his right shoulder, five vertexes in one place, pushed out when he
+	# coughs and points): a bone of its own, on the bone it follows best,
+	# that puts it where Daikatana's frames have it. Judged by its worst
+	# frame (a point standing out is a peak, its average small), and only
+	# when no bone carries it even half as well
+	if EXTRA_BONES and NAME:
+		Hh = max( v[2] for v in rest ) - min( v[2] for v in rest )
+		spans = [ range( a, a + n ) for name, a, n in m.animations() ]
+		def anim_err( i, b ):
+			return max( vlen( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in range( F ) )
+		places = {}
+		for i in range( N ):
+			if ( i in pins and i not in POINTS ) or i in hairIdx or joints[assign[i]].get( "point" ):
+				continue
+			# (a robe's own bone carries its panel, its corners swing on
+			# their own: those by half the bar, Toshiro's flap's)
+			if i in POINTS or anim_err( i, assign[i] ) > ( 1 if joints[assign[i]].get( "extra" ) else 2 ) * EXTRA_ERROR * Hh:
+				places.setdefault( tuple( int( round( c / SEAM ) ) for c in rest[i] ), [] ).append( i )
+		alone = []
+		for group in places.values():
+			i = group[0]
+			own = anim_err( i, assign[i] )
+			# (never from another point's bone)
+			follow = min( ( b for b in bones if not joints[b].get( "point" ) ), key = lambda b: anim_err( i, b ) )
+			if anim_err( i, follow ) < 0.5 * own and not joints[assign[i]].get( "extra" ) and not set( group ) & POINTS:
+				continue		# a bone carries it (the pass above); a robe's corner swings on its own
+			pname = joints[follow]["name"]
+			k = 1
+			while any( j["name"] == "%s_%d" % ( pname, k ) for j in joints ):
+				k += 1
+			joints.append( { "name": "%s_%d" % ( pname, k ), "parent": pname, "parentIndex": follow,
+							 "zone": joints[follow]["zone"], "pos": rest[i], "extra": True, "point": True } )
+			pb = len( joints ) - 1
+			bones.append( pb )
+			# turning as the bone it follows, moved to where the frames have it
+			motion[pb] = { f: ( motion[follow][f][0], vsub( frames[f][i], mvec( motion[follow][f][0], rest[i] ) ) ) for f in range( F ) }
+			for g in group:
+				assign[g] = pb
+				pins[g] = ( pb, pb, 1.0 )		# its own, unblended
+			alone.append( "%s(%d, on %s)" % ( joints[pb]["name"], len( group ), pname ) )
+		if alone:
+			children = { i: [ k for k, j in enumerate( joints ) if j["parentIndex"] == i ] for i in range( len( joints ) ) }
+			J = { j["name"]: i for i, j in enumerate( joints ) }
+			for b in bones:
+				if b not in segs:
+					segs[b] = bone_segment( b )
+			print( "  a vertex no bone carries, a bone of its own: %s" % ", ".join( alone ) )
 	if os.environ.get( "RIG_DEBUG" ):
 		plot_segments( rest, assign, joints, os.environ["RIG_DEBUG"] )
 
@@ -1204,42 +1317,16 @@ def main( md3Path, outBase ):
 	joints[J["origin"]]["pos"] = ( joints[J["Hips"]]["pos"][0], joints[J["Hips"]]["pos"][1], zmin )
 	motion[J["Body"]] = motion[J["Hips"]]
 
-	# 3b. a rigid skeleton, as Doom 3's: the hips go where they will (the body's
-	# going about, lying down), every other joint stays at the end of its
-	# parent's bone and only turns, as its vertexes turn about it. Each bone
-	# fitted on its own let joints wander off their parents (Toshiro's waist
-	# 70 from his hips lying in his coffin, the bind pose's 3.5), which a
-	# ragdoll, bodies joined at fixed places, can't take
-	def turn_fit( src, dst ):
-		"""the rotation that best takes the vectors src to dst (about the
-		origin: each with its opposite, both centred there)"""
-		return rigid_fit( src + [ vscale( a, -1.0 ) for a in src ], dst + [ vscale( b, -1.0 ) for b in dst ] )[0]
-	chain = { J["Hips"]: motion[J["Hips"]], J["Body"]: motion[J["Hips"]] }
-	for b in range( len( joints ) ):
-		if b in chain or b not in bones:
-			continue
-		par = joints[b]["parentIndex"]
-		if par not in chain:
-			continue
-		pj = joints[b]["pos"]
-		idx = [ i for i in range( N ) if assign[i] == b ]
-		chain[b] = {}
-		for f in range( F ):
-			q = xform( chain[par][f], pj )
-			if len( idx ) >= 4:
-				r = turn_fit( [ vsub( rest[i], pj ) for i in idx ], [ vsub( frames[f][i], q ) for i in idx ] )
-			else:
-				r = chain[par][f][0]		# too few to turn by: with its parent
-			chain[b][f] = ( r, vsub( q, mvec( r, pj ) ) )
-	for b in chain:
-		motion[b] = chain[b]
-
+	# 3c. the cloth's bones (the extra ones, ends) turn and scale along their
+	# parent's axes, so a robe's panel can flatten or round as Daikatana's
+	# frames have it
+	scale_bones( joints, motion, assign, rest, frames, F, sample )
 
 	# 4. two weights a vertex: its bone, and a neighbour where blending fits
 	weights = []
 	for i in range( N ):
 		b = assign[i]
-		best = ( b, b, 1.0, None )
+		best = ( b, b, 1.0, sum( vdot( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ), vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in sample ) )
 		for o in allowed_bones( i, neighbours( b ) ):
 			# one leg's vertex never follows the other: the walk IK moves
 			# them apart, which the animations never do
@@ -1262,7 +1349,9 @@ def main( md3Path, outBase ):
 				ac = vsub( a, c )
 				num += vdot( ac, vsub( tgt, c ) )
 				den += vdot( ac, ac )
-			w = 1.0 if den < 1e-9 else max( 0.5, min( 1.0, num / den ) )
+			# all the way to the neighbour, if it carries the vertex better
+			# (the back of Toshiro's left knee: the shin's robe bone, not the shin)
+			w = 1.0 if den < 1e-9 else max( 0.0, min( 1.0, num / den ) )
 			err = 0.0
 			for f in sample:
 				a = xform( motion[b][f], rest[i] )
@@ -1274,6 +1363,9 @@ def main( md3Path, outBase ):
 				best = ( b, o, w, err )
 		if i in pins:
 			best = pins[i] if len( pins[i] ) == 3 else ( pins[i][0], pins[i][0], 1.0 )
+		elif best[2] < 0.5:
+			best = ( best[1], best[0], 1.0 - best[2], best[3] )		# the neighbour its bone now
+			assign[i] = best[0]
 		weights.append( best[:3] )
 
 	# the knees and the elbows by where the vertexes are: blended across the
@@ -1295,7 +1387,23 @@ def main( md3Path, outBase ):
 				continue
 			t = min( 1.0, max( 0.0, ( vdot( vsub( rest[i], c ), axis ) + h ) / ( 2 * h ) ) )
 			wc = t * t * ( 3 - 2 * t )
-			weights[i] = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
+			blended = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
+			# only where the limb carries the vertex as well blended: a robe's
+			# hem over the knee, still while the leg moves in it, stays on
+			# the bone that carries it (Toshiro's, lifting with his knee)
+			def wt_err( wt ):
+				b_, o_, w_ = wt
+				e_ = 0.0
+				for f in range( F ):
+					p_ = xform( motion[b_][f], rest[i] )
+					if w_ < 1.0:
+						p_ = vadd( vscale( p_, w_ ), vscale( xform( motion[o_][f], rest[i] ), 1 - w_ ) )
+					d_ = vsub( p_, frames[f][i] )
+					e_ = max( e_, vlen( d_ ) )
+				return e_
+			if wt_err( blended ) > max( 1.0, 1.5 * wt_err( weights[i] ) ):
+				continue
+			weights[i] = blended
 			assign[i] = weights[i][0]
 
 	# the seams: vertexes of different surfaces in one place (Hiro's head on
@@ -1455,6 +1563,54 @@ def root_out( m, joints, motion, J, assign, outBase, md3Path ):
 		json.dump( { "character": NAME or os.path.basename( outBase ), "source": gamePath( md3Path ), "root": "Hips",
 					 "anims": anims }, fp, indent = "\t" )
 	print( "  root motion out (%s), wrote %s.json" % ( ", ".join( moved ) or "none to speak of", outBase ) )
+
+def scale_bones( joints, motion, assign, rest, frames, F, sample ):
+	"""a cloth bone (an extra one, an end) fitted again a frame as a turn and
+	a scale along its parent's axes (the engine's local: translate * scale *
+	rotate), where that carries its vertexes better than turning alone"""
+	restRot = rest_rotations( joints )
+	kids = set( j["parentIndex"] for j in joints )
+	for b, jb in enumerate( joints ):
+		if not jb.get( "extra" ) or b in kids or b not in motion:
+			continue
+		idx = [ i for i in range( len( rest ) ) if assign[i] == b ]
+		if len( idx ) < 4:
+			continue
+		par = jb["parentIndex"]
+		jp, pp = jb["pos"], joints[par]["pos"]
+		Rj = restRot[b]
+		a = [ mvec( mtrans( Rj ), vsub( rest[i], jp ) ) for i in idx ]	# in the joint's rest frame
+		def err( mt, fs ):
+			return sum( vlen( vsub( xform( mt[f], rest[i] ), frames[f][i] ) ) for f in fs for i in idx )
+		scaled, scales = {}, {}
+		for f in range( F ):
+			rp, tp = motion[par][f]
+			Rp = mmul( rp, restRot[par] )
+			po = xform( ( rp, tp ), pp )
+			bb = [ mvec( mtrans( Rp ), vsub( frames[f][i], po ) ) for i in idx ]	# in the parent's frame
+			R, t = rigid_fit( a, bb )
+			sc = [ 1.0, 1.0, 1.0 ]
+			for it in range( 6 ):
+				ra = [ mvec( R, p ) for p in a ]
+				for k in range( 3 ):
+					# b_k = s_k (R a)_k + t_k, least squares
+					n = len( ra )
+					mx = sum( p[k] for p in ra ) / n
+					my = sum( q[k] for q in bb ) / n
+					vx = sum( ( p[k] - mx ) ** 2 for p in ra )
+					cxy = sum( ( p[k] - mx ) * ( q[k] - my ) for p, q in zip( ra, bb ) )
+					sc[k] = max( 0.3, min( 3.0, cxy / vx ) ) if vx > 1e-6 else 1.0
+				t = [ sum( q[k] - sc[k] * p[k] for p, q in zip( ra, bb ) ) / len( ra ) for k in range( 3 ) ]
+				R = rigid_fit( a, [ ( ( q[0] - t[0] ) / sc[0], ( q[1] - t[1] ) / sc[1], ( q[2] - t[2] ) / sc[2] ) for q in bb ] )[0]
+			L = [ [ sc[r_] * R[r_][c] for c in range( 3 ) ] for r_ in range( 3 ) ]
+			M = mmul( mmul( Rp, L ), mtrans( Rj ) )		# rest -> this frame, in the world
+			o = vadd( po, mvec( Rp, t ) )
+			scaled[f] = ( M, vsub( o, mvec( M, jp ) ) )
+			scales[f] = tuple( sc )
+		if err( scaled, sample ) < 0.9 * err( motion[b], sample ):
+			motion[b] = scaled
+			SCALE3[b] = scales
+			print( "  %s turns and scales (%d vertexes)" % ( jb["name"], len( idx ) ) )
 
 def gamePath( path ):
 	"""The path the game sees: from the data folder (dkres) on."""
@@ -1658,18 +1814,11 @@ def ragdoll_af( name, joints, rest, assign, afName = None ):
 	lines += [ "}", "" ]
 	return "\n".join( lines )
 
-def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping = None, fps = None ):
-	"""The skeletal IQM: joints, the skin, every frame a pose, the animations
-	named by the frames' names (looping: those that loop, fps their rate).
-	Returns the animations and the joints' rest rotations."""
-	looping = looping or LOOPING
-	fps = fps or ANIM_FPS
-	N, F = len( verts ), m.numFrames
+def rest_rotations( joints ):
+	"""rest orientations along the bones, as Half-Life's and Doom 3's rest:
+	x down the bone (to the child, or on from the parent at an end), z as
+	near up as it can be; so hitboxes fitted in the joint's space hug the limb"""
 	nj = len( joints )
-
-	# rest orientations along the bones, as Half-Life's and Doom 3's rest:
-	# x down the bone (to the child, or on from the parent at an end), z as
-	# near up as it can be; so hitboxes fitted in the joint's space hug the limb
 	kids = { j: [ k for k in range( nj ) if joints[k]["parentIndex"] == j and joints[k]["zone"]
 				 and ( joints[k]["zone"] != "hair" or joints[j]["zone"] == "hair" )
 				 and ( not joints[k].get( "extra" ) or joints[j].get( "extra" ) ) ] for j in range( nj ) }
@@ -1693,6 +1842,18 @@ def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping =
 		z = vnorm( vsub( up, vscale( x, vdot( up, x ) ) ) )
 		y = vcross( z, x )
 		restRot.append( [ [ x[0], y[0], z[0] ], [ x[1], y[1], z[1] ], [ x[2], y[2], z[2] ] ] )
+	return restRot
+
+def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping = None, fps = None ):
+	"""The skeletal IQM: joints, the skin, every frame a pose, the animations
+	named by the frames' names (looping: those that loop, fps their rate).
+	Returns the animations and the joints' rest rotations."""
+	looping = looping or LOOPING
+	fps = fps or ANIM_FPS
+	N, F = len( verts ), m.numFrames
+	nj = len( joints )
+
+	restRot = rest_rotations( joints )
 
 	# joint world transforms a frame: the bone's motion, about the joint
 	def world( j, f ):
@@ -1712,6 +1873,12 @@ def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping =
 			prt = mtrans( pr )
 			lr = mmul( prt, r )
 			lt = mvec( prt, vsub( o, po ) )
+			if j in SCALE3:
+				# scale times turn (the engine's: the scale along the parent's
+				# axes): each row's length the scale
+				sc = [ vlen( lr[k] ) for k in range( 3 ) ]
+				lr = [ vscale( lr[k], 1.0 / sc[k] ) for k in range( 3 ) ]
+				SCALE3[j][f] = tuple( sc )
 			row.append( ( lt, mat_to_quat( lr ) ) )
 		locals_.append( row )
 
@@ -1772,7 +1939,8 @@ def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping =
 	# poses, quantised per channel
 	chans = []
 	for j in range( nj ):
-		vals = [ list( locals_[f][j][0] ) + list( locals_[f][j][1] ) + [ PROP_SCALE.get( j, {} ).get( f, 1.0 ) ] * 3 for f in range( F ) ]
+		vals = [ list( locals_[f][j][0] ) + list( locals_[f][j][1] ) +
+				 ( list( SCALE3[j][f] ) if j in SCALE3 else [ PROP_SCALE.get( j, {} ).get( f, 1.0 ) ] * 3 ) for f in range( F ) ]
 		offs, scales = [], []
 		for c in range( 10 ):
 			col = [ v[c] for v in vals ]

@@ -18,9 +18,9 @@ articulatedFigure monster_toshiro {
 
 	body "waist" {
 		joint "origin"
-		mod orientation
-		model box( ( -2.84, -2.90, -1.41 ), ( 2.84, 2.90, 1.41 ) )
-		origin ( -0.69, -0.53, -2.30 )
+		mod both
+		model box( ( -2.64, -3.52, -2.20 ), ( 2.64, 3.52, 2.20 ) )
+		origin ( 0.61, 1.30, -0.77 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -30,9 +30,9 @@ articulatedFigure monster_toshiro {
 
 	body "chest" {
 		joint "Waist"
-		mod orientation
-		model box( ( -3.07, -4.52, -4.93 ), ( 3.07, 4.52, 4.93 ) )
-		origin ( -0.58, 1.25, 5.18 )
+		mod both
+		model box( ( -3.00, -3.41, -5.05 ), ( 3.00, 3.41, 5.05 ) )
+		origin ( -0.50, -0.05, 3.99 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -42,9 +42,9 @@ articulatedFigure monster_toshiro {
 
 	body "head" {
 		joint "Loneck"
-		mod orientation
-		model box( ( -3.26, -2.82, -4.35 ), ( 3.26, 2.82, 4.35 ) )
-		origin ( 5.29, 0.61, 14.90 )
+		mod both
+		model box( ( -3.90, -3.79, -4.35 ), ( 3.90, 3.79, 4.35 ) )
+		origin ( 4.53, -0.83, 14.90 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -54,9 +54,9 @@ articulatedFigure monster_toshiro {
 
 	body "Luparm" {
 		joint "Luparm"
-		mod orientation
-		model bone( ( 2.07, 4.43, 10.32 ), ( 2.27, 5.81, 4.63 ), 4.11 )
-		origin ( 2.17, 5.12, 7.47 )
+		mod both
+		model bone( ( 3.05, 3.75, 9.27 ), ( 2.32, 5.27, 5.05 ), 3.18 )
+		origin ( 2.69, 4.51, 7.16 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -66,9 +66,9 @@ articulatedFigure monster_toshiro {
 
 	body "Lloarm" {
 		joint "Lloarm"
-		mod orientation
-		model bone( ( 2.27, 5.81, 4.63 ), ( 8.16, 7.00, 0.20 ), 5.08 )
-		origin ( 5.21, 6.41, 2.41 )
+		mod both
+		model bone( ( 2.32, 5.27, 5.05 ), ( 8.07, 7.05, 0.21 ), 4.87 )
+		origin ( 5.19, 6.16, 2.63 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -78,9 +78,9 @@ articulatedFigure monster_toshiro {
 
 	body "Lupleg" {
 		joint "Lupleg"
-		mod orientation
-		model bone( ( 0.38, 7.20, -2.00 ), ( -2.02, 6.75, -14.06 ), 8.61 )
-		origin ( -0.82, 6.97, -8.03 )
+		mod both
+		model bone( ( -0.57, 2.78, -1.53 ), ( 0.72, 2.77, -10.04 ), 2.65 )
+		origin ( 0.07, 2.78, -5.78 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -90,9 +90,9 @@ articulatedFigure monster_toshiro {
 
 	body "Lloleg" {
 		joint "Lloleg"
-		mod orientation
-		model bone( ( -2.02, 6.75, -14.06 ), ( -2.59, 2.08, -21.16 ), 4.58 )
-		origin ( -2.31, 4.41, -17.61 )
+		mod both
+		model bone( ( 0.72, 2.77, -10.04 ), ( -0.96, 2.75, -21.95 ), 2.65 )
+		origin ( -0.12, 2.76, -16.00 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -102,9 +102,9 @@ articulatedFigure monster_toshiro {
 
 	body "Ruparm" {
 		joint "Ruparm"
-		mod orientation
-		model bone( ( 1.95, 0.01, 11.16 ), ( 2.13, -6.25, 10.78 ), 4.40 )
-		origin ( 2.04, -3.12, 10.97 )
+		mod both
+		model bone( ( 2.66, -0.06, 10.64 ), ( 2.13, -6.27, 10.78 ), 4.36 )
+		origin ( 2.40, -3.16, 10.71 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -114,9 +114,9 @@ articulatedFigure monster_toshiro {
 
 	body "Rloarm" {
 		joint "Rloarm"
-		mod orientation
-		model bone( ( 2.13, -6.25, 10.78 ), ( -1.23, -8.85, 4.34 ), 5.19 )
-		origin ( 0.45, -7.55, 7.56 )
+		mod both
+		model bone( ( 2.13, -6.27, 10.78 ), ( -1.23, -8.85, 4.33 ), 5.20 )
+		origin ( 0.45, -7.56, 7.55 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -126,9 +126,9 @@ articulatedFigure monster_toshiro {
 
 	body "Rupleg" {
 		joint "Rupleg"
-		mod orientation
-		model bone( ( 1.99, -5.16, 1.08 ), ( 2.36, -5.90, -14.06 ), 2.72 )
-		origin ( 2.18, -5.53, -6.49 )
+		mod both
+		model bone( ( -1.91, 0.16, -1.53 ), ( 1.03, -0.95, -10.04 ), 2.65 )
+		origin ( -0.44, -0.39, -5.78 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -138,9 +138,9 @@ articulatedFigure monster_toshiro {
 
 	body "Rloleg" {
 		joint "Rloleg"
-		mod orientation
-		model bone( ( 2.36, -5.90, -14.06 ), ( -0.75, 0.38, -21.57 ), 3.77 )
-		origin ( 0.80, -2.76, -17.81 )
+		mod both
+		model bone( ( 1.03, -0.95, -10.04 ), ( -0.28, -2.30, -21.95 ), 2.65 )
+		origin ( 0.38, -1.62, -16.00 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -170,7 +170,7 @@ articulatedFigure monster_toshiro {
 		body1 "Luparm"
 		body2 "chest"
 		anchor joint( "Luparm" )
-		shafts ( 0.03, 0.24, -0.97 ), ( -0.03, -0.24, 0.97 )
+		shafts ( -0.16, 0.33, -0.93 ), ( 0.16, -0.33, 0.93 )
 		friction 0.20
 		coneLimit ( 0.00, 0.37, -0.93 ), 170
 	}
@@ -181,14 +181,14 @@ articulatedFigure monster_toshiro {
 		anchor joint( "Lloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 161.9, 150.0, 91.9
+		limit 150.1, 150.0, 80.1
 	}
 
 	universalJoint "Lhip" {
 		body1 "Lupleg"
 		body2 "waist"
 		anchor joint( "Lupleg" )
-		shafts ( -0.20, -0.04, -0.98 ), ( 0.20, 0.04, 0.98 )
+		shafts ( 0.15, -0.00, -0.99 ), ( -0.15, 0.00, 0.99 )
 		friction 0.20
 		coneLimit ( 0.50, 0.15, -0.85 ), 120
 	}
@@ -199,14 +199,14 @@ articulatedFigure monster_toshiro {
 		anchor joint( "Lloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 13.7, 140.0, 78.7
+		limit 33.6, 140.0, 98.6
 	}
 
 	universalJoint "Rshoulder" {
 		body1 "Ruparm"
 		body2 "chest"
 		anchor joint( "Ruparm" )
-		shafts ( 0.03, -1.00, -0.06 ), ( -0.03, 1.00, 0.06 )
+		shafts ( -0.09, -1.00, 0.02 ), ( 0.09, 1.00, -0.02 )
 		friction 0.20
 		coneLimit ( 0.00, -0.37, -0.93 ), 170
 	}
@@ -217,14 +217,14 @@ articulatedFigure monster_toshiro {
 		anchor joint( "Rloarm" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit -174.7, 150.0, 115.3
+		limit -84.2, 150.0, -14.2
 	}
 
 	universalJoint "Rhip" {
 		body1 "Rupleg"
 		body2 "waist"
 		anchor joint( "Rupleg" )
-		shafts ( 0.02, -0.05, -1.00 ), ( -0.02, 0.05, 1.00 )
+		shafts ( 0.32, -0.12, -0.94 ), ( -0.32, 0.12, 0.94 )
 		friction 0.20
 		coneLimit ( 0.50, -0.15, -0.85 ), 120
 	}
@@ -235,7 +235,7 @@ articulatedFigure monster_toshiro {
 		anchor joint( "Rloleg" )
 		axis ( 0.00, 1.00, 0.00 )
 		friction 0.20
-		limit 26.4, 140.0, 91.4
+		limit 44.1, 140.0, 109.1
 	}
 
 }

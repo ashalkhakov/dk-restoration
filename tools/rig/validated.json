@@ -1,0 +1,254 @@
+{
+	"model_toshiro": {
+		"anims": {
+			"coffin": {
+				"date": "2026-10-23",
+				"fingerprint": "7125f24342233744",
+				"fit": [
+					0.649,
+					19.49
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"cough": {
+				"date": "2026-10-23",
+				"fingerprint": "d95a6b560450d7d9",
+				"fit": [
+					0.674,
+					20.21
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"coughb": {
+				"date": "2026-10-23",
+				"fingerprint": "60b701de3f32bdd7",
+				"fit": [
+					0.72,
+					18.74
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"coughc": {
+				"date": "2026-10-23",
+				"fingerprint": "a86442dca226b401",
+				"fit": [
+					0.652,
+					20.14
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"coughd": {
+				"date": "2026-10-23",
+				"fingerprint": "d562b1a116244da5",
+				"fit": [
+					0.655,
+					20.21
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"deadtka": {
+				"date": "2026-10-23",
+				"fingerprint": "55cb3257a0dbff7f",
+				"fit": [
+					0.65,
+					19.52
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"deadtkb": {
+				"date": "2026-10-23",
+				"fingerprint": "7199aa1195c4b74d",
+				"fit": [
+					0.693,
+					20.65
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"deadtkc": {
+				"date": "2026-10-23",
+				"fingerprint": "a4289e58693a0a38",
+				"fit": [
+					0.65,
+					19.52
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"diea": {
+				"date": "2026-10-23",
+				"fingerprint": "5ac2a59212e43bdd",
+				"fit": [
+					1.098,
+					44.94
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"point": {
+				"date": "2026-10-23",
+				"fingerprint": "77592eb466be936d",
+				"fit": [
+					0.566,
+					20.21
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"rest": {
+				"date": "2026-10-23",
+				"fingerprint": "99cb94a47292d6c1",
+				"fit": null,
+				"note": "",
+				"verdict": "valid"
+			},
+			"staffmad": {
+				"date": "2026-10-23",
+				"fingerprint": "9bc4f55e78205093",
+				"fit": [
+					1.055,
+					57.71
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tka": {
+				"date": "2026-10-23",
+				"fingerprint": "9ccbbed4162fa825",
+				"fit": [
+					0.603,
+					20.22
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkb": {
+				"date": "2026-10-23",
+				"fingerprint": "019cfa7a7bcb4989",
+				"fit": [
+					0.59,
+					20.22
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkc": {
+				"date": "2026-10-23",
+				"fingerprint": "9343c66901566e0d",
+				"fit": [
+					0.614,
+					21.44
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkd": {
+				"date": "2026-10-23",
+				"fingerprint": "9831cd487cd016d0",
+				"fit": [
+					0.686,
+					26.15
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkda": {
+				"date": "2026-10-23",
+				"fingerprint": "5fb6737e70eca8ec",
+				"fit": [
+					0.741,
+					27.36
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tke": {
+				"date": "2026-10-23",
+				"fingerprint": "787bef2faec3dbeb",
+				"fit": [
+					0.607,
+					21.46
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkf": {
+				"date": "2026-10-23",
+				"fingerprint": "cbe5a784efef1d13",
+				"fit": [
+					0.613,
+					20.21
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkg": {
+				"date": "2026-10-23",
+				"fingerprint": "355482777b1f30a8",
+				"fit": [
+					0.604,
+					22.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tkh": {
+				"date": "2026-10-23",
+				"fingerprint": "21e2832fd2a86a1c",
+				"fit": [
+					0.582,
+					20.2
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tki": {
+				"date": "2026-10-23",
+				"fingerprint": "20e7c35f7d3cb399",
+				"fit": [
+					0.657,
+					20.2
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walka": {
+				"date": "2026-10-23",
+				"fingerprint": "fdae83e134c0ace8",
+				"fit": [
+					0.745,
+					26.02
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walkl": {
+				"date": "2026-10-23",
+				"fingerprint": "a444828a8d8fd359",
+				"fit": [
+					0.745,
+					26.01
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walkr": {
+				"date": "2026-10-23",
+				"fingerprint": "ad03007827902fd1",
+				"fit": [
+					0.745,
+					26.01
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/toshiro.iqm"
+	}
+}
