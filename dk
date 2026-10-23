@@ -613,6 +613,15 @@ cmd_convert() {
 		printf 'convert %-8s ' "$map"
 		if (cd "$DKRES" && "$converter" none "maps/$map.bsp" quake3 "$OUT/maps/$map.bsp") >"$OUT/$map.log" 2>&1; then
 			grep -h 'WARNING' "$OUT/$map.log" | head -3 || true
+			# its entities changed by hand (maps/<map>.ent: added, changed,
+			# deleted; tools/maps/ent_overrides.py), what the converter
+			# doesn't know
+			if [ -f "$ROOT/maps/$map.ent" ] && ! python3 "$ROOT/tools/maps/ent_overrides.py" "$OUT/maps/$map.bsp" \
+					"$ROOT/maps/$map.ent" >>"$OUT/$map.log" 2>&1; then
+				echo "FAILED: maps/$map.ent, see out/$map.log"
+				failed="$failed $map"
+				continue
+			fi
 			# the rungs of ladders drawn by an alpha tested texture
 			python3 "$ROOT/tools/maps/ladder_rungs.py" "$OUT/maps/$map.bsp" "$DKRES/scripts" "$DKRES" \
 				"$OUT/maps/$map.ladders" >>"$OUT/$map.log" 2>&1 || true
