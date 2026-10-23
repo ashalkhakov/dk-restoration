@@ -1,4 +1,239 @@
 {
+	"model_hiro": {
+		"anims": {
+			"aamb": {
+				"date": "2026-10-23",
+				"fingerprint": "af604453eb96bf34",
+				"fit": [
+					0.015,
+					0.07
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aamba": {
+				"date": "2026-10-23",
+				"fingerprint": "6b4efb42721d802a",
+				"fit": [
+					0.023,
+					0.27
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aambb": {
+				"date": "2026-10-23",
+				"fingerprint": "8f9190900238b0e9",
+				"fit": [
+					0.051,
+					0.59
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ajump": {
+				"date": "2026-10-23",
+				"fingerprint": "2f7e0c7f7142ac04",
+				"fit": [
+					0.082,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ajumpa": {
+				"date": "2026-10-23",
+				"fingerprint": "e84a56891a87abab",
+				"fit": [
+					0.083,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ajumpb": {
+				"date": "2026-10-23",
+				"fingerprint": "0f83a0f24ae0c29c",
+				"fit": [
+					0.091,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atak": {
+				"date": "2026-10-23",
+				"fingerprint": "921187132fcb8a3b",
+				"fit": [
+					0.065,
+					0.74
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ataka": {
+				"date": "2026-10-23",
+				"fingerprint": "52ae21c726bfbd12",
+				"fit": [
+					0.029,
+					0.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atakb": {
+				"date": "2026-10-23",
+				"fingerprint": "d6fec6b799162643",
+				"fit": [
+					0.059,
+					0.58
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aws": {
+				"date": "2026-10-23",
+				"fingerprint": "b97bb1d041653f70",
+				"fit": [
+					0.032,
+					0.55
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"awsa": {
+				"date": "2026-10-23",
+				"fingerprint": "17a6e95fcfcc6dd5",
+				"fit": [
+					0.038,
+					0.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"awsb": {
+				"date": "2026-10-23",
+				"fingerprint": "63a5a9337087b8da",
+				"fit": [
+					0.058,
+					0.57
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bamb": {
+				"date": "2026-10-23",
+				"fingerprint": "60ab4cb3d525ce6f",
+				"fit": [
+					0.032,
+					0.36
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bamba": {
+				"date": "2026-10-23",
+				"fingerprint": "f22ff92c464e0226",
+				"fit": [
+					0.026,
+					0.28
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambb": {
+				"date": "2026-10-23",
+				"fingerprint": "f7ca7d5cdb06dfa9",
+				"fit": [
+					0.052,
+					0.59
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bwalk": {
+				"date": "2026-10-23",
+				"fingerprint": "8400bb05f52152a8",
+				"fit": [
+					0.1,
+					0.71
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bwalka": {
+				"date": "2026-10-23",
+				"fingerprint": "ad79d77c69d6f224",
+				"fit": [
+					0.091,
+					0.69
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bwalkb": {
+				"date": "2026-10-23",
+				"fingerprint": "ab25c7fdc6728702",
+				"fit": [
+					0.101,
+					0.74
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"camb": {
+				"date": "2026-10-23",
+				"fingerprint": "88d09648d774ce7e",
+				"fit": [
+					0.122,
+					1.5
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"camba": {
+				"date": "2026-10-23",
+				"fingerprint": "28008346c6611dac",
+				"fit": [
+					0.131,
+					1.5
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"cambb": {
+				"date": "2026-10-23",
+				"fingerprint": "e9a79556707bdf06",
+				"fit": [
+					0.143,
+					1.5
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"catak": {
+				"date": "2026-10-23",
+				"fingerprint": "ed88f568cf8579a8",
+				"fit": [
+					0.139,
+					1.84
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"cataka": {
+				"date": "2026-10-23",
+				"fingerprint": "de7a11ef6fc571ef",
+				"fit": [
+					0.13,
+					1.46
+				],
+				"note": "right thigh is smaller than it should be",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/hiro.iqm"
+	},
 	"model_toshiro": {
 		"anims": {
 			"coffin": {

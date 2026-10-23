@@ -52,7 +52,7 @@ sys.path.insert( 0, os.path.dirname( os.path.abspath( __file__ ) ) )
 from md3 import MD3, Surface
 from iqm import IQM, IQM_POSITION, IQM_TEXCOORD, IQM_BLENDINDEXES, IQM_BLENDWEIGHTS
 from autorig import ( vsub, vadd, vscale, vlen, mvec, mmul, mtrans, IDENT, quat_to_mat, mat_to_quat,
-	rigid_fit, xform, write_iqm, gamePath, D3_TEMPLATE )
+	rigid_fit, xform, write_iqm, gamePath )
 
 FPS = 10.0
 LOOPING = re.compile( r"^amb" )
@@ -64,7 +64,6 @@ UV_CELL = 256		# the texture coordinates' grid
 UV_EPS = 0.002		# texture coordinates this near are the same
 BAD_ANIM = 2.0		# an animation this much worse than the model's on average is named
 
-ZONES = { name: zone for name, parent, pos, zone in D3_TEMPLATE }
 
 def is_head( name ):
 	return "head" in name.lower()
@@ -134,7 +133,7 @@ class Grid:
 
 def load_rig( path ):
 	"""The rig as autorig.write_iqm takes it: surfaces, the base pose, joints
-	(world rest places, zones), the skin ( bone, blend bone, weight )"""
+	(world rest places), the skin ( bone, blend bone, weight )"""
 	q = IQM( path )
 	rest = [ tuple( p ) for p in q.arrays[IQM_POSITION] ]
 	weights = []
@@ -148,7 +147,9 @@ def load_rig( path ):
 		s.st = [ tuple( t ) for t in q.arrays[IQM_TEXCOORD][m.firstVert:m.firstVert + m.numVerts] ]
 		body.append( s )
 		verts += [ ( k, vi ) for vi in range( m.numVerts ) ]
-	# the joints' world rest: autorig's restRot and places
+	# the joints' world rest: autorig's restRot and places (its rotations
+	# kept as they are: worked out again from the names, a joint the
+	# template hasn't, Hiro's fingers, turned its hand)
 	joints, world = [], []
 	for j, jt in enumerate( q.joints ):
 		if jt.parent >= j:
@@ -159,9 +160,8 @@ def load_rig( path ):
 		else:
 			w = compose( world[jt.parent], ( r, jt.translate ) )
 		world.append( w )
-		zone = ZONES.get( jt.name, "hair" if jt.name.startswith( "Ponytail" ) else None )
 		joints.append( { "name": jt.name, "parent": q.joints[jt.parent].name if jt.parent >= 0 else None,
-						 "parentIndex": jt.parent, "zone": zone, "pos": w[1] } )
+						 "parentIndex": jt.parent, "pos": w[1] } )
 	return q, body, verts, rest, joints, world, weights
 
 class Frames:
@@ -434,7 +434,7 @@ def main( character, md3Path, outBase, align = True, ppm = None ):
 		def match( self, name ):
 			return any( a[0] == name and r[1] for a, r in zip( allAnims, rates ) )
 	write_iqm( Frames( F0 + F, allAnims ), body, verts, rest, joints, [ own[j] + inPlace[j] for j in range( nj ) ], weights,
-			   outBase, looping = Loops(), fps = FPS )
+			   outBase, looping = Loops(), fps = FPS, restRot = [ w[0] for w in restWorld ] )
 	# each animation's own rate (write_iqm gives them one)
 	data = bytearray( open( outBase + ".iqm", "rb" ).read() )
 	ofsAnims = struct.unpack_from( "<I", data, 16 + 4 * 18 )[0]

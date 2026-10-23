@@ -1081,6 +1081,7 @@ def main( md3Path, outBase ):
 	SPATIAL = 0.15
 	JOINT_MOVE = 0.1	# of the height: how far a joint goes from the template's place
 	BAD_FIT = 4.0		# units off, on average, for a vertex to look further
+	FINGER_SPLIT = 0.01	# of the height: how much a finger's vertexes' distances change, apart
 	for it in range( 4 ):
 		motion = fit_bones( sample )
 		changed = 0
@@ -1177,6 +1178,70 @@ def main( md3Path, outBase ):
 				J = { j["name"]: i for i, j in enumerate( joints ) }
 				segs[sb] = bone_segment( sb )
 				print( "  shoulders: %d vertexes of the robe over them" % len( gain ) )
+	# the fingers: a hand Daikatana's frames close (Hiro's, round his gun
+	# and in a fist) is parts that each keep their shape. Its vertexes are
+	# grouped by how little the distances between them change over the
+	# frames; the group nearest the wrist is the palm, the hand's, and each
+	# other one that its own motion carries better is a finger bone on it,
+	# named as Doom 3's player's (spplayer.md5mesh: Lfings1 the four
+	# fingers, Lindex1, lthumb1 so in its file): the biggest the fingers,
+	# then the thumb, nearer the wrist than the index
+	for s_ in ( "L", "R" ):
+		hb = J.get( s_ + "hand" )
+		if hb is None:
+			continue
+		hv = [ i for i in range( N ) if assign[i] == hb and i not in pins ]
+		if len( hv ) < 6:
+			continue
+		Hh = max( v[2] for v in rest ) - min( v[2] for v in rest )
+		change = {}
+		for x in range( len( hv ) ):
+			for y in range( x + 1, len( hv ) ):
+				ds = [ vlen( vsub( frames[f][hv[x]], frames[f][hv[y]] ) ) for f in range( F ) ]
+				change[x, y] = change[y, x] = max( ds ) - min( ds )
+		groups = [ [ x ] for x in range( len( hv ) ) ]
+		while len( groups ) > 1:
+			d, a_, b_ = min( ( sum( change[x, y] for x in ga for y in gb ) / ( len( ga ) * len( gb ) ), a_, b_ )
+							 for a_, ga in enumerate( groups ) for b_, gb in enumerate( groups ) if a_ < b_ )
+			if d > FINGER_SPLIT * Hh:
+				break
+			groups[a_] += groups.pop( b_ )
+		groups = [ [ hv[x] for x in g ] for g in groups ]
+		def points( g ):
+			return len( set( tuple( round( c, 2 ) for c in rest[i] ) for i in g ) )
+		wrist = joints[hb]["pos"]
+		big = [ g for g in groups if points( g ) >= 3 ]
+		if len( big ) < 2:
+			continue
+		palm = min( big, key = lambda g: min( vlen( vsub( rest[i], wrist ) ) for i in g ) )
+		motion = fit_bones( sample )
+		def e_( g, m_ ):
+			return sum( vlen( vsub( xform( m_[f], rest[i] ), frames[f][i] ) ) for f in sample for i in g ) / ( len( sample ) * len( g ) )
+		palmMid = vscale( tuple( sum( rest[i][k] for i in palm ) for k in range( 3 ) ), 1.0 / len( palm ) )
+		fingers = []
+		for g in sorted( ( g for g in big if g is not palm ), key = lambda g: -len( g ) ):
+			own = { f: rigid_fit( [ rest[i] for i in g ], [ frames[f][i] for i in g ] ) for f in sample }
+			if e_( g, own ) < 0.7 * e_( g, motion[hb] ):
+				fingers.append( g )
+		fingers = fingers[:1] + sorted( fingers[1:3], key = lambda g: min( vlen( vsub( rest[i], wrist ) ) for i in g ) )
+		names = [ s_ + "fings1", ( "l" if s_ == "L" else "R" ) + "thumb1", s_ + "index1" ]
+		made = []
+		for g, fname in zip( fingers, names ):
+			# its joint where it meets the palm (the motion moves it after)
+			base = sorted( g, key = lambda i: vlen( vsub( rest[i], palmMid ) ) )[:3]
+			joints.append( { "name": fname, "parent": s_ + "hand", "parentIndex": hb,
+							 "zone": joints[hb]["zone"], "pos": vscale( tuple( sum( rest[i][k] for i in base ) for k in range( 3 ) ), 1.0 / 3 ) } )
+			fb = len( joints ) - 1
+			bones.append( fb )
+			for i in g:
+				assign[i] = fb
+			made.append( "%s(%d)" % ( joints[fb]["name"], len( g ) ) )
+		if made:
+			children = { i: [ k for k, j in enumerate( joints ) if j["parentIndex"] == i ] for i in range( len( joints ) ) }
+			J = { j["name"]: i for i, j in enumerate( joints ) }
+			for b in bones:
+				segs[b] = bone_segment( b )
+			print( "  %shand: palm %d vertexes, fingers %s" % ( s_, len( palm ), ", ".join( made ) ) )
 	motion = fit_bones( range( F ) )
 	# a vertex another bone carries far better, in the frames it's worst in,
 	# is that bone's: nearness put Usagi's fingers, resting on his thigh, on
@@ -1323,122 +1388,191 @@ def main( md3Path, outBase ):
 	# frames have it
 	scale_bones( joints, motion, assign, rest, frames, F, sample )
 
-	# 4. two weights a vertex: its bone, and a neighbour where blending fits
-	weights = []
-	for i in range( N ):
-		b = assign[i]
-		best = ( b, b, 1.0, sum( vdot( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ), vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in sample ) )
-		for o in allowed_bones( i, neighbours( b ) ):
-			# one leg's vertex never follows the other: the walk IK moves
-			# them apart, which the animations never do
-			if o == b or joints[o]["name"][1:] == joints[b]["name"][1:] and joints[b]["zone"] == "legs":
-				continue
-			# along a leg, blending only near the joint between the two
-			# bones: a thigh half on its shin stretches when the IK bends
-			chain = next( ( c for c in legChains if b in c and o in c ), None )
-			if chain:
-				shared = joints[o]["pos"] if joints[o]["parentIndex"] == b else joints[b]["pos"]
-				length = vlen( vsub( *segs[b] ) )
-				if vlen( vsub( rest[i], shared ) ) > 0.25 * length:
-					continue
-			num = den = 0.0
-			err1 = 0.0
+	# 4. two weights a vertex, twice: a bone's motion was fitted to every
+	# vertex it was given, the ones its joints' blends now carry too, which
+	# bend in Daikatana's frames where it doesn't (Hiro's upper arms, pulled
+	# 0.9 off by his elbows, where his frames move them rigidly to 0.13). So
+	# each bone of the skeleton is fitted again to its vertexes as they're
+	# weighted, and the weights to that (SSDR's alternation). Where its
+	# vertexes then fit worse at their worst, together (Hiro's waist), it
+	# keeps the motion it had, and the weights are fitted a third time
+	def bone_worst( wts ):
+		out = {}		# bone: { vertex: its worst }
+		for i in range( N ):
+			b, o, w = wts[i]
+			e = 0.0
 			for f in sample:
-				a = xform( motion[b][f], rest[i] )
-				c = xform( motion[o][f], rest[i] )
-				tgt = frames[f][i]
-				ac = vsub( a, c )
-				num += vdot( ac, vsub( tgt, c ) )
-				den += vdot( ac, ac )
-			# all the way to the neighbour, if it carries the vertex better
-			# (the back of Toshiro's left knee: the shin's robe bone, not the shin)
-			w = 1.0 if den < 1e-9 else max( 0.0, min( 1.0, num / den ) )
+				p = xform( motion[b][f], rest[i] )
+				if w < 1.0:
+					p = vadd( vscale( p, w ), vscale( xform( motion[o][f], rest[i] ), 1 - w ) )
+				e = max( e, vlen( vsub( p, frames[f][i] ) ) )
+			for k in set( ( b, o ) if w < 1.0 else ( b, ) ):
+				out.setdefault( k, {} )[i] = e
+		return out
+	assign0 = list( assign )
+	refit = {}
+	for skinPass in range( 3 ):
+		if skinPass == 1:
+			before, kept = bone_worst( weights ), {}
+			for b in bones:
+				if joints[b].get( "extra" ) or b == J["Body"]:
+					continue		# (the cloth's scale as scale_bones fitted it; Body is the hips')
+				# every vertex it has, by its weight: a blended one where the
+				# other bone's share leaves it
+				has = [ ( i, wts[2] if wts[0] == b else 1 - wts[2] ) for i, wts in enumerate( weights )
+						if b in ( wts[0], wts[1] ) and ( wts[0] == b or wts[2] < 1.0 ) ]
+				has = [ ( i, w ) for i, w in has if w > 0.05 ]
+				# (enough of them: Hiro's right forearm has none its own)
+				if sum( w for i, w in has ) < 8:
+					continue
+				src = [ rest[i] for i, w in has ]
+				ws = [ w * w for i, w in has ]
+				def target( i, w, f ):
+					b_, o_, w_ = weights[i]
+					if w >= 1.0:
+						return frames[f][i]
+					other = o_ if b_ == b else b_
+					return vscale( vsub( frames[f][i], vscale( xform( motion[other][f], rest[i] ), 1 - w ) ), 1.0 / w )
+				kept[b] = motion[b]
+				refit[b] = { f: rigid_fit( src, [ target( i, w, f ) for i, w in has ], ws ) for f in range( F ) }
+			for b in refit:
+				motion[b] = refit[b]
+		elif skinPass == 2:
+			after = bone_worst( weights )
+			before_all = {}
+			for vs in before.values():
+				before_all.update( vs )
+			# (a vertex new to the bone: against its worst before)
+			worse = [ b for b in refit if sum( e - before.get( b, {} ).get( i, before_all[i] ) for i, e in after.get( b, {} ).items() ) > 0 ]
+			if not worse:
+				break
+			for b in worse:
+				motion[b] = kept[b]
+			print( "  refitted to their weighted vertexes: %s; not %s" % (
+				", ".join( joints[b]["name"] for b in refit if b not in worse ), ", ".join( joints[b]["name"] for b in worse ) ) )
+		if skinPass:
+			motion[J["Body"]] = motion[J["Hips"]]
+			assign[:] = assign0
+		weights = []
+		for i in range( N ):
+			b = assign[i]
+			best = ( b, b, 1.0, sum( vdot( vsub( xform( motion[b][f], rest[i] ), frames[f][i] ), vsub( xform( motion[b][f], rest[i] ), frames[f][i] ) ) for f in sample ) )
+			for o in allowed_bones( i, neighbours( b ) ):
+				# one leg's vertex never follows the other: the walk IK moves
+				# them apart, which the animations never do
+				if o == b or joints[o]["name"][1:] == joints[b]["name"][1:] and joints[b]["zone"] == "legs":
+					continue
+				# along a leg, blending only near the joint between the two
+				# bones: a thigh half on its shin stretches when the IK bends.
+				# Near by the bone the joint ends, not the foot's stub: Hiro's
+				# heel moves half with his shin
+				chain = next( ( c for c in legChains if b in c and o in c ), None )
+				if chain:
+					upper = b if joints[o]["parentIndex"] == b else o
+					shared = joints[o]["pos"] if upper == b else joints[b]["pos"]
+					length = vlen( vsub( *segs[upper] ) )
+					if vlen( vsub( rest[i], shared ) ) > 0.25 * length:
+						continue
+				num = den = 0.0
+				err1 = 0.0
+				for f in sample:
+					a = xform( motion[b][f], rest[i] )
+					c = xform( motion[o][f], rest[i] )
+					tgt = frames[f][i]
+					ac = vsub( a, c )
+					num += vdot( ac, vsub( tgt, c ) )
+					den += vdot( ac, ac )
+				# all the way to the neighbour, if it carries the vertex better
+				# (the back of Toshiro's left knee: the shin's robe bone, not the shin)
+				w = 1.0 if den < 1e-9 else max( 0.0, min( 1.0, num / den ) )
+				err = 0.0
+				for f in sample:
+					a = xform( motion[b][f], rest[i] )
+					c = xform( motion[o][f], rest[i] )
+					p = vadd( vscale( a, w ), vscale( c, 1 - w ) )
+					d = vsub( p, frames[f][i] )
+					err += vdot( d, d )
+				if best[3] is None or err < best[3]:
+					best = ( b, o, w, err )
+			if i in pins:
+				best = pins[i] if len( pins[i] ) == 3 else ( pins[i][0], pins[i][0], 1.0 )
+			elif best[2] < 0.5:
+				best = ( best[1], best[0], 1.0 - best[2], best[3] )		# the neighbour its bone now
+				assign[i] = best[0]
+			weights.append( best[:3] )
+
+		# the knees and the elbows by where the vertexes are: blended across the
+		# joint over a band about it, smoothly, so the limb keeps its volume as it
+		# bends (fitted to Daikatana's frames, which hardly bend them, the blend
+		# lands off the joint and the limb thins where it bends)
+		for upper, hinge, lower in HINGES:
+			if not all( n in J for n in ( upper, hinge ) ):
+				continue
+			P, C = J[upper], J[hinge]
+			c, a = joints[C]["pos"], joints[P]["pos"]
+			d = joints[J[lower]]["pos"] if lower in J else vadd( c, vsub( c, a ) )
+			up, down = vnorm( vsub( c, a ) ), vnorm( vsub( d, c ) )
+			axis = vnorm( vadd( up, down ) )
+			h = HINGE_BAND * min( vlen( vsub( c, a ) ), vlen( vsub( d, c ) ) )
+			for i in range( N ):
+				b, o, w = weights[i]
+				if b not in ( P, C ) or o not in ( P, C ) or i in pins:
+					continue
+				t = min( 1.0, max( 0.0, ( vdot( vsub( rest[i], c ), axis ) + h ) / ( 2 * h ) ) )
+				wc = t * t * ( 3 - 2 * t )
+				blended = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
+				# only where the limb carries the vertex as well blended: a robe's
+				# hem over the knee, still while the leg moves in it, stays on
+				# the bone that carries it (Toshiro's, lifting with his knee), and
+				# an elbow Daikatana's frames have the forearm carry stays on it
+				# (Hiro's left, half on the upper arm, 0.7 off where it fit 0.35)
+				def wt_err( wt ):
+					b_, o_, w_ = wt
+					e_ = 0.0
+					for f in range( F ):
+						p_ = xform( motion[b_][f], rest[i] )
+						if w_ < 1.0:
+							p_ = vadd( vscale( p_, w_ ), vscale( xform( motion[o_][f], rest[i] ), 1 - w_ ) )
+						d_ = vsub( p_, frames[f][i] )
+						e_ = max( e_, vlen( d_ ) )
+					return e_
+				if wt_err( blended ) > wt_err( weights[i] ) + 0.05:
+					continue
+				weights[i] = blended
+				assign[i] = weights[i][0]
+
+		# the seams: vertexes of different surfaces in one place (Hiro's head on
+		# his neck) skin alike, or a pose the animations never had (the head
+		# pitched to aim) opens a hole between them. A group takes whichever of
+		# its members' weights carries all of them best
+		def skin_err( i, wt ):
+			b, o, w = wt
 			err = 0.0
 			for f in sample:
-				a = xform( motion[b][f], rest[i] )
-				c = xform( motion[o][f], rest[i] )
-				p = vadd( vscale( a, w ), vscale( c, 1 - w ) )
+				p = xform( motion[b][f], rest[i] )
+				if w < 1.0:
+					p = vadd( vscale( p, w ), vscale( xform( motion[o][f], rest[i] ), 1 - w ) )
 				d = vsub( p, frames[f][i] )
 				err += vdot( d, d )
-			if best[3] is None or err < best[3]:
-				best = ( b, o, w, err )
-		if i in pins:
-			best = pins[i] if len( pins[i] ) == 3 else ( pins[i][0], pins[i][0], 1.0 )
-		elif best[2] < 0.5:
-			best = ( best[1], best[0], 1.0 - best[2], best[3] )		# the neighbour its bone now
-			assign[i] = best[0]
-		weights.append( best[:3] )
-
-	# the knees and the elbows by where the vertexes are: blended across the
-	# joint over a band about it, smoothly, so the limb keeps its volume as it
-	# bends (fitted to Daikatana's frames, which hardly bend them, the blend
-	# lands off the joint and the limb thins where it bends)
-	for upper, hinge, lower in HINGES:
-		if not all( n in J for n in ( upper, hinge ) ):
-			continue
-		P, C = J[upper], J[hinge]
-		c, a = joints[C]["pos"], joints[P]["pos"]
-		d = joints[J[lower]]["pos"] if lower in J else vadd( c, vsub( c, a ) )
-		up, down = vnorm( vsub( c, a ) ), vnorm( vsub( d, c ) )
-		axis = vnorm( vadd( up, down ) )
-		h = HINGE_BAND * min( vlen( vsub( c, a ) ), vlen( vsub( d, c ) ) )
+			return err
+		welded = 0
+		seen = set()
 		for i in range( N ):
-			b, o, w = weights[i]
-			if b not in ( P, C ) or o not in ( P, C ) or i in pins:
+			if i in seen:
 				continue
-			t = min( 1.0, max( 0.0, ( vdot( vsub( rest[i], c ), axis ) + h ) / ( 2 * h ) ) )
-			wc = t * t * ( 3 - 2 * t )
-			blended = ( C, P, wc ) if wc >= 0.5 else ( P, C, 1 - wc )
-			# only where the limb carries the vertex as well blended: a robe's
-			# hem over the knee, still while the leg moves in it, stays on
-			# the bone that carries it (Toshiro's, lifting with his knee)
-			def wt_err( wt ):
-				b_, o_, w_ = wt
-				e_ = 0.0
-				for f in range( F ):
-					p_ = xform( motion[b_][f], rest[i] )
-					if w_ < 1.0:
-						p_ = vadd( vscale( p_, w_ ), vscale( xform( motion[o_][f], rest[i] ), 1 - w_ ) )
-					d_ = vsub( p_, frames[f][i] )
-					e_ = max( e_, vlen( d_ ) )
-				return e_
-			if wt_err( blended ) > max( 1.0, 1.5 * wt_err( weights[i] ) ):
+			# (in one place in the frames too: a seam, not a hand resting on a
+			# thigh in the rest pose, Usagi's, that leaves it in others)
+			group = [ k for k in range( N ) if vlen( vsub( rest[k], rest[i] ) ) < SEAM
+					  and all( vlen( vsub( frames[f][k], frames[f][i] ) ) < 2 * SEAM for f in sample[::8] ) ]
+			seen.update( group )
+			if len( set( verts[k][0] for k in group ) ) < 2 or len( set( weights[k] for k in group ) ) < 2:
 				continue
-			weights[i] = blended
-			assign[i] = weights[i][0]
-
-	# the seams: vertexes of different surfaces in one place (Hiro's head on
-	# his neck) skin alike, or a pose the animations never had (the head
-	# pitched to aim) opens a hole between them. A group takes whichever of
-	# its members' weights carries all of them best
-	def skin_err( i, wt ):
-		b, o, w = wt
-		err = 0.0
-		for f in sample:
-			p = xform( motion[b][f], rest[i] )
-			if w < 1.0:
-				p = vadd( vscale( p, w ), vscale( xform( motion[o][f], rest[i] ), 1 - w ) )
-			d = vsub( p, frames[f][i] )
-			err += vdot( d, d )
-		return err
-	welded = 0
-	seen = set()
-	for i in range( N ):
-		if i in seen:
-			continue
-		# (in one place in the frames too: a seam, not a hand resting on a
-		# thigh in the rest pose, Usagi's, that leaves it in others)
-		group = [ k for k in range( N ) if vlen( vsub( rest[k], rest[i] ) ) < SEAM
-				  and all( vlen( vsub( frames[f][k], frames[f][i] ) ) < 2 * SEAM for f in sample[::8] ) ]
-		seen.update( group )
-		if len( set( verts[k][0] for k in group ) ) < 2 or len( set( weights[k] for k in group ) ) < 2:
-			continue
-		best = min( set( weights[k] for k in group ), key = lambda wt: sum( skin_err( k, wt ) for k in group ) )
-		for k in group:
-			weights[k] = best
-		welded += 1
-	if welded:
-		print( "  %d seams welded" % welded )
+			best = min( set( weights[k] for k in group ), key = lambda wt: sum( skin_err( k, wt ) for k in group ) )
+			for k in group:
+				weights[k] = best
+			welded += 1
+		if welded:
+			print( "  %d seams welded" % welded )
 
 	# the error of the skinned frames
 	total = maxErr = 0.0
@@ -1863,16 +1997,17 @@ def rest_rotations( joints ):
 		restRot.append( [ [ x[0], y[0], z[0] ], [ x[1], y[1], z[1] ], [ x[2], y[2], z[2] ] ] )
 	return restRot
 
-def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping = None, fps = None ):
+def write_iqm( m, body, verts, rest, joints, motion, weights, outBase, looping = None, fps = None, restRot = None ):
 	"""The skeletal IQM: joints, the skin, every frame a pose, the animations
-	named by the frames' names (looping: those that loop, fps their rate).
+	named by the frames' names (looping: those that loop, fps their rate;
+	restRot the joints' rest rotations, a rig's own, else along the bones).
 	Returns the animations and the joints' rest rotations."""
 	looping = looping or LOOPING
 	fps = fps or ANIM_FPS
 	N, F = len( verts ), m.numFrames
 	nj = len( joints )
 
-	restRot = rest_rotations( joints )
+	restRot = restRot or rest_rotations( joints )
 
 	# joint world transforms a frame: the bone's motion, about the joint
 	def world( j, f ):
