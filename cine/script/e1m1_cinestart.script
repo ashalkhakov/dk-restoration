@@ -1,0 +1,235 @@
+// e1m1_cinestart.script -- e1m1a's start, ours: first converted from
+// Daikatana's cinematic cin/scripts/e1m1_cinestart.script by
+// tools/cine/cine_convert.py, edited by hand since. Its shots' cameras are
+// cameras/e1m1_cinestart_NN.camera. Daikatana's as converted, to compare:
+// ./dk cine, out/cine/script/e1m1_cinestart.script.
+//
+// hiro_e1m1 is a stand-in for the player, as Doom 3's cinematics have one
+// (a func_animate): it wakes in the swamp and gets up; when the cinematic
+// ends the player takes its place and facing, and it goes.
+
+namespace e1m1_cinestart {
+
+entity	fatworker;		// monster_fatworker (our fatworker): Daikatana's fat1
+entity	hiro_e1m1;		// cine_hiro (our hiro): Daikatana's hiro1
+entity	skinnyworker;		// monster_skinnyworker (our skinnyworker): Daikatana's skin1
+float	shot;		// the shot playing: an actor's tasks of an earlier one stop
+float	shotStart;
+
+void shot1() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_01" );
+	shot = 1;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	sys.startGlobalSound( "sounds/e1/truckidleloop.wav" );
+	sys.wait( 2 );
+	sys.startGlobalSound( "sounds/e1/truckshutoff.wav" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot2() {
+	hiro_e1m1 = cine_enter( hiro_e1m1, "cine_hiro_e1m1", '1713.12 -2585.12 573.907', -0.98, "hiro_e1m1", "hiro1" );
+}
+
+void fat1_shot2() {
+	fatworker = cine_enter( fatworker, "cine_fatworker", '1583.12 -2704.12 1070.28', 94.9, "fatworker", "fat1" );
+	cine_until( shotStart + 4 );
+	if ( shot != 2 ) { return; }
+	cine_play( fatworker, "howmany" );
+	cine_until( shotStart + 6 );
+	if ( shot != 2 ) { return; }
+	fatworker.stopMove();
+}
+
+void skin1_shot2() {
+	skinnyworker = cine_enter( skinnyworker, "cine_skinnyworker", '1620.88 -2704.12 1069.55', 105.35, "skinnyworker", "skin1" );
+	cine_until( shotStart + 4.5 );
+	if ( shot != 2 ) { return; }
+	cine_play( skinnyworker, "baabaf" );
+	if ( shot != 2 ) { return; }
+	cine_play( skinnyworker, "bambf" );
+	if ( shot != 2 ) { return; }
+	cine_play( skinnyworker, "bafbaa" );
+	cine_until( shotStart + 6 );
+	if ( shot != 2 ) { return; }
+	skinnyworker.stopMove();
+}
+
+void shot2() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_02" );
+	shot = 2;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot2();
+	thread fat1_shot2();
+	thread skin1_shot2();
+	sys.wait( 4 );
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_fd_02.mp3" );
+	sys.waitFor( cam );
+}
+
+void fat1_shot3() {
+	cine_until( shotStart + 2 );
+	if ( shot != 3 ) { return; }
+	cine_play( fatworker, "ambc" );
+	cine_until( shotStart + 4.5 );
+	if ( shot != 3 ) { return; }
+	cine_play( fatworker, "ambb" );
+}
+
+void skin1_shot3() {
+	cine_play( skinnyworker, "foural" );
+	if ( shot != 3 ) { return; }
+	cine_play( skinnyworker, "fourtk" );
+	if ( shot != 3 ) { return; }
+	cine_play( skinnyworker, "fourtk" );
+	if ( shot != 3 ) { return; }
+	cine_play( skinnyworker, "fourla" );
+	cine_until( shotStart + 5.4 );
+	if ( shot != 3 ) { return; }
+	skinnyworker.stopMove();
+}
+
+void shot3() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_03" );
+	shot = 3;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fat1_shot3();
+	thread skin1_shot3();
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_td_03.mp3" );
+	sys.waitFor( cam );
+}
+
+void fat1_shot4() {
+	cine_until( shotStart + 0.02 );
+	if ( shot != 4 ) { return; }
+	cine_play( fatworker, "ambd" );
+}
+
+void shot4() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_04" );
+	shot = 4;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread fat1_shot4();
+	sys.wait( 0.2 );
+	sys.startGlobalSound( "sounds/voices/misc/e1m1_fd_03.mp3" );
+	sys.waitFor( cam );
+}
+
+void hiro1_shot5() {
+	// play_animation: amba (no such animation of hiro's)
+	cine_until( shotStart + 5 );
+	if ( shot != 5 ) { return; }
+	hiro_e1m1.stopMove();
+}
+
+void fat1_shot5() {
+	cine_play( fatworker, "ambc" );
+	if ( shot != 5 ) { return; }
+	cine_move( fatworker, '1404 -2714.75 1047.14', "walka" );
+}
+
+void skin1_shot5() {
+	cine_move( skinnyworker, '1748.12 -2728.12 1047.91', "walka" );
+}
+
+void shot5() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_05" );
+	shot = 5;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot5();
+	thread fat1_shot5();
+	thread skin1_shot5();
+	sys.waitFor( cam );
+}
+
+void hiro1_shot6() {
+	cine_play( hiro_e1m1, "swbs" );
+	cine_until( shotStart + 2 );
+	if ( shot != 6 ) { return; }
+	cine_play( hiro_e1m1, "swb" );
+	if ( shot != 6 ) { return; }
+	cine_play( hiro_e1m1, "swa" );
+}
+
+void shot6() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_06" );
+	shot = 6;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot6();
+	sys.waitFor( cam );
+}
+
+void hiro1_shot7() {
+	cine_playMove( hiro_e1m1, "getup", '8.79 0.17 0', 1.66, 5.1 );
+	cine_until( shotStart + 5 );
+	if ( shot != 7 ) { return; }
+	cine_exit( hiro_e1m1, "hiro1" );
+}
+
+void fat1_shot7() {
+	cine_until( shotStart + 5 );
+	if ( shot != 7 ) { return; }
+	cine_exit( fatworker, "fat1" );
+}
+
+void skin1_shot7() {
+	cine_until( shotStart + 5 );
+	if ( shot != 7 ) { return; }
+	cine_exit( skinnyworker, "skin1" );
+}
+
+void shot7() {
+	entity cam;
+
+	cam = cine_camera( "e1m1_cinestart_07" );
+	shot = 7;
+	shotStart = sys.getTime();
+	sys.setCamera( cam );
+	thread hiro1_shot7();
+	thread fat1_shot7();
+	thread skin1_shot7();
+	sys.waitFor( cam );
+}
+
+/*
+================
+e1m1_cinestart::play
+================
+*/
+void play() {
+	float first;
+
+	first = sys.strToFloat( sys.getcvar( "cine_firstShot" ) );
+	cine_start();
+	if ( first <= 1 ) { shot1(); }
+	if ( first <= 2 ) { shot2(); }
+	if ( first <= 3 ) { shot3(); }
+	if ( first <= 4 ) { shot4(); }
+	if ( first <= 5 ) { shot5(); }
+	if ( first <= 6 ) { shot6(); }
+	if ( first <= 7 ) { shot7(); }
+	cine_handOff( hiro_e1m1 );
+	cine_finish();
+	cine_remove( fatworker );
+	cine_remove( hiro_e1m1 );
+	cine_remove( skinnyworker );
+}
+
+}

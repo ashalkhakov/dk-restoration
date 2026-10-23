@@ -200,6 +200,26 @@ void cine_exit( entity actor, string who ) {
 
 /*
 ================
+cine_handOff
+
+the player where the cinematic's stand-in for them ended, facing its way
+(Doom 3's: its cinematic animates a stand-in, the player takes its place
+after), before the view comes back to them
+================
+*/
+void cine_handOff( entity standIn ) {
+	entity player;
+
+	player = sys.getEntity( "player1" );
+	if ( player == $null_entity || standIn == $null_entity ) {
+		return;
+	}
+	player.setOrigin( standIn.getOrigin() );
+	player.setAngles( '0 1 0' * ( standIn.getAngles() * '0 1 0' ) );
+}
+
+/*
+================
 cine_remove
 
 the actor gone, if it's there
