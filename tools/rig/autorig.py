@@ -368,6 +368,16 @@ def prop_joints( props, joints, motion, bones, F ):
 					  jm, js, rest ) )
 	return out
 
+def turned_over( local, joint ):
+	"""A prop's vertexes (about its joint, its middle) turned half round its
+	length: Hiro's sword, whose edge Daikatana has facing back as he cuts"""
+	n = len( local )
+	cov = [ [ sum( p[r] * p[c] for p in local ) / n for c in range( 3 ) ] for r in range( 3 ) ]
+	vals, vecs = eigen3( cov )
+	along = vecs[max( range( 3 ), key = lambda k: vals[k] )]
+	print( "  prop %s turned half round its length" % joint["name"] )
+	return [ vsub( vscale( along, 2 * vdot( p, along ) ), p ) for p in local ]	# 180 degrees about along
+
 # a monster's or another character's animations: Daikatana plays them at 10
 # frames a second (a server frame each); those that loop, its idle and its
 # ways of getting about. A spec ("<anim> <fps> [loop];...") overrides.
@@ -707,6 +717,7 @@ REST = None			# --rest: the animation whose first frame it's rigged from
 ROOT_OUT = False	# --root-out: the going over the ground out of the animations (root_out)
 ROOT_OUT_ANIMS = None	# --root-out-anims die,cdie: only out of those (names starting so): Hiro's deaths
 PROP_NAMES = []		# --props sword: the props (biggest first) as models of their own, attached at a joint so named
+PROP_TURNED = set()	# --props sword:turned: that one turned half round its length (Hiro's sword, its edge forward)
 DETACHED = []		# those: ( name, its joint, its surface, its vertexes in the joint's rest frame )
 STAGE = os.environ.get( "RIG_STAGE" )	# the def (and sound shaders) written under this, for ./dk rig to install
 LEGS = "placed"		# the legs' joints placed in the mesh, or "fitted": as the motion puts them (see main)
@@ -1659,7 +1670,10 @@ def main( md3Path, outBase ):
 			joints.append( joint )
 			j = len( joints ) - 1
 			motion[j], PROP_SCALE[j] = jm, js
-			DETACHED.append( ( joint["name"], j, sf, [ vsub( p, joint["pos"] ) for p in prest ] ) )
+			local = [ vsub( p, joint["pos"] ) for p in prest ]
+			if joint["name"] in PROP_TURNED:
+				local = turned_over( local, joint )
+			DETACHED.append( ( joint["name"], j, sf, local ) )
 			print( "  prop %s on %s, a model of its own, hidden in %d frames" % ( joint["name"], joint["parent"],
 				sum( 1 for v in js.values() if v < 0.1 ) ) )
 			continue
@@ -2419,7 +2433,8 @@ if __name__ == "__main__":
 		args.remove( "--root-out" )
 	if "--props" in args:
 		i = args.index( "--props" )
-		PROP_NAMES = [ a for a in args[i + 1].split( "," ) if a ]
+		PROP_NAMES = [ a.split( ":" )[0] for a in args[i + 1].split( "," ) if a ]
+		PROP_TURNED = set( a.split( ":" )[0] for a in args[i + 1].split( "," ) if a.endswith( ":turned" ) )
 		args = args[:i] + args[i + 2:]
 	for opt, var, kind in ( ( "--name", "NAME", str ), ( "--fps", "FPS", float ), ( "--anims", "ANIMS", str ),
 							( "--extra", "EXTRA_BONES", int ), ( "--surface", "SURFACE", str ), ( "--rest", "REST", str ) ):
