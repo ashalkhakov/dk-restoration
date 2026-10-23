@@ -8,7 +8,9 @@ skins) and the ragdolls (af/), on this machine only.
 GET /api/status?def=<model def> says, for each of its rig's animations,
 whether it's validated (tools/rig/rigcheck.py, tools/rig/validated.json):
 valid, broken, changed since, or new; POST /api/validate { "def", "anim",
-"verdict": "valid" | "broken", "note" } records a verdict on it as it is now.
+"verdict": "valid" | "broken", "note" } records a verdict on it as it is now
+(Daikatana's frames, to score it by, loaded when its status is asked and
+kept while the files stay as they were).
 
 POST /api/save?name=<file> saves what the page sends to out/rigcheck/<file>
 (its capture: a picture of each model, its fit numbers).
@@ -23,6 +25,7 @@ import json
 import os
 import re
 import sys
+import threading
 import urllib.parse
 
 sys.path.insert( 0, os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), ".." ) )
@@ -115,7 +118,12 @@ class Handler( http.server.SimpleHTTPRequestHandler ):
 		p = self.path.split( "?" )[0]
 		if p == "/api/status":
 			q = urllib.parse.parse_qs( self.path.partition( "?" )[2] )
-			self.send_json( rigcheck.status( q.get( "def", [ "" ] )[0] ) )
+			defName = q.get( "def", [ "" ] )[0]
+			self.send_json( rigcheck.status( defName ) )
+			# Daikatana's frames for the verdicts to come, loaded meanwhile
+			info = rigcheck.model_info( defName )
+			if info:
+				threading.Thread( target = rigcheck.load_source, args = ( info, ), daemon = True ).start()
 		elif p == "/api/models":
 			data = json.dumps( models() ).encode()
 			self.send_response( 200 )

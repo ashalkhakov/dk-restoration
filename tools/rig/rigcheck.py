@@ -34,6 +34,7 @@ import math
 import os
 import re
 import sys
+import threading
 
 sys.path.insert( 0, os.path.dirname( os.path.abspath( __file__ ) ) )
 from iqm import IQM, IQM_POSITION, IQM_BLENDINDEXES, IQM_BLENDWEIGHTS
@@ -196,6 +197,44 @@ def model_info( defName ):
 			return mesh.group( 1 ), src.group( 1 ) if src else None, mesh.group( 1 )[:-4] + ".json"
 	return None
 
+# the rigs and their sources as loaded, while their files stay as they were
+# (the viewer's server asks again a verdict at a time: Daikatana's frames
+# loaded and matched to the rig take seconds)
+_loaded = {}
+_loadLock = threading.Lock()
+_sourceLock = threading.Lock()
+
+def _stamp( *paths ):
+	return tuple( os.path.getmtime( p ) if os.path.exists( p ) else None for p in paths )
+
+def load_rig( info ):
+	"""the Rig of model_info's iqm"""
+	path = os.path.join( DKRES, info[0] )
+	key, stamp = ( "rig", path ), _stamp( path )
+	with _loadLock:
+		hit = _loaded.get( key )
+		if hit and hit[0] == stamp:
+			return hit[1]
+	rig = Rig( path )
+	with _loadLock:
+		_loaded[key] = ( stamp, rig )
+	return rig
+
+def load_source( info ):
+	"""( Rig, Source ) of model_info's iqm and md3, the Source None without the md3"""
+	rig = load_rig( info )
+	if not info[1] or not os.path.exists( os.path.join( DKRES, info[1] ) ):
+		return rig, None
+	paths = [ os.path.join( DKRES, p ) for p in info ]
+	key, stamp = ( "source", ) + tuple( paths ), _stamp( *paths )
+	with _sourceLock:		# (one loading: a verdict waits for the one under way)
+		hit = _loaded.get( key )
+		if hit and hit[0] == stamp and hit[1][0] is rig:
+			return hit[1]
+		src = Source( rig, paths[1], paths[2] )
+		_loaded[key] = ( stamp, ( rig, src ) )
+	return rig, src
+
 def status( defName, rec = None ):
 	"""{ animation: { "state": "valid" | "broken" | "changed" | "new", the record's entry... } }
 	for every animation of the model's rig as it is now"""
@@ -203,7 +242,7 @@ def status( defName, rec = None ):
 	info = model_info( defName )
 	if not info:
 		return {}
-	rig = Rig( os.path.join( DKRES, info[0] ) )
+	rig = load_rig( info )
 	known = rec.get( defName, {} ).get( "anims", {} )
 	out = {}
 	for anim in rig.anims:
@@ -222,12 +261,10 @@ def validate( defName, anim, verdict, note = "" ):
 	info = model_info( defName )
 	if not info:
 		raise ValueError( "no rigged model %s" % defName )
-	rig = Rig( os.path.join( DKRES, info[0] ) )
+	rig, src = load_source( info )
 	if anim not in rig.anims:
 		raise ValueError( "%s has no animation %s" % ( defName, anim ) )
-	fit = None
-	if info[1] and os.path.exists( os.path.join( DKRES, info[1] ) ):
-		fit = Source( rig, os.path.join( DKRES, info[1] ), os.path.join( DKRES, info[2] ) ).fit( rig, anim )
+	fit = src.fit( rig, anim ) if src else None
 	rec = load_record()
 	m = rec.setdefault( defName, { "iqm": info[0], "anims": {} } )
 	m["iqm"] = info[0]
