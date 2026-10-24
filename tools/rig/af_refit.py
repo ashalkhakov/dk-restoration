@@ -32,7 +32,11 @@ body of its own and an ankle joint to its shin, the shin's box its own
 bone's (his shins' took his feet). --parts <file> counts each vertex for
 the part it's nearest, placed by hand (tools/rig/iqm_parts.py's), not its
 weights (the ninja's bones carried the wrong parts); --iqm <path> fits to
-that rig, not the one installed. "mod both" keeps each joint
+that rig, not the one installed; --square-waist squares the waist's box to
+the body, over the hips', waist's and thighs' own bones' vertexes from 3
+below the hips' joint to the sash (the waist's bone's lowest), the chest's
+from the sash up (Hirogi's hips' and waist's joints 4 apart made a thin
+slab under his sash, his chest's box reaching down into his hips). "mod both" keeps each joint
 where it is on its body, so a body needn't lie between its joints.
 
 	python3 tools/rig/af_refit.py model_toshiro
@@ -153,7 +157,7 @@ def add_feet( af, pts, P, report ):
 	return af
 
 def main( defName, extras = False, excepted = (), alongBones = False, neckToHead = False, shouldersToArms = False, feet = False,
-		  partsPath = None, iqmPath = None ):
+		  partsPath = None, iqmPath = None, squareWaist = False ):
 	info = rc.model_info( defName )
 	if not info:
 		sys.exit( "%s: no rigged model def" % defName )
@@ -206,7 +210,15 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	A2 = sum( x * x for x in across ) or 1e-9
 	def side( p ):
 		return sum( ( p[k] - sr[k] ) * across[k] for k in range( 3 ) ) / A2
+	# --square-waist: the waist from the crotch to the sash's bottom (its own
+	# bone's lowest vertex), the chest from there up
+	own = lambda v: names[rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )]]
+	sash = min( ( rig.pos[v][2] for v in range( len( rig.pos ) ) if own( v ) == "Waist" ), default = 0.0 )
 	def body_points( bname ):
+		if squareWaist and bname == "chest":
+			return [ p for p in body_points_( bname ) if p[2] >= sash ]
+		return body_points_( bname )
+	def body_points_( bname ):
 		if bname == "waist":
 			if partsPath:
 				# (the parts placed by hand: the trunk from the crotch to the
@@ -216,6 +228,11 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 				z1 = max( p[2] for p in pts( ( "Waist", ) ) )
 				arms = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand" ) ]
 				return [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in arms and z0 <= rig.pos[v][2] <= z1 ]
+			if squareWaist:
+				# (the pelvis' and thighs' own bones', no extra's: his
+				# trousers' flare)
+				return [ rig.pos[v] for v in range( len( rig.pos ) ) if own( v ) in ( "Hips", "Waist", "Lupleg", "Rupleg" )
+						 and P["Hips"][2] - 3.0 <= rig.pos[v][2] <= sash ]
 			z0, z1 = sorted( ( P["Hips"][2], P["Waist"][2] ) )
 			return [ p for p in trunk if z0 <= p[2] <= z1 ]
 		if partsPath and bname == "chest":
@@ -266,7 +283,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		out.append( af[pos:m.start()] )
 		ps = body_points( bname )
 		if len( ps ) >= 4:
-			if partsPath and bname == "waist":
+			if ( partsPath or squareWaist ) and bname == "waist":
 				# square to the body (its few points turned their own axes
 				# sideways: the ninja's)
 				axes = ( ( 1.0, 0.0, 0.0 ), ( 0.0, 1.0, 0.0 ), ( 0.0, 0.0, 1.0 ) )
@@ -322,6 +339,9 @@ if __name__ == "__main__":
 	feet = "--feet" in args
 	if feet:
 		args.remove( "--feet" )
+	squareWaist = "--square-waist" in args
+	if squareWaist:
+		args.remove( "--square-waist" )
 	opt = {}
 	for o in ( "--parts", "--iqm" ):
 		if o in args:
@@ -331,4 +351,4 @@ if __name__ == "__main__":
 	if len( args ) != 1:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet, opt.get( "--parts" ), opt.get( "--iqm" ) )
+	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet, opt.get( "--parts" ), opt.get( "--iqm" ), squareWaist )

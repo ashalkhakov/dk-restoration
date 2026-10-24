@@ -1099,14 +1099,13 @@
 	"model_hirogi": {
 		"anims": {
 			"ambappa": {
-				"by": "Artyom Shalkhakov",
 				"date": "2026-10-24",
 				"fingerprint": "d1a10e6c34606e24",
 				"fit": [
 					0.076,
 					1.38
 				],
-				"note": "",
+				"note": "AF refit: thighs, torso split at the sash, square pelvis, feet",
 				"verdict": "valid"
 			},
 			"ambappb": {
@@ -1996,21 +1995,21 @@
 				"date": "2026-10-24",
 				"fingerprint": "700e18da29206200",
 				"fit": [
-					1.048,
-					7.14
+					0.64,
+					1.82
 				],
-				"note": "origin is wrong. movement removal?",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sfb": {
 				"date": "2026-10-24",
 				"fingerprint": "56288e4a169f955d",
 				"fit": [
-					1.145,
-					7.85
+					0.668,
+					2.99
 				],
-				"note": "movement removal needed",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			}
 		},
 		"iqm": "models/rigged/ninja.iqm"

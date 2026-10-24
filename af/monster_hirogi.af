@@ -19,8 +19,9 @@ articulatedFigure monster_hirogi {
 	body "waist" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.99, -3.49, -3.35 ), ( 3.99, 3.49, 3.35 ) )
-		origin ( -0.54, -8.59, -0.34 )
+		model box( ( -5.06, -8.34, -4.78 ), ( 5.06, 8.34, 4.78 ) )
+		angles ( -0.0, 0.0, 0.0 )
+		origin ( -0.91, -4.37, 4.83 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +32,9 @@ articulatedFigure monster_hirogi {
 	body "chest" {
 		joint "Waist"
 		mod orientation
-		model box( ( -4.53, -5.01, -6.54 ), ( 4.53, 5.01, 6.54 ) )
-		origin ( -0.05, -4.45, 13.52 )
+		model box( ( -5.53, -4.07, -3.46 ), ( 5.53, 4.07, 3.46 ) )
+		angles ( -36.0, 175.4, -170.4 )
+		origin ( -2.16, -4.20, 11.76 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +45,9 @@ articulatedFigure monster_hirogi {
 	body "head" {
 		joint "Loneck"
 		mod orientation
-		model box( ( -5.30, -2.03, -3.52 ), ( 5.30, 2.03, 3.52 ) )
-		origin ( 1.02, -4.47, 24.66 )
+		model box( ( -6.69, -3.77, -2.46 ), ( 6.69, 3.77, 2.46 ) )
+		angles ( -33.9, 0.9, -87.7 )
+		origin ( 0.63, -4.58, 24.05 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +58,9 @@ articulatedFigure monster_hirogi {
 	body "Luparm" {
 		joint "Luparm"
 		mod orientation
-		model bone( ( 0.16, 0.54, 19.55 ), ( -0.24, 5.34, 11.49 ), 5.10 )
-		origin ( -0.04, 2.94, 15.52 )
+		model box( ( -6.10, -2.62, -2.35 ), ( 6.10, 2.62, 2.35 ) )
+		angles ( 52.7, 91.7, 58.5 )
+		origin ( -0.41, 4.31, 15.75 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +71,9 @@ articulatedFigure monster_hirogi {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod orientation
-		model bone( ( -0.24, 5.34, 11.49 ), ( 6.82, 8.19, 6.83 ), 2.74 )
-		origin ( 3.29, 6.77, 9.16 )
+		model box( ( -4.75, -2.92, -1.81 ), ( 4.75, 2.92, 1.81 ) )
+		angles ( 31.0, 21.9, 120.4 )
+		origin ( 2.99, 7.17, 8.21 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +84,9 @@ articulatedFigure monster_hirogi {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod orientation
-		model bone( ( -3.93, 0.78, 0.62 ), ( -4.25, -1.55, -12.40 ), 3.00 )
-		origin ( -4.09, -0.39, -5.89 )
+		model box( ( -5.90, -3.95, -3.50 ), ( 5.90, 3.95, 3.50 ) )
+		angles ( 67.1, 24.4, 166.6 )
+		origin ( -0.55, 1.77, -1.22 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +97,22 @@ articulatedFigure monster_hirogi {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod orientation
-		model bone( ( -4.25, -1.55, -12.40 ), ( -2.21, 3.85, -19.83 ), 8.06 )
-		origin ( -3.23, 1.15, -16.11 )
+		model box( ( -6.42, -4.35, -4.06 ), ( 6.42, 4.35, 4.06 ) )
+		angles ( 78.2, 123.2, 166.3 )
+		origin ( -0.38, 4.01, -13.73 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Lfoot" {
+		joint "Lankle_r"
+		mod orientation
+		model box( ( -4.25, -2.40, -2.57 ), ( 4.25, 2.40, 2.57 ) )
+		angles ( -8.2, -171.7, 31.9 )
+		origin ( 0.37, 4.39, -22.64 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -103,8 +123,9 @@ articulatedFigure monster_hirogi {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod orientation
-		model bone( ( 0.79, -9.63, 19.72 ), ( -1.09, -14.68, 11.84 ), 4.72 )
-		origin ( -0.15, -12.15, 15.78 )
+		model box( ( -5.71, -3.20, -2.19 ), ( 5.71, 3.20, 2.19 ) )
+		angles ( 43.9, -100.7, 93.3 )
+		origin ( -0.13, -12.59, 16.82 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +136,9 @@ articulatedFigure monster_hirogi {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod orientation
-		model bone( ( -1.09, -14.68, 11.84 ), ( 0.42, -17.10, 2.20 ), 2.69 )
-		origin ( -0.34, -15.89, 7.02 )
+		model box( ( -5.47, -2.31, -2.04 ), ( 5.47, 2.31, 2.04 ) )
+		angles ( 73.5, -58.0, 49.6 )
+		origin ( 0.71, -16.20, 6.77 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +149,9 @@ articulatedFigure monster_hirogi {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod orientation
-		model bone( ( 1.23, -11.06, -2.50 ), ( 0.93, -11.30, -12.40 ), 6.94 )
-		origin ( 1.08, -11.18, -7.45 )
+		model box( ( -6.26, -4.26, -4.69 ), ( 6.26, 4.26, 4.69 ) )
+		angles ( 46.9, -20.2, 151.9 )
+		origin ( 1.09, -9.49, -0.54 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +162,22 @@ articulatedFigure monster_hirogi {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod orientation
-		model bone( ( 0.93, -11.30, -12.40 ), ( -2.53, -11.07, -21.97 ), 3.68 )
-		origin ( -0.80, -11.19, -17.18 )
+		model box( ( -8.20, -4.60, -4.85 ), ( 8.20, 4.60, 4.85 ) )
+		angles ( 75.8, -164.2, 8.6 )
+		origin ( -0.53, -10.69, -12.10 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "Rfoot" {
+		joint "Rankle_r"
+		mod orientation
+		model box( ( -4.25, -2.41, -2.44 ), ( 4.25, 2.41, 2.44 ) )
+		angles ( -5.8, 173.8, -40.3 )
+		origin ( 0.19, -11.60, -22.47 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -238,4 +275,20 @@ articulatedFigure monster_hirogi {
 		limit 23.3, 140.0, 88.3
 	}
 
+	universalJoint "Lankle" {
+		body1 "Lfoot"
+		body2 "Lloleg"
+		anchor joint( "Lankle_r" )
+		shafts ( -0.11, 0.17, -0.98 ), ( 0.11, -0.17, 0.98 )
+		friction 0.20
+		coneLimit ( -0.11, 0.17, -0.98 ), 45
+	}
+	universalJoint "Rankle" {
+		body1 "Rfoot"
+		body2 "Rloleg"
+		anchor joint( "Rankle_r" )
+		shafts ( -0.24, -0.07, -0.97 ), ( 0.24, 0.07, 0.97 )
+		friction 0.20
+		coneLimit ( -0.24, -0.07, -0.97 ), 45
+	}
 }
