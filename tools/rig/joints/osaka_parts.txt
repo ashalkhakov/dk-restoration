@@ -1,0 +1,22 @@
+# Osaka's ragdoll boxes, for tools/rig/af_refit.py --parts (his rig is
+# autorig's as it is): in his rest pose, z up, his front +x, his left +y.
+#
+# His robe is all there is of his legs (its hem skinned to his ankles,
+# flaring): each leg's boxes are its half of the robe, upright ("box": what
+# lies along the segment, within "r" of it), split at the robe's middle
+# (y 1.1), the thighs from his hips (z 4) to his knees, the shins from there
+# to the hem. His pelvis, torso and head the same, upright: the pelvis z 4
+# to 10, the torso on to his shoulders (24), the head from his chin to its
+# crown, its reach leaving his hair (hanging behind, to x -9) out. His
+# hands hang by his robe: his arms are "from" bones of no box, so no box
+# takes them.
+
+from Hips Luparm Ruparm
+
+Lupleg     1.0  5.0   4.0    1.0  5.0  -8.0   r 5   box 1.0 5.0 4.0
+Lloleg     1.0  5.0  -8.0    1.0  5.0 -25.0   r 5.5   box 1.0 5.0 -8.0
+Rupleg     1.0 -2.8   4.0    1.0 -2.8  -8.0   r 5   box 1.0 -2.8 4.0
+Rloleg     1.0 -2.8  -8.0    1.0 -2.8 -25.0   r 5.5   box 1.0 -2.8 -8.0
+waist      1.0  1.1   4.0    1.0  1.1  10.0   r 6   box 1.0 1.1 4.0
+chest      1.0  1.1  10.0    1.0  1.1  24.0   r 6   box 1.0 1.1 10.0
+head       0.5 -0.3  24.0    0.5 -0.3  35.5   r 4.5   box 0.5 -0.3 24.0

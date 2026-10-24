@@ -238,12 +238,28 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 			# (a box from a point of its own, Usagi's thighs from his belt: what
 			# lies along it, belt to knee, whatever bone carries it; no other
 			# limb's, his hands resting on them)
+			# ("from" bones no part of the file is under, Osaka's arms, are
+			# never a box's: his hands hang by his robe; a body that isn't a
+			# joint, his head, is of any other)
 			a_, b_ = partsOpts["box"][bname], parts[bname][1]
 			mine = root( names.index( bname ) ) if bname in names else None		# (the head's: not a joint's name)
-			return [ rig.pos[v] for v in range( len( rig.pos ) ) if not prop( top( v ) )
-					 and root( top( v ) ) in ( None, mine )
-					 and iqm_parts.seg_dist( rig.pos[v], a_, b_ ) <= reach.get( bname, 5.0 )
-					 and -0.1 <= sum( ( rig.pos[v][k] - a_[k] ) * ( b_[k] - a_[k] ) for k in range( 3 ) ) / sum( ( b_[k] - a_[k] ) ** 2 for k in range( 3 ) ) <= 1.05 ]
+			partRoots = set( root( names.index( b ) ) for b in parts if b in names )
+			kept = lambda r: r not in set( partsOpts.get( "from", [] ) ) - partRoots and ( mine is None or r in ( None, mine ) )
+			# its vertexes and points across its triangles (Osaka's robe: a few
+			# big flat ones, their vertexes at its hips and hem)
+			ok = [ not prop( top( v ) ) and kept( root( top( v ) ) ) for v in range( len( rig.pos ) ) ]
+			cand = [ rig.pos[v] for v in range( len( rig.pos ) ) if ok[v] ]
+			S = 6
+			for t in q.triangles:
+				if all( ok[v] for v in t ):
+					p0, p1, p2 = ( rig.pos[v] for v in t )
+					for i in range( S + 1 ):
+						for j in range( S + 1 - i ):
+							u, w = i / S, j / S
+							cand.append( tuple( p0[k] + ( p1[k] - p0[k] ) * u + ( p2[k] - p0[k] ) * w for k in range( 3 ) ) )
+			L2 = sum( ( b_[k] - a_[k] ) ** 2 for k in range( 3 ) )
+			return [ p for p in cand if iqm_parts.seg_dist( p, a_, b_ ) <= reach.get( bname, 5.0 )
+					 and -0.1 <= sum( ( p[k] - a_[k] ) * ( b_[k] - a_[k] ) for k in range( 3 ) ) / L2 <= 1.05 ]
 		if bname == "waist":
 			if partsPath and "Hips" in parts:
 				# (the parts placed by hand: the trunk from the crotch to the
