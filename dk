@@ -395,7 +395,7 @@ sludgeminion    creature  e1/m_sludgeminion      bones=24 surface=metal
 ragemaster      creature  e1/m_ragemaster        bones=24 surface=metal
 psyclaw         creature  e1/m_psyclaw           bones=24
 battleboar      creature  e1/m_bboar             bones=24 surface=metal
-crox            creature  e1/m_croco             bones=24 surface=metal
+crox            creature  e1/m_croco             bones=24 merge=0.005 surface=metal
 # protopod: not rigged, an egg wants no skeleton (its rig bent it out of shape)
 cambot          creature  e1/m_cambot            bones=12 surface=metal nohitbox=Tail2b
 deathsphere     creature  e1/m_dsphere           bones=16 surface=metal

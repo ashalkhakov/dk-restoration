@@ -34,6 +34,131 @@
 		},
 		"iqm": "models/rigged/cambot.iqm"
 	},
+	"model_crox": {
+		"anims": {
+			"amba": {
+				"date": "2026-10-25",
+				"fingerprint": "bd189e92eed414d9",
+				"fit": [
+					0.073,
+					2.82
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambb": {
+				"date": "2026-10-25",
+				"fingerprint": "1fe075480538ed6a",
+				"fit": [
+					0.229,
+					5.42
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ataka": {
+				"date": "2026-10-25",
+				"fingerprint": "4af59bbe327f11c1",
+				"fit": [
+					0.469,
+					4.41
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atakb": {
+				"date": "2026-10-25",
+				"fingerprint": "373ac3b276cc4f00",
+				"fit": [
+					0.539,
+					4.39
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atakc": {
+				"date": "2026-10-25",
+				"fingerprint": "1865010fc8e76870",
+				"fit": [
+					0.275,
+					8.44
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"atakd": {
+				"date": "2026-10-25",
+				"fingerprint": "5d726a3dc2f8bb6d",
+				"fit": [
+					0.379,
+					4.9
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"diea": {
+				"date": "2026-10-25",
+				"fingerprint": "da37ce43faffe835",
+				"fit": [
+					0.666,
+					6.64
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dieb": {
+				"date": "2026-10-25",
+				"fingerprint": "7bba5d247ed23ed4",
+				"fit": [
+					0.489,
+					8.61
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"hitb": {
+				"date": "2026-10-25",
+				"fingerprint": "0ba9660787f74638",
+				"fit": [
+					0.5,
+					3.84
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"runa": {
+				"date": "2026-10-25",
+				"fingerprint": "9327956d7bf44093",
+				"fit": [
+					0.305,
+					4.03
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"swima": {
+				"date": "2026-10-25",
+				"fingerprint": "995a7599faea35d8",
+				"fit": [
+					0.503,
+					4.74
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walka": {
+				"date": "2026-10-25",
+				"fingerprint": "da48835a8d4edf88",
+				"fit": [
+					0.353,
+					4.76
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/croco.iqm"
+	},
 	"model_dead": {
 		"anims": {
 			"dead": {
