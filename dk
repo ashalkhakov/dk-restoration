@@ -466,7 +466,7 @@ casseti         human     cinematic/c_casseti_e4m1  iqm=casseti
 gusagi          human     cinematic/c_gusagi_e2m3   iqm=gusagi
 usagi           human     cinematic/c_usagi_intr    iqm=usagi props=sword follow=Hips:origin bodyparts=tools/rig/joints/usagi_parts.txt propsplit=Auto_1_prop1
 hirogi          human     cinematic/c_hiro_intr     iqm=hirogi props=sword:turned follow=Waist:origin,Body,Hips
-inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
+inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro props=sword rootout=sambd bodyparts=tools/rig/joints/inshiro_parts.txt
 ninja           human     cinematic/c_ninja_intr    iqm=ninja props=sword rest=punch rootout=cr,cs,float:z,jpd:z,jpns:z,sfa,sfb:z follow=Hips:origin bodyparts=tools/rig/joints/ninja_parts.txt
 osaka           human     cinematic/c_osaka_intr    iqm=osaka
 tatsuo          human     cinematic/c_tatsuo_e4m4   iqm=tatsuo

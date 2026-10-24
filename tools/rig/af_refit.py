@@ -213,7 +213,11 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 				return iqm_parts.nearest( rig.pos[v], parts, reach )
 			r = root( top( v ) )
 			return iqm_parts.nearest( rig.pos[v], parts, reach, [ b for b in parts if r and limb.get( b ) == r ] ) if r else None
-		owner = [ None if prop( top( v ) ) else ( part_of( v ) or owner[v] ) for v in range( len( rig.pos ) ) ]
+		# (out of every part's reach: its skin's bone, unless that bone has a
+		# part, out of whose reach it is: Inshiro's lower tunic, skinned to his
+		# shins, not theirs)
+		owner = [ None if prop( top( v ) ) else ( part_of( v ) or ( owner[v] if owner[v] not in parts else None ) )
+				  for v in range( len( rig.pos ) ) ]
 	pts = lambda ns: [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] in ns ]
 	limbs = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand", "upleg", "loleg", "ankle_r" ) ]
 	trunk = [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in limbs ]

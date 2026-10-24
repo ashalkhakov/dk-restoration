@@ -1566,103 +1566,103 @@
 		"anims": {
 			"nodd": {
 				"date": "2026-10-24",
-				"fingerprint": "bc521bf6803fd040",
+				"fingerprint": "c63b025827a3112f",
 				"fit": [
-					0.02,
-					0.29
+					0.014,
+					0.26
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"samba": {
 				"date": "2026-10-24",
-				"fingerprint": "5d2e9b5494eaeb12",
+				"fingerprint": "d8733cd79d9bd49f",
 				"fit": [
-					1.667,
-					13.15
+					0.052,
+					0.8
 				],
-				"note": "tunic merged with his right hand",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sambb": {
 				"date": "2026-10-24",
-				"fingerprint": "a334143ebe404a9e",
+				"fingerprint": "28a3aa713ef8a4e5",
 				"fit": [
-					1.66,
-					13.48
+					0.053,
+					0.87
 				],
-				"note": "tunic, right hand",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sambc": {
 				"date": "2026-10-24",
-				"fingerprint": "a7b7ef40e460b9c5",
+				"fingerprint": "ff017fa65bfe6644",
 				"fit": [
-					1.6,
-					13.13
+					0.045,
+					0.77
 				],
-				"note": "tunic",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sambd": {
 				"date": "2026-10-24",
-				"fingerprint": "165cc0b80b6cff7e",
+				"fingerprint": "a27d48f515b3bd61",
 				"fit": [
-					1.973,
-					33.22
+					0.07,
+					1.5
 				],
-				"note": "right hand. also his sword is animated (movement needs removal)",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sfa": {
 				"date": "2026-10-24",
-				"fingerprint": "661212ea4d8bf2d7",
+				"fingerprint": "fe79e8aeb6dbfc59",
 				"fit": [
-					1.767,
-					14.4
+					0.082,
+					1.14
 				],
-				"note": "right hand/tunic",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sfamb": {
 				"date": "2026-10-24",
-				"fingerprint": "f484c09c8666d865",
+				"fingerprint": "8895470a3dea2ee2",
 				"fit": [
-					1.675,
-					14.01
+					0.065,
+					1.16
 				],
-				"note": "tunic, right hand",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sfb": {
 				"date": "2026-10-24",
-				"fingerprint": "6f02d5e91d8de494",
+				"fingerprint": "fcf7f2c9e7fa2ec2",
 				"fit": [
-					1.803,
-					14.01
+					0.105,
+					1.55
 				],
-				"note": "tunic",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"tka": {
 				"date": "2026-10-24",
-				"fingerprint": "5c7b892dcc3ff08c",
+				"fingerprint": "ec336f28b537806c",
 				"fit": [
-					0.122,
-					3.33
+					0.065,
+					1.11
 				],
-				"note": "tunic",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"tkb": {
 				"date": "2026-10-24",
-				"fingerprint": "e087f8b60b1cbae1",
+				"fingerprint": "787b76e81330f462",
 				"fit": [
-					0.099,
-					6.16
+					0.033,
+					1.27
 				],
-				"note": "tunic",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			}
 		},
 		"iqm": "models/rigged/inshiro.iqm"

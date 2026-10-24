@@ -23,28 +23,32 @@ entityDef model_inshiro {
 
 
 
-	"hitbox Hips"	"-2.0 -2.8 -1.8 0.6 0.3 -0.9 torso"
-	"hitbox Lupleg"	"0.0 -0.4 -5.1 9.8 3.5 3.1 legs"
-	"hitbox Lloleg"	"0.3 -2.0 -6.3 10.8 9.1 3.7 legs"
-	"hitbox Lankle_r"	"0.7 -0.3 -3.2 4.1 2.8 4.9 legs"
-	"hitbox Rupleg"	"-0.2 -3.7 -4.4 6.9 -0.1 2.6 legs"
-	"hitbox Rloleg"	"0.9 -9.3 -6.4 13.8 1.7 3.4 legs"
-	"hitbox Rankle_r"	"0.9 -2.8 -3.0 4.2 0.4 5.1 legs"
-	"hitbox Waist"	"-1.4 -3.3 -2.6 4.5 4.6 4.0 torso"
-	"hitbox Chest"	"-3.8 -1.4 0.9 -3.8 -1.4 0.9 torso"
-	"hitbox Loneck"	"0.3 -3.7 -3.3 7.1 2.2 -0.6 head"
-	"hitbox Head"	"-11.2 -5.2 -3.3 -2.4 1.3 5.9 head"
-	"hitbox Luparm"	"2.1 -2.8 -3.0 14.0 1.1 3.5 arms"
-	"hitbox Lloarm"	"0.1 -1.9 -2.5 7.4 1.5 2.0 arms"
-	"hitbox Lhand"	"0.1 -1.7 -2.3 4.4 1.0 1.0 arms"
-	"hitbox Ruparm"	"2.0 -0.5 -2.2 7.2 5.0 3.4 arms"
-	"hitbox Rloarm"	"0.8 -2.0 -3.5 8.6 2.2 2.5 arms"
-	"hitbox Rhand"	"-0.4 -0.7 -1.0 4.0 2.0 1.9 arms"
+	"hitbox Hips"	"-3.4 -0.0 -1.8 0.6 0.1 -0.9 torso"
+	"hitbox Lupleg"	"0.0 -0.3 -5.1 9.8 3.6 3.1 legs"
+	"hitbox Lloleg"	"1.2 -1.6 -6.3 10.4 3.8 2.1 legs"
+	"hitbox Lankle_r"	"-1.0 -0.3 -3.2 4.1 2.8 4.9 legs"
+	"hitbox Rupleg"	"0.5 -2.9 -4.3 7.8 0.6 3.8 legs"
+	"hitbox Rloleg"	"2.8 -3.6 -6.2 13.3 2.5 2.5 legs"
+	"hitbox Rankle_r"	"-1.1 -3.0 -3.2 4.1 0.1 4.8 legs"
+	"hitbox Waist"	"-1.9 -3.9 -2.2 2.4 4.7 0.5 torso"
+	"hitbox Chest"	"-1.3 -3.6 0.3 7.9 5.1 4.4 torso"
+	"hitbox Loneck"	"2.2 -0.2 -1.3 2.3 -0.1 -0.8 head"
+	"hitbox Head"	"-10.7 -0.8 -5.1 -0.3 8.2 3.9 head"
+	"hitbox Luparm"	"-0.1 -3.1 -1.9 6.4 0.7 1.9 arms"
+	"hitbox Lhand"	"-0.1 -0.8 -2.4 4.2 2.3 0.9 arms"
+	"hitbox Ruparm"	"0.3 -1.7 -3.3 11.4 -1.1 -1.7 arms"
+	"hitbox Rloarm"	"1.1 -2.2 -1.9 7.0 1.5 2.4 arms"
+	"hitbox Rhand"	"-0.1 -0.9 -0.9 2.9 1.6 1.3 arms"
+	"hitbox Chest_1"	"-0.7 -4.7 -3.8 5.1 3.2 1.9 torso"
+	"hitbox Shoulders"	"-1.0 -4.0 0.2 0.8 1.0 1.2 torso"
+	"hitbox Rfings1"	"-0.5 -0.8 -1.4 1.9 0.3 0.2 arms"
+	"hitbox Lloarm_1"	"0.0 0.0 0.0 0.0 0.0 0.0 arms"
 
 	"damage_scale head"	"2"
 	"damage_scale arms"	"0.75"
 	"damage_scale legs"	"0.75"
 
 	"ragdoll"			"monster_inshiro"	// af/monster_inshiro.af, Doom 3's articulated figure
+	"attach sword"		"models/rigged/inshiro_sword.iqm"	// its own model, drawn at the joint till dropped ("drop sword")
 
 }

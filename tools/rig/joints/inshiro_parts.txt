@@ -1,0 +1,33 @@
+# Inshiro's limbs, placed by hand for tools/rig/iqm_parts.py (dk bodyparts=)
+# and af_refit.py --parts, in his rest pose: a bone and the segment along the
+# part of him it should carry, from x y z to x y z (z up, his front +x, his
+# left +y). He's symmetric about y 0.
+#
+# autorig put his right knee 3 above his left (z -5.1, -8.1: his shins'
+# boxes of different heights) and his shoulders' joints off (y 4.6, -3.5).
+# Each leg and arm bone here moves as its part, its joint where the part
+# starts ("at"), twins keeping the mesh. His torso's box is upright, from his
+# pelvis to his shoulders ("box", within "r" of its axis), on his Waist bone,
+# which moves as his torso (it strayed up to 7.6 off it, sfb; the torso's
+# own fit 1.5 at most).
+
+from Hips Luparm Ruparm Waist
+
+Lupleg     2.2  2.4   1.5    2.3  2.8  -8.5   r 5   at
+Lloleg     2.3  2.8  -8.5    0.8  4.2 -20.0   r 5   at
+Lankle_r   0.8  4.2 -20.0    6.0  4.4 -24.0   r 5   at
+Rupleg     2.2 -2.4   1.5    2.3 -2.8  -8.5   r 5   at
+Rloleg     2.3 -2.8  -8.5    0.8 -4.2 -20.0   r 5   at
+Rankle_r   0.8 -4.2 -20.0    6.0 -4.4 -24.0   r 5   at
+Luparm     0.0  5.0  18.0    0.3  5.2  10.5   r 4   at
+Lloarm     0.3  5.2  10.5    2.0  6.8   4.0   r 4   at
+Lhand      2.0  6.8   4.0    2.0  7.0  -0.5   r 4   at
+Ruparm     0.0 -5.0  18.0    0.3 -5.4  10.5   r 4   at
+Rloarm     0.3 -5.4  10.5    2.0 -6.0   4.0   r 4   at
+Rhand      2.0 -6.0   4.0    2.0 -6.0  -0.5   r 4   at
+Waist      1.0  0.0   8.5    1.0  0.0  20.0   r 4.6
+chest      1.0  0.0   8.5    1.0  0.0  20.0   r 4.6   box 1.0 0.0 8.5
+
+# his head's box: upright from his chin to his crown, its reach leaving his
+# beard (hanging below his chin) and his hair (out behind him) out
+head       0.0  0.0  18.5    0.0  0.0  27.0   r 3.5   box 0.0 0.0 18.5

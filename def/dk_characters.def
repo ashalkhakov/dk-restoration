@@ -65,3 +65,11 @@ entityDef model_hirogi_extra {
 entityDef model_usagi_extra {
 	"frame sambd 19"		"drop sword 80 0 820"
 }
+
+// Inshiro (rigged from c_inshiro_intr: def/rig_inshiro.def). His daikatana is
+// a model of its own at the joint "sword" (autorig --props); in sambd he
+// throws it as Usagi does, out of his hand by frame 17, and from frame 19 it
+// flies on as a rigid body with Usagi's push
+entityDef model_inshiro_extra {
+	"frame sambd 19"		"drop sword 80 0 820"
+}
