@@ -2231,5 +2231,40 @@
 			}
 		},
 		"iqm": "models/rigged/toshiro.iqm"
+	},
+	"model_usagi": {
+		"anims": {
+			"ambathnk": {
+				"date": "2026-10-24",
+				"fingerprint": "d081de7ff701c110",
+				"fit": [
+					0.212,
+					8.7
+				],
+				"note": "",
+				"verdict": "broken"
+			},
+			"ambb": {
+				"date": "2026-10-24",
+				"fingerprint": "56f7be04cc2d88ef",
+				"fit": [
+					0.192,
+					2.32
+				],
+				"note": "arms, legs",
+				"verdict": "broken"
+			},
+			"frga": {
+				"date": "2026-10-24",
+				"fingerprint": "91e3dbfeadb92db0",
+				"fit": [
+					0.483,
+					7.81
+				],
+				"note": "hammer orientation. leg shape",
+				"verdict": "broken"
+			}
+		},
+		"iqm": "models/rigged/usagi.iqm"
 	}
 }
