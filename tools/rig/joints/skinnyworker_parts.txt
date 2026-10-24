@@ -1,0 +1,33 @@
+# The skinny worker's legs, placed by hand for tools/rig/iqm_parts.py, in
+# his rest pose: a bone and the segment along the part of him it should
+# carry, from x y z to x y z (z up, his front +x, his left +y).
+#
+# autorig's legs, fitted to the motion, put his left leg's joints five
+# outside it (the hip at y 8.9, the leg at 1.7 to 4.4) and his shins carry
+# nothing of their own. Each leg bone here moves as its part does, its
+# joint where the part starts ("at"); his thighs' own motion was good (they
+# aren't aimed at their knees, as Usagi's are). His hands hang by his
+# thighs: only the vertexes skinned under his hips (and waist) are parts ("from"),
+# "r" keeping each to its own.
+
+from Hips Waist
+
+Lupleg     0.5  3.0   1.0    0.3  3.4  -8.5   r 5   at
+Lloleg     0.3  3.4  -8.5   -0.5  3.8 -20.5   r 5   at
+Lankle_r  -0.5  3.8 -20.5    4.5  3.9 -24.0   r 5   at
+Rupleg     0.5 -3.0   1.0    0.5 -3.4  -8.5   r 5   at
+Rloleg     0.5 -3.4  -8.5   -0.5 -3.8 -20.5   r 5   at
+Rankle_r  -0.5 -3.8 -20.5    4.5 -3.9 -24.0   r 5   at
+
+# his torso, belt to shoulders: the Waist bone (his ragdoll's chest body
+# on it) moved as it, so it follows him bowing (aacaa: 4.9 off as it was,
+# the torso's own fit 1.6); "r 4" keeping his arms and head out of it. His
+# pelvis body (on origin) follows it too (dk follow=Waist:origin): his Hips
+# bone carried nothing and stood still, his pelvis box left where he'd
+# stood as he sat (aasaa)
+Waist      0.5  0.5   6.0    0.0  0.5  19.0   r 4
+
+# his head's box (af_refit.py; a body, no joint of its own): upright from
+# his chin to his cap's crown, the head's (his head and neck bones') within
+# 4 of it, his cap's brim, out 3.5 past his face, not
+head       0.5  0.2  23.8    0.5  0.2  32.3   r 4   box 0.5 0.2 23.8

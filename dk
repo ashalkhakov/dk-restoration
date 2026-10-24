@@ -372,7 +372,7 @@ superfly        player    global/m_superfly
 dead            dead      e1/m_dead
 # episode 1: Kyoto, Mishima's labs and prison
 fatworker       human     e1/m_mwfaty
-skinnyworker    human     e1/m_mwskny             hold=tools/rig/joints/skinnyworker_pda.txt
+skinnyworker    human     e1/m_mwskny             follow=Waist:origin bodyparts=tools/rig/joints/skinnyworker_parts.txt hold=tools/rig/joints/skinnyworker_pda.txt
 surgeon         human     e1/m_mwsurgeon
 labworker       human     e1/m_labworker
 mishimaguard    human     e1/m_mwguard
@@ -525,16 +525,18 @@ rig_model() {
 		vehicle) python3 tools/rig/vehicle_rig.py --name "$name" $front $eyes $sounds $parts $fullwheels $wheelscale "$md3" "$out" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac || return 1
+	# the bones moved as the parts of the body they should carry, placed by
+	# hand (tools/rig/iqm_parts.py; twins carry the mesh): the ninja's
+	if [ -n "$bodyparts" ]; then
+		python3 tools/rig/iqm_parts.py "$out.iqm" "$bodyparts" || return 1
+	fi
+	# (after the parts: a bone moved as its part, the skinny worker's waist,
+	# carries them)
 	# joints that carry no vertex moved with a bone (tools/rig/iqm_follow.py):
 	# follow=Waist:origin,Body,Hips, the ragdoll's root body on the pelvis
 	if [ -n "$follow" ]; then
 		# shellcheck disable=SC2046
 		python3 tools/rig/iqm_follow.py "$out.iqm" "${follow%%:*}" $(echo "${follow#*:}" | tr , ' ') || return 1
-	fi
-	# the bones moved as the parts of the body they should carry, placed by
-	# hand (tools/rig/iqm_parts.py; twins carry the mesh): the ninja's
-	if [ -n "$bodyparts" ]; then
-		python3 tools/rig/iqm_parts.py "$out.iqm" "$bodyparts" || return 1
 	fi
 	# a prop that is rigid pieces moving apart split into them
 	# (tools/rig/iqm_props.py): Usagi's hammer and work

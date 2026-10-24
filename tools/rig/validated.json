@@ -2079,6 +2079,814 @@
 		},
 		"iqm": "models/rigged/osaka.iqm"
 	},
+	"model_skinnyworker": {
+		"anims": {
+			"aabaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "8d3c45c8012ef578",
+				"fit": [
+					0.025,
+					0.65
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aacaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "c8b9a0e6077d445f",
+				"fit": [
+					0.058,
+					1.34
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aafaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "665bdb2aefaeafd1",
+				"fit": [
+					0.032,
+					0.68
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"aasaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f56f821b324c347a",
+				"fit": [
+					0.053,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"amba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d526ea9c607532bc",
+				"fit": [
+					0.017,
+					0.16
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "bd6e4c7bd9c51efa",
+				"fit": [
+					0.022,
+					0.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"baaaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "e9c58bc8f249e826",
+				"fit": [
+					0.025,
+					0.65
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"baabac": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "9d432744682631e5",
+				"fit": [
+					0.025,
+					0.62
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"baabaf": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "210a4a92668ed5ac",
+				"fit": [
+					0.034,
+					0.43
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"baagaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "8d5d14fc9252d9f8",
+				"fit": [
+					0.041,
+					0.68
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"baagab": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "2e0c89f7745be4fa",
+				"fit": [
+					0.049,
+					1.21
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bacbaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "75b5fddeaca6c612",
+				"fit": [
+					0.027,
+					0.59
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bacbad": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "6b637fe08fdaa709",
+				"fit": [
+					0.039,
+					0.4
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"badbac": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "bb3f53fdbceac506",
+				"fit": [
+					0.038,
+					0.4
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bafbaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "e3fc302594d882a5",
+				"fit": [
+					0.034,
+					0.43
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bafbag": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b44216112cf2efe2",
+				"fit": [
+					0.052,
+					1.66
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bagbaf": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "5301807f7dbb7774",
+				"fit": [
+					0.052,
+					1.66
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bamba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "dde8c299afe4f997",
+				"fit": [
+					0.035,
+					0.72
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "5a4fe81a77fdfd78",
+				"fit": [
+					0.034,
+					0.68
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambc": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "dd8122d57999c171",
+				"fit": [
+					0.027,
+					0.28
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambd": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "c7338dac7c8166b6",
+				"fit": [
+					0.047,
+					0.4
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambe": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "5f8e641abaf24dd6",
+				"fit": [
+					0.033,
+					0.65
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambf": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "525b9f103301e468",
+				"fit": [
+					0.037,
+					0.33
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"bambg": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b139a5f2a5b79a70",
+				"fit": [
+					0.06,
+					1.67
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"caaaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "2d54afb85f62cadd",
+				"fit": [
+					0.058,
+					1.34
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"camba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "74f4adec0b408702",
+				"fit": [
+					0.09,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"cambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "9e0d553087f531ef",
+				"fit": [
+					0.093,
+					1.61
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"damba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f8ef86c1e489f370",
+				"fit": [
+					0.037,
+					0.43
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "9675d8ae906d17fe",
+				"fit": [
+					0.042,
+					0.52
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"diea": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d3a2a2fd49b5b497",
+				"fit": [
+					0.073,
+					1.71
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dieb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "3d44fb7c2b105d45",
+				"fit": [
+					0.082,
+					1.5
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"diec": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "cc30461d40b7419d",
+				"fit": [
+					0.066,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eaaeab": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "a4f8dc90e2a01ffa",
+				"fit": [
+					0.035,
+					0.47
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eaaeac": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "c092649e07b73227",
+				"fit": [
+					0.034,
+					0.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eaaead": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d73a93440750a2d5",
+				"fit": [
+					0.036,
+					0.49
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eaafaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "9fd580eebd89b042",
+				"fit": [
+					0.037,
+					0.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eabeaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "b7ddcdc879c0f4bc",
+				"fit": [
+					0.035,
+					0.47
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eaceaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "ed137d8b966977f9",
+				"fit": [
+					0.034,
+					0.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eadeaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "0636199455039670",
+				"fit": [
+					0.036,
+					0.49
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eamba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "053a9d7e79b82cbe",
+				"fit": [
+					0.036,
+					0.47
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "966dd19aeb9851a7",
+				"fit": [
+					0.04,
+					0.49
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eambc": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "7c10788f3cb957df",
+				"fit": [
+					0.036,
+					0.44
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eambd": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "1a81da6e62d5c866",
+				"fit": [
+					0.037,
+					0.66
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"eambe": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "e2956e113216f5e6",
+				"fit": [
+					0.045,
+					1.33
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"faaaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "dc3b08707db8a249",
+				"fit": [
+					0.032,
+					0.68
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"faaeaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "0575c835626b7e93",
+				"fit": [
+					0.037,
+					0.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"famba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "6053f38b3f7c399a",
+				"fit": [
+					0.033,
+					0.33
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"foural": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "cda3657cd464105e",
+				"fit": [
+					0.045,
+					0.77
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"fourla": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d263cfc9ee4c597c",
+				"fit": [
+					0.044,
+					0.64
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"fourtk": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "981b7694b46c700f",
+				"fit": [
+					0.047,
+					0.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"gabbaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "64c76cba1b9bc7ff",
+				"fit": [
+					0.049,
+					1.21
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"gamba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "6b8308503a9a5552",
+				"fit": [
+					0.121,
+					1.69
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"gambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "9bf5309c7ccd2e54",
+				"fit": [
+					0.066,
+					1.36
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"gambc": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "9bf5309c7ccd2e54",
+				"fit": [
+					0.066,
+					1.36
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"laalab": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "a02a138e2b279378",
+				"fit": [
+					0.066,
+					1.29
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lablaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "8b2e2441819a8cc7",
+				"fit": [
+					0.066,
+					1.29
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lamba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "02ecef97605e6a45",
+				"fit": [
+					0.07,
+					1.31
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"lambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "659503e6bbf1269a",
+				"fit": [
+					0.066,
+					1.3
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"runa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "667133c6bd1a4d1c",
+				"fit": [
+					0.054,
+					1.3
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"saaaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "790f62f4a75ec10f",
+				"fit": [
+					0.053,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"samba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "3e69c56297b0f36b",
+				"fit": [
+					0.062,
+					0.96
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"sambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "49e8143031fd56a2",
+				"fit": [
+					0.062,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"sambc": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "257bf29ddcf4fc4b",
+				"fit": [
+					0.062,
+					0.95
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"sambd": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "fccc216ff04c1039",
+				"fit": [
+					0.071,
+					1.06
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"sambe": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "886b07febd1c2a8f",
+				"fit": [
+					0.066,
+					1.05
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walka": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "70304925d1bea7e1",
+				"fit": [
+					0.03,
+					0.35
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walkb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f180c3095e4ea322",
+				"fit": [
+					0.046,
+					0.52
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walke": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "f7cb222b739393d6",
+				"fit": [
+					0.038,
+					0.53
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"zaaaa": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "272e49942888be61",
+				"fit": [
+					0.047,
+					1.12
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"zamba": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "5a4c3732e8b56298",
+				"fit": [
+					0.064,
+					1.01
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"zambb": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "4b7506d5b35b9e89",
+				"fit": [
+					0.072,
+					1.38
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"zambc": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "abcce02648526ca9",
+				"fit": [
+					0.064,
+					1.06
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"zambd": {
+				"by": "Artyom Shalkhakov",
+				"date": "2026-10-24",
+				"fingerprint": "d82ffd5de9f6ad63",
+				"fit": [
+					0.074,
+					1.36
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/mwskny.iqm"
+	},
 	"model_toshiro": {
 		"anims": {
 			"coffin": {

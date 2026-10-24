@@ -162,8 +162,10 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	if not info:
 		sys.exit( "%s: no rigged model def" % defName )
 	defDir = os.path.join( ROOT, "def" )
-	defFile = [ f for f in os.listdir( defDir ) if f.endswith( ".def" )
-				and re.search( r"entityDef\s+%s\b" % re.escape( defName ), open( os.path.join( defDir, f ), encoding = "latin-1" ).read() ) ][0]
+	# (the rigged model's def, the one naming its ragdoll: the skinny
+	# worker's md3 def has his name too)
+	defFile = [ f for f in sorted( os.listdir( defDir ) ) if f.endswith( ".def" )
+				and re.search( r"entityDef\s+%s\b[^}]*\"ragdoll\"" % re.escape( defName ), open( os.path.join( defDir, f ), encoding = "latin-1" ).read() ) ][0]
 	afName = re.search( r'"ragdoll"\s+"([^"]+)"', open( os.path.join( defDir, defFile ), encoding = "latin-1" ).read() ).group( 1 )
 	af = open( os.path.join( ROOT, "af", afName + ".af" ) ).read()
 
@@ -237,7 +239,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 			# lies along it, belt to knee, whatever bone carries it; no other
 			# limb's, his hands resting on them)
 			a_, b_ = partsOpts["box"][bname], parts[bname][1]
-			mine = root( names.index( bname ) )
+			mine = root( names.index( bname ) ) if bname in names else None		# (the head's: not a joint's name)
 			return [ rig.pos[v] for v in range( len( rig.pos ) ) if not prop( top( v ) )
 					 and root( top( v ) ) in ( None, mine )
 					 and iqm_parts.seg_dist( rig.pos[v], a_, b_ ) <= reach.get( bname, 5.0 )
@@ -282,6 +284,8 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	# a limb's bone: from its joint to the next one down the limb
 	NEXT = { "uparm": "loarm", "loarm": "hand", "upleg": "loleg", "loleg": "ankle_r" }
 	def bone_ends( bname ):
+		if bname in partsOpts["box"]:
+			return ( partsOpts["box"][bname], parts[bname][1] )		# (a box of its own: Usagi's thighs, the skinny worker's head)
 		if partsPath and alongBones and bname == "chest" and "Chest" in parts:
 			# (the torso along the spine, from the waist's top to the neck:
 			# no gap over the belly between the two)
@@ -317,9 +321,16 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 				c, h = [ ( lo[k] + hi[k] ) / 2 for k in range( 3 ) ], [ ( hi[k] - lo[k] ) / 2 for k in range( 3 ) ]
 			else:
 				c, h, axes = obb( ps, bone_dir( bname ), bone_ends( bname ) )
-			ang = angles_of( axes )
-			back = axes_of( ang )
-			assert max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6, bname
+			# (a box the same with its axes cycled: one whose first is straight up,
+			# its pitch 90, has no angles that give it back, so it's cycled)
+			for turn in range( 3 ):
+				ang = angles_of( axes )
+				back = axes_of( ang )
+				if max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6:
+					break
+				axes, h = [ axes[1], axes[2], axes[0] ], [ h[1], h[2], h[0] ]
+			else:
+				sys.exit( "%s: no angles for its box" % bname )
 			old = re.search( r"\t\tmodel [^\n]*", block ).group( 0 )
 			block = block.replace( old, "\t\tmodel box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )" % ( -h[0], -h[1], -h[2], h[0], h[1], h[2] ) )
 			block = re.sub( r"\t\torigin \([^)]*\)", "\t\torigin ( %.2f, %.2f, %.2f )" % tuple( c ), block, count = 1 )
