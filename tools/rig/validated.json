@@ -1,4 +1,39 @@
 {
+	"model_cambot": {
+		"anims": {
+			"amba": {
+				"date": "2026-10-24",
+				"fingerprint": "3151c1753d945bce",
+				"fit": [
+					0.019,
+					0.05
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"diea": {
+				"date": "2026-10-24",
+				"fingerprint": "843188327c1ff3b6",
+				"fit": [
+					0.0,
+					0.0
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"flya": {
+				"date": "2026-10-24",
+				"fingerprint": "074b52023c4f15c3",
+				"fit": [
+					0.0,
+					0.0
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/cambot.iqm"
+	},
 	"model_dead": {
 		"anims": {
 			"dead": {

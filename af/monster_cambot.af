@@ -1,5 +1,10 @@
 // made by tools/rig/creature_rig.py: the cambot's ragdoll, Doom 3's articulated figure
-// (made in the model's bind pose; joint() names the IQM's joints)
+// (made in the model's bind pose; joint() names the IQM's joints). By hand:
+// he's rigid (no part of him moves on his Body in any animation); his
+// boxes square to him about their bones' vertexes, the body his upper hull
+// to his nose's lens, tail1 the chassis and engines under it; his thin
+// antenna (Tail2b's) its box as it was, nothing hits it (no hitbox either:
+// dk nohitbox=Tail2b)
 articulatedFigure monster_cambot {
 	settings {
 		model "model_cambot"
@@ -19,7 +24,7 @@ articulatedFigure monster_cambot {
 	body "body" {
 		joint "origin"
 		mod orientation
-		model box( ( -34.11, -18.14, -10.59 ), ( 34.11, 18.14, 10.59 ) )
+		model box( ( -40.13, -21.34, -12.46 ), ( 40.13, 21.34, 12.46 ) )
 		origin ( 8.26, -0.27, -5.99 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -31,8 +36,8 @@ articulatedFigure monster_cambot {
 	body "tail1" {
 		joint "Tail1"
 		mod orientation
-		model bone( ( 11.79, -0.22, -19.91 ), ( -6.15, 1.28, -17.17 ), 42.50 )
-		origin ( 2.82, 0.53, -18.54 )
+		model box( ( -38.82, -15.32, -11.76 ), ( 38.82, 15.32, 11.76 ) )
+		origin ( -0.65, -0.23, -25.95 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,7 +48,7 @@ articulatedFigure monster_cambot {
 	body "tail2" {
 		joint "Tail2"
 		mod orientation
-		model box( ( -6.16, -3.38, -2.96 ), ( 6.16, 3.38, 2.96 ) )
+		model box( ( -7.25, -3.98, -3.48 ), ( 7.25, 3.98, 3.48 ) )
 		origin ( -1.19, -0.48, -15.74 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
@@ -59,7 +64,7 @@ articulatedFigure monster_cambot {
 		origin ( -13.55, -0.60, -1.49 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
-		contents corpse
+		contents none		// (his thin antenna: shots and bodies go through it)
 		clipMask solid, corpse
 		selfCollision 1
 	}

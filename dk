@@ -339,7 +339,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b] [props=a,b] [follow=bone:joint,joint] [bodyparts=file] [propsplit=joint] [hold=file]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [nohitbox=a,b] [rest=anim] [rootout=1|a,b] [props=a,b] [follow=bone:joint,joint] [bodyparts=file] [propsplit=joint] [hold=file]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -354,7 +354,8 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # animations play at 10 frames a second (fps=), their idle and their ways of
 # getting about looping; RIG_ANIMS_<name> ("<anim> <fps> [loop];...") sets
 # them one by one. surface=metal: a robot (Daikatana's no-blood monsters), its
-# hits spark. rootout=1: Daikatana's going over the ground out of the
+# hits spark; nohitbox=a,b: no hitbox on those joints (the cambot's antenna).
+# rootout=1: Daikatana's going over the ground out of the
 # animations (they play over the origin); rootout=die,cdie: out of those only,
 # jpd:z its height too (the cutscene moves the character up and down by it).
 # props=sword: the model's prop (its biggest) a model of its own, <iqm>_sword,
@@ -392,7 +393,7 @@ psyclaw         creature  e1/m_psyclaw           bones=24
 battleboar      creature  e1/m_bboar             bones=24 surface=metal
 crox            creature  e1/m_croco             bones=24 surface=metal
 # protopod: not rigged, an egg wants no skeleton (its rig bent it out of shape)
-cambot          creature  e1/m_cambot            bones=12 surface=metal
+cambot          creature  e1/m_cambot            bones=12 surface=metal nohitbox=Tail2b
 deathsphere     creature  e1/m_dsphere           bones=16 surface=metal
 lasergat        creature  e1/m_lasergat          bones=8 surface=metal
 trackattack     creature  e1/m_trakatak          bones=8 surface=metal
@@ -482,7 +483,7 @@ RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" front="" eyes="" sounds="" parts="" fullwheels="" wheelscale="" follow="" bodyparts="" propsplit="" hold="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" front="" eyes="" sounds="" parts="" fullwheels="" wheelscale="" nohitbox="" follow="" bodyparts="" propsplit="" hold="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -492,6 +493,7 @@ rig_model() {
 			fps=*) fps="--fps ${kv#fps=}" ;;
 			iqm=*) iqm=${kv#iqm=} ;;
 			surface=*) surface="--surface ${kv#surface=}" ;;
+			nohitbox=*) nohitbox="--no-hitbox ${kv#nohitbox=}" ;;
 			rest=*) rest="--rest ${kv#rest=}" ;;
 			rootout=1) rootout="--root-out" ;;
 			rootout=*) rootout="--root-out-anims ${kv#rootout=}" ;;
@@ -521,7 +523,7 @@ rig_model() {
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
 		dead) python3 tools/rig/dead_rig.py "$md3" "$out" tools/rig/joints/dead.txt ;;
 		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest $rootout $props --anims "$anims" "$md3" "$out" ;;
-		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
+		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface $nohitbox --anims "$anims" "$md3" "$out" "$name" ;;
 		vehicle) python3 tools/rig/vehicle_rig.py --name "$name" $front $eyes $sounds $parts $fullwheels $wheelscale "$md3" "$out" ;;
 		*) die "$name: no rigger $rigger" ;;
 	esac || return 1

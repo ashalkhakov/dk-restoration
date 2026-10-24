@@ -14,7 +14,6 @@ entityDef model_cambot {
 	"hitbox Body"	"-11.1 -21.1 -43.5 23.2 21.5 31.3 torso"
 	"hitbox Tail1"	"-25.3 -15.5 -21.1 50.3 17.7 9.4 torso"
 	"hitbox Tail2"	"-9.4 -2.6 -2.5 4.9 7.6 6.8 torso"
-	"hitbox Tail2b"	"-14.7 -0.8 2.7 29.9 1.8 27.6 torso"
 
 	"damage_scale head"	"2"
 	"damage_scale legs"	"0.75"

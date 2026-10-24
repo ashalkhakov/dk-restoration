@@ -26,7 +26,8 @@ becomes a pose, its animations (named by the frame names) the IQM's.
 	python3 tools/rig/creature_rig.py <md3> <out base> <name> [--bones N] [--anims "<anim> <fps> [loop];..."]
 		[--surface metal]
 (--bones: merge the parts that move most alike until there are no more than N;
---surface metal: a robot, its hits spark)
+--surface metal: a robot, its hits spark; --no-hitbox a,b: no hitbox on those
+joints, shots go through what they carry: the cambot's thin antenna)
 	python3 tools/rig/creature_rig.py dkres/models/e1/m_frog.md3 dkres/models/rigged/frog froginator \\
 		--anims "amba 10 loop;runa 15 loop;..."
 writes dkres/models/rigged/frog.iqm, def/rig_froginator.def (model_froginator:
@@ -57,7 +58,7 @@ def centroid( pts ):
 	n = float( len( pts ) )
 	return ( sum( p[0] for p in pts ) / n, sum( p[1] for p in pts ) / n, sum( p[2] for p in pts ) / n )
 
-def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None ):
+def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHitbox = () ):
 	m = MD3( md3Path )
 	# the body: every surface but the hardpoints (a triangle each: a muzzle, an eye)
 	body = [ s for s in m.surfaces if not A.is_hardpoint( s ) ]
@@ -614,7 +615,7 @@ def write_def( m, name, outBase, joints, rest, assign, anims, spec, looping, res
 		lines.append( "\t\"anim perch\"\t\t\"%d 1 1 loop\"\t// landed, its wings raised: the frame they reach out least" % perch )
 	lines.append( "" )
 	for j, joint in enumerate( joints ):
-		if not joint["zone"]:
+		if not joint["zone"] or joint["name"] in noHitbox:
 			continue
 		rt = A.mtrans( restRot[j] )
 		pts = [ mvec( rt, vsub( rest[i], joint["pos"] ) ) for i in range( N ) if assign[i] == j ]
@@ -746,7 +747,12 @@ if __name__ == "__main__":
 		i = args.index( "--surface" )
 		surface = args[i + 1]
 		args = args[:i] + args[i + 2:]
+	noHitbox = ()
+	if "--no-hitbox" in args:
+		i = args.index( "--no-hitbox" )
+		noHitbox = tuple( args[i + 1].split( "," ) )
+		args = args[:i] + args[i + 2:]
 	if len( args ) != 3:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], args[1], args[2], animSpec, maxBones, surface )
+	main( args[0], args[1], args[2], animSpec, maxBones, surface, noHitbox )
