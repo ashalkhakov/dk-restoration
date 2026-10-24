@@ -19,8 +19,9 @@ articulatedFigure monster_slaughterskeet {
 	body "body" {
 		joint "origin"
 		mod orientation
-		model box( ( -3.61, -1.43, -2.59 ), ( 3.61, 1.43, 2.59 ) )
-		origin ( 0.05, -0.01, 3.20 )
+		model box( ( -2.99, -1.90, -1.46 ), ( 2.99, 1.90, 1.46 ) )
+		angles ( -5.2, 176.2, -64.1 )
+		origin ( -0.13, 0.13, 4.13 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +32,9 @@ articulatedFigure monster_slaughterskeet {
 	body "head" {
 		joint "Head"
 		mod orientation
-		model box( ( -1.36, -1.36, -1.36 ), ( 1.36, 1.36, 1.36 ) )
-		origin ( 3.03, 1.16, 1.63 )
+		model box( ( -1.54, -1.36, -1.36 ), ( 1.54, 1.36, 1.36 ) )
+		angles ( -68.9, 175.7, -105.7 )
+		origin ( 2.92, 1.10, 1.90 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +45,22 @@ articulatedFigure monster_slaughterskeet {
 	body "headb1" {
 		joint "Headb1"
 		mod orientation
-		model box( ( -2.16, -1.36, -2.08 ), ( 2.16, 1.36, 2.08 ) )
-		origin ( 4.52, -0.06, 4.27 )
+		model box( ( -1.36, -1.36, -1.36 ), ( 1.36, 1.36, 1.36 ) )
+		angles ( -47.7, -170.6, 102.3 )
+		origin ( 3.28, -1.02, 1.60 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "headc1" {
+		joint "Headc1"
+		mod orientation
+		model box( ( -3.45, -1.36, -1.36 ), ( 3.45, 1.36, 1.36 ) )
+		angles ( -43.8, 177.8, -90.8 )
+		origin ( 4.44, -0.12, 4.07 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +71,22 @@ articulatedFigure monster_slaughterskeet {
 	body "lwing1" {
 		joint "Lwing1"
 		mod orientation
-		model box( ( -3.21, -8.11, -1.36 ), ( 3.21, 8.11, 1.36 ) )
-		origin ( 0.52, 13.16, 3.60 )
+		model box( ( -7.23, -3.54, -1.36 ), ( 7.23, 3.54, 1.36 ) )
+		angles ( 0.1, 105.6, 11.3 )
+		origin ( 0.70, 8.27, 3.85 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lwing2" {
+		joint "Lwing2"
+		mod orientation
+		model box( ( -7.05, -2.72, -1.36 ), ( 7.05, 2.72, 1.36 ) )
+		angles ( -4.6, -77.3, 175.6 )
+		origin ( 1.23, 15.60, 3.24 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +97,22 @@ articulatedFigure monster_slaughterskeet {
 	body "rwing1" {
 		joint "Rwing1"
 		mod orientation
-		model box( ( -3.20, -8.15, -1.36 ), ( 3.20, 8.15, 1.36 ) )
-		origin ( -0.08, -13.09, 3.58 )
+		model box( ( -6.94, -3.14, -1.36 ), ( 6.94, 3.14, 1.36 ) )
+		angles ( 4.4, -102.1, 174.2 )
+		origin ( -0.62, -8.84, 3.99 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "rwing2" {
+		joint "Rwing2"
+		mod orientation
+		model box( ( -7.04, -2.68, -1.36 ), ( 7.04, 2.68, 1.36 ) )
+		angles ( -5.1, 75.1, -174.4 )
+		origin ( 0.07, -15.62, 3.29 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +123,61 @@ articulatedFigure monster_slaughterskeet {
 	body "tail1" {
 		joint "Tail1"
 		mod orientation
-		model box( ( -3.47, -1.36, -1.71 ), ( 3.47, 1.36, 1.71 ) )
-		origin ( -6.78, 0.11, 3.38 )
+		model box( ( -3.61, -1.36, -1.36 ), ( 3.61, 1.36, 1.36 ) )
+		angles ( -28.2, -2.1, 85.7 )
+		origin ( -7.70, 0.28, 3.12 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tailb1" {
+		joint "Tailb1"
+		mod orientation
+		model box( ( -1.42, -1.36, -1.36 ), ( 1.42, 1.36, 1.36 ) )
+		angles ( -47.2, -7.9, 102.7 )
+		origin ( -3.35, -1.08, 1.46 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "tailc1" {
+		joint "Tailc1"
+		mod orientation
+		model box( ( -2.09, -1.36, -1.36 ), ( 2.09, 1.36, 1.36 ) )
+		angles ( -46.1, 15.5, -105.9 )
+		origin ( -2.16, 0.98, 1.81 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "taild1" {
+		joint "Taild1"
+		mod orientation
+		model box( ( -1.93, -1.36, -1.36 ), ( 1.93, 1.36, 1.36 ) )
+		angles ( -45.9, 8.7, -106.6 )
+		origin ( -0.44, 1.05, 1.91 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "taile1" {
+		joint "Taile1"
+		mod orientation
+		model box( ( -1.36, -1.36, -1.36 ), ( 1.36, 1.36, 1.36 ) )
+		angles ( -38.3, -8.4, 100.0 )
+		origin ( -0.56, -1.02, 1.64 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -92,45 +189,108 @@ articulatedFigure monster_slaughterskeet {
 		body1 "head"
 		body2 "body"
 		anchor joint( "Head" )
-		shafts ( 0.97, 0.20, -0.11 ), ( -0.97, -0.20, 0.11 )
+		shafts ( 0.86, 0.04, -0.50 ), ( -0.86, -0.04, 0.50 )
 		friction 0.20
-		coneLimit ( 0.97, 0.20, -0.11 ), 45
+		coneLimit ( 0.86, 0.04, -0.50 ), 45
 	}
 
 	universalJoint "Headb1" {
 		body1 "headb1"
 		body2 "body"
 		anchor joint( "Headb1" )
-		shafts ( 0.70, -0.35, 0.62 ), ( -0.70, 0.35, -0.62 )
+		shafts ( 0.63, -0.66, -0.42 ), ( -0.63, 0.66, 0.42 )
 		friction 0.20
-		coneLimit ( 0.70, -0.35, 0.62 ), 45
+		coneLimit ( 0.63, -0.66, -0.42 ), 45
+	}
+
+	universalJoint "Headc1" {
+		body1 "headc1"
+		body2 "body"
+		anchor joint( "Headc1" )
+		shafts ( 0.83, -0.11, 0.55 ), ( -0.83, 0.11, -0.55 )
+		friction 0.20
+		coneLimit ( 0.83, -0.11, 0.55 ), 45
 	}
 
 	universalJoint "Lwing1" {
 		body1 "lwing1"
 		body2 "body"
 		anchor joint( "Lwing1" )
-		shafts ( 0.67, 0.63, 0.39 ), ( -0.67, -0.63, -0.39 )
+		shafts ( -0.27, 0.96, -0.00 ), ( 0.27, -0.96, 0.00 )
 		friction 0.20
-		coneLimit ( 0.67, 0.63, 0.39 ), 30
+		coneLimit ( -0.27, 0.96, -0.00 ), 30
+	}
+
+	universalJoint "Lwing2" {
+		body1 "lwing2"
+		body2 "lwing1"
+		anchor joint( "Lwing2" )
+		shafts ( -0.27, 0.96, -0.00 ), ( 0.27, -0.96, 0.00 )
+		friction 0.20
+		coneLimit ( -0.27, 0.96, -0.00 ), 30
 	}
 
 	universalJoint "Rwing1" {
 		body1 "rwing1"
 		body2 "body"
 		anchor joint( "Rwing1" )
-		shafts ( 0.21, -0.86, 0.47 ), ( -0.21, 0.86, -0.47 )
+		shafts ( -0.21, -0.98, -0.08 ), ( 0.21, 0.98, 0.08 )
 		friction 0.20
-		coneLimit ( 0.21, -0.86, 0.47 ), 30
+		coneLimit ( -0.21, -0.98, -0.08 ), 30
+	}
+
+	universalJoint "Rwing2" {
+		body1 "rwing2"
+		body2 "rwing1"
+		anchor joint( "Rwing2" )
+		shafts ( -0.21, -0.98, -0.08 ), ( 0.21, 0.98, 0.08 )
+		friction 0.20
+		coneLimit ( -0.21, -0.98, -0.08 ), 30
 	}
 
 	universalJoint "Tail1" {
 		body1 "tail1"
 		body2 "body"
 		anchor joint( "Tail1" )
-		shafts ( -0.97, 0.11, 0.22 ), ( 0.97, -0.11, -0.22 )
+		shafts ( -0.99, 0.13, 0.01 ), ( 0.99, -0.13, -0.01 )
 		friction 0.20
-		coneLimit ( -0.97, 0.11, 0.22 ), 80
+		coneLimit ( -0.99, 0.13, 0.01 ), 80
+	}
+
+	universalJoint "Tailb1" {
+		body1 "tailb1"
+		body2 "body"
+		anchor joint( "Tailb1" )
+		shafts ( -0.55, -0.80, -0.25 ), ( 0.55, 0.80, 0.25 )
+		friction 0.20
+		coneLimit ( -0.55, -0.80, -0.25 ), 80
+	}
+
+	universalJoint "Tailc1" {
+		body1 "tailc1"
+		body2 "body"
+		anchor joint( "Tailc1" )
+		shafts ( -0.67, 0.57, -0.47 ), ( 0.67, -0.57, 0.47 )
+		friction 0.20
+		coneLimit ( -0.67, 0.57, -0.47 ), 80
+	}
+
+	universalJoint "Taild1" {
+		body1 "taild1"
+		body2 "body"
+		anchor joint( "Taild1" )
+		shafts ( 0.49, -0.09, -0.87 ), ( -0.49, 0.09, 0.87 )
+		friction 0.20
+		coneLimit ( 0.49, -0.09, -0.87 ), 80
+	}
+
+	universalJoint "Taile1" {
+		body1 "taile1"
+		body2 "body"
+		anchor joint( "Taile1" )
+		shafts ( -0.03, -0.71, -0.71 ), ( 0.03, 0.71, 0.71 )
+		friction 0.20
+		coneLimit ( -0.03, -0.71, -0.71 ), 80
 	}
 
 }

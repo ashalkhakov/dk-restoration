@@ -386,7 +386,7 @@ torture1        human     e1/m_torture1
 torture2        human     e1/m_torture2
 inmater         human     e1/m_inmater           surface=metal
 froginator      creature  e1/m_frog              bones=16 surface=metal
-slaughterskeet  creature  e1/m_skeeter           bones=10 surface=metal
+slaughterskeet  creature  e1/m_skeeter           bones=16 merge=0.005 surface=metal
 thunderskeet    creature  e1/m_tskeet            bones=24 merge=0.005 surface=metal
 venomvermin     creature  e1/m_vermin            bones=24 surface=metal
 sludgeminion    creature  e1/m_sludgeminion      bones=24 surface=metal

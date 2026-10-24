@@ -683,13 +683,13 @@ def write_af( name, joints, rest, assign, S ):
 		else:
 			b = None
 		if b is not None and vlen( vsub( b, a ) ) > 2 * minHalf:
-			d = vsub( b, a )
-			L = vlen( d )
-			ds = sorted( vlen( vsub( p, vadd( a, vscale( d, max( 0.0, min( 1.0, vdot( vsub( p, a ), d ) / ( L * L ) ) ) ) ) ) ) for p in pts )
-			width = max( 2 * minHalf, 2 * 0.9 * ds[int( 0.7 * ( len( ds ) - 1 ) )] )
-			model = "bone( %s, %s, %.2f )" % ( vec( a ), vec( b ), width )
-			origin = vscale( vadd( a, b ), 0.5 )
-			angles = None
+			# a limb: a box along it, joint to joint, its points' own axes
+			# across it (a wing is flat: a round bone about it stood out of
+			# it, the slaughterskeet's)
+			origin, h, axes = af_refit.obb( pts, vsub( b, a ), ( a, b ) )
+			angles, h = af_refit.box_angles( bodyName[j], axes, h )
+			h = [ max( minHalf, x ) for x in h ]
+			model = "box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )" % ( -h[0], -h[1], -h[2], h[0], h[1], h[2] )
 		else:
 			# the box about its points along their own axes (the
 			# thunderskeet's wings: thin, tilted, their box square to him
@@ -702,7 +702,8 @@ def write_af( name, joints, rest, assign, S ):
 						# the body's (the root's) moves the origin, as Doom 3 wants
 						"		joint \"%s\"" % ( "origin" if joint["parentIndex"] == 0 else joint["name"] ),
 						"		mod orientation",
-						"		model %s" % model ] + ( [ "		angles ( %.1f, %.1f, %.1f )" % tuple( angles ) ] if angles else [] ) + [
+						"		model %s" % model,
+						"		angles ( %.1f, %.1f, %.1f )" % tuple( angles ),
 						"		origin %s" % vec( origin ),
 						"		density 0.2",
 						"		friction 0.01, 0.01, 0.8",
