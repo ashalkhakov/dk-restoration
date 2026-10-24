@@ -13,100 +13,100 @@
 			},
 			"dead000": {
 				"date": "2026-10-24",
-				"fingerprint": "59f0f6be4d83a630",
+				"fingerprint": "1d877eb044bbbb0e",
 				"fit": [
-					0.0,
-					0.0
+					0.003,
+					0.1
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead001": {
 				"date": "2026-10-24",
-				"fingerprint": "94867a3f0fd0c2e5",
+				"fingerprint": "fffa66e223cf1a16",
 				"fit": [
-					0.115,
-					0.93
+					0.13,
+					0.77
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead002": {
 				"date": "2026-10-24",
-				"fingerprint": "c4f726797650d686",
+				"fingerprint": "584ed16491d336fc",
 				"fit": [
-					0.115,
-					0.8
+					0.136,
+					0.98
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead003": {
 				"date": "2026-10-24",
-				"fingerprint": "9bb84de8d6cf8fe5",
+				"fingerprint": "78670b1e2f9f8530",
 				"fit": [
-					0.168,
-					1.11
+					0.161,
+					1.2
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead004": {
 				"date": "2026-10-24",
-				"fingerprint": "b2f6d80e154ee9f9",
+				"fingerprint": "17f99cd2d8590cb5",
 				"fit": [
-					0.136,
-					0.86
+					0.168,
+					1.07
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead005": {
 				"date": "2026-10-24",
-				"fingerprint": "314a78fbc95cbb22",
+				"fingerprint": "7d17034909f47f15",
 				"fit": [
-					0.177,
-					0.85
+					0.275,
+					1.29
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead006": {
 				"date": "2026-10-24",
-				"fingerprint": "416a6edeb0987b80",
+				"fingerprint": "a2e05b618589e168",
 				"fit": [
-					0.184,
-					0.86
+					0.274,
+					1.29
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead007": {
 				"date": "2026-10-24",
-				"fingerprint": "9c208c07c5f32836",
+				"fingerprint": "f36c0724078a7979",
 				"fit": [
-					0.154,
-					0.85
+					0.278,
+					1.73
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead008": {
 				"date": "2026-10-24",
-				"fingerprint": "079e58160744730b",
+				"fingerprint": "25707ea00ee06df3",
 				"fit": [
-					0.186,
-					0.92
+					0.299,
+					1.61
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"dead009": {
 				"date": "2026-10-24",
-				"fingerprint": "0fc0941eec400f1d",
+				"fingerprint": "7f204e7fee98729e",
 				"fit": [
-					0.192,
-					1.42
+					0.25,
+					1.41
 				],
 				"note": "",
 				"verdict": "valid"

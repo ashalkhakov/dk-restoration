@@ -344,7 +344,8 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
 # 8 by default, for what the template has no bone for), lying (a body lying
-# on its back, rigged from its poses) and creature (tools/rig/
+# on its back, rigged from its poses), dead (tools/rig/dead_rig.py: the dead
+# bodies, from joints placed by hand in tools/rig/joints/dead.txt) and creature (tools/rig/
 # creature_rig.py: its own bones, found from its animations; bones= at most)
 # and vehicle (tools/rig/vehicle_rig.py: a still model's wheels joints of their
 # own, driven by g_vehicle.c; front= which way it faces, eyes= the driver's view).
@@ -368,7 +369,7 @@ hiro            player    global/m_hiro             rootout=die,cdie
 mikiko          player    global/m_mikiko
 superfly        player    global/m_superfly
 # dead bodies
-dead            lying     e1/m_dead
+dead            dead      e1/m_dead
 # episode 1: Kyoto, Mishima's labs and prison
 fatworker       human     e1/m_mwfaty
 skinnyworker    human     e1/m_mwskny
@@ -511,6 +512,7 @@ rig_model() {
 	case $rigger in
 		player) python3 tools/rig/autorig.py $rootout "$md3" "$out" ;;
 		lying) python3 tools/rig/autorig.py --lying "$md3" "$out" ;;
+		dead) python3 tools/rig/dead_rig.py "$md3" "$out" tools/rig/joints/dead.txt ;;
 		human) python3 tools/rig/autorig.py --name "$name" --extra "$extra" $fps $surface $rest $rootout $props --anims "$anims" "$md3" "$out" ;;
 		creature) python3 tools/rig/creature_rig.py --bones "$bones" $surface --anims "$anims" "$md3" "$out" "$name" ;;
 		vehicle) python3 tools/rig/vehicle_rig.py --name "$name" $front $eyes $sounds $parts $fullwheels $wheelscale "$md3" "$out" ;;

@@ -311,7 +311,7 @@ async function loadModel( m ) {
 	$( "err" ).textContent = "";
 	S.model = m;
 	S.iqm = parseIQM( await fetchBuf( "/dkres/" + m.iqm ) );
-	S.md3 = null; S.af = null; S.match = null;
+	S.md3 = null; S.af = null; S.afNew = null; S.match = null;
 	try { if ( m.md3 ) S.md3 = parseMD3( await fetchBuf( "/dkres/" + m.md3 ) ); }
 	catch ( e ) { $( "err" ).textContent = "MD3: " + e.message; }
 	S.root = null;
@@ -319,6 +319,9 @@ async function loadModel( m ) {
 	catch ( e ) { $( "err" ).textContent += " root: " + e.message; }
 	try { if ( m.af ) S.af = parseAF( new TextDecoder().decode( await fetchBuf( "/" + m.af ) ) ); }
 	catch ( e ) { $( "err" ).textContent += " AF: " + e.message; }
+	try { if ( m.afNew ) S.afNew = parseAF( new TextDecoder().decode( await fetchBuf( "/" + m.afNew ) ) ); }
+	catch ( e ) { $( "err" ).textContent += " regenerated AF: " + e.message; }
+	$( "showAFNewRow" ).style.display = S.afNew ? "" : "none";
 	for ( const mesh of S.iqm.meshes ) {
 		if ( S.tex[mesh.material] !== undefined ) continue;
 		S.tex[mesh.material] = whiteTex;
@@ -630,12 +633,15 @@ function draw() {
 			}
 		}
 	}
-	// the ragdoll's bodies, each moving with its joint
-	if ( $( "showAF" ).checked && S.af ) {
-		for ( const b of S.af ) {
+	// the ragdoll's bodies, each moving with its joint: the kept one's
+	// (af/), and the rig's regenerated one's (out/rig/af/), to validate
+	const afs = [];
+	if ( $( "showAF" ).checked && S.af ) afs.push( [ S.af, [ 0.37, 0.88, 0.54 ] ] );
+	if ( $( "showAFNew" ).checked && S.afNew ) afs.push( [ S.afNew, [ 0.94, 0.42, 0.9 ] ] );
+	for ( const [ bodies, c ] of afs ) {
+		for ( const b of bodies ) {
 			const ji = iqm.joints.findIndex( j => j.name === b.joint );
 			const m = ji >= 0 ? P.skin[ji] : m4();
-			const c = [ 0.37, 0.88, 0.54 ];
 			if ( b.lo ) {
 				const t = m4(); t[12] = b.origin[0]; t[13] = b.origin[1]; t[14] = b.origin[2];
 				boxLines( m4mul( m, t ), b.lo, b.hi, c );
@@ -769,7 +775,7 @@ $( "next" ).onclick = () => step( 1 );
 $( "prev" ).onclick = () => step( -1 );
 $( "frame" ).oninput = e => { S.frame = Number( e.target.value ); update(); };
 $( "anim" ).onchange = e => setAnim( Number( e.target.value ) );
-for ( const id of [ "showMesh", "showTex", "showErr", "showMd3", "sideBySide", "showSkel", "showNames", "showAF", "showGrid", "lockOrigin" ] ) {
+for ( const id of [ "showMesh", "showTex", "showErr", "showMd3", "sideBySide", "showSkel", "showNames", "showAF", "showAFNew", "showGrid", "lockOrigin" ] ) {
 	$( id ).onchange = update;
 }
 

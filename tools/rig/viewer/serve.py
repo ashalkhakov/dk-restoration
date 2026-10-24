@@ -50,11 +50,16 @@ def models():
 		src = re.search( r"made by tools/rig/\w+\.py from (\S+\.md3)", text )
 		name = re.search( r"entityDef\s+(\S+)", text )
 		ragdoll = re.search( r'"ragdoll"\s+"([^"]+)"', text )
-		af = None
+		af = afNew = None
 		if ragdoll:
 			for cand in ( ragdoll.group( 1 ) + ".af", ):
 				if os.path.exists( os.path.join( ROOT, "af", cand ) ):
 					af = "af/" + cand
+				# the rig's regenerated one, where it differs from the kept
+				# one (af/ is the authority: validated here before it's put there)
+				new = os.path.join( ROOT, "out", "rig", "af", cand )
+				if os.path.exists( new ) and ( not af or open( new ).read() != open( os.path.join( ROOT, af ) ).read() ):
+					afNew = "out/rig/af/" + cand
 		root = mesh.group( 1 )[:-4] + ".json"		# what autorig --root-out took out
 		out.append( {
 			"root": root if os.path.exists( os.path.join( DKRES, root ) ) else None,
@@ -63,6 +68,7 @@ def models():
 			"iqm": mesh.group( 1 ),
 			"md3": src.group( 1 ) if src else None,
 			"af": af,
+			"afNew": afNew,
 		} )
 	return out
 
@@ -137,7 +143,7 @@ class Handler( http.server.SimpleHTTPRequestHandler ):
 			self.send_file( os.path.join( PAGE, p[len( "/viewer/" ):] ) )
 		elif p.startswith( "/dkres/" ):
 			self.send_file( os.path.join( DKRES, p[len( "/dkres/" ):] ) )
-		elif p.startswith( "/af/" ) or p.startswith( "/def/" ):
+		elif p.startswith( "/af/" ) or p.startswith( "/def/" ) or p.startswith( "/out/rig/" ):
 			self.send_file( os.path.join( ROOT, p[1:] ) )
 		else:
 			self.send_error( 404 )

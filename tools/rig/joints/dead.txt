@@ -1,0 +1,41 @@
+# The dead bodies' joints (models/e1/m_dead.md3), placed by hand for
+# tools/rig/dead_rig.py, in the model's space as it lies in its first frame
+# (dead000): on its back, the head toward -x, its left +y, up +z.
+# A joint: name parent x y z (Doom 3's human joints, as autorig names them);
+# the end of a limb's last bone: end <joint> x y z; a twist joint, a ring
+# that turns on its own: twist name parent x y z reach (the vertexes within
+# reach its). origin and Body the tool puts (the root under the pelvis, Body
+# on the hips).
+#
+# Where they are in the mesh: the legs come off the belly's ring (the hips
+# there), a ring at the knee and one at the ankle, the toes past; the arms
+# rings at the shoulder, elbow and wrist.
+
+Hips      Body      1.5   0.0   3.0
+Lupleg    Hips      2.5   3.0   3.5
+Lloleg    Lupleg   16.5   5.0   4.2
+Lankle_r  Lloleg   33.0   8.0   1.0
+end Lankle_r       38.0   9.0   6.0
+# the knees' rings, sculpted anew in each pose (as the left forearm's)
+twist     Lloleg_1 Lloleg  16.5   5.0   4.2   2.5
+Rupleg    Hips      2.5  -2.5   3.5
+Rloleg    Rupleg   14.3  -9.0   3.5
+Rankle_r  Rloleg   29.0 -17.5   1.0
+end Rankle_r       28.5 -25.0   2.0
+twist     Rloleg_1 Rloleg  14.3  -9.0   3.5   2.5
+Waist     Body     -1.5   0.5   3.5
+Chest     Waist    -6.0   0.0   4.0
+Loneck    Chest   -12.5   0.0   3.5
+Head      Loneck  -16.0   0.5   3.0
+end Head          -22.5   1.5   3.0
+Luparm    Chest   -11.5   7.0   2.5
+Lloarm    Luparm   -8.0  10.0   2.0
+Lhand     Lloarm   -0.5   9.5   2.0
+end Lhand           4.0   9.0   3.0
+# the left forearm's middle: Daikatana sculpted it anew in each pose (no
+# bone, nor two blended, carried it within 2 units)
+twist     Lloarm_1 Lloarm  -5.2  10.5   1.8   2.0
+Ruparm    Chest   -12.5  -6.0   3.0
+Rloarm    Ruparm  -10.5 -12.5   1.5
+Rhand     Rloarm   -5.0 -17.5   1.0
+end Rhand          -2.0 -20.0   1.0
