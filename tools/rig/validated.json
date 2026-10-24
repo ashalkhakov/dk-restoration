@@ -1765,49 +1765,136 @@
 	},
 	"model_ninja": {
 		"anims": {
+			"ambans": {
+				"date": "2026-10-24",
+				"fingerprint": "311a631bb3991fde",
+				"fit": [
+					0.154,
+					1.66
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"cr": {
+				"date": "2026-10-24",
+				"fingerprint": "9cbcf8c6132d8fbb",
+				"fit": [
+					0.186,
+					1.77
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"crns": {
+				"date": "2026-10-24",
+				"fingerprint": "4cc3b3c67fc07a6b",
+				"fit": [
+					0.152,
+					1.75
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"cs": {
+				"date": "2026-10-24",
+				"fingerprint": "dcc7a8443548dd1a",
+				"fit": [
+					0.133,
+					1.7
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dl": {
+				"date": "2026-10-24",
+				"fingerprint": "41675e59ff9d47e6",
+				"fit": [
+					0.221,
+					1.72
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"float": {
+				"date": "2026-10-24",
+				"fingerprint": "e463150f10916b48",
+				"fit": [
+					133.636,
+					134.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"jpd": {
+				"date": "2026-10-24",
+				"fingerprint": "c2c75f3c57b16b38",
+				"fit": [
+					30.264,
+					134.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"jpns": {
+				"date": "2026-10-24",
+				"fingerprint": "15229a13d6ec14ba",
+				"fit": [
+					30.235,
+					134.73
+				],
+				"note": "",
+				"verdict": "valid"
+			},
 			"kcel": {
 				"date": "2026-10-24",
-				"fingerprint": "cb7a9bdf7078e651",
+				"fingerprint": "39a6beeb5280b4a5",
 				"fit": [
-					0.603,
-					6.85
+					0.143,
+					1.57
 				],
-				"note": "lower back is broken",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"kcela": {
 				"date": "2026-10-24",
-				"fingerprint": "05893b0080b8c96e",
+				"fingerprint": "1e1f02347df22c46",
 				"fit": [
-					0.64,
-					5.74
+					0.233,
+					1.44
 				],
-				"note": "lower back",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"punch": {
 				"date": "2026-10-24",
-				"fingerprint": "2afd98ad2f0d94a8",
+				"fingerprint": "2f19aacf8c0c9cba",
 				"fit": [
-					0.509,
-					5.63
+					0.121,
+					1.62
 				],
-				"note": "lower back",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
+			},
+			"rest": {
+				"date": "2026-10-24",
+				"fingerprint": "ef97cfe43a10dd89",
+				"fit": null,
+				"note": "",
+				"verdict": "valid"
 			},
 			"runa": {
 				"date": "2026-10-24",
-				"fingerprint": "d35e18ebd149191d",
+				"fingerprint": "5c7a080edd3990d8",
 				"fit": [
-					0.597,
-					6.5
+					0.091,
+					1.32
 				],
-				"note": "left leg",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"sfa": {
 				"date": "2026-10-24",
-				"fingerprint": "1fba2d1613b9164b",
+				"fingerprint": "c2129e1193adbd8e",
 				"fit": [
 					1.048,
 					7.14
@@ -1817,7 +1904,7 @@
 			},
 			"sfb": {
 				"date": "2026-10-24",
-				"fingerprint": "342e78d7ed40e25c",
+				"fingerprint": "d3b214bd65c1f1c3",
 				"fit": [
 					1.145,
 					7.85
@@ -1866,6 +1953,26 @@
 				"fit": [
 					0.036,
 					0.49
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"c_stndtkd": {
+				"date": "2026-10-24",
+				"fingerprint": "4eb1accf6a6ba102",
+				"fit": [
+					0.137,
+					1.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"c_stndtke": {
+				"date": "2026-10-24",
+				"fingerprint": "8689cee88137298a",
+				"fit": [
+					0.141,
+					2.55
 				],
 				"note": "",
 				"verdict": "valid"
