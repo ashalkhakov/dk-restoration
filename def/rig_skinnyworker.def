@@ -2,12 +2,12 @@
 entityDef model_skinnyworker {
 	"inherit"			"character_base"	// def/dk_characters.def
 	"mesh"				"models/rigged/mwskny.iqm"
-	"mins"				"-8 -8 -24"	// standing, at the origin (pmove's)
-	"maxs"				"8 8 32"
+	"mins"				"-7 -7 -24"	// standing, at the origin (pmove's)
+	"maxs"				"7 7 32"
 	"crouch_height"		"32"		// maxs z crouched
 	"eye_height"		"27"
 	"crouch_eye_height"	"27"
-	"ik_minWaistAnkleDist"	"21"	// the walk IK's waist drops no lower (Doom 3's)
+	"ik_minWaistAnkleDist"	"17"	// the walk IK's waist drops no lower (Doom 3's)
 
 	"anim aabaa"		"aabaa 10"
 	"anim aacaa"		"aacaa 10"
@@ -44,18 +44,18 @@ entityDef model_skinnyworker {
 	"anim eaaeab"		"eaaeab 10"
 	"anim eaaeac"		"eaaeac 10"
 	"anim eaaead"		"eaaead 10"
-	"anim eaafaa"		"eaafaa 10"
+	"anim eaafaa"		"eaafaa 20"
 	"anim eabeaa"		"eabeaa 10"
 	"anim eaceaa"		"eaceaa 10"
 	"anim eadeaa"		"eadeaa 10"
 	"anim eamba"		"eamba 10"
 	"anim eambb"		"eambb 10"
 	"anim eambc"		"eambc 10"
-	"anim eambd"		"eambd 10"
+	"anim eambd"		"eambd 20"
 	"anim eambe"		"eambe 10"
-	"anim faaaa"		"faaaa 10"
-	"anim faaeaa"		"faaeaa 10"
-	"anim famba"		"famba 10"
+	"anim faaaa"		"faaaa 20"
+	"anim faaeaa"		"faaeaa 20"
+	"anim famba"		"famba 20"
 	"anim foural"		"foural 10"
 	"anim fourla"		"fourla 10"
 	"anim fourtk"		"fourtk 10"
@@ -89,28 +89,30 @@ entityDef model_skinnyworker {
 	"frame walkb 4"	"footstep Lankle_r 0.4"
 	"frame walkb 11"	"footstep Rankle_r 0.4"
 
-	"anim_speed runa"	"43"
-	"anim_speed walka"	"20"
+	"anim_speed runa"	"42"
+	"anim_speed walka"	"19"
 	"anim_speed walkb"	"18"
 
 
-	"hitbox Hips"	"-13.1 -4.1 -9.0 0.5 4.6 3.1 torso"
-	"hitbox Lupleg"	"2.6 0.6 -3.4 8.5 3.7 0.2 legs"
-	"hitbox Lankle_r"	"-10.0 -4.1 -2.4 4.4 1.9 8.3 legs"
-	"hitbox Rupleg"	"2.0 -4.5 -0.9 5.6 -2.2 3.1 legs"
-	"hitbox Rankle_r"	"-10.2 -2.3 -1.7 4.3 4.7 7.8 legs"
-	"hitbox Waist"	"-1.8 -3.9 -2.8 1.7 3.0 3.3 torso"
-	"hitbox Chest"	"2.2 1.5 -1.7 3.4 2.5 -0.7 torso"
-	"hitbox Loneck"	"0.6 -2.7 -5.3 8.9 2.0 1.7 head"
-	"hitbox Head"	"-0.8 -0.8 -0.7 6.5 3.8 7.4 head"
-	"hitbox Luparm"	"0.6 -1.8 0.2 7.6 2.8 6.1 arms"
-	"hitbox Lhand"	"1.0 -3.5 -6.8 11.1 0.4 -1.1 arms"
-	"hitbox Ruparm"	"2.7 -3.9 0.4 6.4 0.5 6.2 arms"
-	"hitbox Rhand"	"1.2 -0.8 -1.6 13.8 3.6 3.0 arms"
-	"hitbox Hips_1"	"-5.8 -3.3 -1.5 0.0 4.4 5.1 torso"
-	"hitbox Rankle_r_1"	"4.5 0.3 0.2 5.0 2.1 4.5 legs"
-	"hitbox Lankle_r_1"	"5.1 0.9 -0.6 5.4 2.8 3.8 legs"
-	"hitbox Chest_1"	"-3.5 3.5 1.8 -2.6 3.7 2.2 torso"
+	"hitbox Lupleg"	"-2.6 -6.2 0.0 4.7 -2.9 3.8 legs"
+	"hitbox Lankle_r"	"-0.2 -6.5 -1.9 4.4 -1.6 7.5 legs"
+	"hitbox Rupleg"	"2.1 -2.7 -1.6 3.5 0.8 3.2 legs"
+	"hitbox Rankle_r"	"-1.1 -3.8 -8.7 4.3 2.8 -0.0 legs"
+	"hitbox Waist"	"-1.1 -2.8 -4.1 6.0 4.7 3.3 torso"
+	"hitbox Chest"	"5.6 -4.0 1.7 9.4 4.5 3.8 torso"
+	"hitbox Loneck"	"-2.9 -7.0 -4.5 1.9 3.8 1.7 head"
+	"hitbox Head"	"-0.2 -1.0 -1.4 7.0 3.5 6.8 head"
+	"hitbox Luparm"	"1.1 -1.5 -2.0 4.2 1.0 1.5 arms"
+	"hitbox Lloarm"	"1.0 -1.8 -2.4 8.9 0.9 1.1 arms"
+	"hitbox Lhand"	"0.1 -0.4 -1.1 3.3 1.0 2.5 arms"
+	"hitbox Ruparm"	"-1.3 -1.7 -1.9 3.8 1.1 1.5 arms"
+	"hitbox Rloarm"	"0.4 -1.5 -2.2 3.1 1.2 1.3 arms"
+	"hitbox Rhand"	"-0.6 -1.6 -0.8 2.2 0.6 1.0 arms"
+	"hitbox Chest_2"	"-0.8 0.2 -3.8 1.1 0.6 1.0 torso"
+	"hitbox Lhand_1"	"-4.0 0.1 -1.6 -0.1 3.0 0.5 arms"
+	"hitbox Rfings1"	"0.5 0.8 -2.2 1.8 1.9 -0.5 arms"
+	"hitbox Rthumb1"	"-0.8 -0.2 -2.2 1.8 3.0 0.8 arms"
+	"hitbox Lupleg_1"	"-0.0 0.0 0.0 1.1 1.1 1.9 legs"
 
 	"damage_scale head"	"2"
 	"damage_scale arms"	"0.75"
@@ -118,4 +120,6 @@ entityDef model_skinnyworker {
 
 	"ragdoll"			"monster_skinnyworker"	// af/monster_skinnyworker.af, Doom 3's articulated figure
 
+	"attach pda"		"characters/props/pda.iqm"	// held (tools/rig/iqm_hold.py): drawn at the joint, hidden where it's put away
+	"attach pda_lid"		"characters/props/pda_lid.iqm"	// held (tools/rig/iqm_hold.py): drawn at the joint, hidden where it's put away
 }

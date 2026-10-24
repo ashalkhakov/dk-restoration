@@ -1,0 +1,34 @@
+# The skinny worker's PDA, for tools/rig/iqm_hold.py (dk: hold=this file).
+# Daikatana's was a folded piece of his mesh at his chest (SkinnySkinboy
+# 451-464) and a translucent box (trans33); ours is a clamshell of its own
+# (characters/props/pda*.iqm, tools/models/make_pda.py), in his right hand.
+#
+#   hold <joint> <bone> <model>          the joint in his hand, the model on it
+#   grip <anim> <surface>                held where Daikatana's surface sat in
+#                                        the middle of anim, its face to his eyes
+#   lid <joint> <model> <degrees>        the lid's joint, on the hold joint's
+#                                        origin (the hinge), turned so far about
+#                                        its y folded
+#   drop <mesh>[:first-last]             Daikatana's out of his mesh
+#   show <anim> <first> <last|end> <open at first> <open at last>
+#                                        the frames it's out (0 from the first),
+#                                        how open (0 folded, 1 open) between
+#
+# faaeaa: his hand at his pocket by frame 4, the PDA in it from the start,
+# folded, opening as he lifts it (6 to 9); eambd: he makes his notes, the
+# beeps; eaafaa: folding as his hand goes down (8 to 12), put away by its
+# last frame.
+
+hold pda Rhand characters/props/pda.iqm
+grip eambd trans33
+lid pda_lid characters/props/pda_lid.iqm 180
+drop SkinnySkinboy:451-464
+drop trans33
+
+show faaeaa 0 5 0 0
+show faaeaa 6 9 0 1
+show faaeaa 10 end 1 1
+show eambd 0 end 1 1
+show eaafaa 0 7 1 1
+show eaafaa 8 12 1 0
+show eaafaa 13 16 0 0

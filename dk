@@ -339,7 +339,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b] [props=a,b] [follow=bone:joint,joint] [bodyparts=file] [propsplit=joint]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b] [props=a,b] [follow=bone:joint,joint] [bodyparts=file] [propsplit=joint] [hold=file]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -372,7 +372,7 @@ superfly        player    global/m_superfly
 dead            dead      e1/m_dead
 # episode 1: Kyoto, Mishima's labs and prison
 fatworker       human     e1/m_mwfaty
-skinnyworker    human     e1/m_mwskny
+skinnyworker    human     e1/m_mwskny             hold=tools/rig/joints/skinnyworker_pda.txt
 surgeon         human     e1/m_mwsurgeon
 labworker       human     e1/m_labworker
 mishimaguard    human     e1/m_mwguard
@@ -474,12 +474,15 @@ toshiro         human     cinematic/c_tosh_intr     iqm=toshiro rest=tka rootout
 # vehicles: Doom 3's six-wheeled AF vehicle (g_vehicle.c), its AF af/vehicle_<name>.af
 deathtruck      vehicle   e1/d1_deathtruck          iqm=deathtruck front=-x eyes=-64,0,44 sounds=sounds/e1/truckstart.wav,sounds/e1/truckidleloop.wav,sounds/e1/truckshutoff.wav parts=cab,bed_front,bed_left,bed_right,bed_tail fullwheels=1 wheelscale=0.66
 "
+# the skinny worker's PDA animations at Daikatana's cinematic rate: at ten
+# a second he takes it out after the intro's beeps (shot 109)
+RIG_ANIMS_skinnyworker="famba 20;faaeaa 20;faaaa 20;eambd 20;eaafaa 20"
 RIG_ANIMS_froginator="amba 10 loop;ambb 10;ataka 10;atakb 10;atakc 10;diea 10;hita 10;jumpa 10;runa 15 loop;swima 10 loop;walka 10 loop"
 RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15 loop;hita 10;speciala 10"
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" front="" eyes="" sounds="" parts="" fullwheels="" wheelscale="" follow="" bodyparts="" propsplit="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" front="" eyes="" sounds="" parts="" fullwheels="" wheelscale="" follow="" bodyparts="" propsplit="" hold="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -502,6 +505,7 @@ rig_model() {
 			follow=*) follow=${kv#follow=} ;;
 			bodyparts=*) bodyparts=${kv#bodyparts=} ;;
 			propsplit=*) propsplit=${kv#propsplit=} ;;
+			hold=*) hold=${kv#hold=} ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -536,6 +540,12 @@ rig_model() {
 	# (tools/rig/iqm_props.py): Usagi's hammer and work
 	if [ -n "$propsplit" ]; then
 		python3 tools/rig/iqm_props.py "$(sed -n 's/^entityDef[[:space:]]*\([^[:space:]]*\).*/\1/p' "$stage"/def/*.def | head -1)" "$out.iqm" "$propsplit" || return 1
+	fi
+	# a thing he holds, a model of our own on a joint in his hand, Daikatana's
+	# piece of his mesh for it out (tools/rig/iqm_hold.py): the skinny
+	# worker's PDA
+	if [ -n "$hold" ]; then
+		python3 tools/rig/iqm_hold.py "$stage/def" "$out.iqm" "$hold" || return 1
 	fi
 	if ! grep -q "\"mesh\"[[:space:]]*\"models/rigged/$iqm.iqm\"" "$stage"/def/*.def; then
 		echo "rig not installed: its def doesn't name models/rigged/$iqm.iqm"
