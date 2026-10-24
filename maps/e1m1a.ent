@@ -90,3 +90,31 @@
 "origin" "1592 -2784 1056"
 "angle" "180"
 }
+
+// the coffins (d1_coffin2.md3: broken open, its boards scattered): a hull for
+// each board ("hull_pieces"), not convex pieces cut from the whole, which
+// bridged the gaps between the boards and stood out past them
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/d1_coffin2.md3"
+"_match origin" "1513 -2720 560"
+"hull_pieces" "1"
+}
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/d1_coffin2.md3"
+"_match origin" "1619 -2694 560"
+"hull_pieces" "1"
+}
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/d1_coffin2.md3"
+"_match origin" "1507 -2518 560"
+"hull_pieces" "1"
+}
+{
+"_match classname" "func_physics"
+"_match model" "models/e1/d1_coffin2.md3"
+"_match origin" "1747 -2414 560"
+"hull_pieces" "1"
+}
