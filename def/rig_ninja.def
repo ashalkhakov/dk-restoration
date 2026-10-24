@@ -58,5 +58,6 @@ entityDef model_ninja {
 	"damage_scale legs"	"0.75"
 
 	"ragdoll"			"monster_ninja"	// af/monster_ninja.af, Doom 3's articulated figure
+	"attach sword"		"models/rigged/ninja_sword.iqm"	// its own model, drawn at the joint till dropped ("drop sword")
 
 }

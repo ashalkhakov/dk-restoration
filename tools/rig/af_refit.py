@@ -29,7 +29,10 @@ carries half his head); --shoulders-to-arms gives the chest's bone out past
 an upper arm's inner side to that upper arm, the chest only between them
 (Hiro's pads made his chest's box cover his arms); --feet gives each foot a
 body of its own and an ankle joint to its shin, the shin's box its own
-bone's (his shins' took his feet). "mod both" keeps each joint
+bone's (his shins' took his feet). --parts <file> counts each vertex for
+the part it's nearest, placed by hand (tools/rig/iqm_parts.py's), not its
+weights (the ninja's bones carried the wrong parts); --iqm <path> fits to
+that rig, not the one installed. "mod both" keeps each joint
 where it is on its body, so a body needn't lie between its joints.
 
 	python3 tools/rig/af_refit.py model_toshiro
@@ -61,7 +64,7 @@ for s_ in "LR":
 def cross( a, b ):
 	return ( a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0] )
 
-def obb( ps, along = None ):
+def obb( ps, along = None, ends = None ):
 	"""the box about the points along their principal axes: its centre, its
 	half sizes and its axes (forward, left, up: right-handed, the longest
 	first); along a direction given, forward that one (a limb's bone) and
@@ -87,8 +90,10 @@ def obb( ps, along = None ):
 	u = cross( f, l )
 	axes = ( f, l, u )
 	lo, hi = [], []
-	for a in axes:
-		ts = [ sum( ( p[k] - c[k] ) * a[k] for k in range( 3 ) ) for p in ps ]
+	for i, a in enumerate( axes ):
+		# (along a bone at least from its joint to the next: a thigh with
+		# few vertexes, the ninja's, all by the knee)
+		ts = [ sum( ( p[k] - c[k] ) * a[k] for k in range( 3 ) ) for p in ps + ( list( ends ) if ends and i == 0 else [] ) ]
 		lo.append( min( ts ) )
 		hi.append( max( ts ) )
 	centre = [ c[k] + sum( 0.5 * ( lo[i] + hi[i] ) * axes[i][k] for i in range( 3 ) ) for k in range( 3 ) ]
@@ -147,7 +152,8 @@ def add_feet( af, pts, P, report ):
 					   % ( foot, len( ps ), 2 * h[0], 2 * h[1], 2 * h[2], shin ) )
 	return af
 
-def main( defName, extras = False, excepted = (), alongBones = False, neckToHead = False, shouldersToArms = False, feet = False ):
+def main( defName, extras = False, excepted = (), alongBones = False, neckToHead = False, shouldersToArms = False, feet = False,
+		  partsPath = None, iqmPath = None ):
 	info = rc.model_info( defName )
 	if not info:
 		sys.exit( "%s: no rigged model def" % defName )
@@ -157,7 +163,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	afName = re.search( r'"ragdoll"\s+"([^"]+)"', open( os.path.join( defDir, defFile ), encoding = "latin-1" ).read() ).group( 1 )
 	af = open( os.path.join( ROOT, "af", afName + ".af" ) ).read()
 
-	rig = rc.load_rig( info )
+	rig = rc.Rig( iqmPath ) if iqmPath else rc.load_rig( info )
 	q = rig.q
 	names = [ j.name for j in q.joints ]
 	bind = []
@@ -175,6 +181,24 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 			j = q.joints[j].parent
 		return None
 	owner = [ counts( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] ) for v in range( len( rig.pos ) ) ]
+	parts = {}
+	if partsPath:
+		# each vertex the part it's nearest, placed by hand (tools/rig/iqm_parts.py's:
+		# the ninja's bones carried the wrong parts of him), a prop's none
+		import iqm_parts
+		for line in open( partsPath ):
+			w = line.split( "#" )[0].split()
+			if w:
+				v = [ float( x ) for x in w[1:7] ]
+				parts[w[0]] = ( v[0:3], v[3:6] )
+		def prop( j ):
+			while j >= 0:
+				if names[j].startswith( "Auto_" ):
+					return True
+				j = q.joints[j].parent
+			return False
+		owner = [ None if prop( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] )
+				  else min( parts, key = lambda b: iqm_parts.seg_dist( rig.pos[v], *parts[b] ) ) for v in range( len( rig.pos ) ) ]
 	pts = lambda ns: [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] in ns ]
 	limbs = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand", "upleg", "loleg", "ankle_r" ) ]
 	trunk = [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in limbs ]
@@ -188,8 +212,12 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		return sum( ( p[k] - sr[k] ) * across[k] for k in range( 3 ) ) / A2
 	def body_points( bname ):
 		if bname == "waist":
+			if partsPath:
+				return pts( ( "Hips", "Waist" ) )		# (the parts placed by hand: the belly down to the hips)
 			z0, z1 = sorted( ( P["Hips"][2], P["Waist"][2] ) )
 			return [ p for p in trunk if z0 <= p[2] <= z1 ]
+		if partsPath and bname == "chest":
+			return pts( ( "Chest", ) )		# (the waist's part the pelvis': the chest its own, along the spine)
 		if neckToHead and bname in ( "chest", "head" ):
 			# (the neck's bone carrying half the head: Hiro's)
 			ps = pts( ( "Waist", "Chest" ) if bname == "chest" else ( "Loneck", "Head" ) )
@@ -211,11 +239,23 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		return ps
 	# a limb's bone: from its joint to the next one down the limb
 	NEXT = { "uparm": "loarm", "loarm": "hand", "upleg": "loleg", "loleg": "ankle_r" }
-	def bone_dir( bname ):
+	def bone_ends( bname ):
+		if partsPath and alongBones and bname == "chest" and "Chest" in parts:
+			# (the torso along the spine, from the waist's top to the neck:
+			# no gap over the belly between the two)
+			a, b = parts["Chest"]
+			d = [ b[k] - a[k] for k in range( 3 ) ]
+			L2 = sum( x * x for x in d ) or 1e-9
+			t = min( 0.0, max( sum( ( p[k] - a[k] ) * d[k] for k in range( 3 ) ) / L2 for p in pts( ( "Hips", "Waist" ) ) ) )
+			return ( [ a[k] + t * d[k] for k in range( 3 ) ], b )
 		if not alongBones or bname[1:] not in NEXT:
 			return None
-		a, b = P[bname], P[bname[0] + NEXT[bname[1:]]]
-		return [ b[k] - a[k] for k in range( 3 ) ]
+		if partsPath and bname in parts:
+			return parts[bname]		# (placed by hand: the ninja's elbows' joints are at his shoulders)
+		return ( P[bname], P[bname[0] + NEXT[bname[1:]]] )
+	def bone_dir( bname ):
+		e = bone_ends( bname )
+		return [ e[1][k] - e[0][k] for k in range( 3 ) ] if e else None
 
 	report = []
 	out, pos = [], 0
@@ -224,7 +264,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		out.append( af[pos:m.start()] )
 		ps = body_points( bname )
 		if len( ps ) >= 4:
-			c, h, axes = obb( ps, bone_dir( bname ) )
+			c, h, axes = obb( ps, bone_dir( bname ), bone_ends( bname ) )
 			ang = angles_of( axes )
 			back = axes_of( ang )
 			assert max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6, bname
@@ -272,7 +312,13 @@ if __name__ == "__main__":
 	feet = "--feet" in args
 	if feet:
 		args.remove( "--feet" )
+	opt = {}
+	for o in ( "--parts", "--iqm" ):
+		if o in args:
+			i = args.index( o )
+			opt[o] = args[i + 1]
+			args = args[:i] + args[i + 2:]
 	if len( args ) != 1:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet )
+	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet, opt.get( "--parts" ), opt.get( "--iqm" ) )
