@@ -2266,5 +2266,17 @@
 			}
 		},
 		"iqm": "models/rigged/usagi.iqm"
+	},
+	"model_vehicle_deathtruck": {
+		"anims": {
+			"idle": {
+				"date": "2026-10-24",
+				"fingerprint": "805393e4939c049a",
+				"fit": null,
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/deathtruck.iqm"
 	}
 }
