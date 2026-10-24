@@ -1867,7 +1867,7 @@
 		"anims": {
 			"ambans": {
 				"date": "2026-10-24",
-				"fingerprint": "084659d245e8b0b8",
+				"fingerprint": "1ef82ff06a751ad1",
 				"fit": [
 					0.154,
 					1.66
@@ -1877,7 +1877,7 @@
 			},
 			"cr": {
 				"date": "2026-10-24",
-				"fingerprint": "68eb271fb560c382",
+				"fingerprint": "4361bc60ec79f53c",
 				"fit": [
 					0.186,
 					1.77
@@ -1887,7 +1887,7 @@
 			},
 			"crns": {
 				"date": "2026-10-24",
-				"fingerprint": "43f520e08cae20ac",
+				"fingerprint": "2976bdf2066b1aa4",
 				"fit": [
 					0.152,
 					1.75
@@ -1897,7 +1897,7 @@
 			},
 			"cs": {
 				"date": "2026-10-24",
-				"fingerprint": "cbfe958c10c0813d",
+				"fingerprint": "b0d65cca4e8d5121",
 				"fit": [
 					0.133,
 					1.7
@@ -1907,7 +1907,7 @@
 			},
 			"dl": {
 				"date": "2026-10-24",
-				"fingerprint": "85f57cf8bcd64e8a",
+				"fingerprint": "e1f04bb9cc73e2c6",
 				"fit": [
 					0.221,
 					1.72
@@ -1917,7 +1917,7 @@
 			},
 			"float": {
 				"date": "2026-10-24",
-				"fingerprint": "59e9fede8b8c2f45",
+				"fingerprint": "6e594543cfa41b71",
 				"fit": [
 					133.636,
 					134.73
@@ -1927,7 +1927,7 @@
 			},
 			"jpd": {
 				"date": "2026-10-24",
-				"fingerprint": "743cba1803c4cb67",
+				"fingerprint": "526486da9f524038",
 				"fit": [
 					30.264,
 					134.73
@@ -1937,7 +1937,7 @@
 			},
 			"jpns": {
 				"date": "2026-10-24",
-				"fingerprint": "551941e908a88df1",
+				"fingerprint": "43521ad864277691",
 				"fit": [
 					30.235,
 					134.73
@@ -1947,7 +1947,7 @@
 			},
 			"kcel": {
 				"date": "2026-10-24",
-				"fingerprint": "c33860b46acbcd04",
+				"fingerprint": "8ecf536467f5bf4e",
 				"fit": [
 					0.143,
 					1.57
@@ -1957,7 +1957,7 @@
 			},
 			"kcela": {
 				"date": "2026-10-24",
-				"fingerprint": "e49bad9e8dd7ec01",
+				"fingerprint": "6b521e4500665519",
 				"fit": [
 					0.233,
 					1.44
@@ -1967,7 +1967,7 @@
 			},
 			"punch": {
 				"date": "2026-10-24",
-				"fingerprint": "eb33a8365bc305e5",
+				"fingerprint": "a41093a48356e064",
 				"fit": [
 					0.121,
 					1.62
@@ -1977,14 +1977,14 @@
 			},
 			"rest": {
 				"date": "2026-10-24",
-				"fingerprint": "e789bd9e6e57721a",
+				"fingerprint": "43746b062458fd93",
 				"fit": null,
 				"note": "",
 				"verdict": "valid"
 			},
 			"runa": {
 				"date": "2026-10-24",
-				"fingerprint": "d8288cc7aa33a377",
+				"fingerprint": "0a77d480ef2e0f7a",
 				"fit": [
 					0.091,
 					1.32
@@ -1994,7 +1994,7 @@
 			},
 			"sfa": {
 				"date": "2026-10-24",
-				"fingerprint": "47ac0f475d5579d1",
+				"fingerprint": "59c5ee7080a969a8",
 				"fit": [
 					1.048,
 					7.14
@@ -2004,7 +2004,7 @@
 			},
 			"sfb": {
 				"date": "2026-10-24",
-				"fingerprint": "b6b765794f438598",
+				"fingerprint": "62b91ad0467827a7",
 				"fit": [
 					1.145,
 					7.85

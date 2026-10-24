@@ -186,11 +186,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		# each vertex the part it's nearest, placed by hand (tools/rig/iqm_parts.py's:
 		# the ninja's bones carried the wrong parts of him), a prop's none
 		import iqm_parts
-		for line in open( partsPath ):
-			w = line.split( "#" )[0].split()
-			if w:
-				v = [ float( x ) for x in w[1:7] ]
-				parts[w[0]] = ( v[0:3], v[3:6] )
+		parts, _, reach = iqm_parts.read_parts( partsPath )
 		def prop( j ):
 			while j >= 0:
 				if names[j].startswith( "Auto_" ):
@@ -198,7 +194,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 				j = q.joints[j].parent
 			return False
 		owner = [ None if prop( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] )
-				  else min( parts, key = lambda b: iqm_parts.seg_dist( rig.pos[v], *parts[b] ) ) for v in range( len( rig.pos ) ) ]
+				  else iqm_parts.nearest( rig.pos[v], parts, reach ) for v in range( len( rig.pos ) ) ]
 	pts = lambda ns: [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] in ns ]
 	limbs = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand", "upleg", "loleg", "ankle_r" ) ]
 	trunk = [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in limbs ]
@@ -213,7 +209,13 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	def body_points( bname ):
 		if bname == "waist":
 			if partsPath:
-				return pts( ( "Hips", "Waist" ) )		# (the parts placed by hand: the belly down to the hips)
+				# (the parts placed by hand: the trunk from the crotch to the
+				# belt, the tops of the thighs with it; the arms hanging
+				# beside it not)
+				z0 = parts["Hips"][0][2]
+				z1 = max( p[2] for p in pts( ( "Waist", ) ) )
+				arms = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand" ) ]
+				return [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in arms and z0 <= rig.pos[v][2] <= z1 ]
 			z0, z1 = sorted( ( P["Hips"][2], P["Waist"][2] ) )
 			return [ p for p in trunk if z0 <= p[2] <= z1 ]
 		if partsPath and bname == "chest":
@@ -264,7 +266,15 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		out.append( af[pos:m.start()] )
 		ps = body_points( bname )
 		if len( ps ) >= 4:
-			c, h, axes = obb( ps, bone_dir( bname ), bone_ends( bname ) )
+			if partsPath and bname == "waist":
+				# square to the body (its few points turned their own axes
+				# sideways: the ninja's)
+				axes = ( ( 1.0, 0.0, 0.0 ), ( 0.0, 1.0, 0.0 ), ( 0.0, 0.0, 1.0 ) )
+				lo = [ min( p[k] for p in ps ) for k in range( 3 ) ]
+				hi = [ max( p[k] for p in ps ) for k in range( 3 ) ]
+				c, h = [ ( lo[k] + hi[k] ) / 2 for k in range( 3 ) ], [ ( hi[k] - lo[k] ) / 2 for k in range( 3 ) ]
+			else:
+				c, h, axes = obb( ps, bone_dir( bname ), bone_ends( bname ) )
 			ang = angles_of( axes )
 			back = axes_of( ang )
 			assert max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6, bname

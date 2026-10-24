@@ -10,7 +10,9 @@ his legs on point bones of their own (each a vertex's, fitting it exactly),
 so his thigh's bone moved like his hand and his ragdoll's bodies lay off
 him. tools/rig/joints/<name>_parts.txt places each part by hand, a bone and
 the segment it runs along in the rest pose; a vertex is the part it's
-nearest (a prop's none). A bone that carries its part badly (on average
+nearest (a prop's none), of those it's within reach of ("r <reach>" on a
+part's line: an arm hanging beside the trunk and thigh not taking their
+vertexes). A bone that carries its part badly (on average
 more than BAD off over the frames, its own motion taking the part's
 vertexes from the rest pose), where the part's own rigid motion carries it
 clearly better (GAIN) and no scaled joint (a prop) hangs on it:
@@ -19,6 +21,11 @@ clearly better (GAIN) and no scaled joint (a prop) hangs on it:
 	  move;
 	- moves as its part does: its motion each frame the rigid fit of the
 	  part's vertexes, as the rig puts them.
+A part whose line ends with "aim" (a thigh whose few vertexes are its coat's
+hem at the knee, flaring as he moves: their fit turns it) hangs from its
+segment's start as the bone's parent carries it (the hip, the pelvis') and
+points at its vertexes' middle as they move ("aim <part>": at that part's,
+a forearm at its hand), turned about its length as their fit is.
 Every other joint stays where it was in each frame (its local transform
 made again under a moved parent; the others' data as they were, bit for
 bit).
@@ -46,13 +53,56 @@ def seg_dist( p, a, b ):
 	t = max( 0.0, min( 1.0, sum( ( p[k] - a[k] ) * d[k] for k in range( 3 ) ) / L2 ) )
 	return math.dist( p, [ a[k] + t * d[k] for k in range( 3 ) ] )
 
-def main( path, partsPath ):
-	parts = {}
-	for line in open( partsPath ):
+def read_parts( path ):
+	"""a parts file: each line a bone, its segment (x y z x y z) and its
+	words: "aim [part]", "r <reach>" """
+	parts, aims, reach = {}, {}, {}
+	for line in open( path ):
 		w = line.split( "#" )[0].split()
 		if w:
 			v = [ float( x ) for x in w[1:7] ]
 			parts[w[0]] = ( v[0:3], v[3:6] )
+			i = 7
+			while i < len( w ):
+				if w[i] == "r":
+					reach[w[0]] = float( w[i + 1] )
+					i += 2
+				elif w[i] == "aim":
+					named = i + 1 < len( w ) and w[i + 1] not in ( "aim", "r" )
+					aims[w[0]] = w[i + 1] if named else w[0]
+					i += 2 if named else 1
+				else:
+					sys.exit( "%s: what is %s?" % ( path, w[i] ) )
+	return parts, aims, reach
+
+def nearest( p, parts, reach ):
+	"""the part a point is: the nearest whose reach it's in"""
+	return min( ( b for b in parts if seg_dist( p, *parts[b] ) <= reach.get( b, 1e9 ) ), key = lambda b: seg_dist( p, *parts[b] ) )
+
+def swing( a, b ):
+	"""the least rotation taking the direction a to b"""
+	la, lb = math.sqrt( sum( x * x for x in a ) ), math.sqrt( sum( x * x for x in b ) )
+	a, b = [ x / la for x in a ], [ x / lb for x in b ]
+	k = [ a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0] ]
+	c = sum( a[i] * b[i] for i in range( 3 ) )
+	K = [ [ 0, -k[2], k[1] ], [ k[2], 0, -k[0] ], [ -k[1], k[0], 0 ] ]
+	K2 = [ [ sum( K[i][m] * K[m][n] for m in range( 3 ) ) for n in range( 3 ) ] for i in range( 3 ) ]
+	f = 1.0 / ( 1.0 + c ) if c > -0.9999 else 0.0
+	return [ [ ( i == n ) + K[i][n] + K2[i][n] * f for n in range( 3 ) ] for i in range( 3 ) ]
+
+def aimed( fit, aimFit, start, src, carried ):
+	"""a part's fit made to hang from start (as carried takes it) and point at
+	the middle of the vertexes src (as aimFit takes them)"""
+	mid = [ sum( p[k] for p in src ) / len( src ) for k in range( 3 ) ]
+	hip, end = rc.apply( carried, start ), rc.apply( aimFit, mid )
+	m = fit[0]
+	rest = [ mid[k] - start[k] for k in range( 3 ) ]
+	turned = [ sum( m[i][k] * rest[k] for k in range( 3 ) ) for i in range( 3 ) ]
+	r = rc.compose( ( swing( turned, [ end[k] - hip[k] for k in range( 3 ) ] ), ( 0, 0, 0 ) ), ( m, ( 0, 0, 0 ) ) )[0]
+	return r, tuple( hip[i] - sum( r[i][k] * start[k] for k in range( 3 ) ) for i in range( 3 ) )
+
+def main( path, partsPath ):
+	parts, aims, reach = read_parts( partsPath )
 	d = open( path, "rb" ).read()
 	h = list( struct.unpack_from( "<27I", d, 16 ) )
 	( version, filesize, flags, numText, ofsText, numMeshes, ofsMeshes, numVA, numVerts, ofsVA,
@@ -77,7 +127,7 @@ def main( path, partsPath ):
 			j = parent[j]
 		return False
 	part = [ None if prop( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] )
-			 else min( parts, key = lambda b: seg_dist( rig.pos[v], *parts[b] ) ) for v in range( N ) ]
+			 else nearest( rig.pos[v], parts, reach ) for v in range( N ) ]
 
 	B = []
 	for j, jt in enumerate( q.joints ):
@@ -106,14 +156,22 @@ def main( path, partsPath ):
 			continue
 		err = sum( math.dist( rc.apply( rc.compose( W[f][j], rc.invert( B[j] ) ), rig.pos[v] ), frames[f][v] )
 				   for f in range( numFrames ) for v in vs ) / ( numFrames * len( vs ) )
-		if err <= BAD:
+		if err <= BAD and b not in aims:
 			continue
 		src = [ rig.pos[v] for v in vs ]
 		motion = [ rigid_fit( src, [ frames[f][v] for v in vs ] ) for f in range( numFrames ) ]
+		if b in aims:
+			# (its parent's motion as moved here, if it was)
+			p = parent[j]
+			carried = [ refit[p][f] if p in refit else rc.compose( W[f][p], rc.invert( B[p] ) ) for f in range( numFrames ) ]
+			ts = [ v for v in range( N ) if part[v] == aims[b] ]
+			tsrc = [ rig.pos[v] for v in ts ]
+			target = motion if aims[b] == b else [ rigid_fit( tsrc, [ frames[f][v] for v in ts ] ) for f in range( numFrames ) ]
+			motion = [ aimed( motion[f], target[f], parts[b][0], tsrc, carried[f] ) for f in range( numFrames ) ]
 		after = sum( math.dist( rc.apply( motion[f], rig.pos[v] ), frames[f][v] )
 					 for f in range( numFrames ) for v in vs ) / ( numFrames * len( vs ) )
 		blocked = scaled( j ) or any( scaled( k ) for k in range( numJoints ) if parent[k] == j )
-		if after < GAIN * err and not blocked:
+		if ( after < GAIN * err or b in aims ) and not blocked:	# (an aim placed by hand)
 			refit[j] = motion
 		print( "  %-9s carried its part (%d vertexes) %.2f off on average; as the part moves, %.2f%s" % ( b, len( vs ), err, after,
 			   "" if j in refit else ( ": kept (scaled)" if blocked else ": kept (no better)" ) ) )
