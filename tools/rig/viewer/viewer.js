@@ -237,6 +237,16 @@ function parseAF( text ) {
 		const bone = /model\s+bone\(\s*\(([^)]*)\)\s*,\s*\(([^)]*)\)\s*,\s*([-\d.]+)\s*\)/.exec( body );
 		const org = /origin\s+\(([^)]*)\)/.exec( body );
 		b.origin = org ? vec( org[1] ) : [ 0, 0, 0 ];
+		// a box turned by its angles (pitch, yaw, roll: Quake's AnglesToAxis,
+		// forward, left, up)
+		const ang = /angles\s+\(([^)]*)\)/.exec( body );
+		if ( ang ) {
+			const [ p, y, r ] = vec( ang[1] ).map( a => a * Math.PI / 180 );
+			const sp = Math.sin( p ), cp = Math.cos( p ), sy = Math.sin( y ), cy = Math.cos( y ), sr = Math.sin( r ), cr = Math.cos( r );
+			b.axes = [ [ cp * cy, cp * sy, -sp ],
+					   [ sr * sp * cy - cr * sy, sr * sp * sy + cr * cy, sr * cp ],
+					   [ cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, cr * cp ] ];
+		}
 		if ( box ) { b.lo = vec( box[1] ); b.hi = vec( box[2] ); }
 		if ( bone ) { b.a = vec( bone[1] ); b.b = vec( bone[2] ); b.w = Number( bone[3] ); }
 		bodies.push( b );
@@ -644,6 +654,7 @@ function draw() {
 			const m = ji >= 0 ? P.skin[ji] : m4();
 			if ( b.lo ) {
 				const t = m4(); t[12] = b.origin[0]; t[13] = b.origin[1]; t[14] = b.origin[2];
+				if ( b.axes ) for ( let k = 0; k < 3; k++ ) { t[4 * k] = b.axes[k][0]; t[4 * k + 1] = b.axes[k][1]; t[4 * k + 2] = b.axes[k][2]; }
 				boxLines( m4mul( m, t ), b.lo, b.hi, c );
 			} else if ( b.a ) {
 				// a bone: a box b.w wide from a to b

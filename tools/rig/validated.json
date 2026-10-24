@@ -2083,18 +2083,18 @@
 	"model_toshiro": {
 		"anims": {
 			"coffin": {
-				"date": "2026-10-23",
-				"fingerprint": "7125f24342233744",
+				"date": "2026-10-24",
+				"fingerprint": "6654557613df670c",
 				"fit": [
-					0.649,
-					19.49
+					0.125,
+					1.06
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"cough": {
 				"date": "2026-10-23",
-				"fingerprint": "d95a6b560450d7d9",
+				"fingerprint": "b22606dd448afa4c",
 				"fit": [
 					0.674,
 					20.21
@@ -2104,7 +2104,7 @@
 			},
 			"coughb": {
 				"date": "2026-10-23",
-				"fingerprint": "60b701de3f32bdd7",
+				"fingerprint": "259447b73857ad28",
 				"fit": [
 					0.72,
 					18.74
@@ -2114,7 +2114,7 @@
 			},
 			"coughc": {
 				"date": "2026-10-23",
-				"fingerprint": "a86442dca226b401",
+				"fingerprint": "a7eab54b65c1c109",
 				"fit": [
 					0.652,
 					20.14
@@ -2124,7 +2124,7 @@
 			},
 			"coughd": {
 				"date": "2026-10-23",
-				"fingerprint": "d562b1a116244da5",
+				"fingerprint": "f7b3f3064d4b6e3b",
 				"fit": [
 					0.655,
 					20.21
@@ -2133,48 +2133,48 @@
 				"verdict": "valid"
 			},
 			"deadtka": {
-				"date": "2026-10-23",
-				"fingerprint": "55cb3257a0dbff7f",
+				"date": "2026-10-24",
+				"fingerprint": "45dc7066e1db4cff",
 				"fit": [
-					0.65,
-					19.52
+					0.125,
+					1.01
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"deadtkb": {
-				"date": "2026-10-23",
-				"fingerprint": "7199aa1195c4b74d",
+				"date": "2026-10-24",
+				"fingerprint": "5bcd17075c5d575f",
 				"fit": [
-					0.693,
-					20.65
+					0.126,
+					1.02
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"deadtkc": {
-				"date": "2026-10-23",
-				"fingerprint": "a4289e58693a0a38",
+				"date": "2026-10-24",
+				"fingerprint": "061455f36089a26f",
 				"fit": [
-					0.65,
-					19.52
+					0.125,
+					1.01
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"diea": {
-				"date": "2026-10-23",
-				"fingerprint": "5ac2a59212e43bdd",
+				"date": "2026-10-24",
+				"fingerprint": "bdc0894633bf7066",
 				"fit": [
-					1.098,
-					44.94
+					0.175,
+					1.38
 				],
 				"note": "",
 				"verdict": "valid"
 			},
 			"point": {
 				"date": "2026-10-23",
-				"fingerprint": "77592eb466be936d",
+				"fingerprint": "1b0df051e29da2bf",
 				"fit": [
 					0.566,
 					20.21
@@ -2184,14 +2184,14 @@
 			},
 			"rest": {
 				"date": "2026-10-23",
-				"fingerprint": "99cb94a47292d6c1",
+				"fingerprint": "9041c19dae9a137f",
 				"fit": null,
 				"note": "",
 				"verdict": "valid"
 			},
 			"staffmad": {
 				"date": "2026-10-23",
-				"fingerprint": "9bc4f55e78205093",
+				"fingerprint": "bc594a4604ad6485",
 				"fit": [
 					1.055,
 					57.71
@@ -2201,7 +2201,7 @@
 			},
 			"tka": {
 				"date": "2026-10-23",
-				"fingerprint": "9ccbbed4162fa825",
+				"fingerprint": "e9b145cd6d100a29",
 				"fit": [
 					0.603,
 					20.22
@@ -2211,7 +2211,7 @@
 			},
 			"tkb": {
 				"date": "2026-10-23",
-				"fingerprint": "019cfa7a7bcb4989",
+				"fingerprint": "1cf5a0823a00cfee",
 				"fit": [
 					0.59,
 					20.22
@@ -2221,7 +2221,7 @@
 			},
 			"tkc": {
 				"date": "2026-10-23",
-				"fingerprint": "9343c66901566e0d",
+				"fingerprint": "c2993c6f1c8c54ad",
 				"fit": [
 					0.614,
 					21.44
@@ -2231,7 +2231,7 @@
 			},
 			"tkd": {
 				"date": "2026-10-23",
-				"fingerprint": "9831cd487cd016d0",
+				"fingerprint": "f12db7412a3c11e4",
 				"fit": [
 					0.686,
 					26.15
@@ -2241,7 +2241,7 @@
 			},
 			"tkda": {
 				"date": "2026-10-23",
-				"fingerprint": "5fb6737e70eca8ec",
+				"fingerprint": "f277f32a1308ec7b",
 				"fit": [
 					0.741,
 					27.36
@@ -2251,7 +2251,7 @@
 			},
 			"tke": {
 				"date": "2026-10-23",
-				"fingerprint": "787bef2faec3dbeb",
+				"fingerprint": "2ead5ad47ebe4369",
 				"fit": [
 					0.607,
 					21.46
@@ -2261,7 +2261,7 @@
 			},
 			"tkf": {
 				"date": "2026-10-23",
-				"fingerprint": "cbe5a784efef1d13",
+				"fingerprint": "ccdb54f0789b2b6b",
 				"fit": [
 					0.613,
 					20.21
@@ -2271,7 +2271,7 @@
 			},
 			"tkg": {
 				"date": "2026-10-23",
-				"fingerprint": "355482777b1f30a8",
+				"fingerprint": "ca90d2fb5f702c36",
 				"fit": [
 					0.604,
 					22.73
@@ -2281,7 +2281,7 @@
 			},
 			"tkh": {
 				"date": "2026-10-23",
-				"fingerprint": "21e2832fd2a86a1c",
+				"fingerprint": "5e9c8f0c14fc468c",
 				"fit": [
 					0.582,
 					20.2
@@ -2291,7 +2291,7 @@
 			},
 			"tki": {
 				"date": "2026-10-23",
-				"fingerprint": "20e7c35f7d3cb399",
+				"fingerprint": "1942f5c7b80d1012",
 				"fit": [
 					0.657,
 					20.2
@@ -2301,7 +2301,7 @@
 			},
 			"walka": {
 				"date": "2026-10-23",
-				"fingerprint": "fdae83e134c0ace8",
+				"fingerprint": "8cd6360ff16c8c6e",
 				"fit": [
 					0.745,
 					26.02
@@ -2311,7 +2311,7 @@
 			},
 			"walkl": {
 				"date": "2026-10-23",
-				"fingerprint": "a444828a8d8fd359",
+				"fingerprint": "073e92c7d99d40ca",
 				"fit": [
 					0.745,
 					26.01
@@ -2321,7 +2321,7 @@
 			},
 			"walkr": {
 				"date": "2026-10-23",
-				"fingerprint": "ad03007827902fd1",
+				"fingerprint": "b3a3a845838587bf",
 				"fit": [
 					0.745,
 					26.01

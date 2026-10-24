@@ -19,8 +19,9 @@ articulatedFigure monster_toshiro {
 	body "waist" {
 		joint "origin"
 		mod both
-		model box( ( -2.64, -3.52, -2.20 ), ( 2.64, 3.52, 2.20 ) )
-		origin ( 0.61, 1.30, -0.77 )
+		model box( ( -3.98, -1.45, -1.00 ), ( 3.98, 1.45, 1.00 ) )
+		angles ( -18.2, 29.9, -9.7 )
+		origin ( -0.40, -1.71, 0.73 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +32,9 @@ articulatedFigure monster_toshiro {
 	body "chest" {
 		joint "Waist"
 		mod both
-		model box( ( -3.00, -3.41, -5.05 ), ( 3.00, 3.41, 5.05 ) )
-		origin ( -0.50, -0.05, 3.99 )
+		model box( ( -8.48, -4.86, -3.91 ), ( 8.48, 4.86, 3.91 ) )
+		angles ( -67.2, 13.1, -19.0 )
+		origin ( 1.85, -0.99, 5.96 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +45,9 @@ articulatedFigure monster_toshiro {
 	body "head" {
 		joint "Loneck"
 		mod both
-		model box( ( -3.90, -3.79, -4.35 ), ( 3.90, 3.79, 4.35 ) )
-		origin ( 4.53, -0.83, 14.90 )
+		model box( ( -3.20, -2.95, -2.84 ), ( 3.20, 2.95, 2.84 ) )
+		angles ( -59.5, -0.5, -57.7 )
+		origin ( 6.15, -0.33, 16.52 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -55,8 +58,9 @@ articulatedFigure monster_toshiro {
 	body "Luparm" {
 		joint "Luparm"
 		mod both
-		model bone( ( 3.05, 3.75, 9.27 ), ( 2.32, 5.27, 5.05 ), 3.18 )
-		origin ( 2.69, 4.51, 7.16 )
+		model box( ( -3.90, -1.00, -1.00 ), ( 3.90, 1.00, 1.00 ) )
+		angles ( -25.5, -18.3, 139.0 )
+		origin ( 0.70, 6.43, 10.06 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +71,9 @@ articulatedFigure monster_toshiro {
 	body "Lloarm" {
 		joint "Lloarm"
 		mod both
-		model bone( ( 2.32, 5.27, 5.05 ), ( 8.07, 7.05, 0.21 ), 4.87 )
-		origin ( 5.19, 6.16, 2.63 )
+		model box( ( -2.47, -1.78, -1.00 ), ( 2.47, 1.78, 1.00 ) )
+		angles ( -3.4, 24.3, -30.9 )
+		origin ( 7.42, 6.05, 2.42 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,8 +84,9 @@ articulatedFigure monster_toshiro {
 	body "Lupleg" {
 		joint "Lupleg"
 		mod both
-		model bone( ( -0.57, 2.78, -1.53 ), ( 0.72, 2.77, -10.04 ), 2.65 )
-		origin ( 0.07, 2.78, -5.78 )
+		model box( ( -3.45, -2.70, -1.75 ), ( 3.45, 2.70, 1.75 ) )
+		angles ( -13.6, 98.7, -176.7 )
+		origin ( -1.20, -0.22, -3.26 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -91,8 +97,9 @@ articulatedFigure monster_toshiro {
 	body "Lloleg" {
 		joint "Lloleg"
 		mod both
-		model bone( ( 0.72, 2.77, -10.04 ), ( -0.96, 2.75, -21.95 ), 2.65 )
-		origin ( -0.12, 2.76, -16.00 )
+		model box( ( -7.20, -4.34, -2.97 ), ( 7.20, 4.34, 2.97 ) )
+		angles ( -76.9, -16.7, -69.7 )
+		origin ( 1.98, 3.41, -17.47 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -103,8 +110,9 @@ articulatedFigure monster_toshiro {
 	body "Ruparm" {
 		joint "Ruparm"
 		mod both
-		model bone( ( 2.66, -0.06, 10.64 ), ( 2.13, -6.27, 10.78 ), 4.36 )
-		origin ( 2.40, -3.16, 10.71 )
+		model box( ( -4.26, -2.35, -1.00 ), ( 4.26, 2.35, 1.00 ) )
+		angles ( -37.7, -24.4, 32.7 )
+		origin ( -0.11, -5.93, 9.20 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +123,9 @@ articulatedFigure monster_toshiro {
 	body "Rloarm" {
 		joint "Rloarm"
 		mod both
-		model bone( ( 2.13, -6.27, 10.78 ), ( -1.23, -8.85, 4.33 ), 5.20 )
-		origin ( 0.45, -7.56, 7.55 )
+		model box( ( -2.68, -1.28, -1.10 ), ( 2.68, 1.28, 1.10 ) )
+		angles ( -70.7, 47.4, -172.8 )
+		origin ( 0.46, -6.28, 4.86 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +136,9 @@ articulatedFigure monster_toshiro {
 	body "Rupleg" {
 		joint "Rupleg"
 		mod both
-		model bone( ( -1.91, 0.16, -1.53 ), ( 1.03, -0.95, -10.04 ), 2.65 )
-		origin ( -0.44, -0.39, -5.78 )
+		model box( ( -2.38, -1.39, -1.00 ), ( 2.38, 1.39, 1.00 ) )
+		angles ( -64.5, -169.9, 121.9 )
+		origin ( 2.28, -5.78, -3.54 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +149,9 @@ articulatedFigure monster_toshiro {
 	body "Rloleg" {
 		joint "Rloleg"
 		mod both
-		model bone( ( 1.03, -0.95, -10.04 ), ( -0.28, -2.30, -21.95 ), 2.65 )
-		origin ( 0.38, -1.62, -16.00 )
+		model box( ( -6.96, -4.26, -3.03 ), ( 6.96, 4.26, 3.03 ) )
+		angles ( -86.0, 53.1, 28.9 )
+		origin ( 1.35, -3.20, -17.15 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
