@@ -26,6 +26,9 @@ becomes a pose, its animations (named by the frame names) the IQM's.
 	python3 tools/rig/creature_rig.py <md3> <out base> <name> [--bones N] [--anims "<anim> <fps> [loop];..."]
 		[--surface metal]
 (--bones: merge the parts that move most alike until there are no more than N;
+--seeds N: parts to start with (default 40; more for small parts that
+move on their own: the thunderskeet's thin wings); --merge F: parts that move alike within F of the size are one (default
+0.010; less, more bones: the thunderskeet's twisting wings and tail);
 --surface metal: a robot, its hits spark; --no-hitbox a,b: no hitbox on those
 joints, shots go through what they carry: the cambot's thin antenna)
 	python3 tools/rig/creature_rig.py dkres/models/e1/m_frog.md3 dkres/models/rigged/frog froginator \\
@@ -45,6 +48,7 @@ sys.path.insert( 0, os.path.dirname( __file__ ) )
 import autorig as A
 from autorig import vsub, vadd, vscale, vdot, vlen, vnorm, mvec, rigid_fit, xform, eigen3, IDENT
 from md3 import MD3
+import af_refit
 
 SEEDS = 40				# parts to start with
 SAMPLE_STEP = 3			# every third frame fits the motions (all of them adds little)
@@ -402,19 +406,24 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 				ac = vsub( pa, pc )
 				num += vdot( ac, vsub( frames[f][i], pc ) )
 				den += vdot( ac, ac )
-			w = 1.0 if den < 1e-9 else max( 0.5, min( 1.0, num / den ) )
+			# (less than half its own: the other's, blended with its own; the
+			# thunderskeet's wing roots, in his body's part, move as his wings)
+			w = 1.0 if den < 1e-9 else max( 0.0, min( 1.0, num / den ) )
 			err = 0.0
 			for f in sample:
 				pt = vadd( vscale( xform( jmotion[b][f], rest[i] ), w ), vscale( xform( jmotion[o][f], rest[i] ), 1 - w ) )
 				d = vsub( pt, frames[f][i] )
 				err += vdot( d, d )
 			if best[3] is None or err < best[3]:
-				best = ( b, o, w, err )
+				best = ( b, o, w, err ) if w >= 0.5 else ( o, b, 1 - w, err )
 		weights.append( best[:3] if best[3] is not None else ( b, b, 1.0 ) )
 	# welded places skin alike (the group's first's weights)
 	for g, ms in members.items():
 		for i in ms:
 			weights[i] = weights[ms[0]]
+	# each vertex its bone as skinned (a wing's root, in the body's part, the
+	# wing's): its hitbox's and its ragdoll body's
+	jassign = [ weights[i][0] for i in range( N ) ]
 
 	# the error of the skinned frames
 	total = maxErr = 0.0
@@ -680,17 +689,20 @@ def write_af( name, joints, rest, assign, S ):
 			width = max( 2 * minHalf, 2 * 0.9 * ds[int( 0.7 * ( len( ds ) - 1 ) )] )
 			model = "bone( %s, %s, %.2f )" % ( vec( a ), vec( b ), width )
 			origin = vscale( vadd( a, b ), 0.5 )
+			angles = None
 		else:
-			lo = [ min( p[k] for p in pts ) for k in range( 3 ) ]
-			hi = [ max( p[k] for p in pts ) for k in range( 3 ) ]
-			origin = [ 0.5 * ( lo[k] + hi[k] ) for k in range( 3 ) ]
-			h = [ max( minHalf, 0.5 * ( hi[k] - lo[k] ) * 0.85 ) for k in range( 3 ) ]
+			# the box about its points along their own axes (the
+			# thunderskeet's wings: thin, tilted, their box square to him
+			# took half of them)
+			origin, h, axes = af_refit.obb( pts )
+			angles, h = af_refit.box_angles( bodyName[j], axes, h )
+			h = [ max( minHalf, x ) for x in h ]
 			model = "box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )" % ( -h[0], -h[1], -h[2], h[0], h[1], h[2] )
 		lines.extend( [ "	body \"%s\" {" % bodyName[j],
 						# the body's (the root's) moves the origin, as Doom 3 wants
 						"		joint \"%s\"" % ( "origin" if joint["parentIndex"] == 0 else joint["name"] ),
 						"		mod orientation",
-						"		model %s" % model,
+						"		model %s" % model ] + ( [ "		angles ( %.1f, %.1f, %.1f )" % tuple( angles ) ] if angles else [] ) + [
 						"		origin %s" % vec( origin ),
 						"		density 0.2",
 						"		friction 0.01, 0.01, 0.8",
@@ -748,6 +760,14 @@ if __name__ == "__main__":
 		surface = args[i + 1]
 		args = args[:i] + args[i + 2:]
 	noHitbox = ()
+	if "--seeds" in args:
+		i = args.index( "--seeds" )
+		SEEDS = int( args[i + 1] )
+		args = args[:i] + args[i + 2:]
+	if "--merge" in args:
+		i = args.index( "--merge" )
+		MERGE = float( args[i + 1] )
+		args = args[:i] + args[i + 2:]
 	if "--no-hitbox" in args:
 		i = args.index( "--no-hitbox" )
 		noHitbox = tuple( args[i + 1].split( "," ) )

@@ -2938,6 +2938,71 @@
 		},
 		"iqm": "models/rigged/mwskny.iqm"
 	},
+	"model_thunderskeet": {
+		"anims": {
+			"amba": {
+				"date": "2026-10-24",
+				"fingerprint": "ff9ab0dc6b3c89f1",
+				"fit": [
+					0.317,
+					2.25
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"ataka": {
+				"date": "2026-10-24",
+				"fingerprint": "0e21640edfb86513",
+				"fit": [
+					0.848,
+					5.45
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"diea": {
+				"date": "2026-10-24",
+				"fingerprint": "232e3819144a6604",
+				"fit": [
+					1.722,
+					14.8
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"flya": {
+				"date": "2026-10-24",
+				"fingerprint": "ff9ab0dc6b3c89f1",
+				"fit": [
+					0.317,
+					2.25
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"hita": {
+				"date": "2026-10-24",
+				"fingerprint": "aa9e9039bd37a362",
+				"fit": [
+					0.771,
+					8.96
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"hitb": {
+				"date": "2026-10-24",
+				"fingerprint": "05b3dab987e86e1a",
+				"fit": [
+					1.172,
+					10.82
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/tskeet.iqm"
+	},
 	"model_toshiro": {
 		"anims": {
 			"coffin": {
