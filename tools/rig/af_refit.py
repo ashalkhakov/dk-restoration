@@ -18,10 +18,22 @@ principal ones, the longest first), turned by the body's "angles":
 	- an upper arm or a thigh its bone's; a forearm with its hand's, a shin
 	  with its ankle's.
 A vertex counts for the bone it's on; an extra bone's (a robe's, a point's)
-and a prop's for none: the body, not its clothes. "mod both" keeps each joint
+and a prop's for none: the body, not its clothes. With --extras an extra
+bone's counts for the body bone it hangs from (the ninja's legs are point
+bones, Hiro's fingers bones of their own), but those named with --except
+(a tunic, a ponytail: names they start with) and a prop's. --along-bones
+lays a limb's box along its bone, joint to joint, its vertexes' axes only
+across it (a shoulder pad or a hand tilted Hiro's arms' principal axes);
+--neck-to-head counts the neck's bone for the head, not the chest (Hiro's
+carries half his head); --shoulders-to-arms gives the chest's bone out past
+an upper arm's inner side to that upper arm, the chest only between them
+(Hiro's pads made his chest's box cover his arms); --feet gives each foot a
+body of its own and an ankle joint to its shin, the shin's box its own
+bone's (his shins' took his feet). "mod both" keeps each joint
 where it is on its body, so a body needn't lie between its joints.
 
 	python3 tools/rig/af_refit.py model_toshiro
+	python3 tools/rig/af_refit.py --extras --except Ponytail --along-bones --neck-to-head --shoulders-to-arms --feet model_hiro
 
 writes out/rig/af/<name>.af, for the user to validate (./dk viewer shows it
 beside the kept one) and copy over.
@@ -49,15 +61,29 @@ for s_ in "LR":
 def cross( a, b ):
 	return ( a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0] )
 
-def obb( ps ):
+def obb( ps, along = None ):
 	"""the box about the points along their principal axes: its centre, its
 	half sizes and its axes (forward, left, up: right-handed, the longest
-	first)"""
+	first); along a direction given, forward that one (a limb's bone) and
+	the others the points' principal ones across it"""
 	c = [ sum( p[k] for p in ps ) / len( ps ) for k in range( 3 ) ]
-	cov = [ [ sum( ( p[r] - c[r] ) * ( p[s] - c[s] ) for p in ps ) for s in range( 3 ) ] for r in range( 3 ) ]
-	vals, vecs = ar.eigen3( cov )
-	order = sorted( range( 3 ), key = lambda k: -vals[k] )
-	f, l = vecs[order[0]], vecs[order[1]]
+	if along:
+		n = math.sqrt( sum( x * x for x in along ) )
+		f = [ x / n for x in along ]
+		flat = [ [ p[k] - c[k] - sum( ( p[i] - c[i] ) * f[i] for i in range( 3 ) ) * f[k] for k in range( 3 ) ] for p in ps ]
+		cov = [ [ sum( q[r] * q[s] for q in flat ) for s in range( 3 ) ] for r in range( 3 ) ]
+		vals, vecs = ar.eigen3( cov )
+		l = max( ( vecs[k] for k in range( 3 ) if abs( sum( vecs[k][i] * f[i] for i in range( 3 ) ) ) < 0.5 ),
+				 key = lambda v: sum( sum( q[i] * v[i] for i in range( 3 ) ) ** 2 for q in flat ) )
+		d = sum( l[i] * f[i] for i in range( 3 ) )
+		l = [ l[i] - d * f[i] for i in range( 3 ) ]
+		n = math.sqrt( sum( x * x for x in l ) )
+		l = [ x / n for x in l ]
+	else:
+		cov = [ [ sum( ( p[r] - c[r] ) * ( p[s] - c[s] ) for p in ps ) for s in range( 3 ) ] for r in range( 3 ) ]
+		vals, vecs = ar.eigen3( cov )
+		order = sorted( range( 3 ), key = lambda k: -vals[k] )
+		f, l = vecs[order[0]], vecs[order[1]]
 	u = cross( f, l )
 	axes = ( f, l, u )
 	lo, hi = [], []
@@ -87,7 +113,41 @@ def axes_of( angles ):
 	u = ( cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, cr * cp )
 	return f, tuple( -x for x in right ), u
 
-def main( defName ):
+def add_feet( af, pts, P, report ):
+	"""a body for each foot (its ankle's bone's vertexes), on joint
+	X ankle_r, and an ankle joint to its shin: a universal joint at the
+	ankle, its cone about the shin (Hiro's shins' boxes took his feet)"""
+	for s_ in "LR":
+		foot, shin = s_ + "foot", s_ + "loleg"
+		ps = pts( ( s_ + "ankle_r", ) )
+		if len( ps ) < 4 or ( 'body "%s"' % foot ) in af:
+			continue
+		c, h, axes = obb( ps )
+		ang = angles_of( axes )
+		mod = re.search( r'body "%s" \{.*?mod (\w+)' % shin, af, re.S ).group( 1 )
+		a, b = P[shin], P[s_ + "ankle_r"]
+		d = [ b[k] - a[k] for k in range( 3 ) ]
+		n = math.sqrt( sum( x * x for x in d ) )
+		d = [ x / n for x in d ]
+		body = ( '\tbody "%s" {\n\t\tjoint "%s"\n\t\tmod %s\n'
+				 '\t\tmodel box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )\n\t\tangles ( %.1f, %.1f, %.1f )\n'
+				 '\t\torigin ( %.2f, %.2f, %.2f )\n\t\tdensity 0.2\n\t\tfriction 0.01, 0.01, 0.8\n\t\tcontents corpse\n'
+				 '\t\tclipMask solid, corpse\n\t\tselfCollision 1\n\t}\n\n'
+				 % ( foot, s_ + "ankle_r", mod, -h[0], -h[1], -h[2], h[0], h[1], h[2], *ang, *c ) )
+		joint = ( '\tuniversalJoint "%sankle" {\n\t\tbody1 "%s"\n\t\tbody2 "%s"\n\t\tanchor joint( "%s" )\n'
+				  '\t\tshafts ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f )\n\t\tfriction 0.20\n'
+				  '\t\tconeLimit ( %.2f, %.2f, %.2f ), 45\n\t}\n'
+				  % ( s_, foot, shin, s_ + "ankle_r", *d, *[ -x for x in d ], *d ) )
+		# the body after its shin's, the joint after the last constraint
+		m = re.search( r'\tbody "%s" \{.*?\n\t\}\n\n?' % shin, af, re.S )
+		af = af[:m.end()] + body + af[m.end():]
+		last = af.rstrip().rfind( "\n}" )
+		af = af[:last + 1] + joint + af[last + 1:]
+		report.append( "  %-7s %3d vertexes: %.1f x %.1f x %.1f, a body of its own, an ankle joint to %s"
+					   % ( foot, len( ps ), 2 * h[0], 2 * h[1], 2 * h[2], shin ) )
+	return af
+
+def main( defName, extras = False, excepted = (), alongBones = False, neckToHead = False, shouldersToArms = False, feet = False ):
 	info = rc.model_info( defName )
 	if not info:
 		sys.exit( "%s: no rigged model def" % defName )
@@ -105,17 +165,57 @@ def main( defName ):
 		local = ( rc.mat( jt.rotate, jt.scale ), jt.translate )
 		bind.append( local if jt.parent < 0 else rc.compose( bind[jt.parent], local ) )
 	P = { n: bind[i][1] for i, n in enumerate( names ) }
-	owner = [ names[rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )]] for v in range( len( rig.pos ) ) ]
-	owner = [ o if o in TEMPLATE else None for o in owner ]
+	def counts( j ):
+		while j >= 0:
+			n = names[j]
+			if n in TEMPLATE:
+				return n
+			if not extras or n.startswith( "Auto_" ) or any( n.startswith( e ) for e in excepted ):
+				return None
+			j = q.joints[j].parent
+		return None
+	owner = [ counts( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] ) for v in range( len( rig.pos ) ) ]
 	pts = lambda ns: [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] in ns ]
 	limbs = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand", "upleg", "loleg", "ankle_r" ) ]
 	trunk = [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in limbs ]
 
+	# across the shoulders: a point's place from the right shoulder's joint
+	# to the left's, 0 at the right and 1 at the left
+	sr, sl = P["Ruparm"], P["Luparm"]
+	across = [ sl[k] - sr[k] for k in range( 3 ) ]
+	A2 = sum( x * x for x in across ) or 1e-9
+	def side( p ):
+		return sum( ( p[k] - sr[k] ) * across[k] for k in range( 3 ) ) / A2
 	def body_points( bname ):
 		if bname == "waist":
 			z0, z1 = sorted( ( P["Hips"][2], P["Waist"][2] ) )
 			return [ p for p in trunk if z0 <= p[2] <= z1 ]
-		return pts( BONES.get( bname, ( bname, ) ) )
+		if neckToHead and bname in ( "chest", "head" ):
+			# (the neck's bone carrying half the head: Hiro's)
+			ps = pts( ( "Waist", "Chest" ) if bname == "chest" else ( "Loneck", "Head" ) )
+		else:
+			ps = pts( BONES.get( bname, ( bname, ) ) if not ( feet and bname[1:] == "loleg" ) else ( bname, ) )
+		if shouldersToArms:
+			# the chest's bone out past an upper arm's inner side is that
+			# shoulder (Hiro's pads): the upper arm's, the chest only between
+			# the two (his shoulders' joints are in the middle of his arms)
+			chest = pts( ( "Chest", ) )
+			inR = max( side( p ) for p in pts( ( "Ruparm", ) ) )
+			inL = min( side( p ) for p in pts( ( "Luparm", ) ) )
+			if bname == "chest":
+				ps = [ p for p in ps if inR <= side( p ) <= inL ]
+			elif bname == "Luparm":
+				ps = ps + [ p for p in chest if side( p ) > inL ]
+			elif bname == "Ruparm":
+				ps = ps + [ p for p in chest if side( p ) < inR ]
+		return ps
+	# a limb's bone: from its joint to the next one down the limb
+	NEXT = { "uparm": "loarm", "loarm": "hand", "upleg": "loleg", "loleg": "ankle_r" }
+	def bone_dir( bname ):
+		if not alongBones or bname[1:] not in NEXT:
+			return None
+		a, b = P[bname], P[bname[0] + NEXT[bname[1:]]]
+		return [ b[k] - a[k] for k in range( 3 ) ]
 
 	report = []
 	out, pos = [], 0
@@ -124,7 +224,7 @@ def main( defName ):
 		out.append( af[pos:m.start()] )
 		ps = body_points( bname )
 		if len( ps ) >= 4:
-			c, h, axes = obb( ps )
+			c, h, axes = obb( ps, bone_dir( bname ) )
 			ang = angles_of( axes )
 			back = axes_of( ang )
 			assert max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6, bname
@@ -140,6 +240,8 @@ def main( defName ):
 		out.append( block )
 		pos = m.end()
 	out.append( af[pos:] )
+	if feet:
+		out = [ add_feet( "".join( out ), pts, P, report ) ]
 	dst = os.path.join( ROOT, "out", "rig", "af", afName + ".af" )
 	os.makedirs( os.path.dirname( dst ), exist_ok = True )
 	with open( dst, "w" ) as fp:
@@ -149,7 +251,28 @@ def main( defName ):
 	print( "  wrote %s" % os.path.relpath( dst, ROOT ) )
 
 if __name__ == "__main__":
-	if len( sys.argv ) != 2:
+	args = sys.argv[1:]
+	extras = "--extras" in args
+	if extras:
+		args.remove( "--extras" )
+	excepted = []
+	while "--except" in args:
+		i = args.index( "--except" )
+		excepted.append( args[i + 1] )
+		args = args[:i] + args[i + 2:]
+	alongBones = "--along-bones" in args
+	if alongBones:
+		args.remove( "--along-bones" )
+	neckToHead = "--neck-to-head" in args
+	if neckToHead:
+		args.remove( "--neck-to-head" )
+	shouldersToArms = "--shoulders-to-arms" in args
+	if shouldersToArms:
+		args.remove( "--shoulders-to-arms" )
+	feet = "--feet" in args
+	if feet:
+		args.remove( "--feet" )
+	if len( args ) != 1:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( sys.argv[1] )
+	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet )
