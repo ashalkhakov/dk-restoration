@@ -28,6 +28,9 @@ points at its vertexes' middle as they move ("aim <part>": at that part's,
 a forearm at its hand; "aim @<r>": at the vertexes within r of the
 segment's end, a thigh at its knee's ring), turned about its length as
 their fit is.
+"at" on a part's line places the bone's joint at its segment's start (autorig
+put Usagi's knee outside his leg); "from <bone>..." takes only the vertexes
+skinned under those bones (his hands rest on his thighs).
 Every other joint stays where it was in each frame (its local transform
 made again under a moved parent; the others' data as they were, bit for
 bit).
@@ -57,11 +60,15 @@ def seg_dist( p, a, b ):
 
 def read_parts( path ):
 	"""a parts file: each line a bone, its segment (x y z x y z) and its
-	words: "aim [part]", "r <reach>" """
+	words: "aim [part]", "r <reach>", "at"; or "from <bone>...": only the
+	vertexes skinned under those bones are parts"""
 	parts, aims, reach = {}, {}, {}
+	opts = { "from": [], "at": set(), "box": {} }
 	for line in open( path ):
 		w = line.split( "#" )[0].split()
-		if w:
+		if w and w[0] == "from":
+			opts["from"] += w[1:]
+		elif w:
 			v = [ float( x ) for x in w[1:7] ]
 			parts[w[0]] = ( v[0:3], v[3:6] )
 			i = 7
@@ -69,17 +76,34 @@ def read_parts( path ):
 				if w[i] == "r":
 					reach[w[0]] = float( w[i + 1] )
 					i += 2
+				elif w[i] == "at":
+					opts["at"].add( w[0] )
+					i += 1
+				elif w[i] == "box":
+					# (af_refit's: the box starts here, not at the joint)
+					opts["box"][w[0]] = [ float( x ) for x in w[i + 1:i + 4] ]
+					i += 4
 				elif w[i] == "aim":
-					named = i + 1 < len( w ) and w[i + 1] not in ( "aim", "r" )
+					named = i + 1 < len( w ) and w[i + 1] not in ( "aim", "r", "at", "box" )
 					aims[w[0]] = ( float( w[i + 1][1:] ) if w[i + 1].startswith( "@" ) else w[i + 1] ) if named else w[0]
 					i += 2 if named else 1
 				else:
 					sys.exit( "%s: what is %s?" % ( path, w[i] ) )
-	return parts, aims, reach
+	return parts, aims, reach, opts
 
-def nearest( p, parts, reach ):
-	"""the part a point is: the nearest whose reach it's in"""
-	return min( ( b for b in parts if seg_dist( p, *parts[b] ) <= reach.get( b, 1e9 ) ), key = lambda b: seg_dist( p, *parts[b] ) )
+def nearest( p, parts, reach, among = None ):
+	"""the part a point is: the nearest whose reach it's in (None: none's), of
+	the parts among (default: all)"""
+	return min( ( b for b in ( among if among is not None else parts ) if seg_dist( p, *parts[b] ) <= reach.get( b, 1e9 ) ),
+				key = lambda b: seg_dist( p, *parts[b] ), default = None )
+
+def from_root( j, names, parent, roots ):
+	"""the "from" bone a joint is under (None: none)"""
+	while j >= 0:
+		if names[j] in roots:
+			return names[j]
+		j = parent[j]
+	return None
 
 def swing( a, b ):
 	"""the least rotation taking the direction a to b"""
@@ -104,7 +128,7 @@ def aimed( fit, aimFit, start, src, carried ):
 	return r, tuple( hip[i] - sum( r[i][k] * start[k] for k in range( 3 ) ) for i in range( 3 ) )
 
 def main( path, partsPath ):
-	parts, aims, reach = read_parts( partsPath )
+	parts, aims, reach, opts = read_parts( partsPath )
 	d = open( path, "rb" ).read()
 	h = list( struct.unpack_from( "<27I", d, 16 ) )
 	( version, filesize, flags, numText, ofsText, numMeshes, ofsMeshes, numVA, numVerts, ofsVA,
@@ -128,8 +152,19 @@ def main( path, partsPath ):
 				return True
 			j = parent[j]
 		return False
-	part = [ None if prop( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] )
-			 else nearest( rig.pos[v], parts, reach ) for v in range( N ) ]
+	# (with "from": a vertex a part of its own limb's only, the "from" bone
+	# both are under: Usagi's hands resting on his thighs)
+	top = lambda v: rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )]
+	root = lambda j: from_root( j, names, parent, opts["from"] )
+	limb = { b: root( names.index( b ) ) for b in parts if b in names }
+	def part_of( v ):
+		if prop( top( v ) ):
+			return None
+		if not opts["from"]:
+			return nearest( rig.pos[v], parts, reach )
+		r = root( top( v ) )
+		return nearest( rig.pos[v], parts, reach, [ b for b in parts if r and limb.get( b ) == r ] )
+	part = [ part_of( v ) for v in range( N ) ]
 
 	B = []
 	for j, jt in enumerate( q.joints ):
@@ -158,7 +193,8 @@ def main( path, partsPath ):
 			continue
 		err = sum( math.dist( rc.apply( rc.compose( W[f][j], rc.invert( B[j] ) ), rig.pos[v] ), frames[f][v] )
 				   for f in range( numFrames ) for v in vs ) / ( numFrames * len( vs ) )
-		if err <= BAD and b not in aims:
+		byHand = b in aims or b in opts["at"]		# (placed by hand: moved as its part whatever)
+		if err <= BAD and not byHand:
 			continue
 		src = [ rig.pos[v] for v in vs ]
 		motion = [ rigid_fit( src, [ frames[f][v] for v in vs ] ) for f in range( numFrames ) ]
@@ -168,7 +204,8 @@ def main( path, partsPath ):
 			carried = [ refit[p][f] if p in refit else rc.compose( W[f][p], rc.invert( B[p] ) ) for f in range( numFrames ) ]
 			if isinstance( aims[b], float ):
 				# (the vertexes about the segment's end, whatever part: a knee's ring)
-				ts = [ v for v in range( N ) if part[v] and math.dist( rig.pos[v], parts[b][1] ) <= aims[b] ]
+				ts = [ v for v in range( N ) if part[v] and limb.get( part[v] ) == limb.get( b )
+					   and math.dist( rig.pos[v], parts[b][1] ) <= aims[b] ]
 			else:
 				ts = [ v for v in range( N ) if part[v] == aims[b] ]
 			tsrc = [ rig.pos[v] for v in ts ]
@@ -177,7 +214,7 @@ def main( path, partsPath ):
 		after = sum( math.dist( rc.apply( motion[f], rig.pos[v] ), frames[f][v] )
 					 for f in range( numFrames ) for v in vs ) / ( numFrames * len( vs ) )
 		blocked = scaled( j ) or any( scaled( k ) for k in range( numJoints ) if parent[k] == j )
-		if ( after < GAIN * err or b in aims ) and not blocked:	# (an aim placed by hand)
+		if ( after < GAIN * err or byHand ) and not blocked:
 			refit[j] = motion
 		print( "  %-9s carried its part (%d vertexes) %.2f off on average; as the part moves, %.2f%s" % ( b, len( vs ), err, after,
 			   "" if j in refit else ( ": kept (scaled)" if blocked else ": kept (no better)" ) ) )
@@ -202,6 +239,23 @@ def main( path, partsPath ):
 		rec = bytearray( jointRecs[j] )
 		struct.pack_into( "<I", rec, 0, nameOfs[t] )
 		jointRecs.append( rec )
+	# "at": a moved bone's joint where its part starts (the twin keeps the old
+	# place, the mesh's); the rest pose of it and of the joints on it made
+	# again, every other's world place in it kept
+	newB = list( B )
+	for j in refit:
+		if names[j] in opts["at"]:
+			newB[j] = ( B[j][0], tuple( parts[names[j]][0] ) )
+	for k in range( numJoints ):
+		if newB[k] is not B[k] or ( parent[k] >= 0 and newB[parent[k]] is not B[parent[k]] ):
+			local = newB[k] if parent[k] < 0 else rc.compose( rc.invert( newB[parent[k]] ), newB[k] )
+			struct.pack_into( "<3f4f3f", jointRecs[k], 8, *local[1], *mat_to_quat( local[0] ), 1.0, 1.0, 1.0 )
+	for j, t in twin.items():
+		# (a twin where its bone now is, moving as the bone did: the mesh
+		# needs only its motion, and no joint stays out of the body)
+		if newB[j] is not B[j] or ( parent[j] >= 0 and newB[parent[j]] is not B[parent[j]] ):
+			local = newB[j] if parent[j] < 0 else rc.compose( rc.invert( newB[parent[j]] ), newB[j] )
+			struct.pack_into( "<3f4f3f", jointRecs[t], 8, *local[1], *mat_to_quat( local[0] ), 1.0, 1.0, 1.0 )
 	jparent = parent + [ parent[j] for j in sorted( twin ) ]
 
 	# each frame: the moved bones' world transforms, the twins' the old ones;
@@ -211,8 +265,8 @@ def main( path, partsPath ):
 	for f in range( numFrames ):
 		nw = list( W[f] )
 		for j, motion in refit.items():
-			nw[j] = rc.compose( motion[f], B[j] )
-		nw += [ W[f][j] for j in sorted( twin ) ]
+			nw[j] = rc.compose( motion[f], newB[j] )
+		nw += [ rc.compose( rc.compose( W[f][j], rc.invert( B[j] ) ), newB[j] ) for j in sorted( twin ) ]
 		newWorld.append( nw )
 	touched = sorted( set( refit ) | set( k for k in range( numJoints ) if parent[k] in refit ) | set( twin.values() ) )
 	vals = { k: [] for k in touched }

@@ -1,0 +1,29 @@
+# Usagi's legs, placed by hand for tools/rig/iqm_parts.py, in his rest pose
+# (his first frame): a bone and the segment along the part of him it should
+# carry, from x y z to x y z (z up, his front +x, his left +y).
+#
+# His thighs have hardly a vertex of their own, so autorig moved them with
+# his hips (never turning) and put his left knee's joint outside his leg,
+# the shin carrying the whole leg about it. Each leg bone here moves as its
+# part does ("at": its joint where the part starts, the knee in the knee),
+# the thighs aiming at their knees' rings ("aim @3": the vertexes within 3
+# of the segment's end). His hands rest on his thighs: only the vertexes
+# skinned under his hips are parts ("from Hips"), "r" keeping each part to
+# its own. His right upper arm carried no vertex (it moved with his chest);
+# each arm's bones move as its upper arm, forearm and hand. "box": a thigh's
+# box starts at his belt (his trousers' legs), its joint at the hip below.
+
+from Hips Ruparm Luparm
+
+Lupleg     0.0  1.3   2.0    1.6  1.6  -6.4   r 5   aim @4   at   box -1.2  0.4  6.0
+Lloleg     1.6  1.6  -6.4   -2.4  3.7 -20.6   r 3.8   at
+Lankle_r  -2.4  3.7 -20.6    2.5  3.8 -23.5   r 5   at
+Rupleg     0.4 -9.5   2.0    2.4 -8.9  -6.2   r 5   aim @4   at   box -1.4 -7.5  6.0
+Rloleg     2.4 -8.9  -6.2   -3.2 -10.2 -20.1  r 5   at
+Rankle_r  -3.2 -10.2 -20.1   1.6 -10.5 -23.5  r 5   at
+Ruparm    -0.3 -10.3  16.0    0.0 -11.2   8.5   r 3.5   at
+Rloarm     0.0 -11.2   8.5    0.5 -11.8   3.5   r 3.5   at
+Rhand      0.5 -11.8   3.5    1.5 -11.8  -2.8   r 3.5   at
+Luparm     0.3   2.0  16.5    0.3   3.0  10.5   r 3.5   at
+Lloarm     0.3   3.0  10.5    0.5   3.2   5.5   r 3.5   at
+Lhand      0.5   3.2   5.5    0.5   3.5  -2.5   r 3.5   at

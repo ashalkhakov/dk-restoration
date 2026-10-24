@@ -2335,33 +2335,233 @@
 		"anims": {
 			"ambathnk": {
 				"date": "2026-10-24",
-				"fingerprint": "d081de7ff701c110",
+				"fingerprint": "3d653fd6c37587fe",
 				"fit": [
-					0.212,
-					8.7
+					0.07,
+					1.99
 				],
 				"note": "",
-				"verdict": "broken"
+				"verdict": "valid"
 			},
 			"ambb": {
 				"date": "2026-10-24",
-				"fingerprint": "56f7be04cc2d88ef",
+				"fingerprint": "933f7c92851d9fe8",
 				"fit": [
-					0.192,
-					2.32
+					0.074,
+					0.76
 				],
-				"note": "arms, legs",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
 			},
 			"frga": {
 				"date": "2026-10-24",
-				"fingerprint": "91e3dbfeadb92db0",
+				"fingerprint": "54c52443e70309e9",
 				"fit": [
-					0.483,
-					7.81
+					0.096,
+					1.79
 				],
-				"note": "hammer orientation. leg shape",
-				"verdict": "broken"
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgb": {
+				"date": "2026-10-24",
+				"fingerprint": "915ea32a44072088",
+				"fit": [
+					0.097,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgc": {
+				"date": "2026-10-24",
+				"fingerprint": "bc3b5717e0837073",
+				"fit": [
+					0.094,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgd": {
+				"date": "2026-10-24",
+				"fingerprint": "09718b19f9b1104e",
+				"fit": [
+					0.098,
+					1.78
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgsa": {
+				"date": "2026-10-24",
+				"fingerprint": "343851c0bbd7e557",
+				"fit": [
+					0.093,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgsb": {
+				"date": "2026-10-24",
+				"fingerprint": "1d88b993fbd4ca85",
+				"fit": [
+					0.12,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgsbb": {
+				"date": "2026-10-24",
+				"fingerprint": "2b038d2413c7502b",
+				"fit": [
+					0.121,
+					1.76
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgsc": {
+				"date": "2026-10-24",
+				"fingerprint": "e180571db44c0517",
+				"fit": [
+					0.097,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgsd": {
+				"date": "2026-10-24",
+				"fingerprint": "b587224af447adc8",
+				"fit": [
+					0.095,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"frgse": {
+				"date": "2026-10-24",
+				"fingerprint": "2e828f409cccc613",
+				"fit": [
+					0.08,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"nodd": {
+				"date": "2026-10-24",
+				"fingerprint": "bb807d2b3779106a",
+				"fit": [
+					0.098,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"runa": {
+				"date": "2026-10-24",
+				"fingerprint": "46647d0acb350e5f",
+				"fit": [
+					0.162,
+					1.89
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"sambd": {
+				"date": "2026-10-24",
+				"fingerprint": "9289b10b6bb2f847",
+				"fit": [
+					0.097,
+					1.8
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"sfa": {
+				"date": "2026-10-24",
+				"fingerprint": "e39aef5342d0f241",
+				"fit": [
+					0.09,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"tha": {
+				"date": "2026-10-24",
+				"fingerprint": "8f37f9b499907ebd",
+				"fit": [
+					0.098,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"thnka": {
+				"date": "2026-10-24",
+				"fingerprint": "b77c4f86f477fd79",
+				"fit": [
+					0.099,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"thnkamba": {
+				"date": "2026-10-24",
+				"fingerprint": "9c3f26441936d87f",
+				"fit": [
+					0.07,
+					1.99
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"thnkb": {
+				"date": "2026-10-24",
+				"fingerprint": "b77c4f86f477fd79",
+				"fit": [
+					0.099,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"thnkc": {
+				"date": "2026-10-24",
+				"fingerprint": "f30ac2cf798a15a9",
+				"fit": [
+					0.098,
+					1.6
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walka": {
+				"date": "2026-10-24",
+				"fingerprint": "a2c6f53935c7001c",
+				"fit": [
+					0.053,
+					0.77
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"walks": {
+				"date": "2026-10-24",
+				"fingerprint": "496fc9a5fb0c667b",
+				"fit": [
+					0.067,
+					1.79
+				],
+				"note": "",
+				"verdict": "valid"
 			}
 		},
 		"iqm": "models/rigged/usagi.iqm"

@@ -178,6 +178,8 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	def counts( j ):
 		while j >= 0:
 			n = names[j]
+			if n.endswith( "_skin" ) and n[:-5] in TEMPLATE:
+				return n[:-5]		# (tools/rig/iqm_parts.py's twin: the mesh its bone carried)
 			if n in TEMPLATE:
 				return n
 			if not extras or n.startswith( "Auto_" ) or any( n.startswith( e ) for e in excepted ):
@@ -185,20 +187,31 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 			j = q.joints[j].parent
 		return None
 	owner = [ counts( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] ) for v in range( len( rig.pos ) ) ]
-	parts = {}
+	parts, partsOpts = {}, { "box": {} }
 	if partsPath:
 		# each vertex the part it's nearest, placed by hand (tools/rig/iqm_parts.py's:
 		# the ninja's bones carried the wrong parts of him), a prop's none
 		import iqm_parts
-		parts, _, reach = iqm_parts.read_parts( partsPath )
+		parts, _, reach, opts = iqm_parts.read_parts( partsPath )
+		partsOpts = opts
 		def prop( j ):
 			while j >= 0:
 				if names[j].startswith( "Auto_" ):
 					return True
 				j = q.joints[j].parent
 			return False
-		owner = [ None if prop( rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )] )
-				  else iqm_parts.nearest( rig.pos[v], parts, reach ) for v in range( len( rig.pos ) ) ]
+		# (parts for only some of him, Usagi's limbs: the rest as their skin is;
+		# a vertex a part of its own limb's only)
+		jparent = [ j.parent for j in q.joints ]
+		top = lambda v: rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )]
+		root = lambda j: iqm_parts.from_root( j, names, jparent, opts["from"] )
+		limb = { b: root( names.index( b ) ) for b in parts if b in names }
+		def part_of( v ):
+			if not opts["from"]:
+				return iqm_parts.nearest( rig.pos[v], parts, reach )
+			r = root( top( v ) )
+			return iqm_parts.nearest( rig.pos[v], parts, reach, [ b for b in parts if r and limb.get( b ) == r ] ) if r else None
+		owner = [ None if prop( top( v ) ) else ( part_of( v ) or owner[v] ) for v in range( len( rig.pos ) ) ]
 	pts = lambda ns: [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] in ns ]
 	limbs = [ s_ + n for s_ in "LR" for n in ( "uparm", "loarm", "hand", "upleg", "loleg", "ankle_r" ) ]
 	trunk = [ rig.pos[v] for v in range( len( rig.pos ) ) if owner[v] and owner[v] not in limbs ]
@@ -212,15 +225,25 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		return sum( ( p[k] - sr[k] ) * across[k] for k in range( 3 ) ) / A2
 	# --square-waist: the waist from the crotch to the sash's bottom (its own
 	# bone's lowest vertex), the chest from there up
-	own = lambda v: names[rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )]]
+	own = lambda v: names[rig.bi[v][max( range( 4 ), key = lambda c: rig.bw[v][c] )]].replace( "_skin", "" )
 	sash = min( ( rig.pos[v][2] for v in range( len( rig.pos ) ) if own( v ) == "Waist" ), default = 0.0 )
 	def body_points( bname ):
 		if squareWaist and bname == "chest":
 			return [ p for p in body_points_( bname ) if p[2] >= sash ]
 		return body_points_( bname )
 	def body_points_( bname ):
+		if bname in partsOpts["box"]:
+			# (a box from a point of its own, Usagi's thighs from his belt: what
+			# lies along it, belt to knee, whatever bone carries it; no other
+			# limb's, his hands resting on them)
+			a_, b_ = partsOpts["box"][bname], parts[bname][1]
+			mine = root( names.index( bname ) )
+			return [ rig.pos[v] for v in range( len( rig.pos ) ) if not prop( top( v ) )
+					 and root( top( v ) ) in ( None, mine )
+					 and iqm_parts.seg_dist( rig.pos[v], a_, b_ ) <= reach.get( bname, 5.0 )
+					 and -0.1 <= sum( ( rig.pos[v][k] - a_[k] ) * ( b_[k] - a_[k] ) for k in range( 3 ) ) / sum( ( b_[k] - a_[k] ) ** 2 for k in range( 3 ) ) <= 1.05 ]
 		if bname == "waist":
-			if partsPath:
+			if partsPath and "Hips" in parts:
 				# (the parts placed by hand: the trunk from the crotch to the
 				# belt, the tops of the thighs with it; the arms hanging
 				# beside it not)
@@ -231,11 +254,11 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 			if squareWaist:
 				# (the pelvis' and thighs' own bones', no extra's: his
 				# trousers' flare)
-				return [ rig.pos[v] for v in range( len( rig.pos ) ) if own( v ) in ( "Hips", "Waist", "Lupleg", "Rupleg" )
+				return [ rig.pos[v] for v in range( len( rig.pos ) ) if ( owner[v] if partsPath else own( v ) ) in ( "Hips", "Waist", "Lupleg", "Rupleg" )
 						 and P["Hips"][2] - 3.0 <= rig.pos[v][2] <= sash ]
 			z0, z1 = sorted( ( P["Hips"][2], P["Waist"][2] ) )
 			return [ p for p in trunk if z0 <= p[2] <= z1 ]
-		if partsPath and bname == "chest":
+		if partsPath and bname == "chest" and "Chest" in parts:
 			return pts( ( "Chest", ) )		# (the waist's part the pelvis': the chest its own, along the spine)
 		if neckToHead and bname in ( "chest", "head" ):
 			# (the neck's bone carrying half the head: Hiro's)
@@ -270,6 +293,8 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 		if not alongBones or bname[1:] not in NEXT:
 			return None
 		if partsPath and bname in parts:
+			if bname in partsOpts["box"]:
+				return ( partsOpts["box"][bname], parts[bname][1] )		# (Usagi's thighs: from his belt, his hips' joints below it)
 			return parts[bname]		# (placed by hand: the ninja's elbows' joints are at his shoulders)
 		return ( P[bname], P[bname[0] + NEXT[bname[1:]]] )
 	def bone_dir( bname ):

@@ -339,7 +339,7 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # skeletal IQMs of Daikatana's characters and monsters, into the extracted
 # data (they're made from it), their model defs into def/ and ragdolls into
 # af/ (docs/auto-rigging.md). A line a model:
-#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b] [props=a,b] [follow=bone:joint,joint] [bodyparts=file]
+#   name  rigger  model (under dkres/models)  [bones=N] [extra=N] [fps=N] [iqm=name] [surface=metal] [rest=anim] [rootout=1|a,b] [props=a,b] [follow=bone:joint,joint] [bodyparts=file] [propsplit=joint]
 # riggers: player (tools/rig/autorig.py, Doom 3's human joints: a player
 # character, def/char_<name>.def), human (the same, a monster or another
 # character: def/rig_<name>.def, af/monster_<name>.af; extra= bones at most,
@@ -464,7 +464,7 @@ mikikofly       creature  global/m_mikikofly     bones=32
 # characters only the cinematics have: their richest model
 casseti         human     cinematic/c_casseti_e4m1  iqm=casseti
 gusagi          human     cinematic/c_gusagi_e2m3   iqm=gusagi
-usagi           human     cinematic/c_usagi_intr    iqm=usagi
+usagi           human     cinematic/c_usagi_intr    iqm=usagi props=sword follow=Hips:origin bodyparts=tools/rig/joints/usagi_parts.txt propsplit=Auto_1_prop1
 hirogi          human     cinematic/c_hiro_intr     iqm=hirogi props=sword:turned follow=Waist:origin,Body,Hips
 inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
 ninja           human     cinematic/c_ninja_intr    iqm=ninja props=sword rest=punch rootout=cr,cs,float:z,jpd:z,jpns:z,sfa,sfb:z follow=Hips:origin bodyparts=tools/rig/joints/ninja_parts.txt
@@ -479,7 +479,7 @@ RIG_ANIMS_slaughterskeet="amba 10 loop;ambb 10;ataka 10;atakb 10;diea 10;flya 15
 
 # rigs one model of RIG_MODELS: rig_model <name> <rigger> <model> [key=value...]
 rig_model() {
-	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" front="" eyes="" sounds="" parts="" fullwheels="" wheelscale="" follow="" bodyparts="" iqm anims kv
+	local name=$1 rigger=$2 model=$3 bones=64 extra=8 fps="" surface="" rest="" rootout="" props="" front="" eyes="" sounds="" parts="" fullwheels="" wheelscale="" follow="" bodyparts="" propsplit="" iqm anims kv
 	iqm=$(basename "$model"); iqm=${iqm#m_}
 	shift 3
 	for kv in "$@"; do
@@ -501,6 +501,7 @@ rig_model() {
 			wheelscale=*) wheelscale="--wheel-scale ${kv#wheelscale=}" ;;
 			follow=*) follow=${kv#follow=} ;;
 			bodyparts=*) bodyparts=${kv#bodyparts=} ;;
+			propsplit=*) propsplit=${kv#propsplit=} ;;
 			*) die "$name: what is $kv?" ;;
 		esac
 	done
@@ -530,6 +531,11 @@ rig_model() {
 	# hand (tools/rig/iqm_parts.py; twins carry the mesh): the ninja's
 	if [ -n "$bodyparts" ]; then
 		python3 tools/rig/iqm_parts.py "$out.iqm" "$bodyparts" || return 1
+	fi
+	# a prop that is rigid pieces moving apart split into them
+	# (tools/rig/iqm_props.py): Usagi's hammer and work
+	if [ -n "$propsplit" ]; then
+		python3 tools/rig/iqm_props.py "$(sed -n 's/^entityDef[[:space:]]*\([^[:space:]]*\).*/\1/p' "$stage"/def/*.def | head -1)" "$out.iqm" "$propsplit" || return 1
 	fi
 	if ! grep -q "\"mesh\"[[:space:]]*\"models/rigged/$iqm.iqm\"" "$stage"/def/*.def; then
 		echo "rig not installed: its def doesn't name models/rigged/$iqm.iqm"

@@ -151,7 +151,25 @@ class Source:
 			self.anims.setdefault( name, ( i, 1 ) )
 		self.root = json.load( open( rootPath ) )["anims"] if rootPath and os.path.exists( rootPath ) else {}
 		pts = [ ( si, vi ) for si, s in enumerate( self.m.surfaces ) for vi in range( s.numVerts ) ]
+		# a frame's vertexes by place (an MD3's are 1/64 apart: a rig vertex
+		# exactly on one finds it so, the rest searched for): loading a model
+		# took a minute, every vertex against every one in each frame
+		exact = {}
+		def at( f ):
+			if f not in exact:
+				e = {}
+				for si, vi in pts:
+					a = self.m.surfaces[si].frames[f][vi]
+					e.setdefault( ( round( a[0] * 64 ), round( a[1] * 64 ), round( a[2] * 64 ) ), ( si, vi ) )
+				exact[f] = e
+			return exact[f]
 		def nearest( f, p ):
+			hit = at( f ).get( ( round( p[0] * 64 ), round( p[1] * 64 ), round( p[2] * 64 ) ) )
+			if hit:
+				a = self.m.surfaces[hit[0]].frames[f][hit[1]]
+				d = ( a[0] - p[0] ) ** 2 + ( a[1] - p[1] ) ** 2 + ( a[2] - p[2] ) ** 2
+				if d < 1e-4:
+					return hit, d
 			best, bd = None, 1e18
 			for si, vi in pts:
 				a = self.m.surfaces[si].frames[f][vi]
@@ -163,10 +181,16 @@ class Source:
 		# where the most of its vertexes are exactly (a prop shows elsewhere;
 		# standing frames alike are near, but only the bind's is exact)
 		cands = sorted( set( [ 0 ] + [ a[0] for a in self.anims.values() ] ) )
+		def hits( f ):
+			e = at( f )
+			return sum( 1 for p in rig.pos if ( round( p[0] * 64 ), round( p[1] * 64 ), round( p[2] * 64 ) ) in e )
 		def score( f ):
 			ds = [ nearest( f, p )[1] for p in rig.pos ]
 			return ( -sum( 1 for d in ds if d < 1e-4 ), sum( ds ) )
-		self.rest = min( cands, key = score )
+		# (the frames with the most exactly there, then the full score among them)
+		h = { f: hits( f ) for f in cands }
+		top = max( h.values() )
+		self.rest = min( [ f for f in cands if h[f] >= top - 2 ], key = score )
 		self.match = []
 		for p in rig.pos:
 			m, d = nearest( self.rest, p )
@@ -207,9 +231,13 @@ def load_record():
 	return json.load( open( RECORD ) ) if os.path.exists( RECORD ) else {}
 
 def save_record( rec ):
-	with open( RECORD, "w" ) as fp:
+	# (whole or not at all: a temporary file renamed over it; two saves at
+	# once left an older one's tail after a shorter one)
+	tmp = "%s.%d.%d.tmp" % ( RECORD, os.getpid(), threading.get_ident() )
+	with open( tmp, "w" ) as fp:
 		json.dump( rec, fp, indent = "\t", sort_keys = True )
 		fp.write( "\n" )
+	os.replace( tmp, RECORD )
 
 def model_info( defName ):
 	"""( iqm, md3, root json ) of a model def, game paths, from def/*.def"""
