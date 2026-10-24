@@ -1,0 +1,42 @@
+# The fat worker's ragdoll boxes, for tools/rig/af_refit.py --parts, and his
+# arms' bones, for tools/rig/iqm_parts.py (dk bodyparts=): in his rest pose,
+# z up, his front +x, his left +y.
+#
+# autorig's bones don't lie along his limbs (his hips' joints at y 4.7 and
+# -1.9, his legs at 6 and -5.5; his right upper arm's bone carrying half his
+# chest): each box is what lies along a segment placed by hand, within "r"
+# of it ("box"), whatever bone carries it. His legs: thighs from his crotch
+# to his knees (z -10), shins to his ankles (-20), his feet (their own
+# bodies, --feet) the rest. His arms hang by his sides: upper arms shoulder
+# to elbow (z 10, it out behind him), forearms to his wrists (4), his hands
+# (bodies of their own, --hands) to his fingers (-6.5). His arms' bones carried
+# the wrong parts (his right forearm's at his shoulder, his hands turning
+# away from his forearms in caataa): each arm bone moves as its part, its
+# joint where the part starts ("at"), twins keeping the mesh. His pelvis
+# from his crotch to his belt (z 5), his torso on to his shoulders; his
+# head from his chin to his cap's band (z 27): its brim (out to x 6) and
+# crown left out. His Waist bone moves as his torso, crotch to shoulders
+# (his ragdoll's chest body on it), his pelvis' body on origin following it
+# (dk follow=Waist:origin): origin, Body, Hips and Waist stood still as he
+# sat (aasaa), his pelvis' box left where he'd stood.
+
+from Hips Luparm Ruparm Waist
+
+Lupleg     0.5  5.5   0.0   -0.5  5.5 -10.0   r 4.5   box 0.5 5.5 0.0
+Lloleg    -0.5  5.5 -10.0   -1.0  7.0 -20.0   r 4.5   box -0.5 5.5 -10.0
+Lankle_r  -1.0  7.0 -20.0    5.0  7.4 -24.0   r 5
+Rupleg     0.5 -5.0   0.0   -0.5 -5.0 -10.0   r 4.5   box 0.5 -5.0 0.0
+Rloleg    -0.5 -5.0 -10.0   -1.0 -6.3 -20.0   r 4.5   box -0.5 -5.0 -10.0
+Rankle_r  -1.0 -6.3 -20.0    5.0 -6.5 -24.0   r 5
+
+Luparm    -1.0  9.5  18.5   -4.0 11.3  10.0   r 3.5   at   box -1.0 9.5 18.5
+Lloarm    -4.0 11.3  10.0   -2.0 12.8   4.0   r 3.5   at   box -4.0 11.3 10.0
+Lhand     -2.0 12.8   4.0    0.0 12.5  -6.5   r 3.5   at   box -2.0 12.8 4.0
+Ruparm    -1.0 -9.5  18.5   -4.0 -11.3 10.0   r 3.5   at   box -1.0 -9.5 18.5
+Rloarm    -4.0 -11.3 10.0   -2.0 -12.6  4.0   r 3.5   at   box -4.0 -11.3 10.0
+Rhand     -2.0 -12.6  4.0    0.0 -12.5 -6.5   r 3.5   at   box -2.0 -12.6 4.0
+
+Waist      0.5  0.2  -3.0    0.5  0.2  20.0   r 8
+waist      0.5  0.2  -3.0    0.5  0.2   5.0   r 8.5   box 0.5 0.2 -3.0
+chest      0.5  0.2   5.0    0.5  0.2  21.0   r 8.5   box 0.5 0.2 5.0
+head       0.3  0.2  22.0    0.3  0.2  27.0   r 4.2   box 0.3 0.2 22.0

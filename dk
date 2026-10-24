@@ -371,7 +371,7 @@ superfly        player    global/m_superfly
 # dead bodies
 dead            dead      e1/m_dead
 # episode 1: Kyoto, Mishima's labs and prison
-fatworker       human     e1/m_mwfaty
+fatworker       human     e1/m_mwfaty             follow=Waist:origin bodyparts=tools/rig/joints/fatworker_parts.txt
 skinnyworker    human     e1/m_mwskny             follow=Waist:origin bodyparts=tools/rig/joints/skinnyworker_parts.txt hold=tools/rig/joints/skinnyworker_pda.txt
 surgeon         human     e1/m_mwsurgeon
 labworker       human     e1/m_labworker

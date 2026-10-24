@@ -127,6 +127,40 @@ def aimed( fit, aimFit, start, src, carried ):
 	r = rc.compose( ( swing( turned, [ end[k] - hip[k] for k in range( 3 ) ] ), ( 0, 0, 0 ) ), ( m, ( 0, 0, 0 ) ) )[0]
 	return r, tuple( hip[i] - sum( r[i][k] * start[k] for k in range( 3 ) ) for i in range( 3 ) )
 
+def parents_first( d, after ):
+	"""the IQM d's joints renumbered so that each joint in after (an index:
+	the one it goes after) comes right after that one (the engine makes
+	the joints in their order, a parent before its children): joints,
+	poses, frames' channels and blend indexes alike"""
+	h = list( struct.unpack_from( "<27I", d, 16 ) )
+	numVA, numVerts, ofsVA, numJoints, ofsJoints, numPoses, ofsPoses = h[7], h[8], h[9], h[13], h[14], h[15], h[16]
+	numFrames, numChannels, ofsFrames = h[19], h[20], h[21]
+	order = []
+	for k in range( numJoints ):
+		if k not in after:
+			order.append( k )
+			order += [ t for t in sorted( after ) if after[t] == k ]
+	new = { k: i for i, k in enumerate( order ) }
+	out = bytearray( d )
+	for i, k in enumerate( order ):
+		rec = bytearray( d[ofsJoints + 48 * k:ofsJoints + 48 * k + 48] )
+		par = struct.unpack_from( "<i", rec, 4 )[0]
+		struct.pack_into( "<i", rec, 4, new[par] if par >= 0 else par )
+		out[ofsJoints + 48 * i:ofsJoints + 48 * i + 48] = rec
+		rec = bytearray( d[ofsPoses + 88 * k:ofsPoses + 88 * k + 88] )
+		par = struct.unpack_from( "<i", rec, 0 )[0]
+		struct.pack_into( "<i", rec, 0, new[par] if par >= 0 else par )
+		out[ofsPoses + 88 * i:ofsPoses + 88 * i + 88] = rec
+		for f in range( numFrames ):		# (ten channels a joint)
+			o = ofsFrames + 2 * f * numChannels
+			out[o + 20 * i:o + 20 * i + 20] = d[o + 20 * k:o + 20 * k + 20]
+	for a in range( numVA ):
+		vtype, vflags, fmt, size, ofs = struct.unpack_from( "<5I", d, ofsVA + 20 * a )
+		if vtype == 4:
+			for c in range( ofs, ofs + size * numVerts ):
+				out[c] = new[d[c]]
+	return out
+
 def main( path, partsPath ):
 	parts, aims, reach, opts = read_parts( partsPath )
 	d = open( path, "rb" ).read()
@@ -213,7 +247,7 @@ def main( path, partsPath ):
 			motion = [ aimed( motion[f], target[f], parts[b][0], tsrc, carried[f] ) for f in range( numFrames ) ]
 		after = sum( math.dist( rc.apply( motion[f], rig.pos[v] ), frames[f][v] )
 					 for f in range( numFrames ) for v in vs ) / ( numFrames * len( vs ) )
-		blocked = scaled( j ) or any( scaled( k ) for k in range( numJoints ) if parent[k] == j )
+		blocked = scaled( j )		# (a scaled joint on it hangs from its twin: the fat worker's stretching shoulder)
 		if ( after < GAIN * err or byHand ) and not blocked:
 			refit[j] = motion
 		print( "  %-9s carried its part (%d vertexes) %.2f off on average; as the part moves, %.2f%s" % ( b, len( vs ), err, after,
@@ -246,8 +280,15 @@ def main( path, partsPath ):
 	for j in refit:
 		if names[j] in opts["at"]:
 			newB[j] = ( B[j][0], tuple( parts[names[j]][0] ) )
+	# (a scaled joint on a moved bone hangs from its twin instead, moving as
+	# it did: its rotation and scale its own, only where it hangs from moved;
+	# a scale in its parent's axes can't be made again under a turned one)
+	hang = { k: twin[parent[k]] for k in range( numJoints ) if parent[k] in refit and scaled( k ) }
 	for k in range( numJoints ):
-		if newB[k] is not B[k] or ( parent[k] >= 0 and newB[parent[k]] is not B[parent[k]] ):
+		if k in hang:
+			local = rc.compose( rc.invert( newB[parent[k]] ), B[k] )
+			struct.pack_into( "<i3f", jointRecs[k], 4, hang[k], *local[1] )
+		elif newB[k] is not B[k] or ( parent[k] >= 0 and newB[parent[k]] is not B[parent[k]] ):
 			local = newB[k] if parent[k] < 0 else rc.compose( rc.invert( newB[parent[k]] ), newB[k] )
 			struct.pack_into( "<3f4f3f", jointRecs[k], 8, *local[1], *mat_to_quat( local[0] ), 1.0, 1.0, 1.0 )
 	for j, t in twin.items():
@@ -256,7 +297,7 @@ def main( path, partsPath ):
 		if newB[j] is not B[j] or ( parent[j] >= 0 and newB[parent[j]] is not B[parent[j]] ):
 			local = newB[j] if parent[j] < 0 else rc.compose( rc.invert( newB[parent[j]] ), newB[j] )
 			struct.pack_into( "<3f4f3f", jointRecs[t], 8, *local[1], *mat_to_quat( local[0] ), 1.0, 1.0, 1.0 )
-	jparent = parent + [ parent[j] for j in sorted( twin ) ]
+	jparent = [ hang.get( k, parent[k] ) for k in range( numJoints ) ] + [ parent[j] for j in sorted( twin ) ]
 
 	# each frame: the moved bones' world transforms, the twins' the old ones;
 	# the local transforms of what changed (a moved bone, a joint on one, a
@@ -274,7 +315,11 @@ def main( path, partsPath ):
 		nw = newWorld[f]
 		for k in touched:
 			local = nw[k] if jparent[k] < 0 else rc.compose( rc.invert( nw[jparent[k]] ), nw[k] )
-			vals[k].append( list( local[1] ) + list( mat_to_quat( local[0] ) ) + [ 1.0, 1.0, 1.0 ] )
+			if k in hang:
+				t_, r_, s_ = q.frames[f][k]
+				vals[k].append( list( local[1] ) + list( r_ ) + list( s_ ) )
+			else:
+				vals[k].append( list( local[1] ) + list( mat_to_quat( local[0] ) ) + [ 1.0, 1.0, 1.0 ] )
 	poseRecs, quant = [], {}
 	for k in range( allJoints ):
 		if k in vals:
@@ -345,6 +390,8 @@ def main( path, partsPath ):
 	out[0:124] = header
 	for o, data in sections:
 		out[o:o + len( data )] = data
+	if hang:
+		out = parents_first( bytes( out ), { t: j for j, t in twin.items() } )
 	with open( path, "wb" ) as fp:
 		fp.write( out )
 

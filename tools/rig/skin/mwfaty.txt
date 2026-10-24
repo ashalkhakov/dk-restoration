@@ -1,0 +1,7 @@
+# the fat worker's rear at his waistline, its corners: Waist's alone, they
+# stuck out behind him as he moved (2.4 and 2.7 off Daikatana's on average,
+# 5 at worst); they move half as his waist, half as the thigh on their side
+# (0.4 and 0.3 on average, 1.7 and 0.8 at worst)
+Auto_109:308 Waist Rupleg 0.5
+Auto_109:318 Waist Lupleg 0.5
+Auto_109:321 Waist Lupleg 0.5

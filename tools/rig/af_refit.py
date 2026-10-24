@@ -29,7 +29,9 @@ carries half his head); --shoulders-to-arms gives the chest's bone out past
 an upper arm's inner side to that upper arm, the chest only between them
 (Hiro's pads made his chest's box cover his arms); --feet gives each foot a
 body of its own and an ankle joint to its shin, the shin's box its own
-bone's (his shins' took his feet). --parts <file> counts each vertex for
+bone's (his shins' took his feet); --hands each hand a body of its own and a
+wrist joint to its forearm, its box its part's ("box" on its line: the fat
+worker's hands turn far from his forearms). --parts <file> counts each vertex for
 the part it's nearest, placed by hand (tools/rig/iqm_parts.py's), not its
 weights (the ninja's bones carried the wrong parts); --iqm <path> fits to
 that rig, not the one installed; --square-waist squares the waist's box to
@@ -122,6 +124,52 @@ def axes_of( angles ):
 	u = ( cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, cr * cp )
 	return f, tuple( -x for x in right ), u
 
+def box_angles( bname, axes, h ):
+	"""a box's angles, and its half sizes in their order: a box the same with
+	its axes cycled if need be (one whose first is straight up, its pitch
+	90, has no angles that give it back)"""
+	for turn in range( 3 ):
+		ang = angles_of( axes )
+		back = axes_of( ang )
+		if max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6:
+			return ang, h
+		axes, h = [ axes[1], axes[2], axes[0] ], [ h[1], h[2], h[0] ]
+	sys.exit( "%s: no angles for its box" % bname )
+
+def add_hands( af, box, P, report ):
+	"""a body for each hand (box( "Lhand" ): its points, the box along them),
+	on joint Xhand, and a wrist joint to its forearm: a universal joint at
+	the wrist, its cone about the forearm (the fat worker's hands turn far
+	from his forearms)"""
+	for s_ in "LR":
+		hand, fore = s_ + "hand", s_ + "loarm"
+		got = box( hand )
+		if not got or ( 'body "%s"' % hand ) in af:
+			continue
+		ps, ( c, h, axes ) = got
+		ang, h = box_angles( hand, axes, h )
+		mod = re.search( r'body "%s" \{.*?mod (\w+)' % fore, af, re.S ).group( 1 )
+		a, b = P[fore], P[hand]
+		d = [ b[k] - a[k] for k in range( 3 ) ]
+		n = math.sqrt( sum( x * x for x in d ) )
+		d = [ x / n for x in d ]
+		body = ( '\tbody "%s" {\n\t\tjoint "%s"\n\t\tmod %s\n'
+				 '\t\tmodel box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )\n\t\tangles ( %.1f, %.1f, %.1f )\n'
+				 '\t\torigin ( %.2f, %.2f, %.2f )\n\t\tdensity 0.2\n\t\tfriction 0.01, 0.01, 0.8\n\t\tcontents corpse\n'
+				 '\t\tclipMask solid, corpse\n\t\tselfCollision 1\n\t}\n\n'
+				 % ( hand, hand, mod, -h[0], -h[1], -h[2], h[0], h[1], h[2], *ang, *c ) )
+		joint = ( '\tuniversalJoint "%swrist" {\n\t\tbody1 "%s"\n\t\tbody2 "%s"\n\t\tanchor joint( "%s" )\n'
+				  '\t\tshafts ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f )\n\t\tfriction 0.20\n'
+				  '\t\tconeLimit ( %.2f, %.2f, %.2f ), 45\n\t}\n'
+				  % ( s_, hand, fore, hand, *d, *[ -x for x in d ], *d ) )
+		m = re.search( r'\tbody "%s" \{.*?\n\t\}\n\n?' % fore, af, re.S )
+		af = af[:m.end()] + body + af[m.end():]
+		last = af.rstrip().rfind( "\n}" )
+		af = af[:last + 1] + joint + af[last + 1:]
+		report.append( "  %-7s %3d vertexes: %.1f x %.1f x %.1f, a body of its own, a wrist joint to %s"
+					   % ( hand, len( ps ), 2 * h[0], 2 * h[1], 2 * h[2], fore ) )
+	return af
+
 def add_feet( af, pts, P, report ):
 	"""a body for each foot (its ankle's bone's vertexes), on joint
 	X ankle_r, and an ankle joint to its shin: a universal joint at the
@@ -157,7 +205,7 @@ def add_feet( af, pts, P, report ):
 	return af
 
 def main( defName, extras = False, excepted = (), alongBones = False, neckToHead = False, shouldersToArms = False, feet = False,
-		  partsPath = None, iqmPath = None, squareWaist = False ):
+		  partsPath = None, iqmPath = None, squareWaist = False, hands = False ):
 	info = rc.model_info( defName )
 	if not info:
 		sys.exit( "%s: no rigged model def" % defName )
@@ -341,16 +389,7 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 				c, h = [ ( lo[k] + hi[k] ) / 2 for k in range( 3 ) ], [ ( hi[k] - lo[k] ) / 2 for k in range( 3 ) ]
 			else:
 				c, h, axes = obb( ps, bone_dir( bname ), bone_ends( bname ) )
-			# (a box the same with its axes cycled: one whose first is straight up,
-			# its pitch 90, has no angles that give it back, so it's cycled)
-			for turn in range( 3 ):
-				ang = angles_of( axes )
-				back = axes_of( ang )
-				if max( abs( back[i][k] - axes[i][k] ) for i in range( 3 ) for k in range( 3 ) ) < 1e-6:
-					break
-				axes, h = [ axes[1], axes[2], axes[0] ], [ h[1], h[2], h[0] ]
-			else:
-				sys.exit( "%s: no angles for its box" % bname )
+			ang, h = box_angles( bname, axes, h )
 			old = re.search( r"\t\tmodel [^\n]*", block ).group( 0 )
 			block = block.replace( old, "\t\tmodel box( ( %.2f, %.2f, %.2f ), ( %.2f, %.2f, %.2f ) )" % ( -h[0], -h[1], -h[2], h[0], h[1], h[2] ) )
 			block = re.sub( r"\t\torigin \([^)]*\)", "\t\torigin ( %.2f, %.2f, %.2f )" % tuple( c ), block, count = 1 )
@@ -365,6 +404,13 @@ def main( defName, extras = False, excepted = (), alongBones = False, neckToHead
 	out.append( af[pos:] )
 	if feet:
 		out = [ add_feet( "".join( out ), pts, P, report ) ]
+	if hands:
+		def hand_box( hname ):
+			if hname not in partsOpts["box"]:
+				return None
+			ps = body_points( hname )
+			return ( ps, obb( ps, bone_dir( hname ), bone_ends( hname ) ) ) if len( ps ) >= 4 else None
+		out = [ add_hands( "".join( out ), hand_box, P, report ) ]
 	dst = os.path.join( ROOT, "out", "rig", "af", afName + ".af" )
 	os.makedirs( os.path.dirname( dst ), exist_ok = True )
 	with open( dst, "w" ) as fp:
@@ -398,6 +444,9 @@ if __name__ == "__main__":
 	squareWaist = "--square-waist" in args
 	if squareWaist:
 		args.remove( "--square-waist" )
+	hands = "--hands" in args
+	if hands:
+		args.remove( "--hands" )
 	opt = {}
 	for o in ( "--parts", "--iqm" ):
 		if o in args:
@@ -407,4 +456,4 @@ if __name__ == "__main__":
 	if len( args ) != 1:
 		print( __doc__ )
 		sys.exit( 1 )
-	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet, opt.get( "--parts" ), opt.get( "--iqm" ), squareWaist )
+	main( args[0], extras, tuple( excepted ), alongBones, neckToHead, shouldersToArms, feet, opt.get( "--parts" ), opt.get( "--iqm" ), squareWaist, hands )

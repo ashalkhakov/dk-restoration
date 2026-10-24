@@ -114,6 +114,22 @@
 		},
 		"iqm": "models/rigged/dead.iqm"
 	},
+	"model_fatworker": {
+		"anims": {
+			"aasaa": {
+				"by": "user",
+				"date": "2026-10-24",
+				"fingerprint": "9897d349e24bc0dc",
+				"fit": [
+					0.093,
+					1.41
+				],
+				"note": "",
+				"verdict": "valid"
+			}
+		},
+		"iqm": "models/rigged/mwfaty.iqm"
+	},
 	"model_froginator": {
 		"anims": {
 			"ataka": {
