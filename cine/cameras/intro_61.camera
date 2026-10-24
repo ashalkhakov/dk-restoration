@@ -1,0 +1,12 @@
+// intro_61: a shot of Daikatana's cin/scripts/intro.script, converted by tools/cine/cine_convert.py,
+// then ours: 1.5 seconds longer (2.5 to 4), so Usagi's throw is in it (he lets the daikatana go 3.4
+// seconds in, def/dk_characters.def), the camera's drift slowed to match
+// (keys pass through their positions and angles at their times, at the velocities given; a key
+// without them is smooth through its neighbours)
+cameraPathDef {
+	camera_keys {
+		name intro_61
+		key { time 0 pos ( -520.632 887.879 733.304 ) angles ( -3 -136.111 0 ) vel ( 0 0 0 ) avel ( 0 0 0 ) }
+		key { time 4 pos ( -516.529 880.827 735.515 ) angles ( 2.6355 -149.111 0 ) velIn ( 0 0 0 ) avelIn ( 0 0 0 ) }
+	}
+}

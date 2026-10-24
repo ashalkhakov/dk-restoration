@@ -55,3 +55,13 @@ entityDef character_base {
 entityDef model_hirogi_extra {
 	"frame lksadb 13"		"drop sword"
 }
+
+// Usagi (the intro, rigged from c_usagi_intr: def/rig_usagi.def). His
+// daikatana is a model of its own at the joint "sword" (autorig --props); in
+// sambd he throws it, out of his hand by frame 18, and from frame 19 it flies
+// on as a rigid body: the throw's speed and a push, high up over the volcano
+// (shot 62's camera, after the cut, looks up and out where it comes down),
+// then into the lava, 2.4 seconds after it's let go
+entityDef model_usagi_extra {
+	"frame sambd 19"		"drop sword 80 0 820"
+}

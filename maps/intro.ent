@@ -1,0 +1,34 @@
+// intro's entities changed by hand (tools/maps/ent_overrides.py)
+
+// the dump truck that drives off with the coffins (shot 111): Daikatana's
+// deathtruck deco (d1_deathtruck.md3, twice its size) rode a func_train
+// ("truckie", cc1 to cc2, north along the road at 300) as its
+// "parenttarget"; ours don't carry a model so. Both out, the vehicle in
+// (g_vehicle.c, def/vehicle_deathtruck.def) where the deco was, facing as it
+// did, at its own size (twice it, its wheels can't move it); the intro's
+// script drives it (vehicleDrive)
+{
+"_match classname" "misc_gamemodel"
+"_match parenttarget" "truckie"
+"_delete" "1"
+}
+{
+"_match classname" "func_train"
+"_match targetname" "truckie"
+"_delete" "1"
+}
+{
+"classname" "vehicle_deathtruck"
+"targetname" "introtruck"
+"origin" "-1704 -2952 -336"
+"angle" "270"
+}
+
+// the mihopod's light (shot 12's close-up of the kiosk, cin_mihopod.md3):
+// Daikatana's green dlight in front of it, named so the intro's script blinks
+// it (a dlight is switched by use)
+{
+"_match classname" "dlight"
+"_match origin" "-3558 -3126 -748"
+"targetname" "mihopod_light"
+}

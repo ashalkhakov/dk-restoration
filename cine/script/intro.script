@@ -3119,10 +3119,52 @@ void shot110() {
 
 void tm_shot111() {
 	hirogi = cine_enter( hirogi, "cine_hirogi", '-1854.75 -2945 -319.406', -22.71, "hirogi", "tm" );
-	cine_use( "truckgo", hirogi );
 	cine_until( shotStart + 8 );
 	if ( shot != 111 ) { return; }
 	cine_exit( hirogi, "tm" );
+}
+
+// ours: the dump truck drives off north along the road with the coffins, as
+// Daikatana's func_train carried it (its "truckgo" trigger, 300 a second);
+// here the vehicle (maps/intro.ent), its engine started, then driven at about
+// the pace the shot's camera follows: its wheels' motors only push (harder
+// or softer, never slower), so it's driven while under the pace, let roll
+// over it; and steered back to the road's middle (x -1704: left alone it
+// drifts east into the wall), against how far off it is and how it heads
+void truck_shot111() {
+	entity	truck;
+	vector	was, now, d;
+	float	speed, steer;
+
+	truck = sys.getEntity( "introtruck" );
+	if ( truck == $null_entity ) {
+		return;
+	}
+	truck.vehicleEngine( 1 );
+	sys.wait( 0.5 );
+	was = truck.getOrigin();
+	while ( shot == 111 && !sys.skippingCinematic() ) {
+		sys.wait( 0.2 );
+		now = truck.getOrigin();
+		d = now - was;
+		speed = sys.vecLength( d ) / 0.2;
+		was = now;
+		steer = 0;
+		if ( speed > 20 ) {
+			steer = -( 0.3 * ( now_x + 1704 ) + 60 * d_x / sys.vecLength( d ) );
+		}
+		if ( steer > 25 ) {
+			steer = 25;
+		} else if ( steer < -25 ) {
+			steer = -25;
+		}
+		if ( speed < 250 ) {
+			truck.vehicleDrive( 0.3, steer );
+		} else {
+			truck.vehicleDrive( 0.01, steer );
+		}
+	}
+	truck.vehicleDrive( 0, 0 );
 }
 
 void shot111() {
@@ -3133,6 +3175,7 @@ void shot111() {
 	shotStart = sys.getTime();
 	sys.setCamera( cam );
 	thread tm_shot111();
+	thread truck_shot111();
 	sys.startGlobalSound( "sounds/global/e_lightninga.wav" );
 	sys.waitFor( cam );
 }
@@ -3231,6 +3274,21 @@ void shot115() {
 	sys.waitFor( cam );
 }
 
+// ours: the mihopod's green light blinks, as Daikatana's did (the dlight in
+// front of it, maps/intro.ent; used, it switches)
+void mihopodBlink() {
+	entity light;
+
+	light = sys.getEntity( "mihopod_light" );
+	if ( light == $null_entity ) {
+		return;
+	}
+	while ( 1 ) {
+		sys.wait( 0.5 );
+		sys.trigger( light );
+	}
+}
+
 /*
 ================
 intro::play
@@ -3241,6 +3299,7 @@ void play() {
 
 	first = sys.strToFloat( sys.getcvar( "cine_firstShot" ) );
 	cine_start();
+	thread mihopodBlink();
 	if ( first <= 1 ) { shot1(); }
 	if ( first <= 2 ) { shot2(); }
 	if ( first <= 3 ) { shot3(); }
