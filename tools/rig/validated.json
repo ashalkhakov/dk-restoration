@@ -1989,8 +1989,8 @@
 					0.103,
 					1.32
 				],
-				"note": "box broken: right thigh",
-				"verdict": "broken"
+				"note": "thigh boxes fixed (fb5dc4e)",
+				"verdict": "valid"
 			},
 			"sfa": {
 				"date": "2026-10-24",
