@@ -335,14 +335,16 @@ def task_lines( task, dkvar, actors, var, owner ):
 		if ty == "set_idle_animation":
 			return [ "%s.playCycle( ANIMCHANNEL_LEGS, \"%s\" );" % ( var, name ) ]
 		move, turn, start = a.get( "move", [ 0, 0 ] ), a.get( "turn", 0 ), a.get( "start", [ 0, 0 ] )
-		if math.hypot( start[0], start[1] ) > 2:
+		# (its height too, where autorig took that out: the ninja's drop)
+		move, start = ( list( move ) + [ 0 ] )[:3], ( list( start ) + [ 0 ] )[:3]
+		if math.hypot( start[0], start[1], start[2] ) > 2:
 			# it starts away from where the character is (its rig plays it over
 			# the origin: autorig --root-out): drawn there, as Daikatana's was
-			return [ "cine_playFrom( %s, \"%s\", '%s 0', '%s 0', %g, %g );" % ( var, name, fmt( start ), fmt( move ), round( turn, 2 ),
+			return [ "cine_playFrom( %s, \"%s\", '%s', '%s', %g, %g );" % ( var, name, fmt( start ), fmt( move ), round( turn, 2 ),
 																		 round( a["frames"] / float( a.get( "fps", 10 ) ), 3 ) ) ]
-		if math.hypot( move[0], move[1] ) > 2 or abs( turn ) > 3:
+		if math.hypot( move[0], move[1], move[2] ) > 2 or abs( turn ) > 3:
 			# it moved the character: in place now, the game moves it
-			return [ "cine_playMove( %s, \"%s\", '%s 0', %g, %g );" % ( var, name, fmt( move ), round( turn, 2 ),
+			return [ "cine_playMove( %s, \"%s\", '%s', %g, %g );" % ( var, name, fmt( move ), round( turn, 2 ),
 																		 round( a["frames"] / float( a.get( "fps", 10 ) ), 3 ) ) ]
 		return [ "cine_play( %s, \"%s\" );" % ( var, name ) ]
 	dest = "'%s'" % fmt( task["destination"] )

@@ -552,7 +552,7 @@ function draw() {
 	const md3f = md3Frame( S.anim, S.frame );
 	// what --root-out took out of this frame: Daikatana's frame without it
 	const ra = S.root && a && S.root.anims[a.name], rp = ra && ra.path[Math.min( S.frame, ra.path.length - 1 )];
-	const md3Off = rp ? [ -rp[0], -rp[1], 0 ] : [ 0, 0, 0 ];
+	const md3Off = rp ? [ -rp[0], -rp[1], -( rp[2] || 0 ) ] : [ 0, 0, 0 ];
 
 	// camera
 	const cam = S.cam;

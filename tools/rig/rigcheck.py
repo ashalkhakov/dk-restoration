@@ -192,7 +192,8 @@ class Source:
 			f = mfirst + min( k, mcount - 1 )
 			for p, ( si, vi ) in zip( got, self.match ):
 				a = self.m.surfaces[si].frames[f][vi]
-				e = math.sqrt( ( p[0] - a[0] + off[0] ) ** 2 + ( p[1] - a[1] + off[1] ) ** 2 + ( p[2] - a[2] ) ** 2 )
+				e = math.sqrt( ( p[0] - a[0] + off[0] ) ** 2 + ( p[1] - a[1] + off[1] ) ** 2
+							   + ( p[2] - a[2] + ( off[2] if len( off ) > 2 else 0.0 ) ) ** 2 )
 				total, worst, n = total + e, max( worst, e ), n + 1
 		return [ round( total / n, 3 ), round( worst, 2 ) ]
 

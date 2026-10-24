@@ -352,7 +352,8 @@ step_levelshots() { python3 "$ROOT/tools/ui/dk_levelshots.py" "$DKRES"; }
 # getting about looping; RIG_ANIMS_<name> ("<anim> <fps> [loop];...") sets
 # them one by one. surface=metal: a robot (Daikatana's no-blood monsters), its
 # hits spark. rootout=1: Daikatana's going over the ground out of the
-# animations (they play over the origin); rootout=die,cdie: out of those only.
+# animations (they play over the origin); rootout=die,cdie: out of those only,
+# jpd:z its height too (the cutscene moves the character up and down by it).
 # props=sword: the model's prop (its biggest) a model of its own, <iqm>_sword,
 # attached at a joint "sword" (the game drops it as a rigid body);
 # props=sword:turned turns it half round its length (its edge forward).
@@ -463,7 +464,7 @@ gusagi          human     cinematic/c_gusagi_e2m3   iqm=gusagi
 usagi           human     cinematic/c_usagi_intr    iqm=usagi
 hirogi          human     cinematic/c_hiro_intr     iqm=hirogi props=sword:turned
 inshiro         human     cinematic/c_inshiro_intr  iqm=inshiro
-ninja           human     cinematic/c_ninja_intr    iqm=ninja rest=punch rootout=cr,cs,float,jpd,jpns,sf
+ninja           human     cinematic/c_ninja_intr    iqm=ninja rest=punch rootout=cr,cs,float:z,jpd:z,jpns:z,sfa,sfb:z
 osaka           human     cinematic/c_osaka_intr    iqm=osaka
 tatsuo          human     cinematic/c_tatsuo_e4m4   iqm=tatsuo
 toshiro         human     cinematic/c_tosh_intr     iqm=toshiro rest=tka rootout=1

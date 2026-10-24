@@ -275,7 +275,9 @@ along what the animation once moved it by: move, turn degrees by the end,
 over secs. Daikatana baked both into the frames (Toshiro lies 65 back where
 his death fell him); a rig with them out (autorig --root-out) plays over its
 origin. Its place stays: the next animation starts there again, as
-Daikatana's did
+Daikatana's did. Up and down too (the ninja dropping from the rafters,
+autorig's jpd:z), from the floor: gravity off while it's carried so, and
+while it's left up ("cine_up", how high: float holds him there till jpd)
 ================
 */
 void cine_playFrom( entity actor, string anim, vector offset, vector move, float turn, float secs ) {
@@ -284,6 +286,7 @@ void cine_playFrom( entity actor, string anim, vector offset, vector move, float
 	vector	to;
 	float	t0;
 	float	f;
+	float	floor;
 	string	who;
 
 	if ( actor == $null_entity ) {
@@ -292,8 +295,14 @@ void cine_playFrom( entity actor, string anim, vector offset, vector move, float
 	who = actor.getKey( "cine_owner" );
 	cine_toAnchor( actor );
 	ang = actor.getAngles();
+	floor = actor.getOrigin() * '0 0 1' - actor.getFloatKey( "cine_up" );
 	from = actor.getOrigin() + sys.angToForward( '0 1 0' * ang_y ) * offset_x - sys.angToRight( '0 1 0' * ang_y ) * offset_y;
+	from_z = floor + offset_z;
 	to = from + sys.angToForward( '0 1 0' * ang_y ) * move_x - sys.angToRight( '0 1 0' * ang_y ) * move_y;
+	to_z = from_z + move_z;
+	if ( from_z != floor || to_z != floor ) {
+		actor.disableGravity();
+	}
 	actor.setOrigin( from );
 	actor.playAnim( ANIMCHANNEL_LEGS, anim );
 	t0 = sys.getTime();
@@ -314,6 +323,10 @@ void cine_playFrom( entity actor, string anim, vector offset, vector move, float
 	}
 	actor.setOrigin( to );
 	actor.turnTo( ang_y + turn );
+	actor.setKey( "cine_up", "" + ( to_z - floor ) );
+	if ( to_z - floor < 0.5 && to_z - floor > -0.5 ) {
+		actor.enableGravity();
+	}
 }
 
 /*

@@ -26,7 +26,9 @@ N more bones for what the template has no bone for (a cape, wings, a sword);
 With --root-out, Daikatana's going over the ground (a fall back on dying)
 is taken out of the animations: each plays over the origin, and
 <out>.json says what was taken out, for the game to move the character by;
---root-out-anims die,cdie only out of the animations named so (Hiro's deaths).
+--root-out-anims die,cdie only out of the animations named so (Hiro's deaths);
+jpd:z the height too (the ninja's drop from the rafters), the cutscene moving
+him up and down by it.
 With RIG_STAGE set, the def (and sound shaders) go under that directory
 instead, for ./dk rig to install once the validated animations are unchanged.
 With --lying, the model lies on its back, its head toward -x (as Daikatana's
@@ -716,6 +718,7 @@ SURFACE = None		# --surface: "metal" for a robot, its hits spark
 REST = None			# --rest: the animation whose first frame it's rigged from
 ROOT_OUT = False	# --root-out: the going over the ground out of the animations (root_out)
 ROOT_OUT_ANIMS = None	# --root-out-anims die,cdie: only out of those (names starting so): Hiro's deaths
+ROOT_OUT_Z = []		# --root-out-anims jpd:z: the height too (the ninja's drop from the rafters)
 PROP_NAMES = []		# --props sword: the props (biggest first) as models of their own, attached at a joint so named
 PROP_TURNED = set()	# --props sword:turned: that one turned half round its length (Hiro's sword, its edge forward)
 DETACHED = []		# those: ( name, its joint, its surface, its vertexes in the joint's rest frame )
@@ -1690,11 +1693,11 @@ def main( md3Path, outBase ):
 		print( "  prop %s on %s, hidden in %d frames" % ( joint["name"], joint["parent"], sum( 1 for v in js.values() if v < 0.1 ) ) )
 
 	if ROOT_OUT:
-		root_out( m, joints, motion, J, assign, outBase, md3Path )
+		root_out( m, joints, motion, J, assign, outBase, md3Path, zmin )
 	write_outputs( m, body, verts, rest, joints, motion, weights, assign, outBase )
 	return total / count
 
-def root_out( m, joints, motion, J, assign, outBase, md3Path ):
+def root_out( m, joints, motion, J, assign, outBase, md3Path, ground ):
 	"""Daikatana baked a character's going over the ground into its frames
 	(Toshiro falls 65 back dying, and the poses after lie there): each
 	frame's hips are put back over where the bind pose has them, every joint
@@ -1714,10 +1717,16 @@ def root_out( m, joints, motion, J, assign, outBase, md3Path ):
 	if ROOT_OUT_ANIMS:
 		outOf = set( f for name, first, count in m.animations() if any( name.startswith( p ) for p in ROOT_OUT_ANIMS )
 					 for f in range( first, first + count ) )
+	# (and ":z" ones' height: how high his lowest point is over the ground he
+	# stands on in the bind pose; the hips would lift a crouch off it)
+	upOf = set( f for name, first, count in m.animations() if any( name.startswith( p ) for p in ROOT_OUT_Z )
+				for f in range( first, first + count ) )
+	body = [ s for s in m.surfaces if not is_prop( s ) and not is_hardpoint( s ) ]
 	off = []
 	for f in range( m.numFrames ):
 		h = xform( motion[root][f], hip )
-		off.append( ( h[0] - hip[0], h[1] - hip[1], 0.0 ) if f in outOf else ( 0.0, 0.0, 0.0 ) )
+		up = min( p[2] for s in body for p in s.frames[f] ) - ground if f in upOf else 0.0
+		off.append( ( h[0] - hip[0], h[1] - hip[1], up ) if f in outOf else ( 0.0, 0.0, 0.0 ) )
 	# every joint the frames move goes with it; one they don't (the origin,
 	# such a pelvis) stays. (A bone with few vertexes shares its parent's
 	# motion: each from the motion as it was, so none is moved twice)
@@ -1731,9 +1740,9 @@ def root_out( m, joints, motion, J, assign, outBase, md3Path ):
 	anims = {}
 	for name, first, count in m.animations():
 		s0, s1 = off[first], off[first + count - 1]
-		anims[name] = { "frames": count, "fps": fps, "start": [ round( s0[0], 2 ), round( s0[1], 2 ) ],
-						"move": [ round( s1[0] - s0[0], 2 ), round( s1[1] - s0[1], 2 ) ], "turn": 0,
-						"path": [ [ round( off[f][0], 2 ), round( off[f][1], 2 ) ] for f in range( first, first + count ) ] }
+		anims[name] = { "frames": count, "fps": fps, "start": [ round( s0[k], 2 ) for k in range( 3 ) ],
+						"move": [ round( s1[k] - s0[k], 2 ) for k in range( 3 ) ], "turn": 0,
+						"path": [ [ round( off[f][k], 2 ) for k in range( 3 ) ] for f in range( first, first + count ) ] }
 	moved = [ "%s %.0f" % ( n, math.hypot( *a["start"] ) + math.hypot( *a["move"] ) ) for n, a in anims.items()
 			  if math.hypot( *a["start"] ) > 4 or math.hypot( *a["move"] ) > 4 ]
 	with open( outBase + ".json", "w" ) as fp:
@@ -2425,7 +2434,8 @@ if __name__ == "__main__":
 		args = args[1:]
 	if "--root-out-anims" in args:
 		i = args.index( "--root-out-anims" )
-		ROOT_OUT_ANIMS = [ a for a in args[i + 1].split( "," ) if a ]
+		ROOT_OUT_ANIMS = [ a.split( ":" )[0] for a in args[i + 1].split( "," ) if a ]
+		ROOT_OUT_Z = [ a.split( ":" )[0] for a in args[i + 1].split( "," ) if a.endswith( ":z" ) ]
 		args = args[:i] + [ "--root-out" ] + args[i + 2:]
 	if "--root-out" in args:
 		if TO_MODEL:
