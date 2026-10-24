@@ -76,3 +76,19 @@
 "angle" "135"
 "origin" "1731 -2430 540"
 }
+
+// the dump truck: Daikatana's deathtruck deco (d1_deathtruck.md3, a still
+// model) out, the vehicle in (g_vehicle.c, def/vehicle_deathtruck.def), where
+// the deco was, facing as it did: USE gets in and drives it. Daikatana's
+// size here (e1m4a's is 1.5): bigger, it can't get under the bridge's truss
+{
+"_match classname" "misc_gamemodel"
+"_match model" "models/e1/d1_deathtruck.md3"
+"_delete" "1"
+}
+{
+"classname" "vehicle_deathtruck"
+"targetname" "deathtruck"
+"origin" "1592 -2784 1056"
+"angle" "180"
+}

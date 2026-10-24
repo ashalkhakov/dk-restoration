@@ -208,6 +208,38 @@ void shot7() {
 	sys.waitFor( cam );
 }
 
+// ours, after it, in play: the workers get back into the dump truck and
+// drive off (Daikatana's stayed parked: a deco, ours a vehicle, g_vehicle.c),
+// as far as the road goes, and they're gone
+void fat1_driveOff() {
+	fatworker = cine_enter( fatworker, "cine_fatworker", '1583 -2704 1070', -60, "fatworker", "fat8" );
+	cine_move( fatworker, '1652 -2738 1070', "walka" );
+	cine_exit( fatworker, "fat8" );
+}
+
+void skin1_driveOff() {
+	skinnyworker = cine_enter( skinnyworker, "cine_skinnyworker", '1620 -2704 1070', -60, "skinnyworker", "skin8" );
+	sys.wait( 0.5 );
+	cine_move( skinnyworker, '1668 -2738 1070', "walka" );
+	cine_exit( skinnyworker, "skin8" );
+}
+
+void driveOff() {
+	entity truck;
+
+	truck = sys.getEntity( "deathtruck" );
+	thread fat1_driveOff();
+	thread skin1_driveOff();
+	sys.wait( 4 );
+	truck.vehicleEngine( 1 );
+	sys.wait( 1.5 );
+	truck.vehicleDrive( 1, 0 );
+	sys.wait( 4 );
+	truck.remove();
+	cine_remove( fatworker );
+	cine_remove( skinnyworker );
+}
+
 /*
 ================
 e1m1_cinestart::play
@@ -227,9 +259,8 @@ void play() {
 	if ( first <= 7 ) { shot7(); }
 	cine_handOff( hiro_e1m1 );
 	cine_finish();
-	cine_remove( fatworker );
 	cine_remove( hiro_e1m1 );
-	cine_remove( skinnyworker );
+	thread driveOff();		// (which removes the workers when they're gone)
 }
 
 }

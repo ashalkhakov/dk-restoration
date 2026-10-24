@@ -152,6 +152,8 @@ scriptEvent	float		perch( vector pos, vector normal );	// a flyer lands at pos o
 scriptEvent	float		isPerched();
 scriptEvent	void		enableGravity();
 scriptEvent	void		disableGravity();
+scriptEvent	void		vehicleDrive( float forward, float steer );	// a vehicle driven by script: forward -1 to 1, steer degrees (+ right); 0, 0 lets it be
+scriptEvent	void		vehicleEngine( float on );					// a vehicle's engine started (its sounds) or stopped
 scriptEvent	void		allowMovement( float allow );
 scriptEvent	float		testMeleeAttack();		// its enemy in its melee_range (box to box), in front and seen
 scriptEvent	float		attackMelee( string damageDef );

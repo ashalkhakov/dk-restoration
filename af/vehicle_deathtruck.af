@@ -1,0 +1,399 @@
+// the dump truck (d1_deathtruck, rigged by tools/rig/vehicle_rig.py, its
+// wheels smaller, a Japanese delivery truck's: radius 12, axles at -12.4): a
+// Doom 3 six-wheeled vehicle's articulated figure, after its buggy's
+// (af/env_vehicle_buggy.af): the body a chassis with the cab and the bed's
+// walls fixed to it, the bed open (players jump into it); each wheel a cylinder on its
+// side that doesn't roll (the game turns its joint), driven along the truck
+// by its contact motor and held across it by its friction; the front ones
+// on suspension arms, steered by the hinge between, the others hinged to
+// the body; a spring for each, the shocks. The truck faces -x (the cab).
+// Written by hand: the authority.
+articulatedFigure vehicle_deathtruck {
+	settings {
+		model "model_vehicle_deathtruck"
+		friction 0.0001, 0.0001, 1.4, 0.5
+		suspendSpeed 20, 30, 40, 60
+		noMoveTime 1
+		noMoveTranslation 10
+		noMoveRotation 10
+		maxMoveTime -1
+		totalMass -1
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	// the body: the chassis under the bed, its floor's top at z 2, and the
+	// cab and the bed's walls held to it (a trace model is convex: a bed you
+	// can jump into is a floor and walls). The wheels hang from the body
+	body "body" {
+		joint "origin"
+		mod orientation
+		model box( ( -102.5, -34, -5 ), ( 102.5, 34, 5 ) )
+		origin ( 6.5, 0, -3 )
+		density 0.002
+		friction 0.0001, 0.0001, 1.4
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	body "cab" {
+		joint "cab"
+		mod orientation
+		model box( ( -27, -34, -43.5 ), ( 27, 34, 43.5 ) )
+		origin ( -69, 0, 45.5 )
+		density 0.0002
+		friction 0.0001, 0.0001, 1.4
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	body "bed_front" {
+		joint "bed_front"
+		mod orientation
+		model box( ( -3, -32, -39.5 ), ( 3, 32, 39.5 ) )
+		origin ( -39, 0, 41.5 )
+		density 0.0001
+		friction 0.0001, 0.0001, 1.4
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	body "bed_left" {
+		joint "bed_left"
+		mod orientation
+		model box( ( -75.5, -2, -43.5 ), ( 75.5, 2, 43.5 ) )
+		origin ( 33.5, 34, 45.5 )
+		density 0.0001
+		friction 0.0001, 0.0001, 1.4
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	body "bed_right" {
+		joint "bed_right"
+		mod orientation
+		model box( ( -75.5, -2, -43.5 ), ( 75.5, 2, 43.5 ) )
+		origin ( 33.5, -34, 45.5 )
+		density 0.0001
+		friction 0.0001, 0.0001, 1.4
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	body "bed_tail" {
+		joint "bed_tail"
+		mod orientation
+		model box( ( -2.5, -32, -15.5 ), ( 2.5, 32, 15.5 ) )
+		origin ( 106.5, 0, 17.5 )
+		density 0.0001
+		friction 0.0001, 0.0001, 1.4
+		contents solid
+		clipMask solid
+		selfCollision 0
+	}
+
+	// the front wheels' suspension arms (no mesh: the wheel_f?_arm joints)
+	body "arm_fr" {
+		joint "wheel_fr_arm"
+		mod orientation
+		model box( ( -3, -8, -2 ), ( 3, 8, 2 ) )
+		origin ( -62.5, 20.9, -12.4 )
+		density 0.07
+		friction 0.0001, 0.0001, 1.4
+		contents none
+		clipMask none
+		selfCollision 0
+	}
+
+	body "arm_fl" {
+		joint "wheel_fl_arm"
+		mod orientation
+		model box( ( -3, -8, -2 ), ( 3, 8, 2 ) )
+		origin ( -62.5, -21.6, -12.4 )
+		density 0.07
+		friction 0.0001, 0.0001, 1.4
+		contents none
+		clipMask none
+		selfCollision 0
+	}
+
+	body "wheel_fr" {
+		joint "wheel_fr"
+		mod orientation
+		model cylinder( ( -12, -12, -5 ), ( 12, 12, 5 ), 6 )
+		origin ( -62.5, 28.8, -12.4 )
+		angles ( 0, 0, 90 )
+		density 0.002
+		friction 0.0001, 0.0001, 2
+		contents solid
+		clipMask solid
+		selfCollision 0
+		frictionDirection ( 0, 1, 0 )
+		contactMotorDirection ( -1, 0, 0 )
+	}
+
+	body "wheel_fl" {
+		joint "wheel_fl"
+		mod orientation
+		model cylinder( ( -12, -12, -5 ), ( 12, 12, 5 ), 6 )
+		origin ( -62.5, -29.8, -12.4 )
+		angles ( 0, 0, 90 )
+		density 0.002
+		friction 0.0001, 0.0001, 2
+		contents solid
+		clipMask solid
+		selfCollision 0
+		frictionDirection ( 0, 1, 0 )
+		contactMotorDirection ( -1, 0, 0 )
+	}
+
+	body "wheel_mr" {
+		joint "wheel_mr"
+		mod orientation
+		model cylinder( ( -12, -12, -5 ), ( 12, 12, 5 ), 6 )
+		origin ( 21.7, 24.4, -12.4 )
+		angles ( 0, 0, 90 )
+		density 0.002
+		friction 0.0001, 0.0001, 2
+		contents solid
+		clipMask solid
+		selfCollision 0
+		frictionDirection ( 0, 1, 0 )
+		contactMotorDirection ( -1, 0, 0 )
+	}
+
+	body "wheel_ml" {
+		joint "wheel_ml"
+		mod orientation
+		model cylinder( ( -12, -12, -5 ), ( 12, 12, 5 ), 6 )
+		origin ( 21.7, -26.3, -12.4 )
+		angles ( 0, 0, 90 )
+		density 0.002
+		friction 0.0001, 0.0001, 2
+		contents solid
+		clipMask solid
+		selfCollision 0
+		frictionDirection ( 0, 1, 0 )
+		contactMotorDirection ( -1, 0, 0 )
+	}
+
+	body "wheel_rr" {
+		joint "wheel_rr"
+		mod orientation
+		model cylinder( ( -12, -12, -5 ), ( 12, 12, 5 ), 6 )
+		origin ( 68.2, 24.4, -12.7 )
+		angles ( 0, 0, 90 )
+		density 0.002
+		friction 0.0001, 0.0001, 2
+		contents solid
+		clipMask solid
+		selfCollision 0
+		frictionDirection ( 0, 1, 0 )
+		contactMotorDirection ( -1, 0, 0 )
+	}
+
+	body "wheel_rl" {
+		joint "wheel_rl"
+		mod orientation
+		model cylinder( ( -12, -12, -5 ), ( 12, 12, 5 ), 6 )
+		origin ( 68.2, -26.3, -12.7 )
+		angles ( 0, 0, 90 )
+		density 0.002
+		friction 0.0001, 0.0001, 2
+		contents solid
+		clipMask solid
+		selfCollision 0
+		frictionDirection ( 0, 1, 0 )
+		contactMotorDirection ( -1, 0, 0 )
+	}
+
+	// the cab and the bed's walls, fixed to the body
+	fixed "cab" {
+		body1 "cab"
+		body2 "body"
+	}
+
+	fixed "bed_front" {
+		body1 "bed_front"
+		body2 "body"
+	}
+
+	fixed "bed_left" {
+		body1 "bed_left"
+		body2 "body"
+	}
+
+	fixed "bed_right" {
+		body1 "bed_right"
+		body2 "body"
+	}
+
+	fixed "bed_tail" {
+		body1 "bed_tail"
+		body2 "body"
+	}
+
+	// the front: the wheel steered on its arm, the arm swinging on the body
+	hinge "steering_fr" {
+		body1 "wheel_fr"
+		body2 "arm_fr"
+		anchor joint( "wheel_fr" )
+		axis ( 0, 0, 1 )
+		friction 0.5
+	}
+
+	hinge "steering_fl" {
+		body1 "wheel_fl"
+		body2 "arm_fl"
+		anchor joint( "wheel_fl" )
+		axis ( 0, 0, 1 )
+		friction 0.5
+	}
+
+	hinge "suspension_fr" {
+		body1 "arm_fr"
+		body2 "body"
+		anchor joint( "wheel_fr_arm" )
+		axis ( 1, 0, 0 )
+		friction 0.5
+		limit 22, 35, 30
+	}
+
+	hinge "suspension_fl" {
+		body1 "arm_fl"
+		body2 "body"
+		anchor joint( "wheel_fl_arm" )
+		axis ( 1, 0, 0 )
+		friction 0.5
+		limit 158, 35, 150
+	}
+
+	// the middle and the rear: the wheel swinging on the body, inboard
+	hinge "suspension_mr" {
+		body1 "wheel_mr"
+		body2 "body"
+		anchor ( 21.7, 11, -12.4 )
+		axis ( 1, 0, 0 )
+		friction 0.5
+		limit 22, 35, 30
+	}
+
+	hinge "suspension_ml" {
+		body1 "wheel_ml"
+		body2 "body"
+		anchor ( 21.7, -11.8, -12.4 )
+		axis ( 1, 0, 0 )
+		friction 0.5
+		limit 158, 35, 150
+	}
+
+	hinge "suspension_rr" {
+		body1 "wheel_rr"
+		body2 "body"
+		anchor ( 68.2, 11, -12.7 )
+		axis ( 1, 0, 0 )
+		friction 0.5
+		limit 22, 35, 30
+	}
+
+	hinge "suspension_rl" {
+		body1 "wheel_rl"
+		body2 "body"
+		anchor ( 68.2, -11.8, -12.7 )
+		axis ( 1, 0, 0 )
+		friction 0.5
+		limit 158, 35, 150
+	}
+
+	// the shocks: from the arm or the wheel up to the body, a little long,
+	// so the truck's weight squeezes them to how it's modelled
+	spring "shock_fr" {
+		body1 "arm_fr"
+		body2 "body"
+		anchor1 ( -62.5, 22, -12.4 )
+		anchor2 ( -62.5, 22, 24 )
+		friction 0.5
+		stretch 2000
+		compress 5000
+		damping 10
+		restLength 40
+		minLength 0
+		maxLength 0
+	}
+
+	spring "shock_fl" {
+		body1 "arm_fl"
+		body2 "body"
+		anchor1 ( -62.5, -22.6, -12.4 )
+		anchor2 ( -62.5, -22.6, 24 )
+		friction 0.5
+		stretch 2000
+		compress 5000
+		damping 10
+		restLength 40
+		minLength 0
+		maxLength 0
+	}
+
+	spring "shock_mr" {
+		body1 "wheel_mr"
+		body2 "body"
+		anchor1 ( 21.7, 24.4, -12.4 )
+		anchor2 ( 21.7, 18, 24 )
+		friction 0.5
+		stretch 2000
+		compress 4000
+		damping 10
+		restLength 40
+		minLength 0
+		maxLength 0
+	}
+
+	spring "shock_ml" {
+		body1 "wheel_ml"
+		body2 "body"
+		anchor1 ( 21.7, -26.3, -12.4 )
+		anchor2 ( 21.7, -19, 24 )
+		friction 0.5
+		stretch 2000
+		compress 4000
+		damping 10
+		restLength 40
+		minLength 0
+		maxLength 0
+	}
+
+	spring "shock_rr" {
+		body1 "wheel_rr"
+		body2 "body"
+		anchor1 ( 68.2, 24.4, -12.7 )
+		anchor2 ( 68.2, 18, 24 )
+		friction 0.5
+		stretch 2000
+		compress 4000
+		damping 10
+		restLength 40
+		minLength 0
+		maxLength 0
+	}
+
+	spring "shock_rl" {
+		body1 "wheel_rl"
+		body2 "body"
+		anchor1 ( 68.2, -26.3, -12.7 )
+		anchor2 ( 68.2, -19, 24 )
+		friction 0.5
+		stretch 2000
+		compress 4000
+		damping 10
+		restLength 40
+		minLength 0
+		maxLength 0
+	}
+}

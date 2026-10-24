@@ -1,0 +1,34 @@
+// made by tools/rig/vehicle_rig.py from models/e1/d1_deathtruck.md3
+entityDef model_vehicle_deathtruck {
+	"mesh"				"models/rigged/deathtruck.iqm"
+	"anim idle"			"idle"
+	"ragdoll"			"vehicle_deathtruck"	// af/vehicle_deathtruck.af, its articulated figure
+	"wheel_joints"		"wheel_fr wheel_fl wheel_mr wheel_ml wheel_rr wheel_rl"	// turned by the cgame as they go
+	"wheel_radius"		"12.0"
+}
+
+// the vehicle (g_vehicle.c, Doom 3's idAFEntity_VehicleSixWheels): its
+// AF af/vehicle_deathtruck.af, written by hand
+entityDef vehicle_deathtruck {
+	"spawnclass"		"vehicle"
+	"model"				"model_vehicle_deathtruck"
+	"eyesJoint"			"eyes"
+	"wheelRadius"		"12.0"
+	"wheelJointFrontRight"	"wheel_fr"
+	"wheelBodyFrontRight"	"wheel_fr"
+	"steeringHingeFrontRight"	"steering_fr"
+	"wheelJointFrontLeft"	"wheel_fl"
+	"wheelBodyFrontLeft"	"wheel_fl"
+	"steeringHingeFrontLeft"	"steering_fl"
+	"wheelJointMiddleRight"	"wheel_mr"
+	"wheelBodyMiddleRight"	"wheel_mr"
+	"wheelJointMiddleLeft"	"wheel_ml"
+	"wheelBodyMiddleLeft"	"wheel_ml"
+	"wheelJointRearRight"	"wheel_rr"
+	"wheelBodyRearRight"	"wheel_rr"
+	"wheelJointRearLeft"	"wheel_rl"
+	"wheelBodyRearLeft"	"wheel_rl"
+	"snd_start"		"sounds/e1/truckstart.wav"
+	"snd_idle"		"sounds/e1/truckidleloop.wav"
+	"snd_stop"		"sounds/e1/truckshutoff.wav"
+}
