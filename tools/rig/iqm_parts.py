@@ -25,7 +25,9 @@ A part whose line ends with "aim" (a thigh whose few vertexes are its coat's
 hem at the knee, flaring as he moves: their fit turns it) hangs from its
 segment's start as the bone's parent carries it (the hip, the pelvis') and
 points at its vertexes' middle as they move ("aim <part>": at that part's,
-a forearm at its hand), turned about its length as their fit is.
+a forearm at its hand; "aim @<r>": at the vertexes within r of the
+segment's end, a thigh at its knee's ring), turned about its length as
+their fit is.
 Every other joint stays where it was in each frame (its local transform
 made again under a moved parent; the others' data as they were, bit for
 bit).
@@ -69,7 +71,7 @@ def read_parts( path ):
 					i += 2
 				elif w[i] == "aim":
 					named = i + 1 < len( w ) and w[i + 1] not in ( "aim", "r" )
-					aims[w[0]] = w[i + 1] if named else w[0]
+					aims[w[0]] = ( float( w[i + 1][1:] ) if w[i + 1].startswith( "@" ) else w[i + 1] ) if named else w[0]
 					i += 2 if named else 1
 				else:
 					sys.exit( "%s: what is %s?" % ( path, w[i] ) )
@@ -164,7 +166,11 @@ def main( path, partsPath ):
 			# (its parent's motion as moved here, if it was)
 			p = parent[j]
 			carried = [ refit[p][f] if p in refit else rc.compose( W[f][p], rc.invert( B[p] ) ) for f in range( numFrames ) ]
-			ts = [ v for v in range( N ) if part[v] == aims[b] ]
+			if isinstance( aims[b], float ):
+				# (the vertexes about the segment's end, whatever part: a knee's ring)
+				ts = [ v for v in range( N ) if part[v] and math.dist( rig.pos[v], parts[b][1] ) <= aims[b] ]
+			else:
+				ts = [ v for v in range( N ) if part[v] == aims[b] ]
 			tsrc = [ rig.pos[v] for v in ts ]
 			target = motion if aims[b] == b else [ rigid_fit( tsrc, [ frames[f][v] for v in ts ] ) for f in range( numFrames ) ]
 			motion = [ aimed( motion[f], target[f], parts[b][0], tsrc, carried[f] ) for f in range( numFrames ) ]

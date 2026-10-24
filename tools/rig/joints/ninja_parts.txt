@@ -10,7 +10,8 @@
 # "r 4": the part takes no vertex farther than 4 from its segment (his left
 # arm hangs beside his chest, waist and thigh). "aim": the bone hangs from
 # the segment's start and points at the part's middle ("aim Lhand": at the
-# hand's), its few vertexes (the coat's hem at his knee, his sleeve) turning
+# hand's; "aim @5": at the vertexes within 5 of the segment's end, a
+# thigh at its knee's ring), its few vertexes (the coat's hem at his knee, his sleeve) turning
 # it wrongly otherwise.
 
 Hips      -0.9  0.3   7.3   -0.9  0.3  10.0
@@ -24,9 +25,9 @@ Lhand     -1.5  9.0   9.0   -2.0  9.0   3.8   r 4
 Ruparm    -2.0 -7.0  25.0   -1.0 -9.0  16.0
 Rloarm    -1.0 -9.0  16.0    6.0 -6.0  18.5
 Rhand      6.0 -6.0  18.5    9.5 -6.0  18.0
-Lupleg    -3.2  1.6   7.3   -1.8  2.7  -4.7   aim
+Lupleg    -3.2  1.6   7.3   -1.2  4.1  -8.9   aim @5
 Lloleg    -1.8  2.7  -4.7   -2.9  3.5 -19.4
 Lankle_r  -2.9  3.5 -19.4    4.0  4.0 -23.0
-Rupleg    -3.2 -1.6   7.3   -1.8 -2.3  -4.7
+Rupleg    -3.2 -1.6   7.3   -1.2 -3.7  -8.9   aim @5
 Rloleg    -1.8 -2.3  -4.7   -3.0 -3.2 -19.4
 Rankle_r  -3.0 -3.2 -19.4    4.0 -3.5 -23.0

@@ -1867,7 +1867,7 @@
 		"anims": {
 			"ambans": {
 				"date": "2026-10-24",
-				"fingerprint": "1ef82ff06a751ad1",
+				"fingerprint": "7161c7c5220ee0bc",
 				"fit": [
 					0.154,
 					1.66
@@ -1877,7 +1877,7 @@
 			},
 			"cr": {
 				"date": "2026-10-24",
-				"fingerprint": "4361bc60ec79f53c",
+				"fingerprint": "5d33c98ef4e8dbc5",
 				"fit": [
 					0.186,
 					1.77
@@ -1887,7 +1887,7 @@
 			},
 			"crns": {
 				"date": "2026-10-24",
-				"fingerprint": "2976bdf2066b1aa4",
+				"fingerprint": "1b51ddf2d7e3a8a8",
 				"fit": [
 					0.152,
 					1.75
@@ -1897,7 +1897,7 @@
 			},
 			"cs": {
 				"date": "2026-10-24",
-				"fingerprint": "b0d65cca4e8d5121",
+				"fingerprint": "52c645dded18d295",
 				"fit": [
 					0.133,
 					1.7
@@ -1907,7 +1907,7 @@
 			},
 			"dl": {
 				"date": "2026-10-24",
-				"fingerprint": "e1f04bb9cc73e2c6",
+				"fingerprint": "110614623ba8544d",
 				"fit": [
 					0.221,
 					1.72
@@ -1927,7 +1927,7 @@
 			},
 			"jpd": {
 				"date": "2026-10-24",
-				"fingerprint": "526486da9f524038",
+				"fingerprint": "15e86257ebd19d5f",
 				"fit": [
 					30.264,
 					134.73
@@ -1937,7 +1937,7 @@
 			},
 			"jpns": {
 				"date": "2026-10-24",
-				"fingerprint": "43521ad864277691",
+				"fingerprint": "d233d3313a932920",
 				"fit": [
 					30.235,
 					134.73
@@ -1947,7 +1947,7 @@
 			},
 			"kcel": {
 				"date": "2026-10-24",
-				"fingerprint": "8ecf536467f5bf4e",
+				"fingerprint": "ff8b1f91020dcfc5",
 				"fit": [
 					0.143,
 					1.57
@@ -1957,7 +1957,7 @@
 			},
 			"kcela": {
 				"date": "2026-10-24",
-				"fingerprint": "6b521e4500665519",
+				"fingerprint": "47b1e2333bcf9e7b",
 				"fit": [
 					0.233,
 					1.44
@@ -1967,7 +1967,7 @@
 			},
 			"punch": {
 				"date": "2026-10-24",
-				"fingerprint": "a41093a48356e064",
+				"fingerprint": "a25f495de7f66344",
 				"fit": [
 					0.121,
 					1.62
@@ -1977,24 +1977,24 @@
 			},
 			"rest": {
 				"date": "2026-10-24",
-				"fingerprint": "43746b062458fd93",
+				"fingerprint": "ed191c45b507f646",
 				"fit": null,
 				"note": "",
 				"verdict": "valid"
 			},
 			"runa": {
 				"date": "2026-10-24",
-				"fingerprint": "0a77d480ef2e0f7a",
+				"fingerprint": "211359a0f9409d28",
 				"fit": [
-					0.091,
+					0.103,
 					1.32
 				],
-				"note": "",
-				"verdict": "valid"
+				"note": "box broken: right thigh",
+				"verdict": "broken"
 			},
 			"sfa": {
 				"date": "2026-10-24",
-				"fingerprint": "59c5ee7080a969a8",
+				"fingerprint": "700e18da29206200",
 				"fit": [
 					1.048,
 					7.14
@@ -2004,7 +2004,7 @@
 			},
 			"sfb": {
 				"date": "2026-10-24",
-				"fingerprint": "62b91ad0467827a7",
+				"fingerprint": "56288e4a169f955d",
 				"fit": [
 					1.145,
 					7.85
