@@ -245,6 +245,8 @@ entityDef monster_cambot {
 	"fly_accel"		"400"
 	"fly_offset"	"72"			// above you
 	"fly_bob"		"8"
+	"fly_jitter"	"24"			// its engine doesn't hold steady: its lift wavers, it sputters
+	"fly_wobble"	"5"				// and it rocks, degrees
 	"turn_rate"		"90"
 	"fov"			"150"			// it sees 75 degrees either side (CAMBOT_IsVisible)
 	"sight_range"	"3000"
@@ -388,14 +390,28 @@ entityDef damage_thunderjiz_splash {
 // what the monsters' model defs keep when a rigged one takes the md3's place
 // (bg_model.c BG_ModelKey): their effects and lights
 
+// its lamp (ai_weapons.cpp light_spawn, light_think): at its hardpoint
+// (hr_light), a yellow flare and light, its searchlight 45 down, panning
+// -45 to 64 degrees about where it faces, 80 a second, 600 long; seeing
+// you, on you and red, its flare red (e_sflred). Its beam through the air
+// is ours (Daikatana's renderer drew its spot light's)
 entityDef model_cambot_extra {
 	"surface"		"metal"
 	"fx_death"		"dk/explosion"
-	"light_radius"	"600"			// its lamp (Daikatana's light from its weapon offset)
-	"light_color"	"1 0.95 0.8"
-	"light_offset"	"30 0 -5"		// forward, left, up
-	"light_cone"	"25"			// a spot light, along where it looks, a little down
-	"light_dir"		"1 0 -0.25"
+	"light_radius"	"600"
+	"light_color"	"1 0.95 0.55"
+	"light_alarm_color"	"1 0.15 0.15"
+	"light_joint"	"hr_light"
+	"light_cone"	"25"
+	"light_sweep"	"-45 64 80"		// from, to (degrees of yaw), degrees a second
+	"light_pitch"	"45"			// down
+	"light_glow"	"96"			// the light about its flare (Daikatana's 225, dimmer)
+	"light_flare"	"dkfx/cambotf"
+	"light_flare_alarm"	"dkfx/sflred"
+	"light_flare_size"	"40"
+	"light_beam"	"dkfx/lampbeam"
+	"light_beam_length"	"600"
+	"light_beam_alpha"	"0.35"
 }
 
 entityDef model_rockgat_extra {

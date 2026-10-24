@@ -158,3 +158,42 @@ dkfx/bolt
 		alphaGen vertex
 	}
 }
+
+// Daikatana's cambot flares (models/e1/me_cambotf.sp2, models/global/
+// e_sflred.sp2): its lamp at its hardpoint, yellow as it searches, red when
+// it has seen you (cg_character.c, "light_flare"); their alpha their shape
+dkfx/cambotf
+{
+	cull none
+	{
+		map skins/me_cambotf.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+dkfx/sflred
+{
+	cull none
+	{
+		map skins/e_sflred.tga
+		blendFunc GL_SRC_ALPHA GL_ONE
+		rgbGen vertex
+		alphaGen vertex
+	}
+}
+
+// a lamp's beam through the air (gfx/fx/lampbeam.tga, tools/models/
+// make_lampbeam.py): soft across, its colour and fading the vertexes'
+// (cg_character.c, "light_beam")
+dkfx/lampbeam
+{
+	cull none
+	nopicmip
+	{
+		map gfx/fx/lampbeam.tga
+		blendFunc add
+		rgbGen vertex
+	}
+}

@@ -23,7 +23,8 @@ numbers, Daikatana's `AIData.csv` at medium skill:
   joint of its rig whose hitbox bites (the crox's `Head`): the reach is then from that box's front end, posed as
   it's drawn, to the enemy's box, and the hit lands there;
 - `fly` 1: it flies, at `fly_speed`, its thrust changing its velocity by `fly_accel` a second at most, `fly_offset`
-  above what it flies at, bobbing `fly_bob`;
+  above what it flies at, bobbing `fly_bob`; `fly_jitter` an engine that doesn't hold steady (its lift
+  wavering that many units a second, now and then sputtering), rocking it `fly_wobble` degrees (the cambot's);
 - `impact_speed`, `impact_damage`, `impact_bounce`: hitting the world faster than `impact_speed` (a frog's leap,
   a skeet's crash) bounces it off with that much of its speed and hurts it `impact_damage` per 100 u/s more;
 - `snd_*`: its sound shaders (`sound/dk_monsters_e1.sndshd`), for its script's `startSound()`.
@@ -144,8 +145,12 @@ What scripts have for these: `attackWeapon( def, offset )` fires a weapon def's 
 as the weapon's) from an offset at the enemy, so a monster's weapon is a weapon def no player gets (`weapon_slot`
 99, keeping the players' weapons' numbers); `alertMonsters( range )`; `playModelFx( "death" )` plays the model def's
 `fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). These and the other looks of a model
-(`surface`, `light_radius`/`light_color`/`light_offset` forward, left, up for a lamp it carries, made a spot light
-by `light_cone` degrees along `light_dir` forward, left, up, `light_ambient`
+(`surface`, `light_radius`/`light_color`/`light_offset` forward, left, up for a lamp it carries, or at the
+joint `light_joint`, made a spot light by `light_cone` degrees along `light_dir` forward, left, up, or searching:
+`light_sweep` from, to degrees of yaw about where it faces, degrees a second, `light_pitch` down; on its enemy
+while it sees it in `light_alarm_color`; `light_flare` a sprite shader at it (`light_flare_alarm` on its
+enemy) `light_flare_size` across, `light_glow` a small light about it, `light_beam` a shader for its beam
+through the air, to what it lights (`light_beam_length` at most, `light_beam_alpha`); `light_ambient`
 r g b added to the light grid's) can go in a `model_<name>_extra` def, which a rigged model's generated def
 keeps too. A robot's death is `playModelFx( "death" )`, `hide()`,
 `remove()`. No monster sees anyone during a cinematic, and a `killtarget` (a broken control box's) kills a

@@ -74,7 +74,7 @@ on patrol until it sees someone, or is hurt
 void monster_cambot::state_Idle() {
 	entity enemy;
 
-	playCycle( ANIMCHANNEL_LEGS, "amba" );
+	playCycle( ANIMCHANNEL_LEGS, "flya" );		// (its hovering is its engine's: fly_jitter, not amba)
 	setFlySpeed( getFloatKey( "walk_speed" ) );
 	setFlyOffset( 0 );		// on its corners, as Daikatana's; above you only when it follows
 	corner = getEntityKey( "target" );

@@ -776,6 +776,7 @@ assemble() {
 	put "$OUT/maps" "$mod/maps"
 	put "$ROOT/effects" "$mod/effects"
 	put "$ROOT/characters" "$mod/characters"
+	put "$ROOT/gfx" "$mod/gfx"		# (our own images: a lamp's beam, tools/models/make_lampbeam.py)
 	# the defs: this repository's, the converted cinematics' actors, and the
 	# monsters' frame commands from Daikatana's sound tables (tools/vsc)
 	rm -rf "$mod/def" "$OUT/frames"
