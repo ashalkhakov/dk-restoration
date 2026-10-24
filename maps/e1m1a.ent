@@ -26,8 +26,9 @@
 // the dead workers: Daikatana's deadguy decos (m_dead.md3, still, one of its
 // ten death poses each by "frame", 1.5 times the size) out, the rigged
 // m_dead character in (its poses dead000 to dead009, an animation each), a
-// ragdoll asleep in the same pose till it's hit
-// ("nodrop": falling from it, they slumped off the coffins), where each lay
+// ragdoll limp from the start in that pose, settling into its coffin (a hull
+// for each board: below); each just over where it comes to rest (Daikatana's
+// decos were spawned higher, and fell)
 {
 "_match classname" "func_physics"
 "_match model" "models/e1/m_dead.md3"
@@ -39,9 +40,8 @@
 "model" "model_dead"
 "anim" "dead004"
 "ragdoll" "1"
-"nodrop" "1"
 "modelscale" "1.5"
-"origin" "1602 -2695 552"
+"origin" "1602 -2695 546"
 }
 {
 "_match classname" "func_physics"
@@ -54,9 +54,8 @@
 "model" "model_dead"
 "anim" "dead008"
 "ragdoll" "1"
-"nodrop" "1"
 "modelscale" "1.5"
-"origin" "1473 -2716 536"
+"origin" "1473 -2716 533"
 }
 {
 "_match classname" "func_physics"
@@ -69,10 +68,9 @@
 "model" "model_dead"
 "anim" "dead001"
 "ragdoll" "1"
-"nodrop" "1"
 "modelscale" "1.5"
 "angle" "135"
-"origin" "1731 -2430 540"
+"origin" "1731 -2430 549"
 }
 
 // the dump truck: Daikatana's deathtruck deco (d1_deathtruck.md3, a still
