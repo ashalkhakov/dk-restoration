@@ -10,6 +10,106 @@
 				],
 				"note": "doesn't fit at all",
 				"verdict": "broken"
+			},
+			"dead000": {
+				"date": "2026-10-24",
+				"fingerprint": "59f0f6be4d83a630",
+				"fit": [
+					0.0,
+					0.0
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead001": {
+				"date": "2026-10-24",
+				"fingerprint": "94867a3f0fd0c2e5",
+				"fit": [
+					0.115,
+					0.93
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead002": {
+				"date": "2026-10-24",
+				"fingerprint": "c4f726797650d686",
+				"fit": [
+					0.115,
+					0.8
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead003": {
+				"date": "2026-10-24",
+				"fingerprint": "9bb84de8d6cf8fe5",
+				"fit": [
+					0.168,
+					1.11
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead004": {
+				"date": "2026-10-24",
+				"fingerprint": "b2f6d80e154ee9f9",
+				"fit": [
+					0.136,
+					0.86
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead005": {
+				"date": "2026-10-24",
+				"fingerprint": "314a78fbc95cbb22",
+				"fit": [
+					0.177,
+					0.85
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead006": {
+				"date": "2026-10-24",
+				"fingerprint": "416a6edeb0987b80",
+				"fit": [
+					0.184,
+					0.86
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead007": {
+				"date": "2026-10-24",
+				"fingerprint": "9c208c07c5f32836",
+				"fit": [
+					0.154,
+					0.85
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead008": {
+				"date": "2026-10-24",
+				"fingerprint": "079e58160744730b",
+				"fit": [
+					0.186,
+					0.92
+				],
+				"note": "",
+				"verdict": "valid"
+			},
+			"dead009": {
+				"date": "2026-10-24",
+				"fingerprint": "0fc0941eec400f1d",
+				"fit": [
+					0.192,
+					1.42
+				],
+				"note": "",
+				"verdict": "valid"
 			}
 		},
 		"iqm": "models/rigged/dead.iqm"

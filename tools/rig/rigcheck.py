@@ -145,6 +145,10 @@ class Source:
 	def __init__( self, rig, md3Path, rootPath ):
 		self.m = MD3( md3Path )
 		self.anims = { name: ( first, n ) for name, first, n in self.m.animations() }
+		# a frame by its name too: a pose (autorig --lying's, the dead bodies'
+		# dead000...), its own animation in the rig
+		for i, name in enumerate( self.m.frameNames ):
+			self.anims.setdefault( name, ( i, 1 ) )
 		self.root = json.load( open( rootPath ) )["anims"] if rootPath and os.path.exists( rootPath ) else {}
 		pts = [ ( si, vi ) for si, s in enumerate( self.m.surfaces ) for vi in range( s.numVerts ) ]
 		def nearest( f, p ):

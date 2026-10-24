@@ -576,7 +576,11 @@ def place_template( rest, tris, headVerts, gunHand = None, headPoint = None ):
 		vs = [ v for v in rest if ( v[1] - y0 ) * side > 0.55 * shoulderY and v[2] > zCrotch + 0.08 * H ]
 		if not vs:
 			return ( x0, y0 + side * shoulderY, zCrotch )
-		far = sorted( vs, key = lambda v: -( v[1] - y0 ) * side )[:max( 3, len( vs ) // 15 )]
+		# (a lying body's: the end farthest from the shoulder; the dead
+		# bodies' arms lie along them, their shoulders the farthest out)
+		sh = ( x0, y0 + side * shoulderY, zShoulder )
+		key = ( lambda v: -vlen( vsub( v, sh ) ) ) if TO_MODEL else ( lambda v: -( v[1] - y0 ) * side )
+		far = sorted( vs, key = key )[:max( 3, len( vs ) // 15 )]
 		return mean( far )
 
 	def knee( side, hip, ankle ):
@@ -993,6 +997,10 @@ def main( md3Path, outBase ):
 	if TO_MODEL:
 		for sf in m.surfaces:
 			sf.frames = [ [ stand_up( v ) for v in frame ] for frame in sf.frames ]
+		# its frames are poses, each its own (Daikatana's dead bodies: dead000
+		# to dead009 one "animation" by their names, ten bodies lying anyhow),
+		# not an animation's: one-frame animations, named so
+		m.animations = lambda: [ ( n, i, 1 ) for i, n in enumerate( m.frameNames ) ]
 	# the body: every surface but the hardpoints and the props
 	m.surfaces = split_props( m.surfaces )
 	body = [ s for s in m.surfaces if not is_hardpoint( s ) and not is_prop( s ) ]
@@ -1063,8 +1071,9 @@ def main( md3Path, outBase ):
 	for i, v in enumerate( rest ):
 		assign.append( min( [ b for b in bones if allowed( i, b ) ], key = lambda b: seg_dist( v, *segs[b] ) ) )
 
-	# frames to fit with (all of them takes long and adds little)
-	sample = list( range( 0, F, 3 ) )
+	# frames to fit with (all of them takes long and adds little); a lying
+	# model's every one, its frames poses apart, not an animation's
+	sample = list( range( F ) ) if TO_MODEL else list( range( 0, F, 3 ) )
 
 	def fit_bones( frameList ):
 		"""Each bone's rigid motion from the rest frame to the frames."""
@@ -1075,7 +1084,9 @@ def main( md3Path, outBase ):
 		out = {}
 		for b in bones:
 			idx = motion[b]
-			if len( idx ) < 4:
+			# (a lying body's three: the dead bodies' thighs a ring at each end,
+			# the hip's three its own, else the waist takes them)
+			if len( idx ) < ( 3 if TO_MODEL else 4 ):
 				out[b] = None
 				continue
 			src = [ rest[i] for i in idx ]
@@ -1135,7 +1146,10 @@ def main( md3Path, outBase ):
 	# the knees, so the motion can't tell a thigh from its shin, but the walk
 	# IK bends them, and a thigh skinned to the shin stretches
 	legChains = [ [ J[s_ + n] for n in ( "upleg", "loleg", "ankle_r" ) ] for s_ in ( "L", "R" ) ]
-	for chain in legChains:
+	# and a lying body's arms (the dead bodies' poses bend them little, and
+	# the motion gave the left forearm to the hand)
+	armChains = [ [ J[s_ + n] for n in ( "uparm", "loarm", "hand" ) ] for s_ in ( "L", "R" ) ] if TO_MODEL else []
+	for chain in legChains + armChains:
 		for i in range( N ):
 			if assign[i] in chain:
 				assign[i] = min( chain, key = lambda c: seg_dist( rest[i], *segs[c] ) )
@@ -1291,7 +1305,9 @@ def main( md3Path, outBase ):
 	# that puts it where Daikatana's frames have it. Judged by its worst
 	# frame (a point standing out is a peak, its average small), and only
 	# when no bone carries it even half as well
-	if EXTRA_BONES and NAME:
+	# (and a lying body's, without cloth bones: the dead bodies' hips, each
+	# pose sculpted anew)
+	if ( EXTRA_BONES and NAME ) or TO_MODEL:
 		Hh = max( v[2] for v in rest ) - min( v[2] for v in rest )
 		spans = [ range( a, a + n ) for name, a, n in m.animations() ]
 		def anim_err( i, b ):
@@ -1443,8 +1459,9 @@ def main( md3Path, outBase ):
 				has = [ ( i, wts[2] if wts[0] == b else 1 - wts[2] ) for i, wts in enumerate( weights )
 						if b in ( wts[0], wts[1] ) and ( wts[0] == b or wts[2] < 1.0 ) ]
 				has = [ ( i, w ) for i, w in has if w > 0.05 ]
-				# (enough of them: Hiro's right forearm has none its own)
-				if sum( w for i, w in has ) < 8:
+				# (enough of them: Hiro's right forearm has none its own; a
+				# lying body's few, the dead bodies' thighs a ring at each end)
+				if sum( w for i, w in has ) < ( 4 if TO_MODEL else 8 ):
 					continue
 				src = [ rest[i] for i, w in has ]
 				ws = [ w * w for i, w in has ]

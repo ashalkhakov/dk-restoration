@@ -407,11 +407,14 @@ function matchMD3() {
 }
 
 // the MD3 frame an IQM frame was made from: the animation of the same name,
-// that far in (the rest frame for one the MD3 hasn't: --rest's "rest")
+// that far in; else the frame of that name (a pose, autorig --lying's: the
+// dead bodies' dead000...); else the rest frame (--rest's "rest")
 function md3Frame( animIndex, k ) {
 	if ( !S.md3 ) return -1;
 	const a = S.iqm.anims[animIndex], m = S.md3.anims.find( x => x.name === a.name );
-	return m ? m.first + Math.min( k, m.count - 1 ) : S.md3Rest;
+	if ( m ) return m.first + Math.min( k, m.count - 1 );
+	const f = S.md3.frameNames.indexOf( a.name );
+	return f >= 0 ? f : S.md3Rest;
 }
 
 function setAnim( i ) {

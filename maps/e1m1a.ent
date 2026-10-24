@@ -25,7 +25,8 @@
 
 // the dead workers: Daikatana's deadguy decos (m_dead.md3, still, one of its
 // ten death poses each by "frame", 1.5 times the size) out, the rigged
-// m_dead character in, a ragdoll asleep in the same pose till it's hit
+// m_dead character in (its poses dead000 to dead009, an animation each), a
+// ragdoll asleep in the same pose till it's hit
 // ("nodrop": falling from it, they slumped off the coffins), where each lay
 {
 "_match classname" "func_physics"
@@ -36,8 +37,7 @@
 {
 "classname" "misc_character"
 "model" "model_dead"
-"anim" "dead"
-"frame" "4"
+"anim" "dead004"
 "ragdoll" "1"
 "nodrop" "1"
 "modelscale" "1.5"
@@ -52,8 +52,7 @@
 {
 "classname" "misc_character"
 "model" "model_dead"
-"anim" "dead"
-"frame" "8"
+"anim" "dead008"
 "ragdoll" "1"
 "nodrop" "1"
 "modelscale" "1.5"
@@ -68,8 +67,7 @@
 {
 "classname" "misc_character"
 "model" "model_dead"
-"anim" "dead"
-"frame" "1"
+"anim" "dead001"
 "ragdoll" "1"
 "nodrop" "1"
 "modelscale" "1.5"
