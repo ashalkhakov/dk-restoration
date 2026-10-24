@@ -19,8 +19,9 @@ articulatedFigure monster_froginator {
 	body "body" {
 		joint "origin"
 		mod orientation
-		model box( ( -2.96, -5.23, -1.55 ), ( 2.96, 5.23, 1.55 ) )
-		origin ( 0.40, 0.11, 2.30 )
+		model box( ( -6.14, -5.73, -2.81 ), ( 6.14, 5.73, 2.81 ) )
+		angles ( -0.5, -81.1, 9.1 )
+		origin ( -1.45, 0.26, 0.60 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -31,8 +32,48 @@ articulatedFigure monster_froginator {
 	body "head" {
 		joint "Head"
 		mod orientation
-		model box( ( -3.00, -4.15, -2.28 ), ( 3.00, 4.15, 2.28 ) )
-		origin ( 8.14, 0.01, 7.30 )
+		model box( ( -1.00, -1.00, -1.00 ), ( 1.00, 1.00, 1.00 ) )
+		angles ( -85.8, 178.1, -178.1 )
+		origin ( 4.31, -0.48, 4.48 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head2" {
+		joint "Head2"
+		mod orientation
+		model box( ( -1.00, -1.00, -1.00 ), ( 1.00, 1.00, 1.00 ) )
+		angles ( -78.6, 115.6, -115.8 )
+		origin ( 2.13, -0.46, 4.28 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head2b" {
+		joint "Head2b"
+		mod orientation
+		model box( ( -2.02, -1.00, -1.00 ), ( 2.02, 1.00, 1.00 ) )
+		angles ( 7.7, 35.9, 78.3 )
+		origin ( 6.42, -0.19, 4.59 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "head3b" {
+		joint "Head3b"
+		mod orientation
+		model box( ( -1.09, -1.00, -1.00 ), ( 1.09, 1.00, 1.00 ) )
+		angles ( -87.8, -169.3, 168.7 )
+		origin ( 7.75, -0.47, 3.93 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -43,8 +84,9 @@ articulatedFigure monster_froginator {
 	body "headb1" {
 		joint "Headb1"
 		mod orientation
-		model box( ( -2.25, -3.95, -1.30 ), ( 2.25, 3.95, 1.30 ) )
-		origin ( 8.24, 0.24, 4.25 )
+		model box( ( -4.91, -4.64, -2.90 ), ( 4.91, 4.64, 2.90 ) )
+		angles ( -0.6, -90.9, 27.2 )
+		origin ( 6.33, 0.01, 6.96 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -52,11 +94,12 @@ articulatedFigure monster_froginator {
 		selfCollision 1
 	}
 
-	body "headb2" {
-		joint "Headb2"
+	body "headc1" {
+		joint "Headc1"
 		mod orientation
-		model box( ( -2.86, -0.92, -0.92 ), ( 2.86, 0.92, 0.92 ) )
-		origin ( 5.48, -0.46, 4.46 )
+		model box( ( -4.60, -3.07, -1.00 ), ( 4.60, 3.07, 1.00 ) )
+		angles ( -3.9, 81.9, -21.1 )
+		origin ( 8.10, -0.12, 4.46 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -67,8 +110,9 @@ articulatedFigure monster_froginator {
 	body "lfore1" {
 		joint "Lfore1"
 		mod orientation
-		model bone( ( 0.76, 6.55, -0.74 ), ( 6.47, 9.66, -8.76 ), 6.39 )
-		origin ( 3.62, 8.10, -4.75 )
+		model box( ( -2.56, -1.71, -1.59 ), ( 2.56, 1.71, 1.59 ) )
+		angles ( 39.8, 33.7, 161.5 )
+		origin ( 2.49, 7.98, -6.86 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -79,20 +123,9 @@ articulatedFigure monster_froginator {
 	body "lfore2" {
 		joint "Lfore2"
 		mod orientation
-		model box( ( -4.12, -3.09, -1.05 ), ( 4.12, 3.09, 1.05 ) )
-		origin ( 10.98, 7.41, -9.33 )
-		density 0.2
-		friction 0.01, 0.01, 0.8
-		contents corpse
-		clipMask solid, corpse
-		selfCollision 1
-	}
-
-	body "lhind1" {
-		joint "Lhind1"
-		mod orientation
-		model bone( ( -2.46, -1.04, -1.45 ), ( -7.81, 2.68, 0.18 ), 6.20 )
-		origin ( -5.13, 0.82, -0.63 )
+		model box( ( -5.01, -2.87, -1.67 ), ( 5.01, 2.87, 1.67 ) )
+		angles ( -0.0, -20.1, 4.6 )
+		origin ( 10.56, 7.59, -8.96 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -103,8 +136,9 @@ articulatedFigure monster_froginator {
 	body "lhind2" {
 		joint "Lhind2"
 		mod orientation
-		model bone( ( -7.81, 2.68, 0.18 ), ( -11.16, 13.73, -1.27 ), 8.86 )
-		origin ( -9.49, 8.20, -0.55 )
+		model box( ( -3.63, -3.37, -2.86 ), ( 3.63, 3.37, 2.86 ) )
+		angles ( 37.0, 131.2, 146.7 )
+		origin ( -7.30, 9.00, 1.01 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -115,8 +149,9 @@ articulatedFigure monster_froginator {
 	body "lhind3" {
 		joint "Lhind3"
 		mod orientation
-		model box( ( -5.87, -3.19, -3.41 ), ( 5.87, 3.19, 3.41 ) )
-		origin ( -6.75, 11.61, -6.05 )
+		model box( ( -3.46, -1.68, -1.49 ), ( 3.46, 1.68, 1.49 ) )
+		angles ( 60.6, -165.1, 8.7 )
+		origin ( -11.07, 9.78, -6.21 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -127,8 +162,9 @@ articulatedFigure monster_froginator {
 	body "rfore1" {
 		joint "Rfore1"
 		mod orientation
-		model bone( ( 0.90, -9.13, -0.73 ), ( 7.46, -9.82, -8.72 ), 5.80 )
-		origin ( 4.18, -9.47, -4.72 )
+		model box( ( -2.44, -1.69, -1.61 ), ( 2.44, 1.69, 1.61 ) )
+		angles ( 41.8, -26.6, 154.6 )
+		origin ( 3.10, -8.18, -6.66 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -139,8 +175,9 @@ articulatedFigure monster_froginator {
 	body "rfore2" {
 		joint "Rfore2"
 		mod orientation
-		model box( ( -4.12, -3.15, -1.02 ), ( 4.12, 3.15, 1.02 ) )
-		origin ( 11.79, -7.48, -9.28 )
+		model box( ( -5.16, -2.90, -1.70 ), ( 5.16, 2.90, 1.70 ) )
+		angles ( -0.0, 21.3, 177.6 )
+		origin ( 11.15, -7.75, -8.79 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -151,8 +188,9 @@ articulatedFigure monster_froginator {
 	body "rhind1" {
 		joint "Rhind1"
 		mod orientation
-		model bone( ( -5.27, 1.15, -3.53 ), ( -4.66, -10.68, 0.03 ), 3.59 )
-		origin ( -4.97, -4.77, -1.75 )
+		model box( ( -3.57, -3.18, -1.93 ), ( 3.57, 3.18, 1.93 ) )
+		angles ( 37.0, -131.2, 19.6 )
+		origin ( -6.47, -8.49, -0.23 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -163,8 +201,9 @@ articulatedFigure monster_froginator {
 	body "rhind2" {
 		joint "Rhind2"
 		mod orientation
-		model bone( ( -4.66, -10.68, 0.03 ), ( -11.89, -9.27, -7.72 ), 2.50 )
-		origin ( -8.27, -9.98, -3.85 )
+		model box( ( -3.45, -1.69, -2.31 ), ( 3.45, 1.69, 2.31 ) )
+		angles ( 60.6, 165.1, 22.5 )
+		origin ( -10.67, -9.69, -6.41 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -175,8 +214,9 @@ articulatedFigure monster_froginator {
 	body "rhind3" {
 		joint "Rhind3"
 		mod orientation
-		model box( ( -5.83, -2.86, -0.92 ), ( 5.83, 2.86, 0.92 ) )
-		origin ( -6.59, -11.69, -9.38 )
+		model box( ( -6.67, -2.51, -1.88 ), ( 6.67, 2.51, 1.88 ) )
+		angles ( 1.4, -16.7, 4.8 )
+		origin ( -6.60, -11.14, -8.15 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -187,8 +227,9 @@ articulatedFigure monster_froginator {
 	body "tail1" {
 		joint "Tail1"
 		mod orientation
-		model box( ( -0.92, -1.81, -1.78 ), ( 0.92, 1.81, 1.78 ) )
-		origin ( -8.80, -0.99, -1.80 )
+		model box( ( -2.98, -1.29, -1.00 ), ( 2.98, 1.29, 1.00 ) )
+		angles ( -42.5, -63.9, 83.8 )
+		origin ( -9.14, -0.52, -0.93 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -199,8 +240,22 @@ articulatedFigure monster_froginator {
 	body "tailb1" {
 		joint "Tailb1"
 		mod orientation
-		model box( ( -2.89, -2.86, -2.60 ), ( 2.89, 2.86, 2.60 ) )
-		origin ( -1.51, 0.07, 5.91 )
+		model box( ( -2.48, -1.00, -1.00 ), ( 2.48, 1.00, 1.00 ) )
+		angles ( -0.5, 89.6, 180.0 )
+		origin ( 1.88, 0.07, 8.95 )
+		density 0.2
+		friction 0.01, 0.01, 0.8
+		contents corpse
+		clipMask solid, corpse
+		selfCollision 1
+	}
+
+	body "lfoot" {
+		joint "Lhind3"
+		mod orientation
+		model box( ( -6.68, -2.51, -1.85 ), ( 6.68, 2.51, 1.85 ) )
+		angles ( 1.4, 16.7, 173.5 )
+		origin ( -6.72, 11.45, -8.14 )
 		density 0.2
 		friction 0.01, 0.01, 0.8
 		contents corpse
@@ -212,27 +267,54 @@ articulatedFigure monster_froginator {
 		body1 "head"
 		body2 "body"
 		anchor joint( "Head" )
-		shafts ( 0.56, 0.06, 0.83 ), ( -0.56, -0.06, -0.83 )
+		shafts ( 0.93, 0.33, -0.17 ), ( -0.93, -0.33, 0.17 )
 		friction 0.20
-		coneLimit ( 0.56, 0.06, 0.83 ), 45
+		coneLimit ( 0.93, 0.33, -0.17 ), 45
+	}
+
+	universalJoint "Head2" {
+		body1 "head2"
+		body2 "head"
+		anchor joint( "Head2" )
+		shafts ( 0.16, 0.98, 0.08 ), ( -0.16, -0.98, -0.08 )
+		friction 0.20
+		coneLimit ( 0.16, 0.98, 0.08 ), 45
+	}
+
+	universalJoint "Head2b" {
+		body1 "head2b"
+		body2 "head"
+		anchor joint( "Head2b" )
+		shafts ( 0.80, 0.58, -0.13 ), ( -0.80, -0.58, 0.13 )
+		friction 0.20
+		coneLimit ( 0.80, 0.58, -0.13 ), 45
+	}
+
+	universalJoint "Head3b" {
+		body1 "head3b"
+		body2 "head2b"
+		anchor joint( "Head3b" )
+		shafts ( -0.04, -0.01, 1.00 ), ( 0.04, 0.01, -1.00 )
+		friction 0.20
+		coneLimit ( -0.04, -0.01, 1.00 ), 45
 	}
 
 	universalJoint "Headb1" {
 		body1 "headb1"
 		body2 "body"
 		anchor joint( "Headb1" )
-		shafts ( 0.07, -0.08, 0.99 ), ( -0.07, 0.08, -0.99 )
+		shafts ( 0.56, 0.06, 0.83 ), ( -0.56, -0.06, -0.83 )
 		friction 0.20
-		coneLimit ( 0.07, -0.08, 0.99 ), 45
+		coneLimit ( 0.56, 0.06, 0.83 ), 45
 	}
 
-	universalJoint "Headb2" {
-		body1 "headb2"
-		body2 "headb1"
-		anchor joint( "Headb2" )
-		shafts ( 0.07, -0.08, 0.99 ), ( -0.07, 0.08, -0.99 )
+	universalJoint "Headc1" {
+		body1 "headc1"
+		body2 "body"
+		anchor joint( "Headc1" )
+		shafts ( 0.54, 0.03, 0.84 ), ( -0.54, -0.03, -0.84 )
 		friction 0.20
-		coneLimit ( 0.07, -0.08, 0.99 ), 45
+		coneLimit ( 0.54, 0.03, 0.84 ), 45
 	}
 
 	universalJoint "Lfore1" {
@@ -253,18 +335,9 @@ articulatedFigure monster_froginator {
 		coneLimit ( 0.55, 0.30, -0.78 ), 80
 	}
 
-	universalJoint "Lhind1" {
-		body1 "lhind1"
-		body2 "body"
-		anchor joint( "Lhind1" )
-		shafts ( -0.80, 0.55, 0.24 ), ( 0.80, -0.55, -0.24 )
-		friction 0.20
-		coneLimit ( -0.80, 0.55, 0.24 ), 80
-	}
-
 	universalJoint "Lhind2" {
 		body1 "lhind2"
-		body2 "lhind1"
+		body2 "body"
 		anchor joint( "Lhind2" )
 		shafts ( -0.29, 0.95, -0.12 ), ( 0.29, -0.95, 0.12 )
 		friction 0.20
@@ -341,6 +414,11 @@ articulatedFigure monster_froginator {
 		shafts ( -0.37, 0.71, -0.60 ), ( 0.37, -0.71, 0.60 )
 		friction 0.20
 		coneLimit ( -0.37, 0.71, -0.60 ), 80
+	}
+
+	fixed "lfoot" {
+		body1 "lfoot"
+		body2 "lhind3"
 	}
 
 }

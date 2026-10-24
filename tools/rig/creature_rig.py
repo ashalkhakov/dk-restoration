@@ -26,6 +26,12 @@ becomes a pose, its animations (named by the frame names) the IQM's.
 	python3 tools/rig/creature_rig.py <md3> <out base> <name> [--bones N] [--anims "<anim> <fps> [loop];..."]
 		[--surface metal]
 (--bones: merge the parts that move most alike until there are no more than N;
+--root-out-anims a,b: the travel in those animations out, each playing over
+the origin, <out base>.json what was taken out (the froginator's leap and
+hop: the game throws him); --mirror: left and right split alike, each part's image across the middle
+the part on the other side (the froginator's legs came out split unlike);
+--chain N: a separate piece of the mesh of at most N vertexes (the froginator's
+tongue) a bone for each ring of it along its length, so it can stretch;
 --seeds N: parts to start with (default 40; more for small parts that
 move on their own: the thunderskeet's thin wings); --merge F: parts that move alike within F of the size are one (default
 0.010; less, more bones: the thunderskeet's twisting wings and tail);
@@ -39,6 +45,7 @@ name replaces the md3's) and af/monster_froginator.af (its ragdoll, Doom 3's
 articulated figure), and prints how far the skinned frames are from the
 original ones. ./dk rig runs it for the creatures.
 """
+import json
 import math
 import os
 import re
@@ -55,6 +62,9 @@ SAMPLE_STEP = 3			# every third frame fits the motions (all of them adds little)
 SPATIAL = 0.5			# nearness to a part's middle against its motion, per frame (of the size squared)
 MERGE = 0.010			# of the size: two parts whose merged motion fits this well on average are one
 MIN_PART = 6			# vertexes: a smaller part goes to a neighbour
+MIRROR = False			# --mirror: left and right split alike
+ROOT_OUT = []			# --root-out-anims a,b: the travel out of those animations
+CHAIN = 0				# --chain: a separate piece of no more vertexes a bone a ring (a tongue)
 JOINT_MOVE = 0.15		# of the size: how far a joint goes from where its parts meet
 DEFAULT_FPS = 10.0		# Daikatana's monsters animate at 10 frames a second
 
@@ -113,14 +123,69 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 
 	sample = list( range( 0, F, SAMPLE_STEP ) )
 
-	# 1. parts: seeds far apart, the nearest one's vertexes
-	seeds = [ min( range( N ), key = lambda i: vlen( vsub( rest[i], centroid( rest ) ) ) ) ]
-	dist = [ vlen( vsub( rest[i], rest[seeds[0]] ) ) for i in range( N ) ]
+	# --mirror: the creature left and right alike (a frog's legs): each vertex
+	# its mirror image across the plane y = mid, the parts in pairs (mp: a
+	# part's mirror, itself for one across the middle), a vertex on the left
+	# and its image placed together, a pair merged together; a vertex on the
+	# plane in a part across the middle, one with no image ("U") as it fits
+	mir, side, mp = [ -1 ] * N, [ "C" ] * N, {}
+	if MIRROR:
+		tol = 0.05 * S		# (Daikatana's meshes are only near mirrored: the froginator's 0.66 apart, its images)
+		# (by place: a seam's vertexes, welded, are one; each place on the
+		# left with the nearest free place on the right, the nearest pairs
+		# first)
+		reps = sorted( set( group ) )
+		def images( mid ):
+			left = [ g for g in reps if rest[g][1] > mid + 0.5 * tol ]
+			right = [ g for g in reps if rest[g][1] < mid - 0.5 * tol ]
+			pairs = []
+			for a in left:
+				q = ( rest[a][0], 2 * mid - rest[a][1], rest[a][2] )
+				for b in right:
+					d = vlen( vsub( rest[b], q ) )
+					if d < tol:
+						pairs.append( ( d, a, b ) )
+			pairs.sort()
+			out, used = {}, set()
+			for d, a, b in pairs:
+				if a not in used and b not in used:
+					used.update( ( a, b ) )
+					out[a], out[b] = b, a
+			return out
+		c0 = 0.5 * ( restLo[1] + restHi[1] )
+		mid = max( ( c0 + k * 0.005 * S for k in range( -10, 11 ) ), key = lambda c: len( images( c ) ) )
+		pairOf = images( mid )
+		for i in range( N ):
+			g = pairOf.get( group[i] )
+			if g is not None:
+				mir[i] = g
+				side[i] = "L" if rest[i][1] > mid else "R"
+			elif abs( rest[i][1] - mid ) >= 0.5 * tol:
+				side[i] = "U"		# (no image: its own way)
+		print( "  mirrored across y %.2f: %d of %d vertexes in pairs" % ( mid, sum( 1 for s in side if s != "C" ), N ) )
+	def mirror_right():
+		"""the right side as the left's image"""
+		for i in range( N ):
+			if side[i] == "R":
+				assign[i] = mp[assign[mir[i]]]
+
+	# 1. parts: seeds far apart, the nearest one's vertexes (with --mirror,
+	# the left's and the middle's, each left one's image the right's)
+	seeds = [ min( ( i for i in range( N ) if side[i] in ( "L", "C" ) ), key = lambda i: vlen( vsub( rest[i], centroid( rest ) ) ) ) ]
+	dist = [ vlen( vsub( rest[i], rest[seeds[0]] ) ) if side[i] in ( "L", "C" ) else 0.0 for i in range( N ) ]
 	while len( seeds ) < min( SEEDS, N // MIN_PART ):
 		far = max( range( N ), key = lambda i: dist[i] )
 		seeds.append( far )
 		dist = [ min( dist[i], vlen( vsub( rest[i], rest[far] ) ) ) for i in range( N ) ]
-	assign = [ min( range( len( seeds ) ), key = lambda s: vlen( vsub( rest[i], rest[seeds[s]] ) ) ) for i in range( N ) ]
+	for k in range( len( seeds ) ):
+		mp[k] = k
+		if side[seeds[k]] == "L":
+			mp[k] = len( seeds )
+			mp[len( seeds )] = k
+			seeds.append( mir[seeds[k]] )
+	assign = [ min( [ k for k in range( len( seeds ) ) if side[i] != "C" or mp[k] == k ],
+					key = lambda s: vlen( vsub( rest[i], rest[seeds[s]] ) ) ) for i in range( N ) ]
+	mirror_right()
 
 	def parts():
 		out = {}
@@ -182,17 +247,30 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 		motion = fit_parts( sample )
 		mids = { p: centroid( [ rest[i] for i in idx ] ) for p, idx in parts().items() }
 		changed = 0
+		def cost( i, p ):
+			d = vlen( vsub( rest[i], mids[p] ) ) / S
+			return motion_err( i, motion, p ) + SPATIAL * len( sample ) * d * d * S * S * 0.01
 		for i in range( N ):
+			if side[i] == "R":
+				continue
 			cands = set( [ assign[i] ] + [ assign[n] for n in adj[i] ] )
-			def cost( p ):
-				d = vlen( vsub( rest[i], mids[p] ) ) / S
-				return motion_err( i, motion, p ) + SPATIAL * len( sample ) * d * d * S * S * 0.01
-			best = min( cands, key = cost )
+			if side[i] == "C" and MIRROR:
+				cands = set( p for p in cands if mp[p] == p ) or { assign[i] }
+			if side[i] == "L":
+				# (a part whose image has gone, its right side all gone
+				# elsewhere, no place for a vertex with an image)
+				cands = set( p for p in cands if mp.get( p ) in mids ) or { assign[i] }
+				best = min( cands, key = lambda p: cost( i, p ) + ( cost( mir[i], mp[p] ) if mp.get( p ) in mids else 0.0 ) )
+			else:
+				best = min( cands, key = lambda p: cost( i, p ) )
 			if best != assign[i]:
 				assign[i] = best
 				changed += 1
+		mirror_right()
 		weld_parts()
 		changed += keep_whole()
+		if MIRROR:
+			mirror_right()
 		print( "  split %d: %d vertexes moved, %d parts" % ( it + 1, changed, len( parts() ) ) )
 		if changed < N * 0.002:
 			break
@@ -233,15 +311,52 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 		votes = [ piece[i] for i in idx ]
 		return max( set( votes ), key = votes.count )
 
+	# a small separate piece that stretches (--chain: the froginator's
+	# tongue, shot out to seven times its length): a part, a bone, for each
+	# ring of it along its length, never merged, so they slide apart
+	chainParts = set()
+	if CHAIN:
+		size = {}
+		for i in range( N ):
+			size[piece[i]] = size.get( piece[i], 0 ) + 1
+		nextPart = max( assign ) + 1
+		for pc, n in size.items():
+			if n > CHAIN:
+				continue
+			idx = [ i for i in range( N ) if piece[i] == pc ]
+			c = centroid( [ rest[i] for i in idx ] )
+			cov = [ [ sum( ( rest[i][r] - c[r] ) * ( rest[i][s] - c[s] ) for i in idx ) for s in range( 3 ) ] for r in range( 3 ) ]
+			vals, vecs = eigen3( cov )
+			axis = vecs[max( range( 3 ), key = lambda k: vals[k] )]
+			t_ = { i: vdot( vsub( rest[i], c ), axis ) for i in idx }
+			ts = sorted( set( round( x, 3 ) for x in t_.values() ) )
+			gap = 0.05 * ( ts[-1] - ts[0] )
+			ring, rings = 0, {}
+			for a, b in zip( [ None ] + ts, ts ):
+				if a is not None and b - a > gap:
+					ring += 1
+				rings[b] = ring
+			for i in idx:
+				assign[i] = nextPart + rings[round( t_[i], 3 )]
+				chainParts.add( assign[i] )
+				mp[assign[i]] = assign[i]
+			print( "  a chain of %d rings: %d vertexes" % ( ring + 1, n ) )
+			nextPart += ring + 1
+
 	while True:
 		ps = parts()
 		best = None
 		for p, idx in ps.items():
 			for q in neighbours_of( p, ps ):
-				if q <= p:
+				if q <= p or p in chainParts or q in chainParts:
 					continue
 				small = min( len( idx ), len( ps[q] ) ) < MIN_PART
+				mq = ( mp.get( p, p ), mp.get( q, q ) )
+				if MIRROR and set( mq ) != { p, q } and tuple( sorted( mq ) ) < ( p, q ):
+					continue		# (a pair and its image once, as the lesser pair)
 				err = merged_error( idx + ps[q] )
+				if MIRROR and set( mq ) != { p, q } and all( m in ps for m in mq ):
+					err = max( err, merged_error( ps[mq[0]] + ps[mq[1]] ) )
 				if small:
 					err = -1.0 / max( len( idx ), len( ps[q] ) )	# a tiny part goes anyway, to its biggest neighbour
 				budget = len( ps ) > maxBones and piece_of( idx ) == piece_of( ps[q] )
@@ -252,16 +367,26 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 		_, p, q = best
 		for i in ps[q]:
 			assign[i] = p
+		if MIRROR:
+			mpp, mpq = mp.get( p, p ), mp.get( q, q )
+			if q == mpp:
+				mp[p] = p		# (a part and its image: one across the middle)
+			elif mpp != p and mpq != q:
+				for i in ps.get( mpq, [] ):
+					assign[i] = mpp
+				mp[p], mp[mpp] = mpp, p
 	# a separate piece of mesh that moves alone stays a part; one with no
 	# neighbour at all that's too small goes to the nearest part
 	ps = parts()
 	for p, idx in list( ps.items() ):
-		if len( idx ) < MIN_PART and len( ps ) > 1:
+		if len( idx ) < MIN_PART and len( ps ) > 1 and p not in chainParts:
 			others = [ q for q in ps if q != p ]
 			c = centroid( [ rest[i] for i in idx ] )
 			q = min( others, key = lambda q: min( vlen( vsub( rest[i], c ) ) for i in ps[q] ) )
 			for i in idx:
 				assign[i] = q
+	if MIRROR:
+		mirror_right()
 	ps = parts()
 	print( "  %d parts after merging: %s" % ( len( ps ), ", ".join( str( len( v ) ) for v in sorted( ps.values(), key = len, reverse = True ) ) ) )
 	if os.environ.get( "RIG_MERGES" ):
@@ -289,7 +414,10 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 			if layer:
 				d += 1
 		return d + ( len( ps ) - len( seen ) )
-	root = min( ps, key = lambda p: ( eccentricity( p ), -len( ps[p] ) ) )
+	# (mirrored, a part across the middle: a side's small one, near the
+	# middle of the graph, isn't the body)
+	middle = [ p for p in ps if mp.get( p ) == p and p not in chainParts ] if MIRROR else []
+	root = min( middle or ps, key = lambda p: ( eccentricity( p ), -len( ps[p] ) ) )
 	# breadth first from the body: each part's parent the neighbour nearer the
 	# body it meets most; a separate piece of mesh to the nearest part
 	depth = { root: 0 }
@@ -463,12 +591,44 @@ def main( md3Path, outBase, name, animSpec, maxBones = 64, surface = None, noHit
 		jmotion[len( joints ) - 1] = jm
 		print( "  hardpoint %s on %s" % ( joint["name"], joint["parent"] ) )
 
+	if ROOT_OUT:
+		root_out( m, joints, jmotion, index[root], outBase, md3Path )
+
 	# the IQM, with Daikatana's frame rates and loops
 	spec, looping = A.anim_spec( animSpec, DEFAULT_FPS, A.MONSTER_LOOPING )
 	anims, restRot = A.write_iqm( m, body, verts, rest, joints, jmotion, weights, outBase, looping, DEFAULT_FPS )
 
 	write_def( m, name, outBase, joints, rest, jassign, anims, spec, looping, restRot, frames, surface )
 	write_af( name, joints, rest, jassign, S )
+
+def root_out( m, joints, jmotion, body, outBase, md3Path ):
+	"""--root-out-anims: Daikatana's travel out of the animations named so
+	(the froginator's leap and hop: the game throws him, and the frames'
+	rise on top of it doubled it): each of their frames' body put back
+	where the bind pose has it, every joint with it (up and down too), so
+	they play over the origin; turning stays. <outBase>.json says what was
+	taken out, as autorig.py's root_out: each frame's place (path)"""
+	at = joints[body]["pos"]
+	outOf = set( f for name, first, count in m.animations() if any( name.startswith( p ) for p in ROOT_OUT )
+				 for f in range( first, first + count ) )
+	off = []
+	for f in range( m.numFrames ):
+		h = xform( jmotion[body][f], at )
+		off.append( vsub( h, at ) if f in outOf else ( 0.0, 0.0, 0.0 ) )
+	for j, mt in list( jmotion.items() ):
+		if not all( r == IDENT and t == ( 0, 0, 0 ) for r, t in mt.values() ):		# (the origin stays)
+			jmotion[j] = { f: ( r, vsub( t, off[f] ) ) for f, ( r, t ) in mt.items() }
+	anims = {}
+	for name, first, count in m.animations():
+		s0, s1 = off[first], off[first + count - 1]
+		anims[name] = { "frames": count, "fps": DEFAULT_FPS, "start": [ round( s0[k], 2 ) for k in range( 3 ) ],
+						"move": [ round( s1[k] - s0[k], 2 ) for k in range( 3 ) ], "turn": 0,
+						"path": [ [ round( off[f][k], 2 ) for k in range( 3 ) ] for f in range( first, first + count ) ] }
+	most = { n: max( vlen( p ) for p in a["path"] ) for n, a in anims.items() }
+	with open( outBase + ".json", "w" ) as fp:
+		json.dump( { "character": os.path.basename( outBase ), "source": A.gamePath( md3Path ), "root": joints[body]["name"],
+					 "anims": anims }, fp, indent = "\t" )
+	print( "  travel out (%s), wrote %s.json" % ( ", ".join( "%s %.0f" % ( n, d ) for n, d in most.items() if d > 1 ), outBase ) )
 
 def zone_of( name ):
 	if name.startswith( "Head" ):
@@ -761,6 +921,17 @@ if __name__ == "__main__":
 		surface = args[i + 1]
 		args = args[:i] + args[i + 2:]
 	noHitbox = ()
+	if "--root-out-anims" in args:
+		i = args.index( "--root-out-anims" )
+		ROOT_OUT = [ a for a in args[i + 1].split( "," ) if a ]
+		args = args[:i] + args[i + 2:]
+	if "--mirror" in args:
+		MIRROR = True
+		args.remove( "--mirror" )
+	if "--chain" in args:
+		i = args.index( "--chain" )
+		CHAIN = int( args[i + 1] )
+		args = args[:i] + args[i + 2:]
 	if "--seeds" in args:
 		i = args.index( "--seeds" )
 		SEEDS = int( args[i + 1] )

@@ -1,0 +1,20 @@
+# The froginator's leg boxes, placed by hand, for tools/rig/af_boxes.py: in
+# his rest pose (sitting), z up, his front +x, his left +y.
+#
+# creature_rig split his legs unlike (his left shin and foot one bone,
+# Lhind3; his right thigh's bone taking in his hip): each box is what lies
+# along its segment, within reach, on the bone that moves it. His hind legs
+# folded: thigh from his hip out and back to his knee, shin back down to his
+# heel, his long foot flat forward to his toes; his forelegs: the upper leg
+# down from his shoulder, his hand flat forward.
+
+lhind2     Lhind2    -5.5  7.0  3.0   -9.0 11.0 -1.0   r 3.5
+lhind3     Lhind3    -9.5 10.3 -3.5  -12.5  9.5 -9.0   r 2.5
+lfoot      Lhind3   -12.5  9.5 -9.0   -0.8 13.0 -9.3   r 3.0   fixed lhind3
+rhind1     Rhind1    -5.5 -7.0  3.0   -9.0 -11.0 -1.0  r 3.5
+rhind2     Rhind2    -9.5 -10.3 -3.5 -12.5 -9.5 -9.0   r 2.5
+rhind3     Rhind3   -12.5 -9.5 -9.0   -0.8 -13.0 -9.3  r 3.0
+lfore1     Lfore1     0.5  7.5 -5.5    3.5  9.5 -8.5   r 2.5
+lfore2     Lfore2     6.5  9.8 -9.5   15.5  6.5 -9.5   r 3.5
+rfore1     Rfore1     1.0 -8.0 -5.5    4.0 -9.5 -8.5   r 2.5
+rfore2     Rfore2     7.0 -10.0 -9.5  16.0 -6.5 -9.5   r 3.5
