@@ -28,6 +28,8 @@ object monster_slaughterskeet : monster_base {
 
 	void		state_Idle();
 	void		state_Combat();
+	void		state_Killed();
+	void		painDone();
 	void		closeIn();
 	void		hover();
 	void		dodge();
@@ -196,6 +198,44 @@ void monster_slaughterskeet::rest() {
 
 /*
 ================
+monster_slaughterskeet::state_Killed
+
+shot down: it spirals to the ground (its "death_fall", "death_spiral")
+trailing smoke, its wings gone slack (diea), hits it in a spray of bits
+and lies there broken (its ragdoll)
+================
+*/
+void monster_slaughterskeet::state_Killed() {
+	float t;
+	float puff;
+
+	stopMove();
+	playAnim( ANIMCHANNEL_LEGS, "diea" );
+	t = sys.getTime() + 5;
+	while( !AI_ONGROUND && sys.getTime() < t ) {
+		if ( sys.getTime() > puff ) {
+			puff = sys.getTime() + 0.08;
+			playModelFx( "special" );
+		}
+		sys.waitFrame();
+	}
+	startSound( "snd_death", CHAN_VOICE, false );
+	playModelFx( "death" );
+	throwDebris();
+	startRagdoll();
+}
+
+/*
+================
+monster_slaughterskeet::painDone
+================
+*/
+void monster_slaughterskeet::painDone() {
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+}
+
+/*
+================
 monster_slaughterskeet::state_Combat
 ================
 */
@@ -217,6 +257,7 @@ void monster_slaughterskeet::state_Combat() {
 			setState( "state_Idle" );
 			return;
 		}
+		checkPain();
 		if ( !AI_ENEMY_VISIBLE || enemyRange() > 400 ) {
 			closeIn();
 		} else if ( shouldDodge() ) {

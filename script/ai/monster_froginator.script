@@ -3,8 +3,9 @@
 // crouched between; near enough, it leaps at where you'll be, and a leap that
 // meets you hurts and knocks you back. Up close it bites. A leap is a throw:
 // the game flies it on its arc, and one into a wall hurts it (kills it, at
-// one health). In water it swims. Its spit at range is to come, with a
-// projectile of its own.
+// one health). In water it swims, and only bites. Within 400 and past 80,
+// out of the water and not on easy, it may spit (ataka; Daikatana's
+// FrogSpit: a gob of sludge that poisons).
 
 object monster_froginator : monster_base {
 	void		state_Combat();
@@ -12,10 +13,12 @@ object monster_froginator : monster_base {
 	void		leapAt();
 	void		swim();
 	void		attack();
+	void		spit();
 	void		attackFrame();
-	void		pain();
 
 	boolean		biting;
+	boolean		spitting;
+	float		nextSpit;
 	void		crouch();
 	boolean		throwTo( vector dest, float up, float maxSpeed, string anim );
 	vector		floorUnder( vector pos );
@@ -34,16 +37,21 @@ void monster_froginator::state_Combat() {
 			setState( "state_Idle" );
 			return;
 		}
-		if ( AI_PAIN && sys.random( 1 ) < 0.2 ) {
-			pain();
-		}
+		checkPain();
 		dist = enemyRange();
 		if ( AI_IN_WATER ) {
-			swim();
+			if ( dist < 70 && AI_ENEMY_VISIBLE ) {
+				attack();
+			} else {
+				swim();
+			}
 		} else if ( !AI_ONGROUND ) {
 			sys.waitFrame();
 		} else if ( dist < 70 && AI_ENEMY_VISIBLE ) {
 			attack();
+		} else if ( dist > 80 && dist < getFloatKey( "spit_range" ) && AI_ENEMY_VISIBLE && skill > 0
+					&& sys.getTime() > nextSpit && sys.random( 1 ) < 0.4 ) {
+			spit();
 		} else if ( dist < getFloatKey( "leap_range" ) && AI_ENEMY_VISIBLE ) {
 			leapAt();
 		} else {
@@ -218,6 +226,26 @@ void monster_froginator::attack() {
 
 /*
 ================
+monster_froginator::spit
+
+a gob of sludge at you, on its attack frame (Daikatana's FROG_Begin_Attack)
+================
+*/
+void monster_froginator::spit() {
+	stopMove();
+	faceEnemy();
+	spitting = true;
+	playAnim( ANIMCHANNEL_LEGS, "ataka" );
+	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
+		faceEnemy();
+		sys.waitFrame();
+	}
+	spitting = false;
+	nextSpit = sys.getTime() + 1.5 + sys.random( 2 );
+}
+
+/*
+================
 monster_froginator::attackFrame
 
 its bite's frames (frame commands, from Daikatana's m_frog.vsc); its leap's
@@ -227,15 +255,8 @@ are the leap itself
 void monster_froginator::attackFrame() {
 	if ( biting ) {
 		attackMelee( "damage_frog_bite" );
+	} else if ( spitting ) {
+		attackWeapon( getKey( "def_weapon" ), getVectorKey( "muzzle" ) );
 	}
 }
 
-/*
-================
-monster_froginator::pain
-================
-*/
-void monster_froginator::pain() {
-	stopMove();
-	waitAnim( "hita" );
-}

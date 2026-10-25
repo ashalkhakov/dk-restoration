@@ -1,0 +1,46 @@
+// The froginator's spit hitting: a green splash of sludge.
+
+Particle
+{
+	life		250
+	rgb
+	{
+		start	0.3 0.85 0.05
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	6
+		end		14
+	}
+	shaders [ dkfx/flgreen ]
+}
+
+Particle
+{
+	count		12
+	life		300 600
+	velocity	-120 -120 -40 120 120 160
+	spawnFlags	absoluteVel
+	gravity		500
+	rgb
+	{
+		start	0.2 0.55 0.01
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	1.5 3
+	}
+	shaders [ dkfx/flgreen ]
+}

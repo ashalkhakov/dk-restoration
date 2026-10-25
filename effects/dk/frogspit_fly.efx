@@ -1,0 +1,48 @@
+// The froginator's spit in flight (Daikatana's ART_FROGINATOR_SPIT): green
+// sludge, smaller drops (0.30 0.85 0.05) and bigger ones (0.20 0.55 0.01)
+// left behind, dripping. Played every 40 msec along the path.
+
+Particle
+{
+	life		120 180
+	rgb
+	{
+		start	0.3 0.85 0.05
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	3 5
+		end		1 2
+	}
+	shaders [ dkfx/flgreen ]
+}
+
+Particle
+{
+	count		2
+	life		300 500
+	velocity	-20 -20 -60 20 20 -10
+	spawnFlags	absoluteVel
+	gravity		400
+	rgb
+	{
+		start	0.2 0.55 0.01
+	}
+	alpha
+	{
+		start	0.8
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	1.5 2.5
+	}
+	shaders [ dkfx/flgreen ]
+}

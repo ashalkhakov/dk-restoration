@@ -1,0 +1,31 @@
+// A dead turret smoking: a thin wisp of black smoke rising. Played every
+// quarter second.
+
+Particle
+{
+	count		1
+	life		1400 2000
+	origin		0 -4 -2 6 4 4
+	velocity	-6 -6 18 6 6 34
+	spawnFlags	absoluteVel
+	rgb
+	{
+		start	0.08 0.08 0.08
+	}
+	alpha
+	{
+		start	0.6
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	4 6
+		end		14 20
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-20 20
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}

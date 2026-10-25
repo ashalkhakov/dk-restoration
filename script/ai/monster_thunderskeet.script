@@ -4,20 +4,24 @@
 // charges (two green flares crossed before it) and fires two slow balls of
 // lightning, the second 0.4 seconds after the first, that bounce about until
 // they touch someone. Then it darts at you, or flies off a way, and attacks
-// again. A hit makes it flinch one time in ten. Unseen (a wraith orb), you
-// leave it hovering. It blows up.
+// again. Near you (within "ram_range"), now and then it rams you, diving
+// at you with its body (hitb). A hit makes it flinch one time in ten.
+// Unseen (a wraith orb), you leave it hovering. Shot down, it falls and
+// bursts on the ground.
 
 object monster_thunderskeet : monster_base {
 	void		state_Combat();
 	void		state_Killed();
 	void		attack();
+	void		ram();
 	void		hover( float seconds );
 	void		dart();
 	void		flyAway();
-	void		pain();
+	void		painDone();
 	void		fly();
 
 	float		flyTime;
+	float		nextRam;
 };
 
 /*
@@ -46,15 +50,16 @@ void monster_thunderskeet::state_Combat() {
 			setState( "state_Idle" );
 			return;
 		}
-		if ( AI_PAIN && sys.random( 1 ) < getFloatKey( "pain_chance" ) ) {
-			pain();
-		}
+		checkPain();
 		if ( !AI_ENEMY_VISIBLE ) {
 			hover( 1 );		// you're hidden (or gone): it waits, then looks where you were
 			moveToEnemy();
 		} else if ( enemyRange() > getFloatKey( "attack_range" ) ) {
 			setFlySpeed( getFloatKey( "fly_speed" ) );
 			moveToEnemy();
+		} else if ( enemyRange() < getFloatKey( "ram_range" ) && sys.getTime() > nextRam && sys.random( 1 ) < 0.5 ) {
+			ram();
+			flyAway();
 		} else {
 			hover( 2.75 );
 			if ( getEnemy() != $null_entity && AI_ENEMY_VISIBLE ) {
@@ -118,6 +123,40 @@ void monster_thunderskeet::attack() {
 
 /*
 ================
+monster_thunderskeet::ram
+
+at you with its body, diving down to you (its fly offset none for it), as
+fast again as it darts, its lunge (hitb); meeting you, it hits you and
+knocks you back, then pulls up. A second and a half at most
+================
+*/
+void monster_thunderskeet::ram() {
+	float t;
+
+	faceEnemy();
+	setFlyOffset( 0 );
+	setFlySpeed( getFloatKey( "dart_speed" ) * 1.5 );
+	moveToEnemy();
+	playAnim( ANIMCHANNEL_LEGS, "hitb" );
+	t = sys.getTime() + 1.5;
+	while( sys.getTime() < t && getEnemy() != $null_entity ) {
+		faceEnemy();
+		if ( testMeleeAttack() ) {
+			attackMelee( "damage_tskeet_ram" );
+			startSound( "snd_impact", CHAN_BODY, false );
+			break;
+		}
+		fly();
+		sys.waitFrame();
+	}
+	nextRam = sys.getTime() + 4 + sys.random( 3 );
+	setFlyOffset( getFloatKey( "fly_offset" ) );
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+	playCycle( ANIMCHANNEL_LEGS, "flya" );
+}
+
+/*
+================
 monster_thunderskeet::dart
 
 at you, half as fast again, until within 512
@@ -165,29 +204,32 @@ void monster_thunderskeet::flyAway() {
 
 /*
 ================
-monster_thunderskeet::pain
+monster_thunderskeet::painDone
 ================
 */
-void monster_thunderskeet::pain() {
-	string anim;
-
-	anim = "hitb";
-	if ( sys.random( 1 ) < 0.5 ) {
-		anim = "hita";
-	}
-	waitAnim( anim );
+void monster_thunderskeet::painDone() {
 	playCycle( ANIMCHANNEL_LEGS, "flya" );
 }
 
 /*
 ================
 monster_thunderskeet::state_Killed
+
+it falls, tumbling (its "death_fall"), and bursts where it hits (Daikatana's
+robot gibs, its debris)
 ================
 */
 void monster_thunderskeet::state_Killed() {
+	float t;
+
 	stopMove();
+	t = sys.getTime() + 4;
+	while( !AI_ONGROUND && sys.getTime() < t ) {
+		sys.waitFrame();
+	}
 	startSound( "snd_death", CHAN_VOICE, false );
 	playModelFx( "death" );
+	throwDebris();
 	hide();
 	sys.wait( 1 );
 	remove();

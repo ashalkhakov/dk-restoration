@@ -11,7 +11,6 @@ object monster_crox : monster_base {
 	void		state_Killed();
 	void		attack();
 	void		attackFrame();
-	void		pain();
 	void		chase();
 	void		wanderAway();
 };
@@ -29,9 +28,7 @@ void monster_crox::state_Combat() {
 			setState( "state_Idle" );
 			return;
 		}
-		if ( AI_PAIN && sys.random( 1 ) < getFloatKey( "pain_chance" ) ) {
-			pain();
-		}
+		checkPain();
 		delta = getEnemyPos() - getOrigin();
 		if ( delta_z > 100 || delta_z < -100 ) {
 			wanderAway();
@@ -119,22 +116,6 @@ Daikatana's m_crox.vsc)
 */
 void monster_crox::attackFrame() {
 	attackMelee( "damage_crox_bite" );
-}
-
-/*
-================
-monster_crox::pain
-================
-*/
-void monster_crox::pain() {
-	string anim;
-
-	stopMove();
-	anim = "hitb";
-	if ( sys.random( 1 ) < 0.5 ) {
-		anim = "hita";
-	}
-	waitAnim( anim );
 }
 
 /*

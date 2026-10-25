@@ -1,9 +1,12 @@
 // monster_rockgat.script -- Daikatana's Rockgat (rockgat.cpp): a chaingun
-// turret in the rock. It waits lowered until it sees someone within its
-// range; then it rises (its "up" animation), and a second later it fires at
-// them, about eight bullets a second, turning to face them, while it sees
-// them no more than 20 degrees above or below. It stays up. Shot to
-// pieces, it blows up.
+// turret in the rock. It waits lowered until someone is within its range,
+// seen or not (Daikatana's: down in the rock it sees nothing); then it
+// rises (its "up" animation), and a second later it fires at them, about
+// eight bullets a second, turning to face them, while they're no more than
+// 20 degrees above or below (the rock stops what it can't reach). It stays
+// up. Shot to pieces it dies where it is (Daikatana's blew up): sparks
+// and black smoke, its barrel sagging down, smoking a while, sparking now and
+// then.
 
 object monster_rockgat : monster_base {
 	void		state_Idle();
@@ -26,7 +29,7 @@ void monster_rockgat::state_Idle() {
 	disableGravity();
 	stopMove();
 	while( 1 ) {
-		enemy = findEnemy( false );
+		enemy = findEnemyInRange( getFloatKey( "range" ) );
 		if ( enemy ) {
 			setEnemy( enemy );
 		}
@@ -60,8 +63,8 @@ void monster_rockgat::rise() {
 ================
 monster_rockgat::state_Combat
 
-at them while it can see them in range, its barrel no more than 20
-degrees up or down
+at them while they're in range, its barrel no more than 20 degrees up or
+down (Daikatana's: no look first; its bullets meet what's in the way)
 ================
 */
 void monster_rockgat::state_Combat() {
@@ -74,10 +77,11 @@ void monster_rockgat::state_Combat() {
 			setState( "state_Idle" );
 			return;
 		}
+		checkPain();		// (no pain animation: it shakes)
 		faceEnemy();
 		delta = getEnemyPos() - getOrigin();
 		flat = sys.vecLength( delta - '0 0 1' * delta_z );
-		if ( AI_ENEMY_VISIBLE && facingIdeal() && delta_z < flat * 0.36 && delta_z > -flat * 0.36 ) {
+		if ( facingIdeal() && delta_z < flat * 0.36 && delta_z > -flat * 0.36 ) {
 			attackWeapon( getKey( "def_weapon" ), getVectorKey( "muzzle" ) );
 			playModelFx( "muzzle" );
 			if ( sys.getTime() > soundTime ) {
@@ -95,9 +99,31 @@ monster_rockgat::state_Killed
 ================
 */
 void monster_rockgat::state_Killed() {
+	vector	angles;
+	float	t;
+	float	end;
+	float	pitch;
+
 	startSound( "snd_death", CHAN_VOICE, false );
 	playModelFx( "death" );
-	hide();
-	sys.wait( 1 );
-	remove();
+	// its barrel sags down, a second and a half
+	angles = getAngles();
+	pitch = angles_x;
+	t = sys.getTime();
+	end = t + 1.5;
+	while( sys.getTime() < end ) {
+		angles_x = pitch + getFloatKey( "dead_pitch" ) * ( 1 - ( end - sys.getTime() ) / 1.5 );
+		setAngles( angles );
+		sys.waitFrame();
+	}
+	// smoke for a while, a spark now and then
+	end = sys.getTime() + 8;
+	while( sys.getTime() < end ) {
+		playModelFx( "special" );
+		if ( sys.random( 1 ) < 0.15 ) {
+			playModelFx( "attack" );
+			startSound( "snd_spark", CHAN_BODY, false );
+		}
+		sys.wait( 0.25 );
+	}
 }

@@ -1,0 +1,58 @@
+// A turret shot dead (the rockgat): a burst of sparks and a puff of black
+// smoke from it, where it stays.
+
+Particle
+{
+	count		20 28
+	life		300 700
+	origin		0 -6 -6 10 6 6
+	velocity	-150 -150 40 150 150 260
+	spawnFlags	absoluteVel
+	gravity		500
+	rgb
+	{
+		start	1 0.85 0.4
+		end		1 0.4 0.1
+		flags	linear
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.8 1.4
+	}
+	shaders [ dkfx/flyellow ]
+}
+
+Particle
+{
+	count		6 8
+	life		1200 1800
+	origin		0 -8 -8 10 8 8
+	velocity	-20 -20 20 20 20 60
+	spawnFlags	absoluteVel
+	rgb
+	{
+		start	0.06 0.06 0.06
+	}
+	alpha
+	{
+		start	0.85
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	8 12
+		end		24 34
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-30 30
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}

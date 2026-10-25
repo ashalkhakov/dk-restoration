@@ -124,6 +124,7 @@ scriptEvent	void		centerPrint( string text );
 scriptEvent	void		setState( string name );
 scriptEvent	string		getState();
 scriptEvent	entity		findEnemy( float onlyInFov );
+scriptEvent	entity		findEnemyInRange( float range );	// the nearest player within range, seen or not (a rockgat in the rock)
 scriptEvent	void		setEnemy( entity enemy );
 scriptEvent	void		clearEnemy();
 scriptEvent	entity		getEnemy();
@@ -146,6 +147,9 @@ scriptEvent	float		getCurrentYaw();
 scriptEvent	float		facingIdeal();
 scriptEvent	void		setFlySpeed( float speed );
 scriptEvent	void		setFlyOffset( float offset );
+scriptEvent	void		painJolt( float degrees );
+scriptEvent	void		throwDebris();				// it bursts into its "debris" (a robot's: Daikatana's gibs), rigid bodies that fall and fade
+scriptEvent	float		startRagdoll();				// it goes limp now (a flyer that fell dead, landed); false if it has no ragdoll	// hurt, it shakes, rocking so many degrees and dying away: a monster with no pain animation
 scriptEvent	void		start();			// a camera plays (func_cameraspline)
 scriptEvent	void		stop();
 scriptEvent	float		perch( vector pos, vector normal );	// a flyer lands at pos on what faces normal; false if there's no room. Told to move, it takes off

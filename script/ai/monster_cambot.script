@@ -113,6 +113,7 @@ void monster_cambot::state_Combat() {
 			setState( "state_Idle" );
 			return;
 		}
+		checkPain();		// (no pain animation: it shakes)
 		if ( !AI_ENEMY_VISIBLE ) {
 			lost = true;
 			moveToEnemy();
@@ -142,13 +143,21 @@ void monster_cambot::state_Combat() {
 ================
 monster_cambot::state_Killed
 
-it blows up
+it falls, tumbling (its "death_fall"), and bursts where it hits (Daikatana's
+robot gibs, its debris)
 ================
 */
 void monster_cambot::state_Killed() {
+	float t;
+
 	stopMove();
+	t = sys.getTime() + 4;
+	while( !AI_ONGROUND && sys.getTime() < t ) {
+		sys.waitFrame();
+	}
 	startSound( "snd_death", CHAN_VOICE, false );
 	playModelFx( "death" );
+	throwDebris();
 	hide();
 	sys.wait( 1 );
 	remove();

@@ -1,0 +1,54 @@
+// A shot-down slaughterskeet's trail as it spirals down: dark smoke and a
+// spark now and then. Played every 80 msec where it is.
+
+Particle
+{
+	count		1 2
+	life		600 900
+	origin		-2 -2 -2 2 2 2
+	velocity	-6 -6 4 6 6 16
+	rgb
+	{
+		start	0.25 0.25 0.25
+	}
+	alpha
+	{
+		start	0.6
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	2 3
+		end		7 10
+		flags	linear
+	}
+	rotation		0 360
+	rotationDelta	-40 40
+	shaders [ dkfx/smoke ]
+	flags		useAlpha
+}
+
+Particle
+{
+	count		0 1
+	life		200 350
+	velocity	-60 -60 -20 60 60 60
+	spawnFlags	absoluteVel
+	gravity		300
+	rgb
+	{
+		start	1 0.7 0.3
+	}
+	alpha
+	{
+		start	1
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	0.8 1.2
+	}
+	shaders [ dkfx/flyellow ]
+}

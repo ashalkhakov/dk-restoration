@@ -1,11 +1,12 @@
 // The thunderskeet charging its shot (THUNDERSKEET_Attack): two green
-// flares crossed, before it, for 0.6 seconds.
+// flares (e_flgreen) stretched and crossed, 40 toward you (down 35 as it
+// faces you, 96 above you) and 40 up, for 0.6 seconds.
 
-Particle
+Line
 {
-	count		2
 	life		600
-	origin		40 0 40 40 0 40
+	origin		33 -14 3
+	origin2		33 14 31
 	rgb
 	{
 		start	1 1 1
@@ -18,8 +19,29 @@ Particle
 	}
 	size
 	{
-		start	20 40
+		start	10
 	}
-	rotation	-45 45
+	shaders [ dkfx/flgreen ]
+}
+
+Line
+{
+	life		600
+	origin		33 -14 31
+	origin2		33 14 3
+	rgb
+	{
+		start	1 1 1
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	10
+	}
 	shaders [ dkfx/flgreen ]
 }

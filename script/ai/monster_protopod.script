@@ -63,7 +63,8 @@ void monster_protopod::hatch() {
 	}
 	setSize( '-8 -8 -2', '8 8 2' );		// open, flat
 	while( 1 ) {
-		sys.wait( 1 );
+		checkPain();		// (no pain animation: it shakes)
+		sys.wait( 0.1 );
 	}
 }
 

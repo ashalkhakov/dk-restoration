@@ -52,6 +52,39 @@ entityDef monster_froginator {
 	"snd_attack"	"frog_attack"
 	"snd_land"		"frog_land"
 	"snd_impact"	"frog_impact"
+	"amphibious"	"1"				// in water it swims (Daikatana's DFL_AMPHIBIOUS), slowly (its 0.55 drag)
+	"swim_speed"	"90"
+	"spit_range"	"400"			// FROG_ATTACK_DISTANCE: within it and past 80 (FROG_RANGED_DISTANCE), it may spit
+	"def_weapon"	"weapon_monster_froginator"
+	"muzzle"		"8 0 10"		// its mouth: forward, left, up (Daikatana's 10 above its middle)
+}
+
+// its spit (Daikatana's FrogSpit, ai_weapons.cpp FrogSpit_Attack,
+// venom_spit_touch): a green gob of sludge, at most 5 seconds, that hurts
+// what it hits and poisons a player (com->Poison: 1 every 3 seconds for 15)
+entityDef weapon_monster_froginator {
+	"weapon_slot"			"99"
+	"def_projectile"		"projectile_frogspit"
+	"obituary"				"was spat on by a froginator"
+}
+
+entityDef projectile_frogspit {
+	"velocity"				"650 0 0"
+	"mins"					"-3 -3 -3"
+	"maxs"					"3 3 3"
+	"fuse"					"5"
+	"def_damage"			"damage_frogspit"
+	"poison"				"1 15 3"		// damage, seconds, interval
+	"light_color"			"0.3 0.85 0.05"
+	"light_radius"			"80"
+	"fx_fly"				"dk/frogspit_fly"
+	"fx_fly_interval"		"0.04"
+	"fx_detonate"			"dk/frogspit_hit"
+	"snd_explode"			"sounds/e1/m_frogspitb.wav"
+}
+
+entityDef damage_frogspit {
+	"damage"				"6"				// AIData.csv's we haven't; its bite's and a little
 }
 
 entityDef damage_frog_leap {
@@ -103,6 +136,14 @@ entityDef monster_slaughterskeet {
 	"snd_attack"	"skeet_attack"
 	"snd_fly"		"skeet_fly"
 	"snd_impact"	"skeet_impact"
+	"death_fall"	"1"				// shot down, it spirals to the ground smoking, and lies there broken
+	"death_spin"	"540"
+	"death_spiral"	"120"
+	"debris"		"models/global/e_metal2.md3"
+	"debris_count"	"4"
+	"debris_scale"	"0.2"
+	"debris_speed"	"150"
+	"snd_death"		"robot_explode"
 }
 
 entityDef damage_skeet_bite {
@@ -141,7 +182,7 @@ entityDef monster_crox {
 	"mins"			"-24 -24 -18"	// the box it moves with: its body's middle, Daikatana's (its tail and
 	"maxs"			"24 24 8"		// head reach past it; shots meet its rig's hitboxes)
 	"health"		"150"
-	"run_speed"		"175"
+	"run_speed"		"90"			// its run's feet (anim_speed 30) at most 3 times as fast: faster, they slid
 	"walk_speed"	"50"
 	"turn_rate"		"250"			// 25 a tenth of a second
 	"fov"			"270"
@@ -152,6 +193,8 @@ entityDef monster_crox {
 	"snd_sight"		"crox_sight"
 	"snd_idle"		"crox_idle"
 	"snd_swim"		"crox_swim"
+	"amphibious"	"1"				// in water it swims (Daikatana's DFL_AMPHIBIOUS)
+	"swim_speed"	"150"
 }
 
 entityDef damage_crox_bite {
@@ -172,6 +215,7 @@ entityDef model_protopod {
 }
 
 entityDef monster_protopod {
+	"pain_chance"	"1"				// no pain animation: hurt, it shakes (painJolt), every time
 	"spawnclass"	"monster"
 	"model"			"model_protopod"
 	"scriptobject"	"monster_protopod"
@@ -235,6 +279,7 @@ entityDef model_cambot {
 }
 
 entityDef monster_cambot {
+	"pain_chance"	"1"				// no pain animation: hurt, it shakes (painJolt), every time
 	"spawnclass"	"monster"
 	"model"			"model_cambot"
 	"scriptobject"	"monster_cambot"
@@ -256,6 +301,12 @@ entityDef monster_cambot {
 	"snd_alarm"		"cambot_alarm"
 	"snd_fly"		"cambot_hum"
 	"snd_death"		"robot_explode"
+	"death_fall"	"1"				// shot down, it falls tumbling and bursts on the ground (Daikatana's robot gibs, mid-air)
+	"death_spin"	"200"
+	"debris"		"models/global/e_metal1.md3 models/global/e_metal2.md3"
+	"debris_count"	"6"
+	"debris_scale"	"0.4"
+	"debris_speed"	"250"
 }
 
 // the Rockgat: a chaingun turret in the rock (rockgat.cpp). Lowered until
@@ -267,11 +318,14 @@ entityDef model_rockgat {
 	"mesh"			"models/e1/a1_rockgun.md3"
 	"mins"			"-16 -16 -16"	// AIData.csv
 	"maxs"			"16 16 16"
+	"hit_mins"		"-20 -23 -55"	// the box shots meet: its model lowered (down to 54 below) and raised (12 above);
+	"hit_maxs"		"20 23 12"		// lowered, all of it is under its box, out of its reach
 	"anim idle"		"0 1 1"			// lowered in the rock, its first frame, until it sees you
 	"anim up"		"up 10"			// rising out of the rock
 }
 
 entityDef monster_rockgat {
+	"pain_chance"	"1"				// no pain animation: hurt, it shakes (painJolt), every time
 	"spawnclass"	"monster"
 	"model"			"model_rockgat"
 	"scriptobject"	"monster_rockgat"
@@ -286,7 +340,9 @@ entityDef monster_rockgat {
 	"muzzle"		"16 0 4"		// its barrel, forward, left, up
 	"snd_fire"		"rockgat_fire"
 	"snd_up"		"rockgat_up"
-	"snd_death"		"robot_explode"
+	"snd_death"		"rockgat_dead"
+	"dead_pitch"	"35"			// dead, its barrel sags down so far
+	"snd_spark"		"rockgat_spark"
 }
 
 // monsters' weapons: weapon defs no player has, at slot 99 so that the
@@ -349,6 +405,16 @@ entityDef monster_thunderskeet {
 	"snd_idle"		"tskeet_idle"
 	"snd_fly"		"tskeet_fly"
 	"snd_death"		"robot_explode"
+	"death_fall"	"1"				// shot down, it falls tumbling and bursts on the ground
+	"death_spin"	"120"
+	"debris"		"models/global/e_metal1.md3 models/global/e_metal2.md3"
+	"debris_count"	"10"
+	"debris_scale"	"0.7"
+	"debris_speed"	"350"
+	"ram_range"		"300"			// nearer, now and then it rams you with its body (hitb)
+	"melee_range"	"24"			// its body this near you, the ram hits
+	"pain_hitb"		"0"				// its pain only hita, as Daikatana's (hitb its ram)
+	"snd_impact"	"skeet_impact"
 }
 
 entityDef weapon_monster_thunderskeet {
@@ -358,16 +424,18 @@ entityDef weapon_monster_thunderskeet {
 }
 
 // Daikatana's ThunderSpray: slow (128 to 192), bouncing about for 15
-// seconds, going off on whoever it touches, 40 within 256
+// seconds, swaying from side to side (its ThunderSpray_Think: the second
+// shot the other way), going off on whoever it touches, 40 within 256 and
+// no more (no damage of its own)
 entityDef projectile_thunderjiz {
 	"velocity"				"160 0 0"
+	"weave"					"60 1.2"		// its sway's speed across, the time it takes
 	"bounce"				"1"
 	"max_bounces"			"20"
 	"detonate_on_world"		"0"
 	"detonate_on_actor"		"1"
 	"fuse"					"15"
 	"detonate_on_fuse"		"1"
-	"def_damage"			"damage_thunderjiz"
 	"def_splash_damage"		"damage_thunderjiz_splash"
 	"light_color"			"0.15 0.95 0.35"
 	"light_radius"			"400"
@@ -378,8 +446,9 @@ entityDef projectile_thunderjiz {
 	"snd_fly"				"sounds/global/e_warploopb.wav"
 }
 
-entityDef damage_thunderjiz {
-	"damage"				"15"			// AIData.csv's 10 + up to 10
+entityDef damage_tskeet_ram {
+	"damage"				"20"			// its body into you (ours: Daikatana's has no melee)
+	"range"					"24"
 }
 
 entityDef damage_thunderjiz_splash {
@@ -416,9 +485,17 @@ entityDef model_cambot_extra {
 
 entityDef model_rockgat_extra {
 	"surface"		"metal"
-	"fx_death"		"dk/explosion"
+	"fx_death"		"dk/turret_dead"	// sparks and black smoke (Daikatana's blew up: ours dies where it is)
+	"fx_special"	"dk/turret_smoke"	// smoking, after
+	"fx_attack"		"dk/turret_spark"	// a spark now and then
 	"fx_muzzle"		"dk/rockgat_flash"
 	"light_ambient"	"64 64 64"		// in the rock, where the light grid is black
+}
+
+entityDef model_slaughterskeet_extra {
+	"surface"		"metal"
+	"fx_death"		"dk/metal_hit"		// sparks where it crashes
+	"fx_special"	"dk/skeet_smoke"	// its trail falling
 }
 
 entityDef model_thunderskeet_extra {

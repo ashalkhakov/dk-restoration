@@ -21,6 +21,7 @@ object monster_base {
 
 	float		skill;				// 0 easy, 1 medium, 2 hard (g_skill)
 	float		idleTime;
+	float		painFinished;		// no pain again till then
 	boolean		ignorePlayer;		// a map's script has it pay you no mind (ai_ignore_player)
 
 	void		init();
@@ -31,6 +32,9 @@ object monster_base {
 	void		idleAnims();
 	void		sightEnemy();
 	void		waitAnim( string anim );
+	boolean		checkPain();
+	void		pain();
+	void		painDone();
 
 	// what Daikatana's action scripts make it do (ai_actions.script)
 	void		ai_ignore_player();
@@ -59,6 +63,76 @@ void monster_base::waitAnim( string anim ) {
 	while( !animDone( ANIMCHANNEL_LEGS, 0 ) ) {
 		sys.waitFrame();
 	}
+}
+
+/*
+================
+monster_base::checkPain
+
+hurt: Daikatana's AI_StartPain, its pain as often as its "pain_chance" (a
+fraction, 0.2 if none) says, not again till that pain's over; true if it
+was in pain (what it was doing is to start again)
+================
+*/
+boolean monster_base::checkPain() {
+	float chance;
+
+	if ( !AI_PAIN || sys.getTime() < painFinished ) {
+		return false;
+	}
+	chance = 0.2;
+	if ( getKey( "pain_chance" ) != "" ) {
+		chance = getFloatKey( "pain_chance" );
+	}
+	if ( sys.random( 1 ) >= chance ) {
+		return false;
+	}
+	pain();
+	painDone();
+	return true;
+}
+
+/*
+================
+monster_base::pain
+
+its pain animation (hita, or hitb as often unless "pain_hitb" is 0: the
+thunderskeet's is its ram), played through; one with
+none shakes (painJolt, "pain_jolt" degrees, 10 if none): a cambot, a rockgat
+================
+*/
+void monster_base::pain() {
+	string anim;
+
+	anim = "";
+	if ( hasAnim( ANIMCHANNEL_LEGS, "hitb" ) && getKey( "pain_hitb" ) != "0" && sys.random( 1 ) < 0.5 ) {
+		anim = "hitb";
+	} else if ( hasAnim( ANIMCHANNEL_LEGS, "hita" ) ) {
+		anim = "hita";
+	}
+	startSound( "snd_pain", CHAN_VOICE, false );
+	if ( anim == "" ) {
+		if ( getKey( "pain_jolt" ) != "" ) {
+			painJolt( getFloatKey( "pain_jolt" ) );
+		} else {
+			painJolt( 10 );
+		}
+		painFinished = sys.getTime() + 0.4;
+		return;
+	}
+	stopMove();
+	waitAnim( anim );
+	painFinished = sys.getTime();
+}
+
+/*
+================
+monster_base::painDone
+
+after a pain: what it was doing again (its own: its move animation)
+================
+*/
+void monster_base::painDone() {
 }
 
 /*

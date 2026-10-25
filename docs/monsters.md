@@ -25,6 +25,15 @@ numbers, Daikatana's `AIData.csv` at medium skill:
 - `fly` 1: it flies, at `fly_speed`, its thrust changing its velocity by `fly_accel` a second at most, `fly_offset`
   above what it flies at, bobbing `fly_bob`; `fly_jitter` an engine that doesn't hold steady (its lift
   wavering that many units a second, now and then sputtering), rocking it `fly_wobble` degrees (the cambot's);
+- `death_fall` 1: a flyer killed falls, tumbling (`death_spin` degrees a second), spiralling down with
+  `death_spiral` (its speed across); its script says what it does on the ground (`startRagdoll()`);
+- `amphibious` 1: in water to its middle it swims (no gravity, straight at where it goes) at `swim_speed`,
+  `swim_accel`; the game keeps its water level (`AI_IN_WATER`);
+- `pain_chance` (0.2), `pain_hitb` 0 (its pain only `hita`), `pain_jolt` (degrees, 10): `checkPain()` in
+  `monster_base` plays its pain animation, or with none shakes it (`painJolt( degrees )`);
+- `debris` (models, taken in turn), `debris_count`, `debris_scale`, `debris_speed`, `debris_life`:
+  `throwDebris()` bursts a robot into rigid pieces that fall and shrink away;
+- `hit_mins`, `hit_maxs` on a model def: the box shots meet; a model without hitboxes (an md3) is hit on it;
 - `impact_speed`, `impact_damage`, `impact_bounce`: hitting the world faster than `impact_speed` (a frog's leap,
   a skeet's crash) bounces it off with that much of its speed and hurts it `impact_damage` per 100 u/s more;
 - `snd_*`: its sound shaders (`sound/dk_monsters_e1.sndshd`), for its script's `startSound()`.
@@ -143,8 +152,10 @@ an entity's: `setLinearVelocity` throws it (a leap), `getHealth`...
 
 What scripts have for these: `attackWeapon( def, offset )` fires a weapon def's shots (hitscan or projectiles, drawn
 as the weapon's) from an offset at the enemy, so a monster's weapon is a weapon def no player gets (`weapon_slot`
-99, keeping the players' weapons' numbers); `alertMonsters( range )`; `playModelFx( "death" )` plays the model def's
-`fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`). These and the other looks of a model
+99, keeping the players' weapons' numbers); a projectile def may `weave` (speed period: it sways from side to side,
+each shot the other way) and `poison` (damage seconds interval: a player it hits); `alertMonsters( range )`;
+`findEnemyInRange( range )` the nearest player, seen or not (a rockgat in the rock); `playModelFx( "death" )` plays the
+model def's `fx_death` (or `fx_muzzle`, `fx_attack`, `fx_special`), in the model's own frame. These and the other looks of a model
 (`surface`, `light_radius`/`light_color`/`light_offset` forward, left, up for a lamp it carries, or at the
 joint `light_joint`, made a spot light by `light_cone` degrees along `light_dir` forward, left, up, or searching:
 `light_sweep` from, to degrees of yaw about where it faces, degrees a second, `light_pitch` down; on its enemy

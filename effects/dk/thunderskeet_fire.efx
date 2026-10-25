@@ -1,10 +1,11 @@
-// The thunderskeet firing: a cross of yellow flares under it, 0.7 seconds.
+// The thunderskeet firing (THUNDERSKEET_Attack): two yellow flares
+// (e_flyellow) stretched into a cross under it, for 0.7 seconds.
 
-Particle
+Line
 {
-	count		2
 	life		700
-	origin		0 0 -10 0 0 -10
+	origin		0 -40 -10
+	origin2		0 40 -10
 	rgb
 	{
 		start	1 1 1
@@ -17,8 +18,29 @@ Particle
 	}
 	size
 	{
-		start	30 60
+		start	14
 	}
-	rotation	-45 45
+	shaders [ dkfx/flyellow ]
+}
+
+Line
+{
+	life		700
+	origin		0 0 -50
+	origin2		0 0 30
+	rgb
+	{
+		start	1 1 1
+	}
+	alpha
+	{
+		start	0.9
+		end		0
+		flags	linear
+	}
+	size
+	{
+		start	14
+	}
 	shaders [ dkfx/flyellow ]
 }
