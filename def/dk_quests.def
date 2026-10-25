@@ -1,0 +1,16 @@
+// The quests (mint-arena g_quests.c), Fallout 4's, with The Dark Mod's
+// objectives: a def each, "title", "desc", its objectives' text "obj1" up,
+// "obj<n>_target_complete" and "obj<n>_target_failed" what that fires.
+// Maps give them and set their objectives with target_setobjective
+// (maps/<map>.ent), scripts with $player.setObjectiveState; the player's
+// screen's quests tab shows them (ui_quests.c).
+
+// episode 1: Mikiko is held at Mishima's fortress, beyond the marsh. The
+// swamp entrance gets Hiro in quietly; the bridge wakes the thunderskeet
+// that guards it, and once it's dead, the sewers are the way
+entityDef quest_e1_fortress {
+	"title"			"Get into Mishima's fortress"
+	"desc"			"Mikiko is held captive at Mishima's fortress, beyond the marsh."
+	"obj1"			"Go through the swamp entrance"
+	"obj2"			"Go through the Sewer System"
+}

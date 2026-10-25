@@ -116,3 +116,20 @@
 "_match origin" "1747 -2414 560"
 "hull_pieces" "1"
 }
+
+// the episode's quest (def/dk_quests.def), given where the game starts:
+// get into Mishima's fortress, by the swamp entrance (a spawn point's
+// targets fire as a player spawns there; given again, nothing changes)
+{
+"_match classname" "info_player_start"
+"_match targetname" "primary"
+"target" "q_fortress"
+}
+{
+"classname" "target_setobjective"
+"targetname" "q_fortress"
+"quest" "quest_e1_fortress"
+"objective" "1"
+"visible" "1"
+"origin" "1608 -2592 560"
+}

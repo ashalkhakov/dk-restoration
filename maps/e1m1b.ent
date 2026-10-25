@@ -1,0 +1,23 @@
+// e1m1b's entities changed by hand (tools/maps/ent_overrides.py)
+
+// the episode's quest (def/dk_quests.def): the boss fight ("doitall", set
+// off by a cambot's alarm or death, or the bridge) spawns the thunderskeet
+// ("tskeetspawn"), and the swamp entrance is missed; killed ("tskeetdead"),
+// it opens the way, and the Sewer System is the way
+{
+"classname" "target_setobjective"
+"targetname" "tskeetspawn"
+"quest" "quest_e1_fortress"
+"objective" "1"
+"state" "failed"
+"only_if" "incomplete"
+"origin" "-416 640 1660"
+}
+{
+"classname" "target_setobjective"
+"targetname" "tskeetdead"
+"quest" "quest_e1_fortress"
+"objective" "2"
+"visible" "1"
+"origin" "-416 640 1680"
+}

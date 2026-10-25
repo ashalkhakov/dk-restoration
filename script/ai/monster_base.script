@@ -22,6 +22,7 @@ object monster_base {
 	float		skill;				// 0 easy, 1 medium, 2 hard (g_skill)
 	float		idleTime;
 	float		painFinished;		// no pain again till then
+	boolean		sighted;			// it has had an enemy ("sight_target" fired)
 	boolean		ignorePlayer;		// a map's script has it pay you no mind (ai_ignore_player)
 
 	void		init();
@@ -157,7 +158,20 @@ monster_base::sightEnemy
 ================
 */
 void monster_base::sightEnemy() {
+	entity target;
+
 	startSound( "snd_sight", CHAN_VOICE, false );
+	// the first time: what its "sight_target" names is used (a boss woken
+	// fails a quest's objective: g_quests.c)
+	if ( !sighted ) {
+		sighted = true;
+		if ( getKey( "sight_target" ) != "" ) {
+			target = sys.getEntity( getKey( "sight_target" ) );
+			if ( target ) {
+				target.activate( getEnemy() );
+			}
+		}
+	}
 	setState( "state_Combat" );
 }
 

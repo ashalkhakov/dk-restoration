@@ -1,0 +1,51 @@
+#include "ui/menudef.h"
+#include "ui/dk_defs.h"
+
+// The player's screen's status tab (ui_quests.c), Fallout 4's: the player's
+// character, turning, and how they stand: health, the armor worn, the
+// weapon in hand, the boosts on, where they are. The game goes on behind it;
+// escape or its key (character) closes it.
+
+#define DK_STATUS_TEXT( X, Y, W, H, OWNERDRAW, SCALE, COLOR ) \
+	itemDef { \
+		rect X Y W H \
+		type ITEM_TYPE_OWNERDRAW \
+		ownerdraw OWNERDRAW \
+		textscale SCALE \
+		forecolor COLOR \
+		decoration \
+		visible 1 \
+	}
+
+{
+	menuDef {
+		name "dk_status"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 40 40 560 400
+		focusColor DK_BRIGHT
+		onOpen { play "sounds/menus/enter menu_001.wav" }
+		onEsc { uiScript closeingame }
+
+		DK_PDA_PANEL
+		DK_PDA_TABS_STATUS
+
+		// the character
+		DK_STATUS_TEXT( 20, 40, 200, 320, UI_STATUS_MODEL, DK_TS, DK_BRIGHT )
+
+		// how they stand
+		DK_STATUS_TEXT( 240, 44, 300, 20, UI_STATUS_NAME, DK_TS, DK_BRIGHT )
+		DK_STATUS_TEXT( 240, 68, 300, 16, UI_STATUS_PLACE, DK_TS_SMALL, DK_GOLD )
+
+		DK_STATUS_TEXT( 240, 104, 280, 28, UI_STATUS_HEALTH, DK_TS_SMALL, DK_GOLD )
+		DK_STATUS_TEXT( 240, 144, 280, 28, UI_STATUS_ARMOR, DK_TS_SMALL, DK_GOLD )
+
+		DK_LABEL( 240, 190, "In hand" )
+		DK_STATUS_TEXT( 240, 210, 300, 16, UI_STATUS_WEAPON, DK_TS_SMALL, DK_GOLD )
+
+		DK_LABEL( 240, 240, "Boosts" )
+		DK_STATUS_TEXT( 240, 260, 300, 60, UI_STATUS_BOOSTS, DK_TS_SMALL, DK_GOLD )
+
+		DK_BUTTON_MEDIUM( 435, 370, "Close", uiScript closeingame )
+	}
+}

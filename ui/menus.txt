@@ -8,4 +8,6 @@
 	loadMenu { "ui/dk_connect.menu" }
 	loadMenu { "ui/dk_error.menu" }
 	loadMenu { "ui/dk_inventory.menu" }
+	loadMenu { "ui/dk_status.menu" }
+	loadMenu { "ui/dk_quests.menu" }
 }

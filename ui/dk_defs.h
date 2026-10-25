@@ -204,3 +204,88 @@
 		forecolor DK_GOLD \
 		visible 1 \
 	}
+
+// the player's screen (ui_quests.c): a menu for each tab (dk_status.menu,
+// dk_inventory.menu, dk_quests.menu) over the same panel, the tab bar along
+// its top, the tab shown bright and underlined, the others to click
+#define DK_PDA_PANEL \
+	itemDef { \
+		rect 0 0 560 400 \
+		style WINDOW_STYLE_FILLED \
+		backcolor 0 0 0 .78 \
+		border WINDOW_BORDER_FULL \
+		bordersize 1 \
+		bordercolor .81 .61 .39 .6 \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		rect 20 30 520 1 \
+		style WINDOW_STYLE_FILLED \
+		backcolor .81 .61 .39 .4 \
+		decoration \
+		visible 1 \
+	}
+
+#define DK_PDA_TAB_ON( X, W, LABEL ) \
+	itemDef { \
+		rect X 8 W 18 \
+		text LABEL \
+		textaligny 14 \
+		textscale DK_TS \
+		forecolor DK_BRIGHT \
+		decoration \
+		visible 1 \
+	} \
+	itemDef { \
+		rect X 27 W 2 \
+		style WINDOW_STYLE_FILLED \
+		backcolor 1 1 1 .9 \
+		decoration \
+		visible 1 \
+	}
+
+#define DK_PDA_TAB_OFF( X, W, LABEL, TAB ) \
+	itemDef { \
+		type ITEM_TYPE_BUTTON \
+		rect X 8 W 18 \
+		text LABEL \
+		textaligny 14 \
+		textscale DK_TS \
+		forecolor DK_GOLD \
+		visible 1 \
+		mouseEnter { setitemcolor TAB forecolor DK_BRIGHT ; play DK_SND_HOVER } \
+		mouseExit { setitemcolor TAB forecolor DK_GOLD } \
+		action { play DK_SND_PRESS ; uiScript PdaTab TAB } \
+		name TAB \
+	}
+
+// something new on the quests tab, while it isn't shown
+#define DK_PDA_QUESTS_NEW( X ) \
+	itemDef { \
+		rect X 8 12 18 \
+		text "*" \
+		textaligny 14 \
+		textscale DK_TS \
+		forecolor 1 .85 .3 1 \
+		ownerdrawflag UI_SHOW_QUESTS_NEW \
+		decoration \
+		visible 1 \
+	}
+
+#define DK_PDA_TABS_STATUS \
+	DK_PDA_TAB_ON( 20, 70, "STATUS" ) \
+	DK_PDA_TAB_OFF( 110, 100, "INVENTORY", inventory ) \
+	DK_PDA_TAB_OFF( 230, 70, "QUESTS", quests ) \
+	DK_PDA_QUESTS_NEW( 300 )
+
+#define DK_PDA_TABS_INVENTORY \
+	DK_PDA_TAB_OFF( 20, 70, "STATUS", character ) \
+	DK_PDA_TAB_ON( 110, 100, "INVENTORY" ) \
+	DK_PDA_TAB_OFF( 230, 70, "QUESTS", quests ) \
+	DK_PDA_QUESTS_NEW( 300 )
+
+#define DK_PDA_TABS_QUESTS \
+	DK_PDA_TAB_OFF( 20, 70, "STATUS", character ) \
+	DK_PDA_TAB_OFF( 110, 100, "INVENTORY", inventory ) \
+	DK_PDA_TAB_ON( 230, 70, "QUESTS" )

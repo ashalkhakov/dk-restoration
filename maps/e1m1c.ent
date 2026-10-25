@@ -1,0 +1,28 @@
+// e1m1c's entities changed by hand (tools/maps/ent_overrides.py)
+
+// the episode's quest (def/dk_quests.def): leaving for e1m2a through the
+// swamp entrance does it ("target_leave"), unless e1m1b's boss fight
+// failed it; the Sewer System is the way on
+{
+"_match classname" "trigger_changelevel"
+"_match map" "e1m2a"
+"target_leave" "q_swamp"
+}
+{
+"classname" "target_setobjective"
+"targetname" "q_swamp"
+"quest" "quest_e1_fortress"
+"objective" "1"
+"state" "complete"
+"only_if" "incomplete"
+"target" "q_sewer"
+"origin" "1552 672 520"
+}
+{
+"classname" "target_setobjective"
+"targetname" "q_sewer"
+"quest" "quest_e1_fortress"
+"objective" "2"
+"visible" "1"
+"origin" "1552 672 540"
+}

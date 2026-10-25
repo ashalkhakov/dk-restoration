@@ -148,6 +148,9 @@ scriptEvent	float		facingIdeal();
 scriptEvent	void		setFlySpeed( float speed );
 scriptEvent	void		setFlyOffset( float offset );
 scriptEvent	void		painJolt( float degrees );
+scriptEvent	void		setObjectiveState( string quest, float objective, string state );	// a quest's objective (0 the quest) incomplete, complete or failed, for every player (g_quests.c); the quest given if it isn't
+scriptEvent	void		setObjectiveVisible( string quest, float objective, float visible );	// shown (1) or hidden (0)
+scriptEvent	string		getObjectiveState( string quest, float objective );	// "incomplete", "complete", "failed", "hidden" ("active": a quest going on), "" when it isn't given
 scriptEvent	void		throwDebris();				// it bursts into its "debris" (a robot's: Daikatana's gibs), rigid bodies that fall and fade
 scriptEvent	float		startRagdoll();				// it goes limp now (a flyer that fell dead, landed); false if it has no ragdoll	// hurt, it shakes, rocking so many degrees and dying away: a monster with no pain animation
 scriptEvent	void		start();			// a camera plays (func_cameraspline)

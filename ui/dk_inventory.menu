@@ -1,7 +1,8 @@
 #include "ui/menudef.h"
 #include "ui/dk_defs.h"
 
-// The inventory screen (ui_inventory.c, g_inventory.c): the grid of what the
+// The inventory screen, the player's screen's inventory tab (ui_quests.c's
+// tabs; ui_inventory.c, g_inventory.c): the grid of what the
 // player carries, packed by the game; the selected item's name, what it is
 // and what it does; the armor worn; buttons for what can be done with the
 // selected item. A click selects, a double click or enter uses, the arrows
@@ -54,18 +55,9 @@
 		onOpen { play "sounds/menus/enter menu_001.wav" }
 		onEsc { uiScript closeingame }
 
-		// the panel
-		itemDef {
-			rect 0 0 560 400
-			style WINDOW_STYLE_FILLED
-			backcolor 0 0 0 .78
-			border WINDOW_BORDER_FULL
-			bordersize 1
-			bordercolor .81 .61 .39 .6
-			decoration
-			visible 1
-		}
-		DK_LABEL_BRIGHT( 20, 12, "INVENTORY" )
+		// the panel, its tabs (dk_defs.h: the player's screen)
+		DK_PDA_PANEL
+		DK_PDA_TABS_INVENTORY
 
 		// the grid, ten by six cells of 34
 		itemDef {

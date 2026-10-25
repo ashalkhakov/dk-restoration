@@ -1,0 +1,35 @@
+#include "ui/menudef.h"
+#include "ui/dk_defs.h"
+
+// The player's screen's quests tab (ui_quests.c, g_quests.c), Fallout 4's:
+// the quests going on, the most recently changed first, then those done
+// or failed, each with its objectives: to do (-), done (+), failed (x).
+// Looked at, the tab's mark for news goes. The game goes on behind it;
+// escape or its key (quests) closes it.
+
+{
+	menuDef {
+		name "dk_quests"
+		fullScreen MENU_FALSE
+		visible MENU_FALSE
+		rect 40 40 560 400
+		focusColor DK_BRIGHT
+		onOpen { play "sounds/menus/enter menu_001.wav" }
+		onEsc { uiScript closeingame }
+
+		DK_PDA_PANEL
+		DK_PDA_TABS_QUESTS
+
+		itemDef {
+			rect 20 40 520 320
+			type ITEM_TYPE_OWNERDRAW
+			ownerdraw UI_QUEST_LIST
+			textscale DK_TS_SMALL
+			forecolor DK_GOLD
+			decoration
+			visible 1
+		}
+
+		DK_BUTTON_MEDIUM( 435, 370, "Close", uiScript closeingame )
+	}
+}

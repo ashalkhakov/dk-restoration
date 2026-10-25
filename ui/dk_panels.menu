@@ -370,6 +370,8 @@
 		DK_KEY_BIND( kb2, 0, 10, 154, "Prev Weapon", "weapprev" )
 		DK_KEY_BIND( kb2, 0, 10, 172, "Inventory", "inventory" )
 		DK_KEY_BIND( kb2, 0, 10, 190, "Use Health", "invquick health" )
+		DK_KEY_BIND( kb2, 0, 10, 208, "Quests", "quests" )
+		DK_KEY_BIND( kb2, 0, 10, 226, "Status", "character" )
 		DK_KEY_BIND( kb2, 0, 210, 64, "Belt 1", "belt 1" )
 		DK_KEY_BIND( kb2, 0, 210, 82, "Belt 2", "belt 2" )
 		DK_KEY_BIND( kb2, 0, 210, 100, "Belt 3", "belt 3" )
