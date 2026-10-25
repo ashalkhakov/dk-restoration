@@ -3284,6 +3284,10 @@ void mihopodBlink() {
 		return;
 	}
 	while ( 1 ) {
+		if ( sys.skippingCinematic() ) {
+			sys.waitFrame();	// (a skip ends waits at once: it would go round forever)
+			continue;
+		}
 		sys.wait( 0.5 );
 		sys.trigger( light );
 	}

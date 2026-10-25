@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A converted map's entities for q3map2 -light, and back.
 
-  bsp_lights.py bake[-direct] <map.bsp> <dk.bsp> <out.bsp> <shaders> [cap scale [default cap [sky scale]]]
+  bsp_lights.py bake[-direct] <map.bsp> <dk.bsp> <out.bsp> <shaders> [cap scale [default cap [sky scale [ambient scale]]]]
       out.bsp with Daikatana's static lights as q3map2's: each constant,
       untargeted "dlight" the converter made of a "light" (bsp-sekai's
       dkent_light) gets a "light" beside it, falling off linearly as
@@ -20,7 +20,7 @@
       generated shaders draw them, scripts/*_gen.shader beside dk.bsp's
       maps/) cast no shadow, alpha-tested ones only where they're solid.
       bake-direct: the point lights alone (their direct light, the part
-      the game draws dynamically: no surface lights or sky).
+      the game draws dynamically: no surface lights, sky or ambient).
   bsp_lights.py subtract <a.bsp> <b.bsp> [<a lightmaps> <b lightmaps>]
       a.bsp's lightmaps less b.bsp's, laid out the same (q3map2
       -nocollapse): all the light less the point lights' direct light;
@@ -188,7 +188,10 @@ def surface_lights(lumps, dkBsp, shaderPath, skyScale, surfaceLights=True):
                 lines.append("\tq3map_lightImage textures/%s.tga\n" % texture)
                 if flags & SURF_SKY:
                     if surfaceLights:
-                        lines.append("\tq3map_skyLight %g 3\n" % (value * skyScale))
+                        # 8 iterations: enough of the sky's directions
+                        # that what's under a tower is in its soft shadow,
+                        # not in a few sharp copies of it (3 gave those)
+                        lines.append("\tq3map_skyLight %g 8\n" % (value * skyScale))
                     lines += ["\tsurfaceparm sky\n", "\tsurfaceparm noimpact\n", "\tsurfaceparm nolightmap\n"]
                 elif surfaceLights:
                     lines.append("\tq3map_surfaceLight %d\n" % value)
@@ -206,7 +209,7 @@ def surface_lights(lumps, dkBsp, shaderPath, skyScale, surfaceLights=True):
     return len(added)
 
 
-def bake(src, dkBsp, dst, shaderPath, capScale=1.0, defaultCap=0.0, skyScale=1.0, direct=False):
+def bake(src, dkBsp, dst, shaderPath, capScale=1.0, defaultCap=0.0, skyScale=1.0, ambientScale=1.0, direct=False):
     version, lumps = read_bsp(src)
     lumps[13] = bytearray(lumps[13])
     ents = parse_entities(lumps[0].decode("latin-1").rstrip("\0"))
@@ -226,6 +229,15 @@ def bake(src, dkBsp, dst, shaderPath, capScale=1.0, defaultCap=0.0, skyScale=1.0
             light["light"] = "%g" % ( cap / 0.9375 )
             light["fade"] = "%g" % ( cap / reach )
         lights.append(light)
+    if not direct and "ambient" in ents[0]:
+        # Daikatana's ambient, scaled to its light compiler's (ambient scale)
+        ents[0]["ambient"] = "%g" % (float(ents[0]["ambient"]) * ambientScale)
+    if direct:
+        # the map's ambient (Daikatana's worldspawn "ambient", q3map2 reads
+        # it too) isn't the point lights' direct light: left out here, it
+        # stays in the lightmaps when this is taken from the full bake
+        for key in ("ambient", "_ambient"):
+            ents[0].pop(key, None)
     lumps[0] = entities_text(ents + lights).encode("latin-1")
     surfaceShaders = surface_lights(lumps, dkBsp, shaderPath, skyScale, not direct)
     write_bsp(dst, version, lumps)
@@ -275,7 +287,7 @@ def restore(src, dst, bounce=False):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) in (6, 7, 8, 9) and sys.argv[1] in ("bake", "bake-direct"):
+    if len(sys.argv) in (6, 7, 8, 9, 10) and sys.argv[1] in ("bake", "bake-direct"):
         bake(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], *[float(a) for a in sys.argv[6:]],
              direct=sys.argv[1] == "bake-direct")
     elif len(sys.argv) in (4, 6) and sys.argv[1] == "subtract":

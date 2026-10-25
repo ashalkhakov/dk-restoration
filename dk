@@ -929,7 +929,11 @@ EOF
 #   back whenever the map is converted, while its geometry is the same.
 LIGHT_CAP_SCALE=${LIGHT_CAP_SCALE:-1.25}
 LIGHT_DEFAULT_CAP=${LIGHT_DEFAULT_CAP:-55}
-LIGHT_SKY_SCALE=${LIGHT_SKY_SCALE:-0.5}
+# the sky's light and the map's "ambient" scaled to Daikatana's own
+# lightmaps' balance (matched on e1m1a against its qrad lightmaps: its sky
+# casts hardly any shadow, its ambient lifts what the sky doesn't reach)
+LIGHT_SKY_SCALE=${LIGHT_SKY_SCALE:-0.05}
+LIGHT_AMBIENT_SCALE=${LIGHT_AMBIENT_SCALE:-2.5}
 # Daikatana's 16 units a luxel, as matched against its lightmaps, into
 # external lightmaps; finer (-samplesize 8) takes about 40 times longer
 LIGHT_OPTIONS=${LIGHT_OPTIONS:--bounce 2 -bouncescale 2 -samples 2 -filter -external -lightmapsize 1024}
@@ -941,7 +945,7 @@ light_pass() {
 	shift 3
 	scripts=$home/$GAME/scripts
 	python3 "$ROOT/tools/maps/bsp_lights.py" "$mode" "$OUT/lightmaps/$map.game.bsp" "$DKRES/maps/$map.bsp" "$out" \
-		"$scripts/zz_lightbake.shader" "$LIGHT_CAP_SCALE" "$LIGHT_DEFAULT_CAP" "$LIGHT_SKY_SCALE" >/dev/null || return 1
+		"$scripts/zz_lightbake.shader" "$LIGHT_CAP_SCALE" "$LIGHT_DEFAULT_CAP" "$LIGHT_SKY_SCALE" "$LIGHT_AMBIENT_SCALE" >/dev/null || return 1
 	# q3map2 reads the shaders shaderlist.txt names, only
 	(cd "$scripts" && ls -- *.shader | sed 's/\.shader$//') >"$scripts/shaderlist.txt"
 	rm -rf "${out%.bsp}"

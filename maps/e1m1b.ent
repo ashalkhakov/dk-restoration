@@ -21,3 +21,19 @@
 "visible" "1"
 "origin" "-416 640 1680"
 }
+
+// the laser screen across the way to the bridge: crossing its tripwire
+// sets it spinning and the alarm going ("warnlight"); its hub can be shot
+// down first, and the tripwire goes with it
+{
+"_match classname" "trigger_multiple"
+"_match model" "*35"
+"targetname" "screen_trip"
+}
+{
+"_match classname" "func_rotating"
+"_match targetname" "warnlight"
+"health" "30"
+"killtarget" "screen_trip"
+"breaksound" "sounds/global/e_metalbreaksa.wav"
+}
